@@ -1,0 +1,59 @@
+/*HEADER*/
+.navbar-brand {
+  padding-top:.0rem
+}
+body { padding-top: 70px; }
+@media screen and (max-width: 768px) {
+    body { padding-top: 0px; }
+}
+
+/*FOOTER*/
+.site-footer
+{
+  padding:45px 0 20px;
+  font-size:15px;
+  line-height:24px;
+}
+.site-footer hr
+{
+  border-top-color:#fff;
+  opacity:0.5
+}
+.site-footer hr.small
+{
+  margin:20px 0
+}
+.site-footer h6
+{
+  text-transform:uppercase;
+  margin-top:5px;
+  letter-spacing:2px
+}
+.footer-links
+{
+  padding-left:0;
+  list-style:none
+}
+.footer-links li
+{
+  display:block
+}
+.footer-links a:active,.footer-links a:focus,.footer-links a:hover
+{
+  text-decoration:none;
+}
+.footer-links.inline li
+{
+  display:inline-block
+}
+.footer-links.text-light a:hover, .footer-links.text-light a:focus, .footer-links.text-light a:active
+{
+  color:#fff !important;
+  opacity:0.5
+}
+
+/*CARDS LIST*/
+.img-max {
+  max-width: 128px;
+  width:100%;
+}

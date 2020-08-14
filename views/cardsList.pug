@@ -1,0 +1,63 @@
+extends layout
+
+block content
+
+  div(class='row text-left')
+    div(class='col-12')
+      h1(class="display-4 text-primary")= title
+      hr(class="pb-2")
+
+  div(class='row text-left')
+    div(class='col-6')
+      div(id="filters" class="mb-4")
+        div(class="card")
+          div(class="card-header") Rarity
+          div(class="card-body")
+            form(id="rarityForm")
+              div(class="container")
+                div(class="row")
+                  div(class="custom-control custom-radio mr-3")
+                    input(type="radio" class="custom-control-input" id="checkRarityAll" name="All")
+                    label(class="custom-control-label" for="checkRarityAll") All
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRarityN" name="N")
+                    label(class="custom-control-label" for="checkRarityN") N
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRarityR" name="R")
+                    label(class="custom-control-label" for="checkRarityR") R
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRaritySR" name="SR")
+                    label(class="custom-control-label" for="checkRaritySR") SR
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRaritySSR" name="SSR")
+                    label(class="custom-control-label" for="checkRaritySSR") SSR
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRarityUR" name="UR")
+                    label(class="custom-control-label" for="checkRarityUR") UR
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
+                    label(class="custom-control-label" for="checkRarityUR+") UR+
+
+  div(class='row text-left')
+    div(class='col-12')
+      h3(class='text-dark') Demon cards
+    each card in cardsList
+      if card.type == "Demon"
+        div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp"))
+          a(class="d-block mb-2 h-100" href='card/'+card.uniqueName)
+            figure(class="figure")
+              img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
+              figcaption(class="figure-caption text-center img-max") #{card.name}
+  
+  div(class='row text-left')
+    div(class='col-12')
+      h3(class='text-dark') Memory cards
+    each card in cardsList
+      if card.type == "Memory"
+        div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp"))
+          a(class="d-block mb-2 h-100" href='card/'+card.uniqueName)
+            figure(class="figure")
+              img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
+              figcaption(class="figure-caption text-center img-max") #{card.name}
+
+  script(src='/javascripts/cardsListFunctions.js')

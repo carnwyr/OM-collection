@@ -1,0 +1,54 @@
+extends layout
+
+block content
+  h1= title
+  p I have no idea what I'm doing but I think I'm making a #[em Cards Collection].
+
+  h1 Dynamic content
+
+  if error
+    p Error getting dynamic content.
+  else
+    p Hello, 
+      if user
+        |!{user.name}
+      else
+        |anon
+    p There are:
+
+    ul
+      li #[strong Cards:] !{data}
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing
+      li testing

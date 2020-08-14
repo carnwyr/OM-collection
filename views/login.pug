@@ -1,0 +1,16 @@
+extends layout
+
+block content
+
+  h1 #{title}
+
+  if message 
+    p #{message}
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='username') Username:
+      input#username.form-control(type='text' placeholder='Type your username' name='username' autocomplete="off")
+      label(for='password') Password:
+      input#password.form-control(type='text' placeholder='Type your password' name='password' autocomplete="off")
+    button.btn.btn-primary(type='submit') Submit

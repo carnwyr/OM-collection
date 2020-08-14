@@ -1,0 +1,22 @@
+extends layout
+
+block content
+
+  h1 #{card.name}
+  
+  p #[strong Type:] #{card.type} card
+  p #[strong Rarity:] #{card.rarity}
+  p #[strong Attribute:] #{card.attribute}
+  p #[strong Characters:] 
+     each val, index in card.characters
+      |#{val}
+      if index < card.characters.length - 1
+        |, 
+  button.btn.btn-primary(id='alterCollection' type='button') Add to collection
+
+  img(src='/images/cards/L/' + card.uniqueName + '.png')
+
+  script(src='/javascripts/cardDetailFunctions.js')
+  script.
+    var cardName = !{JSON.stringify(card.uniqueName)};
+    var hasCard = !{JSON.stringify(hasCard)};

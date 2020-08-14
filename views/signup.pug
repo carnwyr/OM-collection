@@ -1,0 +1,28 @@
+extends layout
+
+block content
+
+  h1 #{title}
+
+  if message 
+    p #{message}
+
+  if errors 
+   ul
+    for error in errors
+     li!= error.msg
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='username') Username:
+      input#username.form-control(type='text' placeholder='Type your username' name='username' maxlength='50' autocomplete="off")
+      p#usernameError
+      label(for='password') Password:
+      input#password.form-control(type='text' placeholder='Type your password' name='password' maxlength='50' autocomplete="off")
+      p#passwordError
+      label(for='repPassword') Repeat password:
+      input#confirmPassword.form-control(type='text' placeholder='Type your password again' name='confirmPassword' maxlength='50' autocomplete="off")
+      p#passwordConfirmationError
+    button.btn.btn-primary(id='signUp', type='submit') Submit
+
+  script(src='/javascripts/signUpFunctions.js')
