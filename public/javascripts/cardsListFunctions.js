@@ -47,11 +47,6 @@ function filterApplied(e) {
 				cards = $(cards).filter(filters[key]);
 		});
 		cards.fadeIn(400);
-		/*if (rarity != "") {
-			$(".cardPreview").filter(rarity).fadeIn(400);
-		} else {
-			$(".cardPreview").fadeIn(400);
-		}*/
 	});
 }
 

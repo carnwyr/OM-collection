@@ -7,9 +7,9 @@ block content
       h1(class="display-4 text-primary")= title
       hr(class="pb-2")
 
-  div(id="filters" class='row text-left mb-4')
-    div(id="rarityFilter" class="col-4")
-      div(class="card")
+  div(id="filters" class='row text-left')
+    div(id="rarityFilter" class="col-lg-4 col-4 mb-4")
+      div(class="card h-100")
         div(class="card-header") Rarity
         div(class="card-body")
           form(id="rarityForm")
@@ -36,8 +36,8 @@ block content
                 div(class="custom-control custom-checkbox")
                   input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
                   label(class="custom-control-label" for="checkRarityUR+") UR+
-    div(id="attributeFilter" class="col-7")
-      div(class="card")
+    div(id="attributeFilter" class="col-lg-8 col-8 mb-4")
+      div(class="card h-100")
         div(class="card-header") Attribute
         div(class="card-body")
           form(id="attributeForm")
@@ -67,14 +67,60 @@ block content
                 div(class="custom-control custom-checkbox")
                   input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
                   label(class="custom-control-label" for="checkAttributeSloth") Sloth
+    div(id="characterFilter" class="col-lg-12 col-12 mb-4")
+      div(class="card h-100")
+        div(class="card-header") Character
+        div(class="card-body")
+          form(id="characterForm")
+            div(class="container")
+              div(class="row")
+                div(class="custom-control custom-radio mr-3")
+                  input(type="radio" class="custom-control-input" id="checkCharacterAll" name="All")
+                  label(class="custom-control-label" for="checkCharacterAll") All
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterLucifer" name="Lucifer")
+                  label(class="custom-control-label" for="checkCharacterLucifer") Lucifer
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterMammon" name="Mammon")
+                  label(class="custom-control-label" for="checkCharacterMammon") Mammon
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterLeviathan" name="Leviathan")
+                  label(class="custom-control-label" for="checkCharacterLeviathan") Leviathan
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterSatan" name="Satan")
+                  label(class="custom-control-label" for="checkCharacterSatan") Satan
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterAsmodeus" name="Asmodeus")
+                  label(class="custom-control-label" for="checkCharacterAsmodeus") Asmodeus
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterBeelzebub" name="Beelzebub")
+                  label(class="custom-control-label" for="checkCharacterBeelzebub") Beelzebub
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterBelphegor" name="Belphegor")
+                  label(class="custom-control-label" for="checkCharacterBelphegor") Belphegor
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterDiavolo" name="Diavolo")
+                  label(class="custom-control-label" for="checkCharacterDiavolo") Diavolo
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterBarbatos" name="Barbatos")
+                  label(class="custom-control-label" for="checkCharacterBarbatos") Barbatos
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterSimeon" name="Simeon")
+                  label(class="custom-control-label" for="checkCharacterSimeon") Simeon
+                div(class="custom-control custom-checkbox mr-3")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterLuke" name="Luke")
+                  label(class="custom-control-label" for="checkCharacterLuke") Luke
+                div(class="custom-control custom-checkbox")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacterSolomon" name="Solomon")
+                  label(class="custom-control-label" for="checkCharacterSolomon") Solomon
 
   div(class='row text-left')
     div(class='col-12')
       h3(class='text-dark') Demon cards
     each card in cardsList
       if card.type == "Demon"
-        div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute)
-          a(class="d-block mb-2 h-100" href='card/'+card.uniqueName)
+        div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.join(' '))
+          a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
             figure(class="figure")
               img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
               figcaption(class="figure-caption text-center img-max") #{card.name}
@@ -84,8 +130,8 @@ block content
       h3(class='text-dark') Memory cards
     each card in cardsList
       if card.type == "Memory"
-        div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute)
-          a(class="d-block mb-2 h-100" href='card/'+card.uniqueName)
+        div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.join(' '))
+          a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
             figure(class="figure")
               img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
               figcaption(class="figure-caption text-center img-max") #{card.name}
