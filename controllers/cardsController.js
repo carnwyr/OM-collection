@@ -13,7 +13,7 @@ exports.index = function(req, res, next) {
 
 // Display all the cards
 exports.cardsList = function(req, res, next) {
-	Cards.find({}, 'name uniqueName type rarity number', function (err, listCards) {
+	Cards.find({}, 'name uniqueName type rarity number attribute', function (err, listCards) {
 		if (err) { return next(err); }
 		listCards.sort(function(a, b) {
 			var rarityOrder = -1 * compareByRarity(a.rarity, b.rarity);

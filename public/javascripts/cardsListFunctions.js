@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	resetFilters();
-	$("form#rarityForm :input").on('click', formChanged);
+	$("form :input").on('click', formChanged);
 	$("div#filters :input").on('change', filterApplied);
 });
 
@@ -28,20 +28,30 @@ function formChanged(e) {
 }
 
 function filterApplied(e) {
-	var rarity = "";
-	$("form#rarityForm :input[type=checkbox]:checked").each(function(index, obj) {
-		if (index != 0) {
-			rarity += ", ";
-		}
-        rarity += "." + $(obj).attr("name");
-    });
+	var filters = {};
+	$("form").each(function() {
+		var formId = $(this).attr("id");
+		filters[formId] = "";
+		$(this).find(":input[type=checkbox]:checked").each(function(index, obj) {
+			if (index != 0) {
+				filters[formId] += ", ";
+			}
+	        filters[formId] += "." + $(obj).attr("name");
+	    });
+	});
+
 	$(".cardPreview").fadeOut(400).promise().done(function() {
-		if (rarity != "") {
+		var cards = $(".cardPreview");
+		Object.keys(filters).forEach(function(key) {
+			if (filters[key] != "")
+				cards = $(cards).filter(filters[key]);
+		});
+		cards.fadeIn(400);
+		/*if (rarity != "") {
 			$(".cardPreview").filter(rarity).fadeIn(400);
-			//$(".cardPreview").filter(':not('+rarity+')').addClass("hidden");
 		} else {
 			$(".cardPreview").fadeIn(400);
-		}
+		}*/
 	});
 }
 
