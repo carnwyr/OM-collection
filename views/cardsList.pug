@@ -126,7 +126,12 @@ block content
         button(class="btn btn-primary" id='gotoDemon' href='#demonCards') Go to demon cards
         button(class="btn btn-primary" id='gotoMemory' href='#memoryCards') Go to memory cards
         button(class="btn btn-primary" id='resetFilters') Reset filters
-        button(class="btn btn-primary" id='manageCollection') Manage collection
+        div(class='btn-group d-none' id='selectionButtons')
+          button(class="btn btn-primary" id='deselectAll') Deselect all
+          button(class="btn btn-primary" id='selectAll') Select all
+        div(class='btn-group' id='manageButtons')
+          button(class="btn btn-primary d-none" id='cancelManaging') Cancel
+          button(class="btn btn-primary" id='manageCollection') Manage collection
 
     div(class='row text-left' id='demonCards')
       div(class='col-12')

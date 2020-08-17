@@ -21,6 +21,13 @@ $(document).ready(function(){
 	});
 	$('button#manageCollection').on('click', switchSelection);
 	$('.cardPreview a').on('click', cardClicked);
+	$('button#selectAll').on('click', function() {
+		$('.cardPreview:visible a').filter(function() { return $(this).find('img').hasClass('notSelectedCard'); }).each(function() { cardClicked.call($(this)); });
+	});
+	$('button#deselectAll').on('click', function() {
+		$('.cardPreview:visible a').filter(function() { return !$(this).find('img').hasClass('notSelectedCard'); }).each(function() { cardClicked.call($(this)); });
+	});
+	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelection.call(); });
 });
 
 function formChanged(e) {
@@ -102,6 +109,8 @@ function switchSelection() {
 	    })
 	    .done(function(cardNames){
 	    	$('button#manageCollection').text('Save');
+	    	$('button#cancelManaging').removeClass('d-none');
+	    	$('div#selectionButtons').removeClass('d-none');
 	    	selectionMode = true;
 			$('.cardPreview').filter(function() {
 				return !cardNames.includes($(this).find('a').attr('href').replace('card/', ''));
@@ -122,12 +131,16 @@ function switchSelection() {
 		    	}
 		    	changedCards = {};
 		    	$('button#manageCollection').text('Manage collection');
+	    		$('button#cancelManaging').addClass('d-none');
+	    		$('div#selectionButtons').addClass('d-none');
 		    	selectionMode = false;
 				$('.cardPreview').find('img').removeClass('notSelectedCard');
 		    });
 		} else {
 			changedCards = {};
 			$('button#manageCollection').text('Manage collection');
+	    	$('button#cancelManaging').addClass('d-none');
+	    	$('div#selectionButtons').addClass('d-none');
 	    	selectionMode = false;
 			$('.cardPreview').find('img').removeClass('notSelectedCard');
 		}
@@ -137,8 +150,9 @@ function switchSelection() {
 function cardClicked(e) {
 	if (!selectionMode)
 		return;
-
-	e.preventDefault();
+//alert($(this).attr("class"))
+	if (e)
+		e.preventDefault();
 	var image = $(this).find('img');
 	if ($(image).hasClass('notSelectedCard')) {
 		$(image).removeClass('notSelectedCard');
