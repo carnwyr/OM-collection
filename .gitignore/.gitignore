@@ -109,3 +109,6 @@ public/images/cards/
 
 # temp files
 temp/
+
+# temp folder for uploading images
+uploads/

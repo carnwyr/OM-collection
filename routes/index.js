@@ -28,7 +28,13 @@ router.post('/signup', usersController.signupPost);
 
 router.post('/signup/checkUsername', usersController.signupCheckUsername);
 
-// GET request for list of personal cards collection
+// GET request for personal cards collection
 router.get('/collection', usersController.isLoggedIn(), cardsController.cardsCollection);
+
+// GET request for list of owned cards
+router.get('/collection/getOwnedCards', usersController.isLoggedIn(), cardsController.getOwnedCards);
+
+// POST request for list of owned cards
+router.post('/collection/updateOwnedCards', usersController.isLoggedIn(), cardsController.updateOwnedCards);
 
 module.exports = router;

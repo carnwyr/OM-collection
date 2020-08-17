@@ -12,28 +12,31 @@ html(lang='en')
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='/javascripts/commonFunctions.js')
   body(class="d-flex flex-column min-vh-100")
-    nav(class="navbar navbar-expand-lg bg-primary navbar-dark fixed-top")
+    nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top")
       a(class="navbar-brand", href='/') Home
-      ul(class="navbar-nav")
-        li(class="nav-item")
-          a(class="nav-link", href='/cards') All cards
-        if user
+      button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerMenu" aria-controls="navbarTogglerMenu" aria-expanded="false" aria-label="Toggle navigation")
+        span(class="navbar-toggler-icon")
+      div(class="collapse navbar-collapse" id="navbarTogglerMenu")
+        ul(class="navbar-nav")
           li(class="nav-item")
-            a(class="nav-link", href='/collection') My collection
-        if user && user.isAdmin
-          li(class="nav-item")
-            a(class="nav-link", href='/card/create') Add new cards
-        if !user
-          li(class="nav-item")
-            a(class="nav-link", href='/signup') Signup
-          li(class="nav-item")
-            a(class="nav-link", href='/login') Login
-        if user
-          li(class="nav-item")
-            a(class="nav-link", href='/logout') Logout
+            a(class="nav-link", href='/cards') All cards
+          if user
+            li(class="nav-item")
+              a(class="nav-link", href='/collection') My collection
+          if user && user.isAdmin
+            li(class="nav-item")
+              a(class="nav-link", href='/card/create') Add new cards
+          if !user
+            li(class="nav-item")
+              a(class="nav-link", href='/signup') Signup
+            li(class="nav-item")
+              a(class="nav-link", href='/login') Login
+          if user
+            li(class="nav-item")
+              a(class="nav-link", href='/logout') Logout
 
 
-    div(class='container')
+    div(class='container-fluid')
       block content
 
     footer(class="site-footer bg-primary navbar-dark mt-auto")

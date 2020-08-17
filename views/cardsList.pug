@@ -2,142 +2,156 @@ extends layout
 
 block content
 
-  div(class='row text-left')
-    div(class='col-12')
-      h1(class="display-4 text-primary")= title
-      hr(class="pb-2")
+  div(class='container')
 
-  div(id="filters" class='row text-left')
-    div(id="rarityFilter" class="col-lg-4 col-4 mb-3")
-      div(class="card h-100")
-        div(class="card-header") Rarity
-        div(class="card-body")
-          form(id="rarityForm")
-            div(class="container")
-              div(class="row")
-                div(class="custom-control custom-radio mr-3")
-                  input(type="radio" class="custom-control-input" id="checkRarityAll" name="All")
-                  label(class="custom-control-label" for="checkRarityAll") All
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkRarityN" name="N")
-                  label(class="custom-control-label" for="checkRarityN") N
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkRarityR" name="R")
-                  label(class="custom-control-label" for="checkRarityR") R
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkRaritySR" name="SR")
-                  label(class="custom-control-label" for="checkRaritySR") SR
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkRaritySSR" name="SSR")
-                  label(class="custom-control-label" for="checkRaritySSR") SSR
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkRarityUR" name="UR")
-                  label(class="custom-control-label" for="checkRarityUR") UR
-                div(class="custom-control custom-checkbox")
-                  input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
-                  label(class="custom-control-label" for="checkRarityUR+") UR+
-    div(id="attributeFilter" class="col-lg-8 col-8 mb-3")
-      div(class="card h-100")
-        div(class="card-header") Attribute
-        div(class="card-body")
-          form(id="attributeForm")
-            div(class="container")
-              div(class="row")
-                div(class="custom-control custom-radio mr-3")
-                  input(type="radio" class="custom-control-input" id="checkAttributeAll" name="All")
-                  label(class="custom-control-label" for="checkAttributeAll") All
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkAttributePride" name="Pride")
-                  label(class="custom-control-label" for="checkAttributePride") Pride
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkAttributeGreed" name="Greed")
-                  label(class="custom-control-label" for="checkAttributeGreed") Greed
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkAttributeEnvy" name="Envy")
-                  label(class="custom-control-label" for="checkAttributeEnvy") Envy
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkAttributeWrath" name="Wrath")
-                  label(class="custom-control-label" for="checkAttributeWrath") Wrath
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkAttributeLust" name="Lust")
-                  label(class="custom-control-label" for="checkAttributeLust") Lust
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkAttributeGluttony" name="Gluttony")
-                  label(class="custom-control-label" for="checkAttributeGluttony") Gluttony
-                div(class="custom-control custom-checkbox")
-                  input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
-                  label(class="custom-control-label" for="checkAttributeSloth") Sloth
-    div(id="characterFilter" class="col-lg-12 col-12 mb-3")
-      div(class="card h-100")
-        div(class="card-header") Character
-        div(class="card-body")
-          form(id="characterForm")
-            div(class="container")
-              div(class="row")
-                div(class="custom-control custom-radio mr-3")
-                  input(type="radio" class="custom-control-input" id="checkCharacterAll" name="All")
-                  label(class="custom-control-label" for="checkCharacterAll") All
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterLucifer" name="Lucifer")
-                  label(class="custom-control-label" for="checkCharacterLucifer") Lucifer
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterMammon" name="Mammon")
-                  label(class="custom-control-label" for="checkCharacterMammon") Mammon
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterLeviathan" name="Leviathan")
-                  label(class="custom-control-label" for="checkCharacterLeviathan") Leviathan
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterSatan" name="Satan")
-                  label(class="custom-control-label" for="checkCharacterSatan") Satan
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterAsmodeus" name="Asmodeus")
-                  label(class="custom-control-label" for="checkCharacterAsmodeus") Asmodeus
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterBeelzebub" name="Beelzebub")
-                  label(class="custom-control-label" for="checkCharacterBeelzebub") Beelzebub
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterBelphegor" name="Belphegor")
-                  label(class="custom-control-label" for="checkCharacterBelphegor") Belphegor
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterDiavolo" name="Diavolo")
-                  label(class="custom-control-label" for="checkCharacterDiavolo") Diavolo
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterBarbatos" name="Barbatos")
-                  label(class="custom-control-label" for="checkCharacterBarbatos") Barbatos
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterSimeon" name="Simeon")
-                  label(class="custom-control-label" for="checkCharacterSimeon") Simeon
-                div(class="custom-control custom-checkbox mr-3")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterLuke" name="Luke")
-                  label(class="custom-control-label" for="checkCharacterLuke") Luke
-                div(class="custom-control custom-checkbox")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacterSolomon" name="Solomon")
-                  label(class="custom-control-label" for="checkCharacterSolomon") Solomon
-  form
-    div(class='row mb-4')
+    div(class='row text-left')
       div(class='col-12')
+        h1(class="display-4 text-primary")= title
+        hr(class="pb-2")
+
+    div(class='row text-left')
+      div(class='col-12')
+        h3(class='text-dark collapser' data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters") Filters
+    div(id="filters" class='row text-left collapse')
+      div(id="rarityFilter" class="col-lg-4 col-4 mb-3")
+        div(class="card h-100")
+          div(class="card-header") Rarity
+          div(class="card-body")
+            form(id="rarityForm")
+              div(class="container")
+                div(class="row")
+                  div(class="custom-control custom-radio mr-3")
+                    input(type="radio" class="custom-control-input" id="checkRarityAll" name="All")
+                    label(class="custom-control-label" for="checkRarityAll") All
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRarityN" name="N")
+                    label(class="custom-control-label" for="checkRarityN") N
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRarityR" name="R")
+                    label(class="custom-control-label" for="checkRarityR") R
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRaritySR" name="SR")
+                    label(class="custom-control-label" for="checkRaritySR") SR
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRaritySSR" name="SSR")
+                    label(class="custom-control-label" for="checkRaritySSR") SSR
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkRarityUR" name="UR")
+                    label(class="custom-control-label" for="checkRarityUR") UR
+                  div(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
+                    label(class="custom-control-label" for="checkRarityUR+") UR+
+      div(id="attributeFilter" class="col-lg-8 col-8 mb-3")
+        div(class="card h-100")
+          div(class="card-header") Attribute
+          div(class="card-body")
+            form(id="attributeForm")
+              div(class="container")
+                div(class="row")
+                  div(class="custom-control custom-radio mr-3")
+                    input(type="radio" class="custom-control-input" id="checkAttributeAll" name="All")
+                    label(class="custom-control-label" for="checkAttributeAll") All
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkAttributePride" name="Pride")
+                    label(class="custom-control-label" for="checkAttributePride") Pride
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkAttributeGreed" name="Greed")
+                    label(class="custom-control-label" for="checkAttributeGreed") Greed
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkAttributeEnvy" name="Envy")
+                    label(class="custom-control-label" for="checkAttributeEnvy") Envy
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkAttributeWrath" name="Wrath")
+                    label(class="custom-control-label" for="checkAttributeWrath") Wrath
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkAttributeLust" name="Lust")
+                    label(class="custom-control-label" for="checkAttributeLust") Lust
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkAttributeGluttony" name="Gluttony")
+                    label(class="custom-control-label" for="checkAttributeGluttony") Gluttony
+                  div(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
+                    label(class="custom-control-label" for="checkAttributeSloth") Sloth
+      div(id="characterFilter" class="col-lg-12 col-12 mb-3")
+        div(class="card h-100")
+          div(class="card-header") Character
+          div(class="card-body")
+            form(id="characterForm")
+              div(class="container")
+                div(class="row")
+                  div(class="custom-control custom-radio mr-3")
+                    input(type="radio" class="custom-control-input" id="checkCharacterAll" name="All")
+                    label(class="custom-control-label" for="checkCharacterAll") All
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterLucifer" name="Lucifer")
+                    label(class="custom-control-label" for="checkCharacterLucifer") Lucifer
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterMammon" name="Mammon")
+                    label(class="custom-control-label" for="checkCharacterMammon") Mammon
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterLeviathan" name="Leviathan")
+                    label(class="custom-control-label" for="checkCharacterLeviathan") Leviathan
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterSatan" name="Satan")
+                    label(class="custom-control-label" for="checkCharacterSatan") Satan
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterAsmodeus" name="Asmodeus")
+                    label(class="custom-control-label" for="checkCharacterAsmodeus") Asmodeus
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterBeelzebub" name="Beelzebub")
+                    label(class="custom-control-label" for="checkCharacterBeelzebub") Beelzebub
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterBelphegor" name="Belphegor")
+                    label(class="custom-control-label" for="checkCharacterBelphegor") Belphegor
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterDiavolo" name="Diavolo")
+                    label(class="custom-control-label" for="checkCharacterDiavolo") Diavolo
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterBarbatos" name="Barbatos")
+                    label(class="custom-control-label" for="checkCharacterBarbatos") Barbatos
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterSimeon" name="Simeon")
+                    label(class="custom-control-label" for="checkCharacterSimeon") Simeon
+                  div(class="custom-control custom-checkbox mr-3")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterLuke" name="Luke")
+                    label(class="custom-control-label" for="checkCharacterLuke") Luke
+                  div(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterSolomon" name="Solomon")
+                    label(class="custom-control-label" for="checkCharacterSolomon") Solomon
+      form(id='searchForm' class='col-12 mb-3')
         input(type='text' class='form-control' id='nameFilter' placeholder='Search for card name...')
 
-  div(class='row text-left')
-    div(class='col-12')
-      h3(class='text-dark') Demon cards
-    each card in cardsList
-      if card.type == "Demon"
-        div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.join(' '))
-          a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
-            figure(class="figure")
-              img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
-              figcaption(class="figure-caption text-center img-max") #{card.name}
-  
-  div(class='row text-left')
-    div(class='col-12')
-      h3(class='text-dark') Memory cards
-    each card in cardsList
-      if card.type == "Memory"
-        div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.join(' '))
-          a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
-            figure(class="figure")
-              img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
-              figcaption(class="figure-caption text-center img-max") #{card.name}
+    div(class='card sticky-top sticky-offset mb-4')
+      div(class='card-body d-flex justify-content-around')
+        button(class="btn btn-primary" id='gotoDemon' href='#demonCards') Go to demon cards
+        button(class="btn btn-primary" id='gotoMemory' href='#memoryCards') Go to memory cards
+        button(class="btn btn-primary" id='resetFilters') Reset filters
+        button(class="btn btn-primary" id='manageCollection') Manage collection
+
+    div(class='row text-left' id='demonCards')
+      div(class='col-12')
+        h3(class='text-dark collapser' data-toggle="collapse" href="#demonSection" role="button" aria-expanded="false" aria-controls="demonSection") Demon cards
+    div(class='row text-left collapse show' id='demonSection')
+      each card in cardsList
+        if card.type == "Demon"
+          div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.join(' '))
+            a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
+              figure(class="figure text-center")
+                img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
+                figcaption(class="figure-caption text-center img-max") #{card.name}
+
+    div(class='row text-left' id='memoryCards')
+      div(class='col-12')
+        h3(class='text-dark collapser' data-toggle="collapse" href="#memorySection" role="button" aria-expanded="false" aria-controls="memorySection") Memory cards
+    div(class='row text-left collapse show' id='memorySection')
+      each card in cardsList
+        if card.type == "Memory"
+          div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.join(' '))
+            a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
+              figure(class="figure text-center")
+                img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
+                figcaption(class="figure-caption text-center img-max") #{card.name}
 
   script(src='/javascripts/cardsListFunctions.js')
+  link(rel='stylesheet', href='/stylesheets/cardsListStyle.css')
+  link(rel='stylesheet', href='https://cdn.linearicons.com/free/1.0.0/icon-font.min.css')

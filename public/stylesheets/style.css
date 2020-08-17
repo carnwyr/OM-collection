@@ -51,9 +51,3 @@ body { padding-top: 70px; }
   color:#fff !important;
   opacity:0.5
 }
-
-/*CARDS LIST*/
-.img-max {
-  max-width: 128px;
-  width:100%;
-}

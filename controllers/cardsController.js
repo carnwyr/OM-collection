@@ -27,7 +27,6 @@ exports.cardsList = function(req, res, next) {
 			}
 			return 0;
 		});
-		//console.log(listCards)
 		res.render('cardsList', { title: 'Cards List', cardsList: listCards, user: req.user });
 	});
 };
@@ -86,7 +85,6 @@ exports.cardsCollection = function(req, res, next) {
 		.populate('card')
 		.exec(function (err, listCards) {
 			if (err) { return next(err); }
-			console.log(listCards)
 			res.render('cardsCollection', { title: 'My Collection', cardsList: listCards, user: req.user });
 	});
 };
@@ -111,7 +109,6 @@ exports.cardsCreatePost = function(req, res, next) {
 			for (var i=0; i < cards.list.length; i++) {
 				Cards.findOne({uniqueName: cards.list[i].uniqueName}, function(err, result) {
 					if (err) { return next(err); }
-				console.log(i)
 					if (!result) {
 						var newCard = new Cards({
 							name: cards.list[i].name,
@@ -151,6 +148,47 @@ exports.cardsUpdateGet = function(req, res) {
 // Update a card by POST request
 exports.cardsUpdatePost = function(req, res) {
 	res.send('NOT IMPLEMENTED: Card update POST');
+};
+
+exports.getOwnedCards = function(req, res) {
+	CardsCollection.find({'user': req.user._id})
+		.populate('card')
+		.exec(function (err, listCards) {
+			if (err) { return next(err); }
+			var cardNames = listCards.map(userCard => userCard.card.uniqueName);
+			res.send(cardNames);
+	});
+};
+
+exports.updateOwnedCards = function(req, res) {
+	Cards.find({uniqueName: {"$in": Object.keys(req.body.changedCards)}}, 'uniqueName', function(err, result) {
+		if (err) { res.send('error'); return; }
+		if (result==null) { res.send('error'); return; }
+
+		var newCards = [];
+		for (let key in req.body.changedCards) {
+			if (!req.body.changedCards[key]) {
+				continue;
+			}
+			newCards.push(new CardsCollection({user: req.user._id, card: result.find(card => card.uniqueName === key)._id}));
+		}
+		var addPromise = CardsCollection.insertMany(newCards);
+		
+		var removedCards = [];
+		for (let key in req.body.changedCards) {
+			if (req.body.changedCards[key])
+				continue;
+			removedCards.push(result.find(card => card.uniqueName === key)._id);
+		}
+		var removePromise = CardsCollection.deleteMany({user: req.user._id, card: removedCards}).exec();
+
+		Promise.all([addPromise, removePromise]).then(value => {
+			res.sendStatus(200);
+		}).catch(err => {
+			res.send('error');
+			console.log(err)
+		});
+	});
 };
 
 function compareByRarity(rarity1, rarity2) {

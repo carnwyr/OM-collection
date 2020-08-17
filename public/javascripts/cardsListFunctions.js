@@ -1,17 +1,26 @@
 var typingTimer;
 var doneTypingInterval = 500;
+var changedCards = {};
+var selectionMode = false;
 
 $(document).ready(function(){
 	resetFilters();
 	$("form :input").on('click', formChanged);
-	$("div#filters :input").on('change', filterApplied);
+	$("div#filters :input[type!=text]").on('change', filterApplied);
 	$("input#nameFilter").on('input', inputChanged);
-	/*$("input#nameFilter").('keydown', function(e) {
-		alert('a')
-		if (event.which == '13') {
-			event.preventDefault();
+	$("#searchForm input").on('keypress', function(e) {
+		if (e.which == '13') {
+			e.preventDefault();
 		}
-	});*/
+	});
+	$('#gotoDemon').on('click', scrollToSection);
+	$('#gotoMemory').on('click', scrollToSection);
+	$('button#resetFilters').on('click', function(e) {
+		resetFilters();
+		filterApplied();
+	});
+	$('button#manageCollection').on('click', switchSelection);
+	$('.cardPreview a').on('click', cardClicked);
 });
 
 function formChanged(e) {
@@ -19,7 +28,7 @@ function formChanged(e) {
 	var type = $(this).attr("type");
 	if (type == 'checkbox') {
 		var checkboxes = $(form).find('input[type=checkbox]:checked');
-		var radio = $(form).find('input[type=radio');
+		var radio = $(form).find('input[type=radio]');
 		if (checkboxes.length == 0) {
 			$(radio).prop('checked', true);
 		}
@@ -37,7 +46,7 @@ function formChanged(e) {
 	}
 }
 
-function filterApplied(e) {
+function filterApplied() {
 	var filters = {};
 	$("form").each(function() {
 		var formId = $(this).attr("id");
@@ -76,4 +85,74 @@ function resetFilters() {
 function inputChanged(e) {
 	clearTimeout(typingTimer);
 	typingTimer = setTimeout(filterApplied, doneTypingInterval);
+}
+
+function scrollToSection(e) {
+	var divId = $(this).attr('href');
+	$('html, body').animate({
+		scrollTop: $(divId).offset().top - 170
+	}, 200);
+}
+
+function switchSelection() {
+	if (!selectionMode) {
+		$.ajax({
+	        type: 'get',
+	        url: '/collection/getOwnedCards'
+	    })
+	    .done(function(cardNames){
+	    	$('button#manageCollection').text('Save');
+	    	selectionMode = true;
+			$('.cardPreview').filter(function() {
+				return !cardNames.includes($(this).find('a').attr('href').replace('card/', ''));
+			}).find('img').addClass('notSelectedCard');
+	    });
+	} else {
+		if (Object.keys(changedCards).length > 0) {
+			$.ajax({
+		        type: 'post',
+		        url: '/collection/updateOwnedCards',
+        		contentType: 'application/json',
+		        data: JSON.stringify({changedCards: changedCards})
+		    })
+		    .done(function(result){
+		    	if (result === 'error') {
+		    		//prompt user
+		    		return;
+		    	}
+		    	changedCards = {};
+		    	$('button#manageCollection').text('Manage collection');
+		    	selectionMode = false;
+				$('.cardPreview').find('img').removeClass('notSelectedCard');
+		    });
+		} else {
+			changedCards = {};
+			$('button#manageCollection').text('Manage collection');
+	    	selectionMode = false;
+			$('.cardPreview').find('img').removeClass('notSelectedCard');
+		}
+	}
+}
+
+function cardClicked(e) {
+	if (!selectionMode)
+		return;
+
+	e.preventDefault();
+	var image = $(this).find('img');
+	if ($(image).hasClass('notSelectedCard')) {
+		$(image).removeClass('notSelectedCard');
+		if ($(this).attr('href').replace('card/', '') in changedCards) {
+			delete changedCards[$(this).attr('href').replace('card/', '')];
+		} else {
+			changedCards[$(this).attr('href').replace('card/', '')] = true;
+		}
+	} else {
+		$(image).addClass('notSelectedCard');
+		if ($(this).attr('href').replace('card/', '') in changedCards) {
+			delete changedCards[$(this).attr('href').replace('card/', '')];
+		} else {
+			changedCards[$(this).attr('href').replace('card/', '')] = false;
+		}
+	}
 }
