@@ -4,6 +4,10 @@ var changedCards = {};
 var selectionMode = false;
 
 $(document).ready(function(){
+	var pathname = window.location.pathname;
+	if (pathname == '/collection') {
+		$('button#manageCollection').addClass('d-none');
+	}
 	resetFilters();
 	$("form :input").on('click', formChanged);
 	$("div#filters :input[type!=text]").on('change', filterApplied);
@@ -20,6 +24,7 @@ $(document).ready(function(){
 		filterApplied();
 	});
 	$('button#manageCollection').on('click', switchSelection);
+	$('button#saveManaging').on('click', switchSelection);
 	$('.cardPreview a').on('click', cardClicked);
 	$('button#selectAll').on('click', function() {
 		$('.cardPreview:visible a').filter(function() { return $(this).find('img').hasClass('notSelectedCard'); }).each(function() { cardClicked.call($(this)); });
@@ -108,8 +113,8 @@ function switchSelection() {
 	        url: '/collection/getOwnedCards'
 	    })
 	    .done(function(cardNames){
-	    	$('button#manageCollection').text('Save');
-	    	$('button#cancelManaging').removeClass('d-none');
+	    	$('button#manageCollection').addClass('d-none');
+	    	$('div#manageButtons').removeClass('d-none');
 	    	$('div#selectionButtons').removeClass('d-none');
 	    	selectionMode = true;
 			$('.cardPreview').filter(function() {
@@ -130,16 +135,16 @@ function switchSelection() {
 		    		return;
 		    	}
 		    	changedCards = {};
-		    	$('button#manageCollection').text('Manage collection');
-	    		$('button#cancelManaging').addClass('d-none');
+	    		$('button#manageCollection').removeClass('d-none');
+	    		$('div#manageButtons').addClass('d-none');
 	    		$('div#selectionButtons').addClass('d-none');
 		    	selectionMode = false;
 				$('.cardPreview').find('img').removeClass('notSelectedCard');
 		    });
 		} else {
 			changedCards = {};
-			$('button#manageCollection').text('Manage collection');
-	    	$('button#cancelManaging').addClass('d-none');
+			$('button#manageCollection').removeClass('d-none');
+	    	$('div#manageButtons').addClass('d-none');
 	    	$('div#selectionButtons').addClass('d-none');
 	    	selectionMode = false;
 			$('.cardPreview').find('img').removeClass('notSelectedCard');
@@ -150,7 +155,6 @@ function switchSelection() {
 function cardClicked(e) {
 	if (!selectionMode)
 		return;
-//alert($(this).attr("class"))
 	if (e)
 		e.preventDefault();
 	var image = $(this).find('img');
