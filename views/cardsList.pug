@@ -137,7 +137,7 @@ block content
 
     div(class='row text-left' id='demonCards')
       div(class='col-12')
-        h3(class='text-dark collapser' data-toggle="collapse" href="#demonSection" role="button" aria-expanded="false" aria-controls="demonSection") Demon cards
+        h3(class='text-dark collapser' data-toggle="collapse" href="#demonSection" role="button" aria-expanded="true" aria-controls="demonSection") Demon cards
     div(class='row text-left collapse show' id='demonSection')
       if cardsList.filter(card => card.type == "Demon").length != 0
         each card in cardsList
@@ -152,7 +152,7 @@ block content
 
     div(class='row text-left' id='memoryCards')
       div(class='col-12')
-        h3(class='text-dark collapser' data-toggle="collapse" href="#memorySection" role="button" aria-expanded="false" aria-controls="memorySection") Memory cards
+        h3(class='text-dark collapser' data-toggle="collapse" href="#memorySection" role="button" aria-expanded="true" aria-controls="memorySection") Memory cards
     div(class='row text-left collapse show' id='memorySection')
       if cardsList.filter(card => card.type == "Memory").length != 0
         each card in cardsList
