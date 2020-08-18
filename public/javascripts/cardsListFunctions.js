@@ -4,10 +4,6 @@ var changedCards = {};
 var selectionMode = false;
 
 $(document).ready(function(){
-	var pathname = window.location.pathname;
-	if (pathname == '/collection') {
-		$('button#manageCollection').addClass('d-none');
-	}
 	resetFilters();
 	$("form :input").on('click', formChanged);
 	$("div#filters :input[type!=text]").on('change', filterApplied);

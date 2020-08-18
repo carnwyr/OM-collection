@@ -132,7 +132,8 @@ block content
         div(class='btn-group d-none' id='manageButtons')
           button(class="btn btn-primary" id='cancelManaging') Cancel
           button(class="btn btn-primary" id='saveManaging') Save
-        button(class="btn btn-primary" id='manageCollection') Manage collection
+        if user && path === 'list'
+          button(class="btn btn-primary" id='manageCollection') Manage collection
 
     div(class='row text-left' id='demonCards')
       div(class='col-12')

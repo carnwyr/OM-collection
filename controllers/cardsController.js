@@ -27,7 +27,7 @@ exports.cardsList = function(req, res, next) {
 			}
 			return 0;
 		});
-		res.render('cardsList', { title: 'Cards List', cardsList: listCards, user: req.user });
+		res.render('cardsList', { title: 'Cards List', cardsList: listCards, user: req.user, path: 'list' });
 	});
 };
 
@@ -85,7 +85,7 @@ exports.cardsCollection = function(req, res, next) {
 		.populate('card')
 		.exec(function (err, listCards) {
 			if (err) { return next(err); }
-			res.render('cardsList', { title: 'My Collection', cardsList: listCards.map(pair => pair.card), user: req.user });
+			res.render('cardsList', { title: 'My Collection', cardsList: listCards.map(pair => pair.card), user: req.user, path: 'collection' });
 	});
 };
 
