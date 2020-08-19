@@ -117,9 +117,12 @@ block content
                   div(class="custom-control custom-checkbox mr-3")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLuke" name="Luke")
                     label(class="custom-control-label" for="checkCharacterLuke") Luke
-                  div(class="custom-control custom-checkbox")
+                  div(class="custom-control custom-checkbox mr-3")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterSolomon" name="Solomon")
                     label(class="custom-control-label" for="checkCharacterSolomon") Solomon
+                  div(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacterLittleD" name="LittleD")
+                    label(class="custom-control-label" for="checkCharacterLittleD") Little D
 
     div(class='card sticky-top sticky-offset mb-4 shadow p-3 bg-white rounded')
       div(class='card-body d-flex justify-content-around')
@@ -142,7 +145,7 @@ block content
       if cardsList.filter(card => card.type == "Demon").length != 0
         each card in cardsList
           if card.type == "Demon"
-            div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.join(' '))
+            div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(' '))
               a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
                 figure(class="figure text-center")
                   img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
@@ -157,7 +160,7 @@ block content
       if cardsList.filter(card => card.type == "Memory").length != 0
         each card in cardsList
           if card.type == "Memory"
-            div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.join(' '))
+            div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(' '))
               a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
                 figure(class="figure text-center")
                   img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
