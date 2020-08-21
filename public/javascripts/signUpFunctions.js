@@ -1,91 +1,78 @@
-$(document).ready(function(){
-	$("input#username").on('keyup', checkUsername);
-	$("input#password").on('keyup', checkPassword);
-	$("input#confirmPassword").on('keyup', checkConfirmationPassword);
-	$("button#signUp").on('click', checkSignUp);
+const username = document.getElementById("username");
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirmPassword");
+const usernameError = document.getElementById("usernameError");
+const passwordError = document.getElementById("passwordError");
+const confirmationError = document.getElementById("confirmationError");
+
+$(document).ready(function() {
+  $("button#signUp").on("click", checkSignUp);
 });
 
-function checkUsername(e) {
-	var username = $("input#username").val();
-	//if (!/^[0-9a-zA-Z_.- ]+$/.test(username)) {
-	//	$("p#usernameError").html('Username contains invalid characters');
-	//	return;
-	//}
-	$.ajax({
-        type: 'post',
-        url: '/signup/checkUsername',
-        data: {'username': username}
-    })
-    .done(function(data){
-    	if (data === 'error') {
-    		$("p#usernameError").html('Error');
-    		return;
-    	}
-    	if (data) {
-    		$("p#usernameError").html('Username already taken');
-    	}
-    	else {
-    		if (username == '')
-    			$("p#usernameError").html("Username can't be empty");
-    		else
-    			$("p#usernameError").html('');
-    	}
-    });
-}
+username.onfocusout = function() {
+  const regex = /^[0-9a-zA-Z_.-]+$/;
 
-function checkPassword(e) {
-	var password = $("input#password").val();
-	var confirmPassword = $("input#confirmPassword").val();
-	//if (!/^[0-9a-zA-Z_.- !@#$%^&*?<>,+]+$/.test(username)) {
-	//	$("p#passwordError").html('Password contains invalid characters');
-	//	return;
-	//}
-	if (password.length < 8) {
-		$("p#passwordError").html('Password must be at least 8 characters long');
-		return;
-	}
-	if (password == '')
-		$("p#passwordError").html("Password can't be empty");
-	else
-		$("p#passwordError").html('');
-	if (password != confirmPassword) {
-		$("p#passwordConfirmationError").html("Passwords don't match");
-		return;
-	}
-	$("p#passwordConfirmationError").html("");
-}
+  if (username.value.match(regex)) {
+    usernameError.innerHTML = "";
+  } else {
+    usernameError.innerHTML = "username contains invalid character(s)";
+    return;
+  }
 
-function checkConfirmationPassword(e) {
-	var password = $("input#password").val();
-	var confirmPassword = $("input#confirmPassword").val();
-	if (password != confirmPassword) {
-		$("p#passwordConfirmationError").html("Passwords don't match");
-		return;
-	}
-	$("p#passwordConfirmationError").html("");
-}
+  $.ajax({
+    type: "post",
+    url: "/signup/checkUsername",
+    data: { username: username }
+  }).done(function(data) {
+    if (data === "error") {
+      usernameError.innerHTML = data;
+      return;
+    }
+    if (data) {
+      usernameError.innerHTML = "username taken";
+    }
+  });
+};
+
+password.onkeyup = function() {
+  if (password.value.length < 8) {
+    passwordError.innerHTML = "Password must contain 8 characters or more";
+  } else {
+    passwordError.innerHTML = "";
+  }
+};
+
+confirmPassword.onkeyup = function() {
+  if (confirmPassword.value != password.value) {
+    confirmationError.innerHTML = "Passwords does not match";
+  } else {
+    confirmationError.innerHTML = "";
+  }
+};
 
 function checkSignUp(e) {
-	if ($("p#usernameError").text() != '' || $("p#passwordError").text() != '' || $("p#passwordConfirmationError").text() != '') {
-		e.preventDefault();
-		return;
-	}
+  if (
+    $("small#usernameError").text() != "" ||
+    $("small#passwordError").text() != "" ||
+    $("small#passwordConfirmationError").text() != ""
+  ) {
+    e.preventDefault();
+    return;
+  }
 
-	if ($("input#username").val() == '') {
-		$("p#usernameError").text("Username can't be empty");
-		e.preventDefault();
-		return;
-	}
-	else {
-		$("p#usernameError").text('');
-	}
+  if ($("input#username").val() == "") {
+    $("small#usernameError").text("Username can't be empty");
+    e.preventDefault();
+    return;
+  } else {
+    $("small#usernameError").text("");
+  }
 
-	if ($("input#password").val() == '') {
-		$("p#passwordError").text("Password can't be empty");
-		e.preventDefault();
-		return;
-	}
-	else {
-		$("p#passwordError").text('');
-	}
+  if ($("input#password").val() == "") {
+    $("small#passwordError").text("Password can't be empty");
+    e.preventDefault();
+    return;
+  } else {
+    $("small#passwordError").text("");
+  }
 }
