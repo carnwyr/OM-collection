@@ -1,10 +1,22 @@
+/*BOOTSTRAP OVERRIDES*/
+.bg-primary {
+  background: rgb(219,158,251);
+  background: linear-gradient(240deg, rgba(219,158,251,1) 0%, rgba(141,111,226,1) 100%);
+}
+.card {
+  border: 0px;
+}
+.card-header {
+  border: 0px;
+}
+
 /*HEADER*/
 .navbar-brand {
   padding-top:.0rem
 }
-body { padding-top: 70px; }
-@media screen and (max-width: 768px) {
-    body { padding-top: 0px; }
+body { 
+  padding-top: 70px;
+  background: url('/images/background_sheep.png');
 }
 
 /*FOOTER*/
@@ -50,10 +62,4 @@ body { padding-top: 70px; }
 {
   color:#fff !important;
   opacity:0.5
-}
-
-/*CARDS LIST*/
-.img-max {
-  max-width: 128px;
-  width:100%;
 }
