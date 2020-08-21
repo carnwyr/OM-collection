@@ -85,7 +85,20 @@ exports.cardsCollection = function(req, res, next) {
 		.populate('card')
 		.exec(function (err, listCards) {
 			if (err) { return next(err); }
-			res.render('cardsList', { title: 'My Collection', cardsList: listCards.map(pair => pair.card), user: req.user, path: 'collection' });
+			listCards = listCards.map(pair => pair.card);
+			listCards.sort(function(a, b) {
+				var rarityOrder = -1 * compareByRarity(a.rarity, b.rarity);
+				if (rarityOrder != 0)
+					return rarityOrder;
+				if (a.number > b.number) {
+					return -1;
+				}
+				if (a.number < b.number) {
+					return 1;
+				}
+				return 0;
+			});
+			res.render('cardsList', { title: 'My Collection', cardsList: listCards, user: req.user, path: 'collection' });
 	});
 };
 

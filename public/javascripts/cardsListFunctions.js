@@ -4,6 +4,7 @@ var changedCards = {};
 var selectionMode = false;
 
 $(document).ready(function(){
+	$(".img-max").css("transition", "all .5s ease");
 	resetFilters();
 	$("form :input").on('click', formChanged);
 	$("div#filters :input[type!=text]").on('change', filterApplied);
