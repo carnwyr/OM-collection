@@ -1,5 +1,5 @@
 .img-max {
-  max-width: 128px;
+  max-width: 110px;
   width:100%;
   /*transition: all .5s ease;*/ /*Set by JQuery after the page loads to prvent resizing*/
 }

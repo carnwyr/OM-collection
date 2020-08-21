@@ -144,11 +144,11 @@ block content
     div(class='row text-left' id='demonCards')
       div(class='col-12')
         h3(class='text-dark collapser' data-toggle="collapse" href="#demonSection" role="button" aria-expanded="true" aria-controls="demonSection") Demon cards
-    div(class='row text-left collapse show' id='demonSection')
+    div(class='d-flex justify-content-start flex-wrap align-content-around text-left collapse show' id='demonSection')
       if cardsList.filter(card => card.type == "Demon").length != 0
         each card in cardsList
           if card.type == "Demon"
-            div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(' '))
+            div(class="m-2 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(' '))
               a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
                 figure(class="figure text-center")
                   img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
@@ -159,11 +159,11 @@ block content
     div(class='row text-left' id='memoryCards')
       div(class='col-12')
         h3(class='text-dark collapser' data-toggle="collapse" href="#memorySection" role="button" aria-expanded="true" aria-controls="memorySection") Memory cards
-    div(class='row text-left collapse show' id='memorySection')
+    div(class='d-flex justify-content-start flex-wrap align-content-around text-left collapse show' id='memorySection')
       if cardsList.filter(card => card.type == "Memory").length != 0
         each card in cardsList
           if card.type == "Memory"
-            div(class="col-lg-2 col-md-3 col-sm-4 col-6 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(' '))
+            div(class="m-2 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(' '))
               a(class="d-flex justify-content-center mb-2 h-100" href='card/'+card.uniqueName)
                 figure(class="figure text-center")
                   img(class="figure-img img-fluid img-max" src='/images/cards/S/' + card.uniqueName + '.png')
