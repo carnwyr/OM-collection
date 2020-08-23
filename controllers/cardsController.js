@@ -43,11 +43,15 @@ exports.cardsDetail = function(req, res, next) {
 
 		var hasCard = false;
 
-		CardsCollection.findOne({user: req.user._id, card: result._id}, function(err, pair) {
-			if (err) { return next(err); }
-			if (pair) { hasCard = true; }
+		if (req.user) {
+			CardsCollection.findOne({user: req.user._id, card: result._id}, function(err, pair) {
+				if (err) { return next(err); }
+				if (pair) { hasCard = true; }
+				res.render('cardDetail', { title: 'Card Details', card: result, user: req.user, hasCard: hasCard });
+			});
+		} else {
 			res.render('cardDetail', { title: 'Card Details', card: result, user: req.user, hasCard: hasCard });
-		});
+		}
 	});
 };
 
