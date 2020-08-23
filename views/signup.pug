@@ -2,34 +2,26 @@ extends layout
 
 block content
 
-  <div class="row">
-    <div class="col-lg-8 col-xl-6 mx-auto">
-      <div class="card card-signin flex-row my-5">
-        <div class="card-body">
-          <h5 class="card-title text-center">Register</h5>
-          <form class="form-signin" method="POST" action="">
-            <div class="form-label-group">
-              <input type="text" id="username" class="form-control" maxlength="50" aria-describedby="usernameError" placeholder="Username" required autofocus/>
-              <label for="inputUsername">Username</label>
-              <small id="usernameError" class="form-text text-danger"></small>
-            </div>
-            <div class="form-label-group">
-              <input type="password" id="password" class="form-control" maxlength="50" aria-describedby="passwordError" placeholder="Password" required/>
-              <label for="inputPassword">Password</label>
-              <small id="passwordError" class="form-text text-danger"></small>
-            </div>
-            <div class="form-label-group">
-              <input type="password" id="confirmPassword" class="form-control" aria-describedby="confirmPass" placeholder="Confirm password" required/>
-              <label for="inputConfirmPassword">Confirm password</label>
-              <small id="confirmationError" class="form-text text-danger"></small>
-            </div>
-            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Register</button>
-            <a class="d-block text-center mt-2 small" href="login.html">Sign In</a>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+  div.row
+    div(class="col-12 col-lg-6 mx-auto")
+      div(class="card card-signin flex-row my-5")
+        div(class="card-body")
+          h2(class="card-title text-center") Sign Up
+          form(class="form-signin" method="POST" action="")
+            div.form-label-group
+              input#username.form-control(type="text" placeholder="Username" name="username" pattern="[A-Za-z0-9._-]+" maxlength="50" autocomplete="off" required autofocus)
+              label(for="username") Username
+              small#usernameError.form-text.text-danger
+            div.form-label-group
+              input#password.form-control(type="password" placeholder="Password" name="password" maxlength="50" autocomplete="off" required)
+              label(for="password") Password
+              small#passwordError.form-text.text-danger
+            div.form-label-group
+              input#confirmPassword.form-control(type="password" placeholder="Confirm Password" name="confirmPassword" maxlength="50" autocomplete="off" required)
+              label(for="repPassword") Confirm Password
+              small#passwordConfirmationError.form-text.text-danger
+            button(class="btn btn-lg btn-primary btn-block text-uppercase" id="signUp" type="submit") Sign Up
+            a(class="d-block text-center mt-2 small" href="login") Sign In
 
-  link(rel='stylesheet', href='/stylesheets/forms.css')
-  script(src='/javascripts/signUpFunctions.js')
+  link(rel="stylesheet" href="/stylesheets/forms.css")
+  script(src="javascripts/signUpFunctions.js")

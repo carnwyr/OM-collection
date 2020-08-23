@@ -2,15 +2,40 @@ extends layout
 
 block content
 
-  h1 #{title}
+  div.row
+    div(class="col-12 col-lg-6 mx-auto")
+      div(class="card card-signin flex-row my-5")
+        div(class="card-body")
+          h2(class="card-title text-center") Login
 
-  if message 
-    p #{message}
+          if message != ""
+            div(class="alert alert-warning text-center" role="alert") #{message}
 
-  form(method='POST' action='')
-    div.form-group
-      label(for='username') Username:
-      input#username.form-control(type='text' placeholder='Type your username' name='username' autocomplete="off")
-      label(for='password') Password:
-      input#password.form-control(type='text' placeholder='Type your password' name='password' autocomplete="off")
-    button.btn.btn-primary(type='submit') Submit
+          form(class="form-signin" method="POST" action="")
+            div.form-label-group
+              input#username.form-control(type="text" placeholder="Username" maxlength="50" pattern="[A-Za-z0-9._-]+" name="username" autocomplete="off" required autofocus)
+              label(for="username") Username
+            div.form-label-group
+              input#password.form-control(type="password" placeholder="Password" name="password" autocomplete="off" required)
+              label(for="password") Password
+            div(class="custom-control custom-checkbox mb-3")
+              input#checkPassword.custom-control-input(type="checkbox" onclick="togglePass()")
+              label(class="custom-control-label" for="checkPassword") Show password
+            button(class="btn btn-lg btn-primary btn-block text-uppercase" type="submit") Login
+            a(class="d-block text-center mt-2 small" href="signup") Sign Up
+
+  if errors
+    for error in errors
+      console.log(error.msg)
+
+  script.
+    function togglePass() {
+      const field = document.getElementById("password");
+      if (field.type === "password") {
+        field.type = "text";
+      } else {
+        field.type = "password";
+      }
+    }
+
+  link(rel='stylesheet' href='/stylesheets/forms.css')
