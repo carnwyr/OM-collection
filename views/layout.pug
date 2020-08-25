@@ -22,7 +22,7 @@ html(lang='en')
             a(class="nav-link", href='/cards') All cards
           if user
             li(class="nav-item")
-              a(class="nav-link", href='/collection') My collection
+              a(class="nav-link", href='/' + user.name + '/collection') My collection
           if user && user.isAdmin
             li(class="nav-item")
               a(class="nav-link", href='/card/create') Add new cards
