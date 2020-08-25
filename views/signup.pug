@@ -13,7 +13,7 @@ block content
               label(for="username") Username
               small#usernameError.form-text.text-danger
             div.form-label-group
-              input#password.form-control(type="password" placeholder="Password" name="password" maxlength="50" autocomplete="off" required)
+              input#password.form-control(type="password" placeholder="Password" name="password" pattern=".{8,}" maxlength="50" autocomplete="off" required)
               label(for="password") Password
               small#passwordError.form-text.text-danger
             div.form-label-group
@@ -21,7 +21,7 @@ block content
               label(for="confirmPassword") Confirm Password
               small#passwordConfirmationError.form-text.text-danger
             button(class="btn btn-lg btn-primary btn-block text-uppercase" id="signUp" type="submit") Sign Up
-            a(class="d-block text-center mt-2 small" href="login") Sign In
+            a(class="d-block text-center mt-2 small" href="login") Login
 
   link(rel="stylesheet" href="/stylesheets/forms.css")
   script(src="javascripts/signUpFunctions.js")

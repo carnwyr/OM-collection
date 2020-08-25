@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$("input#username").on('keyup', checkUsername);
+	$("input#username").on('focusout', checkUsername);
 	$("input#password").on('keyup', checkPassword);
 	$("input#confirmPassword").on('keyup', checkConfirmationPassword);
 	$("button#signUp").on('click', checkSignUp);
@@ -7,10 +7,6 @@ $(document).ready(function(){
 
 function checkUsername(e) {
 	var username = $("input#username").val();
-	//if (!/^[0-9a-zA-Z_.- ]+$/.test(username)) {
-	//	$("small#usernameError").html('Username contains invalid characters');
-	//	return;
-	//}
 	$.ajax({
         type: 'post',
         url: '/signup/checkUsername',
@@ -36,10 +32,6 @@ function checkUsername(e) {
 function checkPassword(e) {
 	var password = $("input#password").val();
 	var confirmPassword = $("input#confirmPassword").val();
-	//if (!/^[0-9a-zA-Z_.- !@#$%^&*?<>,+]+$/.test(username)) {
-	//	$("small#passwordError").html('Password contains invalid characters');
-	//	return;
-	//}
 	if (password.length < 8) {
 		$("small#passwordError").html('Password must be at least 8 characters long');
 		return;
