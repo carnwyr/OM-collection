@@ -1,5 +1,6 @@
 const Cards = require('../models/cards');
 const CardsCollection = require('../models/cardsCollection');
+const Users = require('../models/users.js');
 
 const async = require('async');
 const fs = require('fs');
@@ -84,8 +85,25 @@ exports.cardRemoveFromCollection = function(req, res) {
 };
 
 // Display user's cards
-exports.cardsCollection = function(req, res, next) {
-	CardsCollection.find({'user': req.user._id})
+exports.cardsCollection = async function(req, res, next) {
+	var userId;
+	var userQuery = Users.findOne({ 'name': req.params.username });
+	if (!req.user || req.user.name !== req.params.username) {
+		try {
+			var result = await userQuery.exec();
+		} catch(error) {
+			next(error);
+		}
+		if (result == null) {
+			res.status(404).send('Not found');
+			return;
+		}
+		userId = result._id;
+	}
+	else {
+		userId = req.user._id;
+	}
+	CardsCollection.find({'user': userId})
 		.populate('card')
 		.exec(function (err, listCards) {
 			if (err) { return next(err); }
