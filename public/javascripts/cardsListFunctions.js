@@ -107,7 +107,7 @@ function inputChanged(e) {
 function scrollToSection(e) {
 	var divId = $(this).attr('href');
 	$('html, body').animate({
-		scrollTop: $(divId).offset().top - 170
+		scrollTop: $(divId).offset().top - 190
 	}, 200);
 }
 
@@ -136,7 +136,10 @@ function switchSelection() {
 		    })
 		    .done(function(result){
 		    	if (result === 'error') {
-		    		//prompt user
+		    		$("div#failAlert").show().animate({top: 65}, 500);
+			            setTimeout(function () {
+			                $("div#failAlert").animate({top: -100}, 500).promise().done(function() {$("div#failAlert").hide()})
+			              }, 2000);
 		    		return;
 		    	}
 		    	changedCards = {};
@@ -145,6 +148,10 @@ function switchSelection() {
 	    		$('div#selectionButtons').addClass('d-none');
 		    	selectionMode = false;
 				$('.cardPreview').find('img').removeClass('notSelectedCard');
+				$("div#successAlert").show().animate({top: 65}, 500);
+		            setTimeout(function () {
+		                $("div#successAlert").animate({top: -100}, 500).promise().done(function() {$("div#successAlert").hide()})
+		              }, 2000);
 		    });
 		} else {
 			changedCards = {};
@@ -230,7 +237,7 @@ function fillRank(container) {
 
     if (cardNum === 0) {
       c.innerHTML =
-        `<p class="col-12 text-muted">no cards match the description :P</p>` +
+        `<p class="col-12 text-muted">No matching cards</p>` +
         c.innerHTML;
     }
   }

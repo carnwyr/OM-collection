@@ -1,11 +1,12 @@
 $(document).ready(function(){
-	if (!hasCard) {
-		$("button#alterCollection").on('click', addCard);
-    	$("button#alterCollection").html('Add to collection');
+    $(".addCardButton").on('click', addCard);
+    $(".removeCardButton").on('click', removeCard);
+	if (hasCard) {
+        $(".removeCardButton").show();
 	}
 	else {
-		$("button#alterCollection").on('click', removeCard);
-    	$("button#alterCollection").html('Remove from collection');
+
+        $(".addCardButton").show();
 	}
 });
 
@@ -16,11 +17,20 @@ function addCard(e) {
     })
     .done(function(data){
     	if (data == 'ok') {
-    		$("button#alterCollection").off('click', addCard);
-    		$("button#alterCollection").on('click', removeCard);
-    		$("button#alterCollection").html('Remove from collection');
+            $(".addCardButton").hide();
+            $(".removeCardButton").show();
+            $("div#successAlert").html('Card successfully added to your collection');
+            $("div#successAlert").show().animate({top: 65}, 500);
+            setTimeout(function () {
+                $("div#successAlert").animate({top: -100}, 500).promise().done(function() {$("div#successAlert").hide()})
+              }, 2000);
     	}
-    	alert(data);
+        else {
+            $("div#failAlert").show().animate({top: 65}, 500);
+            setTimeout(function () {
+                $("div#failAlert").animate({top: -100}, 500).promise().done(function() {$("div#failAlert").hide()})
+              }, 2000);
+        }
     });
 }
 
@@ -31,10 +41,19 @@ function removeCard(e) {
     })
     .done(function(data){
     	if (data == 'ok') {
-    		$("button#alterCollection").off('click', removeCard);
-    		$("button#alterCollection").on('click', addCard);
-    		$("button#alterCollection").html('Add to collection');
+    		$(".addCardButton").show();
+            $(".removeCardButton").hide();
+            $("div#successAlert").html('Card successfully removed from your collection');
+            $("div#successAlert").show().animate({top: 65}, 500);
+            setTimeout(function () {
+                $("div#successAlert").animate({top: -100}, 500).promise().done(function() {$("div#successAlert").hide()})
+              }, 2000);
     	}
-    	alert(data);
+        else {
+            $("div#failAlert").show().animate({top: 65}, 500);
+            setTimeout(function () {
+                $("div#failAlert").animate({top: -100}, 500).promise().done(function() {$("div#failAlert").hide()})
+              }, 2000);
+        }
     });
 }
