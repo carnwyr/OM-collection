@@ -32,6 +32,11 @@ $(document).ready(function(){
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelection.call(); });
 });
 
+window.onload = (event) => {
+	fillRank("dcContainer");
+	fillRank("mcContainer");
+};
+
 function formChanged(e) {
 	var form = $(this).closest('form');
 	var type = $(this).attr("type");
@@ -82,6 +87,9 @@ function filterApplied() {
 			});
 		}
 		cards.fadeIn(400);
+
+		fillRank("dcContainer");
+		fillRank("mcContainer");
 	});
 }
 
@@ -170,4 +178,60 @@ function cardClicked(e) {
 			changedCards[$(this).attr('href').replace('card/', '')] = false;
 		}
 	}
+}
+
+function fillRank(container) {
+  const c = document.getElementById(container);
+  let html = `<div class="card invisible" id="placeholders"><a class="mb-2 h-100" href=""><figure class="figure text-center"><figcaption class="figure-caption text-center img-max">placeholder placeholder placeholder</figure></a></div>`;
+  let children = c.childNodes;
+  let cardNum = children.length;
+  let i;
+
+  if (c.hasChildNodes()) {
+    for (i = 0; i < children.length; i++) {
+      // do something with each child as children[i]
+      if (children[i].className === "card invisible" || children[i].nodeName == "P") {
+        c.removeChild(children[i]);
+        i--;
+        cardNum--;
+      } else if (children[i].style.display == "none") {
+        cardNum--;
+      } else {
+        // do nothing...
+      }
+    }
+
+    // console.log("<!-- start of calculation -->")
+
+    i = cardNum;
+    if ($(window).width() <= 576) {
+      c.innerHTML += html;
+    } else if ($(window).width() <= 768) {
+      while (i < cardNum + (4 - (cardNum % 4))) {
+        c.innerHTML += html;
+        i++;
+      }
+    } else if ($(window).width() <= 992) {
+      while (i < cardNum + (6 - (cardNum % 6))) {
+        c.innerHTML += html;
+        i++;
+      }
+    } else if ($(window).width() <= 1200) {
+      while (i < cardNum + (8 - (cardNum % 8))) {
+        c.innerHTML += html;
+        i++;
+      }
+    } else {
+      while (i < cardNum + (9 - (cardNum % 9))) {
+        c.innerHTML += html;
+        i++;
+      }
+    }
+
+    if (cardNum === 0) {
+      c.innerHTML =
+        `<p class="col-12 text-muted">no cards match the description :P</p>` +
+        c.innerHTML;
+    }
+  }
 }
