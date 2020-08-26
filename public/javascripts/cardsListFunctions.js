@@ -136,7 +136,10 @@ function switchSelection() {
 		    })
 		    .done(function(result){
 		    	if (result === 'error') {
-		    		//prompt user
+		    		$("div#failAlert").show().animate({top: 65}, 500);
+			            setTimeout(function () {
+			                $("div#failAlert").animate({top: -100}, 500).promise().done(function() {$("div#failAlert").hide()})
+			              }, 2000);
 		    		return;
 		    	}
 		    	changedCards = {};
@@ -145,6 +148,10 @@ function switchSelection() {
 	    		$('div#selectionButtons').addClass('d-none');
 		    	selectionMode = false;
 				$('.cardPreview').find('img').removeClass('notSelectedCard');
+				$("div#successAlert").show().animate({top: 65}, 500);
+		            setTimeout(function () {
+		                $("div#successAlert").animate({top: -100}, 500).promise().done(function() {$("div#successAlert").hide()})
+		              }, 2000);
 		    });
 		} else {
 			changedCards = {};
