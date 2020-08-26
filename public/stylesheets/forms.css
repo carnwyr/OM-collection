@@ -70,6 +70,11 @@
 	transition: all .1s ease-in-out;
 }
 
+.form-label-group input:-moz-ui-invalid {
+	box-shadow:none;
+	border-color: #ff1a8f;
+}
+
 .form-label-group input::-webkit-input-placeholder {
 	color: transparent;
 }

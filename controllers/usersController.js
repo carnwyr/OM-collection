@@ -30,18 +30,19 @@ exports.signupGet = function(req, res, next) {
 };
 
 exports.signupPost = [
-	//body('username')
-		//.isAscii().withMessage("Name contains invalid characters"),
-	//body('password')
-		//.isAscii().withMessage("Password contains invalid characters"),
+	body('username')
+		.notEmpty().withMessage("Username can't be empty")
+		.matches(/^[A-Za-z0-9._-]+$/).withMessage('Username contains invalid characters'),
+	body('password')
+		.isLength({ min: 8 }),
 	body('username').escape(),
 	body('password').escape(),
 	(req, res, next) => {
-		/*const errors = validationResult(req);
+		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			res.render('signup', { title: 'Signup', user: req.user, errors: errors.array()});
 			return;
-		}*/
+		}
 
 		Users.findOne({ 'name': { $regex : new RegExp('^' + req.body.username + '$', "i") } }, function(err, isUserExist) {
 			if (err) {return next(err); }
