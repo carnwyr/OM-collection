@@ -2,27 +2,26 @@ extends layout
 
 block content
 
-  h1 #{title}
+  div.row
+    div(class="col-12 col-lg-6 mx-auto")
+      div(class="card card-signin flex-row my-5")
+        div(class="card-body")
+          h2(class="card-title text-center") Sign Up
+          form(class="form-signin" method="POST" action="")
+            div.form-label-group
+              input#username.form-control(type="text" placeholder="Username" name="username" pattern="[A-Za-z0-9._-]+" maxlength="50" autocomplete="off" required autofocus)
+              label(for="username") Username
+              small#usernameError.form-text.text-danger
+            div.form-label-group
+              input#password.form-control(type="password" placeholder="Password" name="password" pattern=".{8,}" maxlength="50" autocomplete="off" required)
+              label(for="password") Password
+              small#passwordError.form-text.text-danger
+            div.form-label-group
+              input#confirmPassword.form-control(type="password" placeholder="Confirm Password" name="confirmPassword" maxlength="50" autocomplete="off" required)
+              label(for="confirmPassword") Confirm Password
+              small#passwordConfirmationError.form-text.text-danger
+            button(class="btn btn-lg btn-primary btn-block text-uppercase" id="signUp" type="submit") Sign Up
+            a(class="d-block text-center mt-2 small" href="login") Login
 
-  if message 
-    p #{message}
-
-  if errors 
-   ul
-    for error in errors
-     li!= error.msg
-
-  form(method='POST' action='')
-    div.form-group
-      label(for='username') Username:
-      input#username.form-control(type='text' placeholder='Type your username' name='username' maxlength='50' autocomplete="off")
-      p#usernameError
-      label(for='password') Password:
-      input#password.form-control(type='text' placeholder='Type your password' name='password' maxlength='50' autocomplete="off")
-      p#passwordError
-      label(for='repPassword') Repeat password:
-      input#confirmPassword.form-control(type='text' placeholder='Type your password again' name='confirmPassword' maxlength='50' autocomplete="off")
-      p#passwordConfirmationError
-    button.btn.btn-primary(id='signUp', type='submit') Submit
-
-  script(src='/javascripts/signUpFunctions.js')
+  link(rel="stylesheet" href="/stylesheets/forms.css")
+  script(src="javascripts/signUpFunctions.js")
