@@ -20,8 +20,9 @@ exports.loginPost = passport.authenticate('local',{
 
 // Logout on GET
 exports.logout = function(req, res) {     
-  req.logout();
-  res.redirect('/');
+  req.session.destroy(function (err) {
+  	res.redirect('/');
+  });
 };
 
 // Display signup form on GET
