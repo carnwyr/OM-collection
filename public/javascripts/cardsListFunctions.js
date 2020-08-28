@@ -134,8 +134,9 @@ function switchSelection() {
 			$('.cardPreview').find('.img-max').removeClass('no-transition');
     		let newHeight = $(document).height();
     		let newScrollTop = $(window).scrollTop();
+    		let demonSectionOffset = $('#demonSection').offset().top;
     		$('html, body').animate({
-				scrollTop: oldScrollTop * (newHeight - $(window).height()) / (oldHeight - $(window).height())
+				scrollTop: oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
 			}, 500);
 	    });
 	} else {
@@ -168,8 +169,9 @@ function switchSelection() {
 				$('.cardPreview').find('.img-max')[0].offsetHeight;
 				$('.cardPreview').find('.img-max').removeClass('no-transition');
 				let newHeight = $(document).height();
+    			let demonSectionOffset = $('#demonSection').offset().top;
 				$('html, body').animate({
-					scrollTop: oldScrollTop * (newHeight - $(window).height()) / (oldHeight - $(window).height())
+					scrollTop: oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
 				}, 500);
 				$("div#successAlert").show().animate({top: 65}, 500);
 		            setTimeout(function () {
@@ -191,8 +193,9 @@ function switchSelection() {
 			$('.cardPreview').find('.img-max')[0].offsetHeight;
 			$('.cardPreview').find('.img-max').removeClass('no-transition');
 			let newHeight = $(document).height();
+    		let demonSectionOffset = $('#demonSection').offset().top;
 			$('html, body').animate({
-				scrollTop: oldScrollTop * (newHeight - $(window).height()) / (oldHeight - $(window).height())
+				scrollTop: oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
 			}, 500);
 		}
 	}
