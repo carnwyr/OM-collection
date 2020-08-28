@@ -122,9 +122,14 @@ function switchSelection() {
 	    	$('div#manageButtons').removeClass('d-none');
 	    	$('div#selectionButtons').removeClass('d-none');
 	    	selectionMode = true;
+	    	$('.cardPreview').filter(function() {
+	    		return !$(this).isInViewport();
+	    	}).find('.img-max').addClass('no-transition');
 			$('.cardPreview').filter(function() {
 				return !cardNames.includes($(this).find('a').attr('href').replace('card/', ''));
 			}).find('img').addClass('notSelectedCard');
+			$('.cardPreview').find('.img-max')[0].offsetHeight;
+			$('.cardPreview').find('.img-max').removeClass('no-transition');
 	    });
 	} else {
 		if (Object.keys(changedCards).length > 0) {
@@ -147,7 +152,12 @@ function switchSelection() {
 	    		$('div#manageButtons').addClass('d-none');
 	    		$('div#selectionButtons').addClass('d-none');
 		    	selectionMode = false;
+		    	$('.cardPreview').filter(function() {
+		    		return !$(this).isInViewport();
+		    	}).find('.img-max').addClass('no-transition');
 				$('.cardPreview').find('img').removeClass('notSelectedCard');
+				$('.cardPreview').find('.img-max')[0].offsetHeight;
+				$('.cardPreview').find('.img-max').removeClass('no-transition');
 				$("div#successAlert").show().animate({top: 65}, 500);
 		            setTimeout(function () {
 		                $("div#successAlert").animate({top: -100}, 500).promise().done(function() {$("div#successAlert").hide()})
@@ -159,7 +169,12 @@ function switchSelection() {
 	    	$('div#manageButtons').addClass('d-none');
 	    	$('div#selectionButtons').addClass('d-none');
 	    	selectionMode = false;
+	    	$('.cardPreview').filter(function() {
+	    		return !$(this).isInViewport();
+	    	}).find('.img-max').addClass('no-transition');
 			$('.cardPreview').find('img').removeClass('notSelectedCard');
+			$('.cardPreview').find('.img-max')[0].offsetHeight;
+			$('.cardPreview').find('.img-max').removeClass('no-transition');
 		}
 	}
 }
@@ -242,3 +257,13 @@ function fillRank(container) {
     }
   }
 }
+
+$.fn.isInViewport = function () {
+    let elementTop = $(this).offset().top;
+    let elementBottom = elementTop + $(this).outerHeight();
+
+    let viewportTop = $(window).scrollTop();
+    let viewportBottom = viewportTop + $(window).height();
+
+    return elementBottom > viewportTop && elementTop < viewportBottom;
+};
