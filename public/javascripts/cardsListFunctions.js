@@ -122,6 +122,8 @@ function switchSelection() {
 	    	$('div#manageButtons').removeClass('d-none');
 	    	$('div#selectionButtons').removeClass('d-none');
 	    	selectionMode = true;
+    		let oldHeight = $(document).height();
+    		let oldScrollTop = $(window).scrollTop();
 	    	$('.cardPreview').filter(function() {
 	    		return !$(this).isInViewport();
 	    	}).find('.img-max').addClass('no-transition');
@@ -130,6 +132,11 @@ function switchSelection() {
 			}).find('img').addClass('notSelectedCard');
 			$('.cardPreview').find('.img-max')[0].offsetHeight;
 			$('.cardPreview').find('.img-max').removeClass('no-transition');
+    		let newHeight = $(document).height();
+    		let newScrollTop = $(window).scrollTop();
+    		$('html, body').animate({
+				scrollTop: oldScrollTop * (newHeight - $(window).height()) / (oldHeight - $(window).height())
+			}, 500);
 	    });
 	} else {
 		if (Object.keys(changedCards).length > 0) {
@@ -152,12 +159,18 @@ function switchSelection() {
 	    		$('div#manageButtons').addClass('d-none');
 	    		$('div#selectionButtons').addClass('d-none');
 		    	selectionMode = false;
+		    	let oldHeight = $(document).height();
+    			let oldScrollTop = $(window).scrollTop();
 		    	$('.cardPreview').filter(function() {
 		    		return !$(this).isInViewport();
 		    	}).find('.img-max').addClass('no-transition');
 				$('.cardPreview').find('img').removeClass('notSelectedCard');
 				$('.cardPreview').find('.img-max')[0].offsetHeight;
 				$('.cardPreview').find('.img-max').removeClass('no-transition');
+				let newHeight = $(document).height();
+				$('html, body').animate({
+					scrollTop: oldScrollTop * (newHeight - $(window).height()) / (oldHeight - $(window).height())
+				}, 500);
 				$("div#successAlert").show().animate({top: 65}, 500);
 		            setTimeout(function () {
 		                $("div#successAlert").animate({top: -100}, 500).promise().done(function() {$("div#successAlert").hide()})
@@ -169,12 +182,18 @@ function switchSelection() {
 	    	$('div#manageButtons').addClass('d-none');
 	    	$('div#selectionButtons').addClass('d-none');
 	    	selectionMode = false;
+	    	let oldHeight = $(document).height();
+			let oldScrollTop = $(window).scrollTop();
 	    	$('.cardPreview').filter(function() {
 	    		return !$(this).isInViewport();
 	    	}).find('.img-max').addClass('no-transition');
 			$('.cardPreview').find('img').removeClass('notSelectedCard');
 			$('.cardPreview').find('.img-max')[0].offsetHeight;
 			$('.cardPreview').find('.img-max').removeClass('no-transition');
+			let newHeight = $(document).height();
+			$('html, body').animate({
+				scrollTop: oldScrollTop * (newHeight - $(window).height()) / (oldHeight - $(window).height())
+			}, 500);
 		}
 	}
 }
