@@ -1,8 +1,6 @@
 extends layout
 
 block content
-
-
   div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Collection modified successfully
   div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
 
@@ -13,12 +11,38 @@ block content
         h1(class="text-primary")= title
         hr(class="pb-2")
 
+    div(class="card sticky-top sticky-offset mb-lg-4 shadow p-lg-3 bg-white rounded mobile-card")
+      div(class="d-lg-none d-flex justify-content-around")
+        button(class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#actionButtons" aria-expanded="true" aria-controls="actionButtons" style="border-radius: 2rem") Actions
+      div(class="collapse d-lg-block md-position-buttons" id="actionButtons")
+        div(class="card-body d-flex justify-content-around align-content-around flex-wrap")
+          button(class="btn btn-primary" id="gotoDemon" href="#demonCards") Go to demon cards
+          button(class="btn btn-primary" id="gotoMemory" href="#memoryCards") Go to memory cards
+          button(class="btn btn-primary" id="resetFilters") Reset filters
+          div(class="btn-group d-none" id="selectionButtons")
+            button(class="btn btn-primary" id="deselectAll") Deselect all
+            button(class="btn btn-primary" id="selectAll") Select all
+          div(class="btn-group d-none" id="manageButtons")
+            button(class="btn btn-primary" id="cancelManaging") Cancel
+            button(class="btn btn-primary" id="saveManaging") Save
+          if user && path === "list"
+            button(class="btn btn-primary" id="manageCollection") Manage collection
+
+    div(class='row text-left mb-3')
+      div(class='col-12')
+        div(class='card shadow rounded')
+          div(class="card-body" style='padding: 15px')
+            form(id="searchForm")
+              div(class='input-group')
+                input(type="text" class="form-control text-primary rounded-pill" id="nameFilter" placeholder="Search for card name..." style = "border: 0px")
+                span(class="input-group-append")
+                  div(class='input-group-text border-0 bg-transparent' style='z-index: 3; margin: -35px')
+                    i(class="lnr lnr-magnifier text-secondary")
+
     div(class="row text-left")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters") Filters
     div(id="filters" class="row text-left collapse")
-      form(id="searchForm" class="col-12 mb-3")
-        input(type="text" class="form-control shadow p-3 bg-white rounded" id="nameFilter" placeholder="Search for card name..." style = "border: 0px")
       div(id="rarityFilter" class="col-md-4 col-12 mb-3")
         div(class="card h-100 shadow p-3 bg-white rounded")
           div(class="card-header") Rarity
@@ -128,30 +152,12 @@ block content
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLittleD" name="LittleD")
                     label(class="custom-control-label" for="checkCharacterLittleD" style="min-width: 75px;") Little D
 
-    div(class="card sticky-top sticky-offset mb-lg-4 shadow p-lg-3 bg-white rounded mobile-card")
-      div(class="d-lg-none d-flex justify-content-around")
-        button(class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#actionButtons" aria-expanded="true" aria-controls="actionButtons" style="border-radius: 2rem") Actions
-      div(class="collapse d-lg-block md-position-buttons" id="actionButtons")
-        div(class="card-body d-flex justify-content-around align-content-around flex-wrap")
-          button(class="btn btn-primary" id="gotoDemon" href="#demonCards") Go to demon cards
-          button(class="btn btn-primary" id="gotoMemory" href="#memoryCards") Go to memory cards
-          button(class="btn btn-primary" id="resetFilters") Reset filters
-          div(class="btn-group d-none" id="selectionButtons")
-            button(class="btn btn-primary" id="deselectAll") Deselect all
-            button(class="btn btn-primary" id="selectAll") Select all
-          div(class="btn-group d-none" id="manageButtons")
-            button(class="btn btn-primary" id="cancelManaging") Cancel
-            button(class="btn btn-primary" id="saveManaging") Save
-          if user && path === "list"
-            button(class="btn btn-primary" id="manageCollection") Manage collection
-
     div(class="row text-left" id="demonCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#demonSection" role="button" aria-expanded="true" aria-controls="demonSection") Demon cards
       div(class="container collapse show" id="demonSection")
         div.row.d-flex.justify-content-between(id="dcContainer" style="margin:0 8px;")
           if cardsList.filter(card => card.type == "Demon").length != 0
-            //- rather, we should use "each card in cardDisplayed". hmm, only if we should get a list of that.
             each card in cardsList
               if card.type == "Demon"
                 div(class="cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" "))

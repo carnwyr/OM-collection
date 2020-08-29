@@ -52,3 +52,16 @@
   -o-transition: none !important;
   transition: none !important;
 }
+#nameFilter {
+  height: 25px;
+  margin: 0px;
+  background-color: #f0e1fc;
+
+}
+#nameFilter::placeholder {
+  color: #db9efb; /*secondary color*/
+}
+#nameFilter:focus {
+  outline: none;
+  box-shadow: none;
+}
