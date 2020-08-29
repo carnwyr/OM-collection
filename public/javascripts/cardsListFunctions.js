@@ -20,16 +20,12 @@ $(document).ready(function(){
 		resetFilters();
 		filterApplied();
 	});
-	$('button#manageCollection').on('click', switchSelection);
-	$('button#saveManaging').on('click', switchSelection);
+	$('button#manageCollection').on('click', switchSelectionMode);
+	$('button#saveManaging').on('click', switchSelectionMode);
 	$('.cardPreview a').on('click', cardClicked);
-	$('button#selectAll').on('click', function() {
-		$('.cardPreview:visible a').filter(function() { return $(this).find('img').hasClass('notSelectedCard'); }).each(function() { cardClicked.call($(this)); });
-	});
-	$('button#deselectAll').on('click', function() {
-		$('.cardPreview:visible a').filter(function() { return !$(this).find('img').hasClass('notSelectedCard'); }).each(function() { cardClicked.call($(this)); });
-	});
-	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelection.call(); });
+	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
+	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
+	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 });
 
 window.onload = (event) => {
@@ -111,7 +107,7 @@ function scrollToSection(e) {
 	}, 200);
 }
 
-function switchSelection() {
+function switchSelectionMode() {
 	if (!selectionMode) {
 		$.ajax({
 	        type: 'get',
@@ -224,9 +220,58 @@ function cardClicked(e) {
 	}
 }
 
+function switchSelectionAll(select) {
+	if (select) {
+		var cardsToSwitch = $('.cardPreview:visible a').filter(function() { return $(this).find('img').hasClass('notSelectedCard'); });
+		if (cardsToSwitch.length == 0)
+			return;
+	}
+	else {
+		var cardsToSwitch = $('.cardPreview:visible a').filter(function() { return !$(this).find('img').hasClass('notSelectedCard'); });
+		if (cardsToSwitch.length == 0)
+			return;
+	}
+
+	var oldHeight = $(document).height();
+	var oldScrollTop = $(window).scrollTop();
+	$(cardsToSwitch).filter(function() {
+		return !$(this).isInViewport();
+	}).find('.img-max').addClass('no-transition');
+	if (select) {
+		$(cardsToSwitch).find('img').removeClass('notSelectedCard');
+		$(cardsToSwitch).find('.img-max')[0].offsetHeight;
+		$(cardsToSwitch).find('.img-max').removeClass('no-transition');
+	} else {
+		$(cardsToSwitch).find('img').addClass('notSelectedCard');
+		$(cardsToSwitch).find('.img-max')[0].offsetHeight;
+		$(cardsToSwitch).find('.img-max').removeClass('no-transition');
+	}
+	var newHeight = $(document).height();
+	var demonSectionOffset = $('#demonSection').offset().top;
+	$('html, body').animate({
+		scrollTop: oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
+	}, 500);
+
+	var cardNames = [];
+	for (var i=0; typeof(cardsToSwitch[i])!='undefined'; cardNames.push(cardsToSwitch[i++].getAttribute('href').replace('card/', '')));
+	for (const [key, value] of Object.entries(changedCards)) {
+		if (key in cardNames) {
+			delete changedCards[key];
+			cardNames.splice(cardNames.indexOf(key), 1);
+		}
+	}
+	cardNames.forEach(function(name) {
+		changedCards[name] = select;
+	});
+}
+
 function fillRank(container) {
   const c = document.getElementById(container);
-  let html = `<div class="card invisible" id="placeholders"><a class="mb-2 h-100" href=""><figure class="figure text-center"><figcaption class="figure-caption text-center img-max">placeholder placeholder placeholder</figure></a></div>`;
+  let html = '<a class="mb-2 h-100" href=""><figure class="figure text-center"><figcaption class="figure-caption text-center img-max">placeholder placeholder placeholder</figure></a>';
+  var wrapper = document.createElement('div');
+  wrapper.setAttribute("class", "card invisible");
+  wrapper.setAttribute("id", "placeholders");
+  wrapper.innerHTML = html;
   let children = c.childNodes;
   let cardNum = children.length;
   let i;
@@ -249,33 +294,35 @@ function fillRank(container) {
 
     i = cardNum;
     if ($(window).width() <= 576) {
-      c.innerHTML += html;
+    	c.appendChild(wrapper);
     } else if ($(window).width() <= 768) {
       while (i < cardNum + (4 - (cardNum % 4))) {
-        c.innerHTML += html;
+        c.appendChild(wrapper.cloneNode(true));
         i++;
       }
     } else if ($(window).width() <= 992) {
       while (i < cardNum + (6 - (cardNum % 6))) {
-        c.innerHTML += html;
+        c.appendChild(wrapper.cloneNode(true));
         i++;
       }
     } else if ($(window).width() <= 1200) {
       while (i < cardNum + (8 - (cardNum % 8))) {
-        c.innerHTML += html;
+        c.appendChild(wrapper.cloneNode(true));
         i++;
       }
     } else {
       while (i < cardNum + (9 - (cardNum % 9))) {
-        c.innerHTML += html;
+        c.appendChild(wrapper.cloneNode(true));
         i++;
       }
     }
 
     if (cardNum === 0) {
-      c.innerHTML =
-        `<p class="col-12 text-muted">No matching cards</p>` +
-        c.innerHTML;
+    	wrapper = document.createElement('p');
+		wrapper.setAttribute("class", "col-12 text-muted");
+		wrapper.removeAttribute("id");
+    	wrapper.textContent = 'No matching cards';
+		c.insertBefore(wrapper, c.firstChild);
     }
   }
 }

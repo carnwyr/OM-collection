@@ -28,6 +28,7 @@ html(lang='en')
           if user && user.isAdmin
             li(class="nav-item")
               a(class="nav-link", href='/card/create') Add new cards
+        ul(class="navbar-nav ml-auto")
           if !user
             li(class="nav-item")
               a(class="nav-link", href='/signup') Signup
