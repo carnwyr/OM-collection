@@ -46,6 +46,15 @@
     /*transition: all .5s ease;*/ /*Set by JQuery after the page loads to prvent resizing*/
   }
 }
+@media screen and (max-width: 768px) {
+  #actionButtons .btn-lg {
+    font-size: 80% !important;
+    height: 15px !important;
+  }
+  #actionButtons .btn-primary, .btn-secondary {
+    font-size:80%;
+  }
+}
 .no-transition {
   -webkit-transition: none !important;
   -moz-transition: none !important;

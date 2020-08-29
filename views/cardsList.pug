@@ -10,22 +10,23 @@ block content
       div(class="col-12")
         h1(class="text-primary pb-2" style='border-bottom: 2px solid; border-color: #8d6fe2;')= title
 
-    div(class="card sticky-top sticky-offset mb-lg-4 shadow bg-white rounded mobile-card")
-      div(class="d-lg-none d-flex justify-content-around")
+    div(class="card sticky-top sticky-offset mb-lg-4 shadow bg-white rounded")
+      //div(class="d-lg-none d-flex justify-content-around")
         button(class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#actionButtons" aria-expanded="true" aria-controls="actionButtons" style="border-radius: 2rem") Actions
-      div(class="collapse d-lg-block md-position-buttons" id="actionButtons")
-        div(class="card-body d-flex justify-content-around align-content-around flex-wrap p-3")
-          button(class="btn btn-lg text-secondary py-0" id="gotoDemon" href="#demonCards") Go to demon cards
-          div(style='border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem')
-          button(class="btn btn-lg text-secondary py-0 mr-auto" id="gotoMemory" href="#memoryCards") Go to memory cards
+      div(class="" id="actionButtons")
+        div(class="card-body d-flex justify-content-around align-content-around flex-wrap pl-3 pr-3 pt-3 pb-1 pb-md-3")
+          div(class='d-flex mr-md-auto mb-2 mb-md-0')
+            button(class="btn btn-lg text-secondary py-0" id="gotoDemon" href="#demonCards") Go to demon cards
+            div(style='border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem')
+            button(class="btn btn-lg text-secondary py-0" id="gotoMemory" href="#memoryCards") Go to memory cards
           div(class="btn-group d-none" id="selectionButtons")
             button(class="btn btn-secondary text-white" id="deselectAll") Deselect all
-            button(class="btn btn-secondary text-white mr-5" id="selectAll") Select all
+            button(class="btn btn-secondary text-white mr-md-5" id="selectAll") Select all
           div(class="btn-group d-none" id="manageButtons")
             button(class="btn btn-primary" id="cancelManaging") Cancel
             button(class="btn btn-primary" id="saveManaging") Save
           if user && path === "list"
-            button(class="btn btn-primary rounded-pill" id="manageCollection") Manage collection
+            button(class="btn btn-primary rounded-pill " id="manageCollection") Manage collection
 
     div(id='searchBar' class='row text-left mb-3')
       div(class='col-12')
