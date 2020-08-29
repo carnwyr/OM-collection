@@ -28,16 +28,19 @@ block content
           if user && path === "list"
             button(class="btn btn-primary" id="manageCollection") Manage collection
 
-    div(class='row text-left mb-3')
+    div(id='searchBar' class='row text-left mb-3')
       div(class='col-12')
         div(class='card shadow rounded')
-          div(class="card-body" style='padding: 15px')
-            form(id="searchForm")
+          div(class="card-body d-flex flex-wrap justify-content-around pl-3 pr-3 pt-3 pb-1 pb-lg-3")
+            form(id="searchForm" class='flex-grow-1 mr-sm-3 mb-2 mb-sm-0')
               div(class='input-group')
-                input(type="text" class="form-control text-primary rounded-pill" id="nameFilter" placeholder="Search for card name..." style = "border: 0px")
+                input(type="text" class="form-control text-primary rounded-pill" id="nameFilter" placeholder="Search for card name..." style = "border: 0px;")
                 span(class="input-group-append")
                   div(class='input-group-text border-0 bg-transparent' style='z-index: 3; margin: -35px')
                     i(class="lnr lnr-magnifier text-secondary")
+            div(class='ml-3 mr-3 mr-sm-0 d-flex flex-nowrap')
+              button(class='btn btn-primary btn-sm rounded-pill mr-2' style='width: 80px') Filters
+              button(class='btn btn-secondary text-white btn-sm rounded-pill ml-2') Reset filters
 
     div(class="row text-left")
       div(class="col-12")
