@@ -65,3 +65,12 @@
   outline: none;
   box-shadow: none;
 }
+#gotoDemon:focus, #gotoMemory:focus {
+  outline: none;
+  box-shadow: none;
+}
+#filters .card-header {
+  background-color: white;
+  font-weight: bold;
+  color: #8d6fe2;
+}

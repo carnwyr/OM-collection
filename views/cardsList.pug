@@ -6,27 +6,26 @@ block content
 
   div(class="container")
 
-    div(class="row text-left")
+    div(class="row text-left mb-3")
       div(class="col-12")
-        h1(class="text-primary")= title
-        hr(class="pb-2")
+        h1(class="text-primary pb-2" style='border-bottom: 2px solid; border-color: #8d6fe2;')= title
 
-    div(class="card sticky-top sticky-offset mb-lg-4 shadow p-lg-3 bg-white rounded mobile-card")
+    div(class="card sticky-top sticky-offset mb-lg-4 shadow bg-white rounded mobile-card")
       div(class="d-lg-none d-flex justify-content-around")
         button(class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#actionButtons" aria-expanded="true" aria-controls="actionButtons" style="border-radius: 2rem") Actions
       div(class="collapse d-lg-block md-position-buttons" id="actionButtons")
-        div(class="card-body d-flex justify-content-around align-content-around flex-wrap")
-          button(class="btn btn-primary" id="gotoDemon" href="#demonCards") Go to demon cards
-          button(class="btn btn-primary" id="gotoMemory" href="#memoryCards") Go to memory cards
-          button(class="btn btn-primary" id="resetFilters") Reset filters
+        div(class="card-body d-flex justify-content-around align-content-around flex-wrap p-3")
+          button(class="btn btn-lg text-secondary py-0" id="gotoDemon" href="#demonCards") Go to demon cards
+          div(style='border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem')
+          button(class="btn btn-lg text-secondary py-0 mr-auto" id="gotoMemory" href="#memoryCards") Go to memory cards
           div(class="btn-group d-none" id="selectionButtons")
-            button(class="btn btn-primary" id="deselectAll") Deselect all
-            button(class="btn btn-primary" id="selectAll") Select all
+            button(class="btn btn-secondary text-white" id="deselectAll") Deselect all
+            button(class="btn btn-secondary text-white mr-5" id="selectAll") Select all
           div(class="btn-group d-none" id="manageButtons")
             button(class="btn btn-primary" id="cancelManaging") Cancel
             button(class="btn btn-primary" id="saveManaging") Save
           if user && path === "list"
-            button(class="btn btn-primary" id="manageCollection") Manage collection
+            button(class="btn btn-primary rounded-pill" id="manageCollection") Manage collection
 
     div(id='searchBar' class='row text-left mb-3')
       div(class='col-12')
@@ -39,8 +38,8 @@ block content
                   div(class='input-group-text border-0 bg-transparent' style='z-index: 3; margin: -35px')
                     i(class="lnr lnr-magnifier text-secondary")
             div(class='ml-3 mr-3 mr-sm-0 d-flex flex-nowrap')
-              button(class='btn btn-primary btn-sm rounded-pill mr-2' data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style='width: 80px') Filters
-              button(class='btn btn-secondary text-white btn-sm rounded-pill ml-2') Reset filters
+              button(id='expandFilters' class='btn btn-secondary text-white btn-sm rounded-pill mr-2' data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style='width: 100px') Filters
+              button(id="resetFilters" class='btn btn-primary btn-sm rounded-pill ml-2') Reset filters
 
     div(id="filters" class="row text-left collapse")
       div(id="rarityFilter" class="col-md-4 col-12 mb-3")
