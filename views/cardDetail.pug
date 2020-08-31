@@ -9,20 +9,20 @@ block content
     div.row
       //- Mobile/ Tablet Screen
       if user
-        div(class="d-flex justify-content-center col-md-6 d-lg-none" style="margin-bottom:10px;")
+        div(class="d-flex justify-content-center mx-auto col-sm-6 d-md-none" style="margin-bottom:10px;")
           button.btn.btn-primary.addCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Add to collection
           button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
 
       div(class="d-block d-lg-none col-12 col-md-7")
-        div(class="card text-center")
-          if card.type == "Demon"
+        if card.type == "Demon"
+          div(class="card text-center")
             div.card-header
               ul(class="nav nav-pills card-header-pills nav-justified")
                 li.nav-item
                   a(class="nav-link active" id="original-card-tab" data-toggle="tab" href="#originalCard" role="tab" aria-controls="original" aria-selected="true") Original
                 li.nav-item
                   a(class="nav-link" id="bloomed-card-tab" data-toggle="tab" href="#bloomedCard" role="tab" aria-controls="bloomed" aria-selected="false") Bloomed
-          div.card-body.tab-content(id="cardToggle")
+        div.tab-content.mb-3(id="cardToggle")
             div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
               img.card-img(src="/images/cards/L/" + card.uniqueName + ".png")
             div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
@@ -30,7 +30,7 @@ block content
       //- Desktop Screen
       div(class="d-none d-lg-block col-4")
         div.card.bg-transparent
-          div.card-body
+          div.card-body.pt-0
             img.card-img(src="/images/cards/L/" + card.uniqueName + ".png")
       if card.type == "Demon"
         div(class="d-none d-lg-block col-4")
@@ -50,7 +50,7 @@ block content
                 if index < card.characters.length - 1
                   |,&nbsp;
         if user
-          div(class='d-none d-lg-block' style="margin:10px 0;")
+          div(class='d-none d-md-block' style="margin:10px 0;")
               button.btn.btn-primary.addCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Add to collection
               button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
 
