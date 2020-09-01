@@ -13,8 +13,9 @@ block content
             div.card.bg-transparent
               div.card-body.mx-auto
                 a(href="/cards" type="button" class="btn btn-primary m-1") Cards
-                a(href="/signup" type="button" class="btn btn-primary m-1") Sign Up
-                a(href="/login" type="button" class="btn btn-primary m-1") Login
+                if !user
+                  a(href="/signup" type="button" class="btn btn-primary m-1") Sign Up
+                  a(href="/login" type="button" class="btn btn-primary m-1") Login
           div.col-12.col-md-6.mb-2
             div.card.shadow.rounded
                 div.card-body
