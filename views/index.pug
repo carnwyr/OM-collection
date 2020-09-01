@@ -1,102 +1,65 @@
-doctype html
-html(lang='en')
-  head
-    title= title
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-    link(rel="icon" type="image/png" href="/images/favicon.png")
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js')
-    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js')
-    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/theme_1597782929390.css')
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='/javascripts/commonFunctions.js')
-    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Kanit')
-  body(class="d-flex flex-column min-vh-100")
-    nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white rounded")
-      a(class="navbar-brand", href='/', style="font-family: 'Kanit'; font-size: 1.4rem") OM!Collection&nbsp;
-        span(style="font-family: 'Nunito'; font-size: 18px") Beta
-      button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerMenu" aria-controls="navbarTogglerMenu" aria-expanded="false" aria-label="Toggle navigation")
-        span(class="navbar-toggler-icon")
-      div(class="collapse navbar-collapse" id="navbarTogglerMenu")
-        ul(class="navbar-nav")
-          li(class="nav-item")
-            a(class="nav-link", href='/cards') All cards
-          if user
-            li(class="nav-item")
-              a(class="nav-link", href='/' + user.name + '/collection') My collection
-          if user && user.isAdmin
-            li(class="nav-item")
-              a(class="nav-link", href='/card/create') Add new cards
-          if !user
-            li(class="nav-item")
-              a(class="nav-link", href='/signup') Signup
-            li(class="nav-item")
-              a(class="nav-link", href='/login') Login
-          if user
-            li(class="nav-item")
-              a(class="nav-link", href='/logout') Logout
+extends layout
 
-    div.container-fluid
-      div.row
-        section.landing-page
-          div.card.hovercard
-            div.cardheader
-            div.avatar
-              img(alt="pfp" src="https://media.discordapp.net/attachments/673339200782729276/703354748945825833/unknown.png")
-          div.container
-            div.row(style="margin-top:128px;")
-              div.col-12.mx-auto
-                div.card.bg-transparent
-                  div.card-body.mx-auto
-                    a(href="/cards" type="button" class="btn btn-primary m-1") Cards
-                    a(href="/signup" type="button" class="btn btn-primary m-1") Sign Up
-                    a(href="/login" type="button" class="btn btn-primary m-1") Login
-              div.col-12.col-md-6.mb-2
-                div.card.shadow.rounded
-                    div.card-body
-                      h5.card-title What's this?
-                      p.card-text
-                        | OM!Collection is a website for you to record and share your cards online. It's built by fans on a completely voluntary basis. We are not associated in any way with our official developers (great job they did making the game &#x1F44F;).
-                        | <br /><br />
-                        | The website is still in a (not even) beta mode (as I'm typing). And, no clue how many people will use it. But, if you ever need to talk to us, let it be a bug report or suggestion, we'll create a discord server (probably). See you there.
-              div.col-12.col-md-6.mb-2
-                div.card.shadow.rounded.h-100
-                  div.card-body
-                    h5.card-title How does it work?
-                    p.card-text
-                    | Click on&nbsp;
-                    a(href="/signup") Sign Up
-                    | &nbsp;to make an account. Then, head over to All Cards to "manage" your collection. Feel free to&nbsp;
-                    a(href="#About") contact us&nbsp;
-                    | for any questions.
-                    <br /><br />
-                    h5.card-title Talk to?
-                    img(class="pfp" alt="pfp" src="https://media.discordapp.net/attachments/673339200782729276/703354748945825833/unknown.png")
-                    span.mr-5 Laele
-                    img(class="pfp" alt="pfp" src="https://media.discordapp.net/attachments/673339200782729276/703354748945825833/unknown.png")
-                    span char
-        link(rel="stylesheet" href="/stylesheets/homepage.css")
+block content
+  div.row
+    section.landing-page
+      div.card.hovercard
+        div.cardheader
+        div.avatar
+          img(alt="pfp" src="https://media.discordapp.net/attachments/673339200782729276/703354748945825833/unknown.png")
+      div.container
+        div.row(style="margin-top:128px;")
+          div.col-12.mx-auto
+            div.card.bg-transparent
+              div.card-body.mx-auto
+                a(href="/cards" type="button" class="btn btn-primary m-1") Cards
+                a(href="/signup" type="button" class="btn btn-primary m-1") Sign Up
+                a(href="/login" type="button" class="btn btn-primary m-1") Login
+          div.col-12.col-md-6.mb-2
+            div.card.shadow.rounded
+                div.card-body
+                  h5.card-title What's this?
+                  p.card-text
+                    | OM!Collection is a website for you to record and share your cards online. It's built by fans on a completely voluntary basis. We are not associated in any way with our official developers (great job they did making the game &#x1F44F;).
+                    | <br /><br />
+                    | The website is still in a (not even) beta mode (as I'm typing). And, no clue how many people will use it. But, if you ever need to talk to us, let it be a bug report or suggestion, we'll create a discord server (probably). See you there.
+          div.col-12.col-md-6.mb-2
+            div.card.shadow.rounded.h-100
+              div.card-body
+                h5.card-title How does it work?
+                p.card-text
+                | Click on&nbsp;
+                a(href="/signup") Sign Up
+                | &nbsp;to make an account. Then, head over to All Cards to "manage" your collection. Feel free to&nbsp;
+                a(href="#About") contact us&nbsp;
+                | for any questions.
+                <br /><br />
+                h5.card-title Talk to?
+                img(class="pfp" alt="pfp" src="https://media.discordapp.net/attachments/673339200782729276/703354748945825833/unknown.png")
+                span.mr-5 Laele
+                img(class="pfp" alt="pfp" src="https://media.discordapp.net/attachments/673339200782729276/703354748945825833/unknown.png")
+                span char
+    link(rel="stylesheet" href="/stylesheets/homepage.css")
 
-    footer(class="site-footer bg-primary navbar-dark mt-auto")
-      div(class="container")
-        div(class="row justify-content-between")
-          div(class="col-sm-12 col-md-7")
-            h6.text-light Disclaimers
-            p(class="text-justify text-light") Obey Me! Collection is a web resource created by fans. Creators of the website are not in any way affiliated with NTT Solmare Corporation. All characters, illustrations, and game content are copyrighted work exclusively belonging to NTT Solmare Corporation.
-          div(class="col-xs-6 col-md-4")
-            h6(class="text-white") Links
-            ul(class="footer-links text-light")
-              li Download for&nbsp;
-                a(class="text-light" href="https://apps.apple.com/app/obey-me-shall-we-date/id1477167654") <u>iOS</u>&nbsp;
-                | and&nbsp;
-                a(class="text-light" href="https://play.google.com/store/apps/details?id=com.nttsolmare.game.android.obeyme") <u>Android</u>&nbsp;
-              li
-                a.text-light(href="https://shallwedate.jp/obeyme/en/") Official Website
-              li
-                a(class="text-light" href="https://www.facebook.com/obeyme.solmare/") Obey Me! Official Facebook
-              li
-                a(class="text-light" href="https://obey-me.fandom.com/wiki/Obey_Me!_Wiki") Obey Me! Wiki
-              li
-                a(class="text-light" href="https://www.reddit.com/r/obeyme/") Obey Me! Subreddit
+block footer
+  footer(class="site-footer bg-primary navbar-dark mt-auto")
+    div(class="container")
+      div(class="row justify-content-between")
+        div(class="col-sm-12 col-md-7")
+          h6.text-light Disclaimers
+          p(class="text-justify text-light") Obey Me! Collection is a web resource created by fans. Creators of the website are not in any way affiliated with NTT Solmare Corporation. All characters, illustrations, and game content are copyrighted work exclusively belonging to NTT Solmare Corporation.
+        div(class="col-xs-6 col-md-4")
+          h6(class="text-white") Links
+          ul(class="footer-links text-light")
+            li Download for&nbsp;
+              a(class="text-light" href="https://apps.apple.com/app/obey-me-shall-we-date/id1477167654") <u>iOS</u>&nbsp;
+              | and&nbsp;
+              a(class="text-light" href="https://play.google.com/store/apps/details?id=com.nttsolmare.game.android.obeyme") <u>Android</u>&nbsp;
+            li
+              a.text-light(href="https://shallwedate.jp/obeyme/en/") Official Website
+            li
+              a(class="text-light" href="https://www.facebook.com/obeyme.solmare/") Obey Me! Official Facebook
+            li
+              a(class="text-light" href="https://obey-me.fandom.com/wiki/Obey_Me!_Wiki") Obey Me! Wiki
+            li
+              a(class="text-light" href="https://www.reddit.com/r/obeyme/") Obey Me! Subreddit

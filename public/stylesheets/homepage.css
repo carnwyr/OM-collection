@@ -1,12 +1,13 @@
-body, html {
+body,
+html {
   height: 100%;
-	padding: 0;
+  padding: 0;
 }
 
 /* Hovercard */
 
 .card.hovercard .cardheader {
-	background: linear-gradient(
+  background: linear-gradient(
     240deg,
     rgba(219, 158, 251, 1) 0%,
     rgba(141, 111, 226, 1) 100%
@@ -34,13 +35,13 @@ body, html {
   border: 8px solid white;
 }
 
-.pfp{
+.pfp {
   width: 100px;
   height: 100px;
   padding: 16px;
 }
 
-/* Sections */
+/* Section */
 
 .landing-page {
   width: 100%;
