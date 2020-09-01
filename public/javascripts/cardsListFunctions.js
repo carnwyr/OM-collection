@@ -26,6 +26,7 @@ $(document).ready(function(){
 	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
+	$('#expandFilters').on('click', function() { $(this).text($(this).text() === "Filters" ? "Hide filters" : "Filters"); })
 });
 
 window.onload = (event) => {
@@ -103,7 +104,7 @@ function inputChanged(e) {
 function scrollToSection(e) {
 	var divId = $(this).attr('href');
 	$('html, body').animate({
-		scrollTop: $(divId).offset().top - 190
+		scrollTop: $(divId).offset().top - 150
 	}, 200);
 }
 
