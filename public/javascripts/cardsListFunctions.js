@@ -1,5 +1,7 @@
+const cardsInRow = {xs: 4, sm: 4, md: 6, lg: 8, xl: 9};
+const doneTypingInterval = 500;
+
 var typingTimer;
-var doneTypingInterval = 500;
 var changedCards = {};
 var selectionMode = false;
 
@@ -111,86 +113,86 @@ function scrollToSection(e) {
 function switchSelectionMode() {
 	if (!selectionMode) {
 		$.ajax({
-	        type: 'get',
-	        url: '/collection/getOwnedCards'
-	    })
-	    .done(function(cardNames){
-	    	$('button#manageCollection').addClass('d-none');
-	    	$('div#manageButtons').removeClass('d-none');
-	    	$('div#selectionButtons').removeClass('d-none');
-	    	selectionMode = true;
-    		let oldHeight = $(document).height();
-    		let oldScrollTop = $(window).scrollTop();
-	    	$('.cardPreview').filter(function() {
-	    		return !$(this).isInViewport();
-	    	}).find('.img-max').addClass('no-transition');
+			type: 'get',
+			url: '/collection/getOwnedCards'
+		})
+		.done(function(cardNames){
+			$('button#manageCollection').addClass('d-none');
+			$('div#manageButtons').removeClass('d-none');
+			$('div#selectionButtons').removeClass('d-none');
+			selectionMode = true;
+			let oldHeight = $(document).height();
+			let oldScrollTop = $(window).scrollTop();
+			$('.cardPreview').filter(function() {
+				return !$(this).isInViewport();
+			}).find('.img-max').addClass('no-transition');
 			$('.cardPreview').filter(function() {
 				return !cardNames.includes($(this).find('a').attr('href').replace('card/', ''));
 			}).find('img').addClass('notSelectedCard');
 			$('.cardPreview').find('.img-max')[0].offsetHeight;
 			$('.cardPreview').find('.img-max').removeClass('no-transition');
-    		let newHeight = $(document).height();
-    		let newScrollTop = $(window).scrollTop();
-    		let demonSectionOffset = $('#demonSection').offset().top;
-    		$('html, body').animate({
+			let newHeight = $(document).height();
+			let newScrollTop = $(window).scrollTop();
+			let demonSectionOffset = $('#demonSection').offset().top;
+			$('html, body').animate({
 				scrollTop: oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
 			}, 500);
-	    });
+		});
 	} else {
 		if (Object.keys(changedCards).length > 0) {
 			$.ajax({
-		        type: 'post',
-		        url: '/collection/updateOwnedCards',
-        		contentType: 'application/json',
-		        data: JSON.stringify({changedCards: changedCards})
-		    })
-		    .done(function(result){
-		    	if (result === 'error') {
-		    		$("div#failAlert").show().animate({top: 65}, 500);
-			            setTimeout(function () {
-			                $("div#failAlert").animate({top: -100}, 500).promise().done(function() {$("div#failAlert").hide()})
-			              }, 2000);
-		    		return;
-		    	}
-		    	changedCards = {};
-	    		$('button#manageCollection').removeClass('d-none');
-	    		$('div#manageButtons').addClass('d-none');
-	    		$('div#selectionButtons').addClass('d-none');
-		    	selectionMode = false;
-		    	let oldHeight = $(document).height();
-    			let oldScrollTop = $(window).scrollTop();
-		    	$('.cardPreview').filter(function() {
-		    		return !$(this).isInViewport();
-		    	}).find('.img-max').addClass('no-transition');
+				type: 'post',
+				url: '/collection/updateOwnedCards',
+				contentType: 'application/json',
+				data: JSON.stringify({changedCards: changedCards})
+			})
+			.done(function(result){
+				if (result === 'error') {
+					$("div#failAlert").show().animate({top: 65}, 500);
+						setTimeout(function () {
+							$("div#failAlert").animate({top: -100}, 500).promise().done(function() {$("div#failAlert").hide()})
+						  }, 2000);
+					return;
+				}
+				changedCards = {};
+				$('button#manageCollection').removeClass('d-none');
+				$('div#manageButtons').addClass('d-none');
+				$('div#selectionButtons').addClass('d-none');
+				selectionMode = false;
+				let oldHeight = $(document).height();
+				let oldScrollTop = $(window).scrollTop();
+				$('.cardPreview').filter(function() {
+					return !$(this).isInViewport();
+				}).find('.img-max').addClass('no-transition');
 				$('.cardPreview').find('img').removeClass('notSelectedCard');
 				$('.cardPreview').find('.img-max')[0].offsetHeight;
 				$('.cardPreview').find('.img-max').removeClass('no-transition');
 				let newHeight = $(document).height();
-    			let demonSectionOffset = $('#demonSection').offset().top;
+				let demonSectionOffset = $('#demonSection').offset().top;
 				$('html, body').animate({
 					scrollTop: oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
 				}, 500);
 				$("div#successAlert").show().animate({top: 65}, 500);
-		            setTimeout(function () {
-		                $("div#successAlert").animate({top: -100}, 500).promise().done(function() {$("div#successAlert").hide()})
-		              }, 2000);
-		    });
+					setTimeout(function () {
+						$("div#successAlert").animate({top: -100}, 500).promise().done(function() {$("div#successAlert").hide()})
+					  }, 2000);
+			});
 		} else {
 			changedCards = {};
 			$('button#manageCollection').removeClass('d-none');
-	    	$('div#manageButtons').addClass('d-none');
-	    	$('div#selectionButtons').addClass('d-none');
-	    	selectionMode = false;
-	    	let oldHeight = $(document).height();
+			$('div#manageButtons').addClass('d-none');
+			$('div#selectionButtons').addClass('d-none');
+			selectionMode = false;
+			let oldHeight = $(document).height();
 			let oldScrollTop = $(window).scrollTop();
-	    	$('.cardPreview').filter(function() {
-	    		return !$(this).isInViewport();
-	    	}).find('.img-max').addClass('no-transition');
+			$('.cardPreview').filter(function() {
+				return !$(this).isInViewport();
+			}).find('.img-max').addClass('no-transition');
 			$('.cardPreview').find('img').removeClass('notSelectedCard');
 			$('.cardPreview').find('.img-max')[0].offsetHeight;
 			$('.cardPreview').find('.img-max').removeClass('no-transition');
 			let newHeight = $(document).height();
-    		let demonSectionOffset = $('#demonSection').offset().top;
+			let demonSectionOffset = $('#demonSection').offset().top;
 			$('html, body').animate({
 				scrollTop: oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
 			}, 500);
@@ -267,73 +269,37 @@ function switchSelectionAll(select) {
 }
 
 function fillRank(container) {
-  const c = document.getElementById(container);
-  let html = '<a class="mb-2 h-100" href=""><figure class="figure text-center"><figcaption class="figure-caption text-center img-max">placeholder placeholder placeholder</figure></a>';
-  var wrapper = document.createElement('div');
-  wrapper.setAttribute("class", "card invisible");
-  wrapper.setAttribute("id", "placeholders");
-  wrapper.innerHTML = html;
-  let children = c.childNodes;
-  let cardNum = children.length;
-  let i;
+	$('#'+container).find('#placeholder').remove();
+	var visibleCardsCount = $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
 
-  if (c.hasChildNodes()) {
-    for (i = 0; i < children.length; i++) {
-      // do something with each child as children[i]
-      if (children[i].className === "card invisible" || children[i].nodeName == "P") {
-        c.removeChild(children[i]);
-        i--;
-        cardNum--;
-      } else if (children[i].style.display == "none") {
-        cardNum--;
-      } else {
-        // do nothing...
-      }
-    }
+	if (visibleCardsCount > 0) {
+		var html = '<div class="invisible" id="placeholder"><a class="mb-2 h-100" href=""><figure class="figure text-center"><figcaption class="figure-caption text-center img-max">placeholder placeholder placeholder</figure></a></div>';
 
-    // console.log("<!-- start of calculation -->")
+		// max number of cards for xs is 4, on smaller screens it's reduced by 1
+		if ($(window).width() <= 576) { var currentCardsInRow = Math.floor(($(window).width() - 100) / 100) } else
+		if ($(window).width() <= 768) { var currentCardsInRow = cardsInRow.sm } else
+		if ($(window).width() <= 992) { var currentCardsInRow = cardsInRow.md } else
+		if ($(window).width() <= 1200) { var currentCardsInRow = cardsInRow.lg }
+		else { var currentCardsInRow = cardsInRow.xl }
 
-    i = cardNum;
-    if ($(window).width() <= 576) {
-    	c.appendChild(wrapper);
-    } else if ($(window).width() <= 768) {
-      while (i < cardNum + (4 - (cardNum % 4))) {
-        c.appendChild(wrapper.cloneNode(true));
-        i++;
-      }
-    } else if ($(window).width() <= 992) {
-      while (i < cardNum + (6 - (cardNum % 6))) {
-        c.appendChild(wrapper.cloneNode(true));
-        i++;
-      }
-    } else if ($(window).width() <= 1200) {
-      while (i < cardNum + (8 - (cardNum % 8))) {
-        c.appendChild(wrapper.cloneNode(true));
-        i++;
-      }
-    } else {
-      while (i < cardNum + (9 - (cardNum % 9))) {
-        c.appendChild(wrapper.cloneNode(true));
-        i++;
-      }
-    }
+		if (visibleCardsCount % currentCardsInRow === 0) { return; }
+		else { var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow; }
 
-    if (cardNum === 0) {
-    	wrapper = document.createElement('p');
-		wrapper.setAttribute("class", "col-12 text-muted");
-		wrapper.removeAttribute("id");
-    	wrapper.textContent = 'No matching cards';
-		c.insertBefore(wrapper, c.firstChild);
-    }
-  }
+		for (let i = 0; i < cardsToAdd; i++) {
+			$('#'+container).append(html);
+		}
+	} else {
+		var html = '<p class="col-12 text-muted" id="placeholder">No matching cards</p>';
+		$('#'+container).append(html);
+	}
 }
 
 $.fn.isInViewport = function () {
-    let elementTop = $(this).offset().top;
-    let elementBottom = elementTop + $(this).outerHeight();
+	let elementTop = $(this).offset().top;
+	let elementBottom = elementTop + $(this).outerHeight();
 
-    let viewportTop = $(window).scrollTop();
-    let viewportBottom = viewportTop + $(window).height();
+	let viewportTop = $(window).scrollTop();
+	let viewportBottom = viewportTop + $(window).height();
 
-    return elementBottom > viewportTop && elementTop < viewportBottom;
+	return elementBottom > viewportTop && elementTop < viewportBottom;
 };

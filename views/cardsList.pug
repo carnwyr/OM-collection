@@ -161,7 +161,7 @@ block content
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#demonSection" role="button" aria-expanded="true" aria-controls="demonSection") Demon cards
       div(class="container collapse show" id="demonSection")
-        div.row.d-flex.justify-content-between(id="dcContainer" style="margin:0 8px;")
+        div(class='row d-flex justify-content-between' id="dcContainer" style="margin:0 8px;")
           if cardsList.filter(card => card.type == "Demon").length != 0
             each card in cardsList
               if card.type == "Demon"
@@ -177,7 +177,7 @@ block content
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#memorySection" role="button" aria-expanded="true" aria-controls="memorySection") Memory cards
       div(class="container collapse show" id="memorySection")
-        div.row.d-flex.justify-content-between(id="mcContainer" style="margin:0 8px;")
+        div(class='row d-flex justify-content-between' id="mcContainer" style="margin:0 8px;")
           if cardsList.filter(card => card.type == "Memory").length != 0
             each card in cardsList
               if card.type == "Memory"
