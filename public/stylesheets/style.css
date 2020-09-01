@@ -14,7 +14,7 @@
 .navbar-brand {
   padding-top:.15rem
 }
-body { 
+body {
   padding-top: 70px;
   background: url('/images/background_sheep.png');
 }
@@ -22,9 +22,9 @@ body {
 /*FOOTER*/
 .site-footer
 {
-  padding: 25px 0 10px;
-  font-size:15px;
-  line-height:24px;
+  padding: 18px 0 8px;
+  font-size: small;
+  line-height: 21px;
 }
 .site-footer hr
 {
