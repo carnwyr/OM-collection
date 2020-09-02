@@ -121,8 +121,12 @@ function inputChanged(e) {
 
 function scrollToSection(e) {
 	var divId = $(this).attr('href');
+	if ($(window).width() < 768)
+		var sectionHeaderOffset = 175;
+	else
+		var sectionHeaderOffset = 150;
 	$('html, body').animate({
-		scrollTop: $(divId).offset().top - 150
+		scrollTop: $(divId).offset().top - sectionHeaderOffset
 	}, 200);
 }
 
