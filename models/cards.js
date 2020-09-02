@@ -14,5 +14,4 @@ var CardsSchema = new Schema(
   }
 );
 
-//Export model
 module.exports = mongoose.model('cards', CardsSchema);

@@ -12,7 +12,6 @@ require('dotenv').config();
 var cardsController = require('./controllers/cardsController');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var cardsRouter = require('./routes/cards');
 
 var app = express();
@@ -54,7 +53,6 @@ app.use(passport.session())
 app.use(flash());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/card', cardsRouter);
 
 // catch 404 and forward to error handler

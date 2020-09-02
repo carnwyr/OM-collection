@@ -6,52 +6,65 @@ const async = require('async');
 const fs = require('fs');
 
 exports.index = function(req, res, next) {
-	Cards.countDocuments({}, function(err, result) {
-		if (err) { return next(err); }
-		res.render('index', { title: 'Cards collection', data: result, user: req.user });
-	});
+	res.render('index', { title: 'Cards collection', user: req.user });
 };
 
-// Display all the cards
 exports.cardsList = function(req, res, next) {
-	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, listCards) {
+	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
 		if (err) { return next(err); }
-		listCards.sort(function(a, b) {
-			var rarityOrder = -1 * compareByRarity(a.rarity, b.rarity);
-			if (rarityOrder != 0)
-				return rarityOrder;
-			if (a.number > b.number) {
-				return -1;
-			}
-			if (a.number < b.number) {
-				return 1;
-			}
-			return 0;
-		});
-		res.render('cardsList', { title: 'Cards List', cardsList: listCards, user: req.user, path: 'list' });
+		cardsList.sort(sortByRarityAndNumber);
+		res.render('cardsList', { title: 'Cards List', cardsList: cardsList, user: req.user, path: 'list' });
 	});
 };
 
-// Display detailed card's page
+function sortByRarityAndNumber(card1, card2) {
+	var rarityOrder = -1 * compareByRarity(card1.rarity, card2.rarity);
+		if (rarityOrder != 0)
+			return rarityOrder;
+		if (card1.number > card2.number) {
+			return -1;
+		}
+		if (card1.number < card2.number) {
+			return 1;
+		}
+		return 0;
+}
+
+
+function compareByRarity(rarity1, rarity2) {
+	var rarities = {
+		"N": 1, 
+		"R": 2,
+		"SR": 3,
+		"SSR": 4,
+		"UR": 5,
+		"UR+": 5
+	};
+	if (rarities[rarity1] > rarities[rarity2]) {
+		return 1;
+	}
+	if (rarities[rarity1] < rarities[rarity2]) {
+		return -1;
+	}
+	return 0;
+}
+
 exports.cardsDetail = function(req, res, next) {
-	Cards.findOne({uniqueName: req.params.id}, function(err, result) {
+	Cards.findOne({uniqueName: req.params.id}, function(err, cardData) {
 		if (err) { return next(err); }
-		if (result==null) { // No results.
+		if (cardData==null) {
 			var err = new Error('Card not found');
-			err.status = 404;
 			return next(err);
 		}
 
-		var hasCard = false;
-
 		if (req.user) {
-			CardsCollection.findOne({user: req.user._id, card: result._id}, function(err, pair) {
+			CardsCollection.findOne({user: req.user._id, card: cardData._id}, function(err, pair) {
 				if (err) { return next(err); }
-				if (pair) { hasCard = true; }
-				res.render('cardDetail', { title: 'Card Details', card: result, user: req.user, hasCard: hasCard });
+				var hasCard = pair ? true : false;
+				res.render('cardDetail', { title: 'Card Details', card: cardData, user: req.user, hasCard: hasCard });
 			});
 		} else {
-			res.render('cardDetail', { title: 'Card Details', card: result, user: req.user, hasCard: hasCard });
+			res.render('cardDetail', { title: 'Card Details', card: cardData, user: req.user });
 		}
 	});
 };
@@ -225,21 +238,3 @@ exports.updateOwnedCards = function(req, res) {
 		});
 	});
 };
-
-function compareByRarity(rarity1, rarity2) {
-	var rarities = {
-		"N": 1, 
-		"R": 2,
-		"SR": 3,
-		"SSR": 4,
-		"UR": 5,
-		"UR+": 5
-	};
-	if (rarities[rarity1] > rarities[rarity2]) {
-		return 1;
-	}
-	if (rarities[rarity1] < rarities[rarity2]) {
-		return -1;
-	}
-	return 0;
-}
