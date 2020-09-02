@@ -29,12 +29,10 @@ $(document).ready(function(){
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 	$('#expandFilters').on('click', function() { $(this).text($(this).text() === "Filters" ? "Hide filters" : "Filters"); })
-});
 
-window.onload = (event) => {
 	fillRank("dcContainer");
 	fillRank("mcContainer");
-};
+});
 
 function formChanged(e) {
 	var form = $(this).closest('form');
@@ -72,6 +70,7 @@ function filterApplied() {
 		});
 	});
 	var search = $('input#nameFilter').val();
+	var scrollTop = $(window).scrollTop();
 
 	$(".cardPreview").fadeOut(400).promise().done(function() {
 		var cards = $(".cardPreview");
@@ -85,10 +84,27 @@ function filterApplied() {
 				return cardName.toLowerCase().includes(search.toLowerCase());
 			});
 		}
-		cards.fadeIn(400);
+		if ($(window).width() <= 576) { var currentCardsInRow = Math.floor(($(window).width() - 100) / 100); } else
+		if ($(window).width() <= 768) { var currentCardsInRow = cardsInRow.sm; } else
+		if ($(window).width() <= 992) { var currentCardsInRow = cardsInRow.md; } else
+		if ($(window).width() <= 1200) { var currentCardsInRow = cardsInRow.lg; }
+		else { var currentCardsInRow = cardsInRow.xl; }
 
-		fillRank("dcContainer");
-		fillRank("mcContainer");
+		var maxRowsOnScreen = Math.ceil($(window).height() / $($(".cardPreview")[0]).height());
+		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
+		
+		if(cards.slice(maxVisibleCards).length > 0) {
+			$(cards.slice(maxVisibleCards)).find('.img-max').addClass('no-transition');
+			$(cards.slice(maxVisibleCards)).css('display', 'block');
+			$(cards.slice(maxVisibleCards)).find('.img-max')[0].offsetHeight;
+			$(cards.slice(maxVisibleCards)).find('.img-max').removeClass('no-transition');
+		}
+		$(cards.slice(0, maxVisibleCards)).fadeIn(400);
+
+		$(window).scrollTop(scrollTop);
+
+		fillRank("dcContainer", $(cards).filter(function() { $(this).parent().attr('id') === '#dcContainer'; }).length);
+		fillRank("mcContainer", $(cards).filter(function() { $(this).parent().attr('id') === '#mcContainer'; }).length);
 	});
 }
 
@@ -268,19 +284,19 @@ function switchSelectionAll(select) {
 	});
 }
 
-function fillRank(container) {
-	$('#'+container).find('#placeholder').remove();
-	var visibleCardsCount = $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
+function fillRank(container, cardsCount) {
+	$('#'+container).find('.placeholder').remove();
+	var visibleCardsCount = cardsCount ? cardsCount : $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
 
 	if (visibleCardsCount > 0) {
-		var html = '<div class="invisible" id="placeholder"><a class="mb-2 h-100" href=""><figure class="figure text-center"><figcaption class="figure-caption text-center img-max">placeholder placeholder placeholder</figure></a></div>';
+		var html = '<div class="invisible placeholder"><a class="mb-2 h-100" href=""><figure class="figure text-center"><figcaption class="figure-caption text-center img-max">placeholder placeholder placeholder</figure></a></div>';
 
 		// max number of cards for xs is 4, on smaller screens it's reduced by 1
-		if ($(window).width() <= 576) { var currentCardsInRow = Math.floor(($(window).width() - 100) / 100) } else
-		if ($(window).width() <= 768) { var currentCardsInRow = cardsInRow.sm } else
-		if ($(window).width() <= 992) { var currentCardsInRow = cardsInRow.md } else
-		if ($(window).width() <= 1200) { var currentCardsInRow = cardsInRow.lg }
-		else { var currentCardsInRow = cardsInRow.xl }
+		if ($(window).width() <= 576) { var currentCardsInRow = Math.floor(($(window).width() - 100) / 100); } else
+		if ($(window).width() <= 768) { var currentCardsInRow = cardsInRow.sm; } else
+		if ($(window).width() <= 992) { var currentCardsInRow = cardsInRow.md; } else
+		if ($(window).width() <= 1200) { var currentCardsInRow = cardsInRow.lg; }
+		else { var currentCardsInRow = cardsInRow.xl; }
 
 		if (visibleCardsCount % currentCardsInRow === 0) { return; }
 		else { var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow; }
@@ -289,7 +305,7 @@ function fillRank(container) {
 			$('#'+container).append(html);
 		}
 	} else {
-		var html = '<p class="col-12 text-muted" id="placeholder">No matching cards</p>';
+		var html = '<p class="col-12 text-muted placeholder">No matching cards</p>';
 		$('#'+container).append(html);
 	}
 }
