@@ -24,19 +24,19 @@ block content
                   a(class="nav-link" id="bloomed-card-tab" data-toggle="tab" href="#bloomedCard" role="tab" aria-controls="bloomed" aria-selected="false") Bloomed
         div.tab-content.mb-3(id="cardToggle")
             div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
-              img.card-img(src="/images/cards/L/" + card.uniqueName + ".png")
+              img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
             div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
-              img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.png")
+              img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
       //- Desktop Screen
       div(class="d-none d-lg-block col-4")
         div.card.bg-transparent
           div.card-body.pt-0
-            img.card-img(src="/images/cards/L/" + card.uniqueName + ".png")
+            img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
       if card.type == "Demon"
         div(class="d-none d-lg-block col-4")
           div.card.bg-transparent
             div.card-body.pt-0
-              img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.png")
+              img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
       //- Info
       div(class="col-12 col-md-5 col-lg-4")
         div.card(class="shadow rounded mb-3")
