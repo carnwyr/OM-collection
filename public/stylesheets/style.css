@@ -13,6 +13,9 @@
 .card-header {
   border: 0px;
 }
+.alert {
+  z-index: 9999 !important;
+}
 
 /* HEADER */
 .navbar-brand {

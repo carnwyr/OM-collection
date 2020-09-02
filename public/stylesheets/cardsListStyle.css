@@ -46,3 +46,40 @@
     /*transition: all .5s ease;*/ /*Set by JQuery after the page loads to prvent resizing*/
   }
 }
+@media screen and (max-width: 768px) {
+  #actionButtons .btn-lg {
+    font-size: 1rem !important;
+    /*height: 20px !important;*/
+  }
+  #actionButtons .btn-primary, .btn-secondary {
+    font-size:80%;
+  }
+}
+.no-transition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}
+#nameFilter {
+  height: 30px;
+  margin: 0px;
+  background-color: #f0e1fc;
+
+}
+#nameFilter::placeholder {
+  color: #db9efb; /*secondary color*/
+}
+#nameFilter:focus {
+  outline: none;
+  box-shadow: none;
+}
+#gotoDemon:focus, #gotoMemory:focus {
+  outline: none;
+  box-shadow: none;
+}
+#filters .card-header {
+  background-color: white;
+  font-weight: bold;
+  color: #8d6fe2;
+}
