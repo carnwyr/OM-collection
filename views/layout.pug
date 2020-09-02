@@ -42,25 +42,31 @@ html(lang='en')
     div(class='container-fluid')
       block content
 
-    footer(class="site-footer bg-primary navbar-dark mt-auto")
-      div(class="container")
-        div(class="row justify-content-between")
-          div(class="col-sm-12 col-md-7")
-            h6(class="text-white") About
-            p(class="text-justify text-light") Obey Me! Collection is a web resource to store your cards collection. The characters, card images and other game content are owned by NTT Solmare Corporation. Obey Me! Collection is not affiliated with NTT Solmare Corporation, is completely made by fans and everyone is volunteer.
-
-          div(class="col-xs-6 col-md-4")
-            h6(class="text-white") Links
-            ul(class="footer-links text-light")
-              li Download for&nbsp;
-                a(class="text-light" href="https://apps.apple.com/app/obey-me-shall-we-date/id1477167654") <u>iOS</u>&nbsp;
-                | and&nbsp;
-                a(class="text-light" href="https://play.google.com/store/apps/details?id=com.nttsolmare.game.android.obeyme") <u>Android</u>&nbsp;
-              li
-                a(class="text-light" href="https://www.facebook.com/obeyme.solmare/") Obey Me! Official Facebook
-              li
-                a(class="text-light" href="https://obey-me.fandom.com/wiki/Obey_Me!_Wiki") Obey Me! Wiki
-              li
-                a(class="text-light" href="https://www.reddit.com/r/obeyme/") Obey Me! Subreddit
-              li
-                a(class="text-light" href="/#About") Contact Us
+    block footer
+      footer(class="site-footer bg-primary navbar-dark mt-auto")
+        div.container
+          div.row.text-center.justify-content-center
+            div.col-10.mt-1
+              a(class="text-light" href="https://shallwedate.jp/obeyme/en/") Official Website
+              |
+              span.text-secondary &nbsp;|&nbsp;
+              |
+              span.text-light Download for&nbsp;
+              |
+              a(class="text-light" href="https://apps.apple.com/app/obey-me-shall-we-date/id1477167654") <u>iOS</u>&nbsp;
+              |
+              span.text-light and&nbsp;
+              |
+              a(class="text-light" href="https://play.google.com/store/apps/details?id=com.nttsolmare.game.android.obeyme") <u>Android</u>&nbsp;
+              |
+              span.text-secondary |&nbsp;
+              |
+              a(class="text-light" href="https://www.facebook.com/obeyme.solmare/") Obey Me! Official Facebook
+            div.col-10.mt-1.mb-3
+              span
+              |
+              a(class="text-light" href="https://obey-me.fandom.com/wiki/Obey_Me!_Wiki") Obey Me! Wiki
+              |
+              span.text-secondary &nbsp;|&nbsp;
+              |
+              a(class="text-light" href="https://www.reddit.com/r/obeyme/") Obey Me! Subreddit
