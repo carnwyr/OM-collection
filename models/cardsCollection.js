@@ -12,5 +12,4 @@ var CardsCollectionSchema = new Schema(
   }
 );
 
-//Export model
 module.exports = mongoose.model('cardsCollection', CardsCollectionSchema);
