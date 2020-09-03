@@ -13,11 +13,11 @@ block content
 
           form(class="form-signin" method="POST" action="")
             div.form-label-group
-              input#username.form-control(type="text" placeholder="Username" maxlength="50" pattern="[A-Za-z0-9._-]+" name="username" autocomplete="off" required autofocus)
-              label(for="username") Username
+              input#username.form-control(type="text" maxlength="50" pattern="[A-Za-z0-9._-]+" name="username" autocomplete="off" required autofocus)
+              span.floating-label Username
             div.form-label-group
-              input#password.form-control(type="password" placeholder="Password" name="password" autocomplete="off" required)
-              label(for="password") Password
+              input#password.form-control(type="password" name="password" autocomplete="off" required)
+              span.floating-label Password
             div(class="custom-control custom-checkbox mb-3")
               input#checkPassword.custom-control-input(type="checkbox" onclick="togglePass()")
               label(class="custom-control-label" for="checkPassword") Show password
