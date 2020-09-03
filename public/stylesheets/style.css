@@ -23,7 +23,7 @@
 }
 body {
   padding-top: 70px;
-  background: url("/images/background_sheep.png");
+  background: url("/images/background_sheep.png") fixed;
 }
 
 /* FOOTER */

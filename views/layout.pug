@@ -32,13 +32,18 @@ html(lang='en')
         ul(class="navbar-nav ml-auto")
           if !user
             li(class="nav-item")
-              a(class="nav-link", href='/signup') Signup
+              a(class="nav-link", href='/signup')
+                span.d-md-none Sign Up
+                span.d-none.d-md-block.text-white Sign Up
             li(class="nav-item")
-              a(class="nav-link", href='/login') Login
+              a(class="nav-link", href='/login')
+                span.d-md-none Login
+                span.d-none.d-md-block.text-white Login
           if user
             li(class="nav-item")
-              a(class="nav-link", href='/logout') Logout
-
+              a(class="nav-link", href='/logout')
+                span.d-md-none Logout
+                span.d-none.d-md-block.text-white Logout
 
     div(class='container-fluid')
       block content
