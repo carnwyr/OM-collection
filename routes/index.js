@@ -13,7 +13,7 @@ router.get('/cards', cardsController.cardsList);
 // Account management
 router.get('/login', usersController.loginGet);
 router.post('/login', usersController.loginPost);
-router.get('/logout', usersController.logout);
+router.get('/logout', usersController.isLoggedIn(), usersController.logout);
 router.get('/signup', usersController.signupGet);
 router.post('/signup', usersController.signupPost);
 router.post('/signup/checkUsername', usersController.signupCheckUsername);

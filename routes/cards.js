@@ -5,10 +5,10 @@ var cardsController = require('../controllers/cardsController');
 var usersController = require('../controllers/usersController');
 
 // Personal collection management
-router.post('/:id/addToCollection', usersController.isLoggedIn(), cardsController.cardAddToCollection);
-router.post('/:id/removeFromCollection', usersController.isLoggedIn(), cardsController.cardRemoveFromCollection);
+router.post('/:id/addToCollection', usersController.isLoggedIn(), cardsController.addToCollection);
+router.post('/:id/removeFromCollection', usersController.isLoggedIn(), cardsController.removeFromCollection);
 
 // Card detail page
-router.get('/:id', cardsController.cardsDetail);
+router.get('/:id', cardsController.cardDetail);
 
 module.exports = router;
