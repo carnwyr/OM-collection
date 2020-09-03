@@ -30,6 +30,10 @@ html(lang='en')
             li(class="nav-item")
               a(class="nav-link", href='/card/create') Add new cards
         ul(class="navbar-nav ml-auto")
+          li(class="nav-item d-none d-md-block")
+            div(class="nav-link")
+              span(class="lnr lnr-user text-white" style='font-size: 0.75rem;')
+          div(class='d-md-none mt-2 mb-0' style='border-bottom: 1px solid; border-color: #fff; opacity: 30%')
           if !user
             li(class="nav-item")
               a(class="nav-link", href='/signup')

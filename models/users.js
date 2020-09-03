@@ -10,5 +10,4 @@ var UsersSchema = new Schema(
   }
 );
 
-//Export model
 module.exports = mongoose.model('users', UsersSchema);
