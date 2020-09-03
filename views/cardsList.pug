@@ -8,47 +8,47 @@ block content
     //- Page Heading
     div(class="row text-left mb-3")
       div(class="col-12")
-        h1(class="text-primary pb-2" style='border-bottom: 2px solid; border-color: #8d6fe2;')= title
+        h1(class="text-primary pb-2" style="border-bottom: 2px solid; border-color: #8d6fe2;")= title
 
-    div(class="card sticky-top sticky-offset mb-4 shadow rounded")
-      div(class="" id="actionButtons")
-        div(class="card-body d-flex justify-content-around align-content-around flex-wrap pl-3 pr-3 pt-3 pb-1 pb-md-3")
-          div(class='d-flex mb-2 mb-lg-0' + (user && path !== "collection" ? ' mr-lg-auto' : ''))
-            button(class="btn btn-lg text-secondary py-0 mb-0 align-self-center" id="gotoDemon" href="#demonCards")
-              span(class='d-none d-sm-block') Go to demon cards
-              span(class='d-sm-none') Demon
-            div(style='border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem')
-            button(class="btn btn-lg text-secondary py-0 mb-0 align-self-center" id="gotoMemory" href="#memoryCards")
-              span(class='d-none d-sm-block') Go to memory cards
-              span(class='d-sm-none') Memory
-          div(class='d-sm-none' style='flex-basis: 100%; height: 0;')
-          div(class="btn-group d-none" id="selectionButtons")
-            button(class="btn btn-secondary text-white" id="deselectAll") Deselect all
-            button(class="btn btn-secondary text-white mr-md-5" id="selectAll") Select all
-          div(class="btn-group d-none" id="manageButtons")
-            button(class="btn btn-primary" id="cancelManaging") Cancel
-            button(class="btn btn-primary" id="saveManaging") Save
-          if user && path === "list"
-            button(class="btn btn-primary rounded-pill mb-md-0" id="manageCollection") Manage collection
+    //- Card Navigation
+    div(class="card sticky-top sticky-offset mb-3 shadow rounded")
+      div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
+        div(class="d-flex mb-2 mb-lg-0" + (user && path !== "collection" ? " mr-md-auto" : ""))
+          button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
+            span(class="d-none d-sm-block") Go to Demon Cards
+            span(class="d-sm-none") Demon
+          div(style="border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem")
+          button(class="btn btn-md text-secondary py-0 mb-0" id="gotoMemory" href="#memoryCards")
+            span(class="d-none d-sm-block") Go to Memory Cards
+            span(class="d-sm-none") Memory
+        div(class='d-sm-none' style='flex-basis: 100%; height: 0;')
+        div(class="btn-group d-none" id="selectionButtons")
+          button(class="btn btn-secondary text-white" id="deselectAll") Deselect all
+          button(class="btn btn-secondary text-white mr-sm-5" id="selectAll") Select all
+        div(class="btn-group d-none" id="manageButtons")
+          button(class="btn btn-primary" id="cancelManaging") Cancel
+          button(class="btn btn-primary" id="saveManaging") Save
+        if user && path === "list"
+          button(class="btn btn-primary btn-md mb-0" id="manageCollection") Manage Collection
 
-    div(id='searchBar' class='row text-left mb-3')
-      div(class='col-12')
-        div(class='card shadow rounded')
-          div(class="card-body d-flex flex-wrap justify-content-around pl-3 pr-3 pt-3 pb-1 pb-lg-3")
-            form(id="searchForm" class='flex-grow-1 mr-sm-3 mb-2 mb-sm-0')
-              div(class='input-group')
+    div(id="searchBar" class="row text-left mb-3")
+      div(class="col-12")
+        div(class="card shadow rounded")
+          div(class="card-body d-flex flex-wrap justify-content-around p-3")
+            form(id="searchForm" class="flex-grow-1 mr-sm-3 mb-2 mb-sm-0")
+              div(class="input-group")
                 input(type="text" class="form-control text-primary rounded-pill" id="nameFilter" placeholder="Search for card name..." style = "border: 0px;")
                 span(class="input-group-append")
-                  div(class='input-group-text border-0 bg-transparent' style='z-index: 3; margin: -36px')
+                  div(class="input-group-text border-0 bg-transparent" style="z-index: 3; margin: -36px")
                     i(class="lnr lnr-magnifier text-secondary")
-            div(class='ml-3 mr-3 mr-sm-0 d-flex flex-nowrap')
-              button(id='expandFilters' class='btn btn-secondary text-white btn-sm rounded-pill mr-2' data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style='width: 100px') Filters
-              button(id="resetFilters" class='btn btn-primary btn-sm rounded-pill ml-2') Reset filters
+            div(class="mx-auto")
+              button(id="expandFilters" class="btn btn-secondary text-white btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 100px") Filters
+              button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill ml-2 mb-0") Reset filters
 
     div(id="filters" class="row text-left collapse")
-      div(id="rarityFilter" class="col-md-4 col-12 mb-3")
-        div(class="card h-100 shadow p-3 bg-white rounded")
-          div(class="card-header") Rarity
+      div.col-12.col-md-6.pr-md-1.mb-2
+        div(id="rarityFilter" class="card mb-2 shadow rounded")
+          div(class="card-header pb-0") Rarity
           div(class="card-body")
             form(id="rarityForm")
               div(class="container")
@@ -74,9 +74,8 @@ block content
                   div(class="custom-control custom-checkbox col-1")
                     input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
                     label(class="custom-control-label" for="checkRarityUR+") UR+
-      div(id="attributeFilter" class="col-md-8 col-12 mb-3")
-        div(class="card h-100 shadow p-3 bg-white rounded")
-          div(class="card-header") Attribute
+        div(id="attributeFilter" class="card shadow rounded")
+          div(class="card-header pb-0") Attribute
           div(class="card-body")
             form(id="attributeForm")
               div(class="container")
@@ -105,57 +104,57 @@ block content
                   div(class="custom-control custom-checkbox ml-1 col-1")
                     input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
                     label(class="custom-control-label" for="checkAttributeSloth") Sloth
-      div(id="characterFilter" class="col-lg-12 col-12 mb-3")
-        div(class="card h-100 shadow p-3 bg-white rounded")
+      div.col-12.col-md-6.pl-md-1.mb-2
+        div(id="characterFilter" class="card shadow rounded h-100")
           div(class="card-header") Character
           div(class="card-body")
             form(id="characterForm")
-              div(class="container")
+              div(class="container pl-0")
                 div(class="row")
-                  div(class="custom-control custom-radio mr-5 ml-3 col-1")
+                  div(class="custom-control custom-radio mr-5 ml-3 col-2")
                     input(type="radio" class="custom-control-input" id="checkCharacterAll" name="All")
                     label(class="custom-control-label" for="checkCharacterAll") All
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLucifer" name="Lucifer")
                     label(class="custom-control-label" for="checkCharacterLucifer") Lucifer
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterMammon" name="Mammon")
                     label(class="custom-control-label" for="checkCharacterMammon") Mammon
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLeviathan" name="Leviathan")
                     label(class="custom-control-label" for="checkCharacterLeviathan") Leviathan
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterSatan" name="Satan")
                     label(class="custom-control-label" for="checkCharacterSatan") Satan
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterAsmodeus" name="Asmodeus")
                     label(class="custom-control-label" for="checkCharacterAsmodeus") Asmodeus
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterBeelzebub" name="Beelzebub")
                     label(class="custom-control-label" for="checkCharacterBeelzebub") Beelzebub
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterBelphegor" name="Belphegor")
                     label(class="custom-control-label" for="checkCharacterBelphegor") Belphegor
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterDiavolo" name="Diavolo")
                     label(class="custom-control-label" for="checkCharacterDiavolo") Diavolo
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterBarbatos" name="Barbatos")
                     label(class="custom-control-label" for="checkCharacterBarbatos") Barbatos
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterSimeon" name="Simeon")
                     label(class="custom-control-label" for="checkCharacterSimeon") Simeon
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLuke" name="Luke")
                     label(class="custom-control-label" for="checkCharacterLuke") Luke
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterSolomon" name="Solomon")
                     label(class="custom-control-label" for="checkCharacterSolomon") Solomon
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-1")
+                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLittleD" name="LittleD")
                     label(class="custom-control-label" for="checkCharacterLittleD" style="min-width: 75px;") Little D
 
-    div(class="row text-left" id="demonCards")
+    div(class="row text-left mt-4" id="demonCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#demonSection" role="button" aria-expanded="true" aria-controls="demonSection") Demon cards
       div(class="container collapse show" id="demonSection")
@@ -166,7 +165,7 @@ block content
                 div(class="cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" "))
                   a(class="mb-2 h-100" href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
                     figure(class="figure text-center")
-                      img(class="figure-img img-fluid img-max" loading="lazy" width="256px" height="256px" src="/images/cards/S/" + card.uniqueName + ".jpg")
+                      img(class="figure-img img-fluid img-max" loading="lazy" width="256" height="256" src="/images/cards/S/" + card.uniqueName + ".jpg")
                       figcaption(class="figure-caption text-center img-max") #{card.name}
 
     div(class="row text-left" id="memoryCards")
@@ -180,7 +179,7 @@ block content
                 div(class="cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" "))
                   a(class="mb-2 h-100" href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
                     figure(class="figure text-center")
-                      img(class="figure-img img-fluid img-max" loading="lazy" width="256px" height="256px" src="/images/cards/S/" + card.uniqueName + ".jpg")
+                      img(class="figure-img img-fluid img-max" loading="lazy" width="256" height="256" src="/images/cards/S/" + card.uniqueName + ".jpg")
                       figcaption(class="figure-caption text-center img-max") #{card.name}
 
   script(src="/javascripts/cardsListFunctions.js")
