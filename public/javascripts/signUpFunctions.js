@@ -1,15 +1,5 @@
 $(document).ready(function(){
-	var username = $("input#username").val();
-	$("input#username").attr('value', username);
-	if (username) { checkUsername(); }
-	var password = $("input#password").val();
-	$("input#password").attr('value', password);
-	if (password) { checkPassword(); }
-	var confirmPassword = $("input#confirmPassword").val();
-	$("input#confirmPassword").attr('value', confirmPassword);
-	if (confirmPassword) { checkConfirmationPassword(); }
-
-	$("input#username").on('keyup', checkUsername);
+	$("input#username").on('focusout', checkUsername);
 	$("input#password").on('keyup', checkPassword);
 	$("input#confirmPassword").on('keyup', checkConfirmationPassword);
 	$("button#signUp").on('click', checkSignUp);
@@ -17,8 +7,6 @@ $(document).ready(function(){
 
 function checkUsername(e) {
 	var username = $("input#username").val();
-	$("input#username").attr('value', username);
-
 	$.ajax({
         type: 'post',
         url: '/signup/checkUsername',
@@ -31,23 +19,18 @@ function checkUsername(e) {
     	}
     	if (data) {
     		$("small#usernameError").html('Username already taken');
-    		$("input#username")[0].setCustomValidity("Username already taken");
     	}
     	else {
     		if (username == '')
     			$("small#usernameError").html("Username can't be empty");
-    		else {
+    		else
     			$("small#usernameError").html('');
-    			$("input#username")[0].setCustomValidity("");
-    		}
     	}
     });
 }
 
 function checkPassword(e) {
 	var password = $("input#password").val();
-	$("input#password").attr('value', password);
-
 	var confirmPassword = $("input#confirmPassword").val();
 	if (password.length < 8) {
 		$("small#passwordError").html('Password must be at least 8 characters long');
@@ -59,25 +42,19 @@ function checkPassword(e) {
 		$("small#passwordError").html('');
 	if (password != confirmPassword) {
 		$("small#passwordConfirmationError").html("Passwords don't match");
-    	$("input#confirmPassword")[0].setCustomValidity("Passwords don't match");
 		return;
 	}
 	$("small#passwordConfirmationError").html("");
-    $("input#confirmPassword")[0].setCustomValidity("");
 }
 
 function checkConfirmationPassword(e) {
 	var password = $("input#password").val();
 	var confirmPassword = $("input#confirmPassword").val();
-	$("input#confirmPassword").attr('value', confirmPassword);
-
 	if (password != confirmPassword) {
 		$("small#passwordConfirmationError").html("Passwords don't match");
-    	$("input#confirmPassword")[0].setCustomValidity("Passwords don't match");
 		return;
 	}
 	$("small#passwordConfirmationError").html("");
-    $("input#confirmPassword")[0].setCustomValidity("");
 }
 
 function checkSignUp(e) {
