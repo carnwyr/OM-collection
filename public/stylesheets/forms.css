@@ -68,7 +68,7 @@
 }
 
 input:focus ~ .floating-label,
-input:not(:focus):valid ~ .floating-label{
+input:not([value=""]) ~ .floating-label{
 	top: 8px;
 	bottom: 10px;
 	left: 8px;
