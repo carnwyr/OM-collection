@@ -95,7 +95,7 @@ function filterApplied() {
 		var cardHeight = $($('.cardPreview:visible')[0]).height()
 	else
 		var cardHeight = 100;
-console.log(cardHeight)
+
 	$(".cardPreview").fadeOut(400).promise().done(function() {
 		var cardsToDisplay = filterCardsToDisplay($(".cardPreview"), filters, search);
 		
@@ -148,7 +148,6 @@ function filterCardsToDisplay(cards, filters, search) {
 function applyEffectWithoutTransition(elements, effect, args) {
 	elements.addClass('no-transition');
 	effect(args);
-
 	elements[0].offsetHeight;
 	elements.removeClass('no-transition');
 }
@@ -304,7 +303,7 @@ function switchSelectionAll(select) {
 	var oldScrollTop = $(window).scrollTop();
 
 	var cardImages = $(cardsToSwitch).filter(function() {
-		return !$(this).parent().isInViewport();
+		return !$(this).isInViewport();
 	}).find('img.img-max');
 
 	if (select) {
