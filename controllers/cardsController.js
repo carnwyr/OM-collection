@@ -105,13 +105,18 @@ exports.removeFromCollection = function(req, res) {
 exports.cardsCollection = async function(req, res, next) {
 	var [err, userId] = await getUserId(req.user, req.params.username);
 	if (err) { return next(err); }
+	if (req.user && req.user.name === req.params.username) {
+		var title = 'My Collection';
+	} else {
+		var title = req.params.username + "'s Collection";
+	}
 	CardsCollection.find({'user': userId})
 		.populate('card')
 		.exec(function (err, cardsList) {
 			if (err) { return next(err); }
 			cardsList = cardsList.map(pair => pair.card);
 			cardsList.sort(sortByRarityAndNumber);
-			res.render('cardsList', { title: 'My Collection', cardsList: cardsList, user: req.user, path: 'collection' });
+			res.render('cardsList', { title: title, cardsList: cardsList, user: req.user, path: 'collection' });
 	});
 };
 
