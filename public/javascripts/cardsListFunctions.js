@@ -23,7 +23,7 @@ $(document).ready(function(){
 	});
 	$('button#manageCollection').on('click', switchSelectionMode);
 	$('button#saveManaging').on('click', switchSelectionMode);
-	$('.cardPreview a').on('click', cardClicked);
+	$('.cardPreview').on('click', cardClicked);
 	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
@@ -38,7 +38,7 @@ function fillRank(container, cardsCount) {
 	var visibleCardsCount = cardsCount ? cardsCount : $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
 
 	if (visibleCardsCount > 0) {
-		var html = '<div class="invisible placeholder"><a class="mb-2 h-100" href=""><figure class="figure text-center"><figcaption class="figure-caption text-center img-max">placeholder placeholder placeholder</figure></a></div>';
+		var html = '<div class="invisible placeholder mb-2 h-100">placeholder placeholder placeholder</div>';
 
 		var currentCardsInRow = getRowCapacity();
 
@@ -49,7 +49,7 @@ function fillRank(container, cardsCount) {
 			$('#'+container).append(html);
 		}
 	} else {
-		var html = '<p class="col-12 text-muted placeholder">No matching cards</p>';
+		var html = '<p class="col-12 text-muted placeholder" style="max-width: none !important;">No matching cards</p>';
 		$('#'+container).append(html);
 	}
 }
@@ -91,14 +91,18 @@ function filterApplied() {
 	var filters = getFiltersAsStrings();
 	var search = $('input#nameFilter').val();
 	var originalPosition = $(window).scrollTop();
-
+	if ($('.cardPreview:visible').length > 0)
+		var cardHeight = $($('.cardPreview:visible')[0]).height()
+	else
+		var cardHeight = 100;
+console.log(cardHeight)
 	$(".cardPreview").fadeOut(400).promise().done(function() {
 		var cardsToDisplay = filterCardsToDisplay($(".cardPreview"), filters, search);
 		
 		var currentCardsInRow = getRowCapacity();
-		var maxRowsOnScreen = Math.ceil($(window).height() / $($(".cardPreview")[0]).height());
+		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
 		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
-		
+
 		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
 			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') }	;
 			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('.img-max'), showCards);
@@ -134,7 +138,7 @@ function filterCardsToDisplay(cards, filters, search) {
 	});
 	if (search != "") {
 		cards =$(cards).filter(function() {
-			var cardName = $(this).find("figcaption").text();
+			var cardName = $(this).find(".figure-caption").text();
 			return cardName.toLowerCase().includes(search.toLowerCase());
 		});
 	}
@@ -231,7 +235,7 @@ function switchCardsSelection(cardNames) {
 	});
 	if (selectionMode) {
 		var selectOwnedCards = function(cardNames) { $('.cardPreview').filter(function() {
-			return !cardNames.includes($(this).find('a').attr('href').replace('card/', ''));
+			return !cardNames.includes($(this).attr('href').replace('card/', ''));
 		}).find('img').addClass('notSelectedCard') };
 		applyEffectWithoutTransition(invisibleCards, selectOwnedCards, cardNames);
 	} else {
@@ -264,10 +268,10 @@ function showAlert(alert) {
 }
 
 function cardClicked(e) {
-	if (!selectionMode)
+	if (!selectionMode) {
+		window.location = $(this).attr('href');
 		return;
-	if (e)
-		e.preventDefault();
+	}
 
 	var image = $(this).find('img');
 	var cardName = $(this).attr('href').replace('card/', '');
@@ -290,9 +294,9 @@ function cardClicked(e) {
 }
 
 function switchSelectionAll(select) {
-	var cardsToSwitch = $('.cardPreview:visible a').filter(function() { return select === $(this).find('img').hasClass('notSelectedCard'); });
-		if (cardsToSwitch.length == 0)
-			return;
+	var cardsToSwitch = $('.cardPreview:visible').filter(function() { return select === $(this).find('img').hasClass('notSelectedCard'); });
+	if (cardsToSwitch.length == 0)
+		return;
 
 	var oldHeight = $(document).height();
 	var oldScrollTop = $(window).scrollTop();
