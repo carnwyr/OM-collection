@@ -157,30 +157,28 @@ block content
     div(class="row text-left mt-4" id="demonCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#demonSection" role="button" aria-expanded="true" aria-controls="demonSection") Demon cards
-      div(class="container collapse show" id="demonSection")
-        div(class='row d-flex justify-content-between' id="dcContainer" style="margin:0 8px;")
-          if cardsList.filter(card => card.type == "Demon").length != 0
-            each card in cardsList
-              if card.type == "Demon"
-                div(class="cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" "))
-                  a(class="mb-2 h-100" href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
-                    figure(class="figure text-center")
-                      img(class="figure-img img-fluid img-max" loading="lazy" width="256" height="256" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                      figcaption(class="figure-caption text-center img-max") #{card.name}
+    div(class="container collapse show row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
+      if cardsList.filter(card => card.type == "Demon").length != 0
+        each card in cardsList
+          if card.type == "Demon"
+            div(class="cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" "))
+              a(class="mb-2 h-100" href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
+                figure(class="figure text-center")
+                  img(class="figure-img img-fluid img-max" loading="lazy" width="256" height="256" src="/images/cards/S/" + card.uniqueName + ".jpg")
+                  figcaption(class="figure-caption text-center img-max") #{card.name}
 
     div(class="row text-left" id="memoryCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#memorySection" role="button" aria-expanded="true" aria-controls="memorySection") Memory cards
-      div(class="container collapse show" id="memorySection")
-        div(class='row d-flex justify-content-between' id="mcContainer" style="margin:0 8px;")
-          if cardsList.filter(card => card.type == "Memory").length != 0
-            each card in cardsList
-              if card.type == "Memory"
-                div(class="cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" "))
-                  a(class="mb-2 h-100" href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
-                    figure(class="figure text-center")
-                      img(class="figure-img img-fluid img-max" loading="lazy" width="256" height="256" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                      figcaption(class="figure-caption text-center img-max") #{card.name}
+    div(class="container collapse show row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
+      if cardsList.filter(card => card.type == "Memory").length != 0
+        each card in cardsList
+          if card.type == "Memory"
+            div(class="cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" "))
+              a(class="mb-2 h-100" href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
+                figure(class="figure text-center")
+                  img(class="figure-img img-fluid img-max" loading="lazy" width="256" height="256" src="/images/cards/S/" + card.uniqueName + ".jpg")
+                  figcaption(class="figure-caption text-center img-max") #{card.name}
 
   script(src="/javascripts/cardsListFunctions.js")
   link(rel="stylesheet", href="/stylesheets/cardsListStyle.css")

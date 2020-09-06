@@ -29,8 +29,8 @@ $(document).ready(function(){
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 	$('#expandFilters').on('click', function() { $(this).text($(this).text() === "Filters" ? "Hide filters" : "Filters"); })
 
-	fillRank("dcContainer");
-	fillRank("mcContainer");
+	fillRank("demonSection");
+	fillRank("memorySection");
 });
 
 function fillRank(container, cardsCount) {
@@ -107,8 +107,8 @@ function filterApplied() {
 
 		$(window).scrollTop(originalPosition);
 
-		fillRank("dcContainer", $(cardsToDisplay).filter(function() { $(this).parent().attr('id') === '#dcContainer'; }).length);
-		fillRank("mcContainer", $(cardsToDisplay).filter(function() { $(this).parent().attr('id') === '#mcContainer'; }).length);
+		fillRank("demonSection", $(cardsToDisplay).filter(function() { $(this).parent().attr('id') === '#demonSection'; }).length);
+		fillRank("memorySection", $(cardsToDisplay).filter(function() { $(this).parent().attr('id') === '#memorySection'; }).length);
 	});
 }
 
