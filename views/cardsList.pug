@@ -164,7 +164,7 @@ block content
             if card.type == "Demon"
               a(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
                 img(class="img-fluid img-max" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
-                span(class='figure-caption img-max') #{card.name}
+                p(class='figure-caption img-max') #{card.name}
 
     div(class="row text-left" id="memoryCards")
       div(class="col-12")
@@ -176,7 +176,7 @@ block content
             if card.type == "Memory"
               a(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
                 img(class="img-fluid img-max" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
-                span(class='figure-caption img-max') #{card.name}
+                p(class='figure-caption img-max') #{card.name}
 
   script(src="/javascripts/cardsListFunctions.js")
   link(rel="stylesheet", href="/stylesheets/cardsListStyle.css")

@@ -146,10 +146,11 @@ function filterCardsToDisplay(cards, filters, search) {
 }
 
 function applyEffectWithoutTransition(elements, effect, args) {
-	$(elements).addClass('no-transition');
+	elements.addClass('no-transition');
 	effect(args);
-	$(elements[0]).offsetHeight;
-	$(elements).removeClass('no-transition');
+
+	elements[0].offsetHeight;
+	elements.removeClass('no-transition');
 }
 
 function resetFilters() {
@@ -232,7 +233,8 @@ function switchCardsSelection(cardNames) {
 
 	var invisibleCards = $('.cardPreview').filter(function() {
 		return !$(this).isInViewport();
-	});
+	}).find('img.img-max');
+	
 	if (selectionMode) {
 		var selectOwnedCards = function(cardNames) { $('.cardPreview').filter(function() {
 			return !cardNames.includes($(this).attr('href').replace('card/', ''));
@@ -303,7 +305,7 @@ function switchSelectionAll(select) {
 
 	var cardImages = $(cardsToSwitch).filter(function() {
 		return !$(this).parent().isInViewport();
-	}).find('.img-max');
+	}).find('img.img-max');
 
 	if (select) {
 		var changeSelection = function() { $(cardsToSwitch).find('img').removeClass('notSelectedCard'); }
