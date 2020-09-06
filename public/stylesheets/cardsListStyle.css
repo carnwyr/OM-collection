@@ -4,7 +4,12 @@
   /*transition: all .5s ease;*/ /*Set by JQuery after the page loads to prvent resizing*/
 }
 .cardPreview {
-  width: 110px;
+  max-width: 110px;
+  width:100%;
+}
+.placeholder {
+  max-width: 110px;
+  width:100%;
 }
 .sticky-offset {
     top: 70px;
@@ -49,7 +54,12 @@
     /*transition: all .5s ease;*/ /*Set by JQuery after the page loads to prvent resizing*/
   }
   .cardPreview {
-    width: 100px;
+    max-width: 100px;
+    width:100%;
+  }
+  .placeholder {
+    max-width: 100px;
+    width:100%;
   }
 }
 @media screen and (max-width: 768px) {
