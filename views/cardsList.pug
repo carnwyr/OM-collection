@@ -161,11 +161,9 @@ block content
       if cardsList.filter(card => card.type == "Demon").length != 0
         each card in cardsList
           if card.type == "Demon"
-            div(class="cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" "))
-              a(class="mb-2 h-100" href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
-                figure(class="figure text-center")
-                  img(class="figure-img img-fluid img-max" loading="lazy" width="256" height="256" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                  figcaption(class="figure-caption text-center img-max") #{card.name}
+            div(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
+              img(class="img-fluid img-max" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
+              span(class='figure-caption') #{card.name}
 
     div(class="row text-left" id="memoryCards")
       div(class="col-12")
@@ -174,11 +172,9 @@ block content
       if cardsList.filter(card => card.type == "Memory").length != 0
         each card in cardsList
           if card.type == "Memory"
-            div(class="cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" "))
-              a(class="mb-2 h-100" href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
-                figure(class="figure text-center")
-                  img(class="figure-img img-fluid img-max" loading="lazy" width="256" height="256" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                  figcaption(class="figure-caption text-center img-max") #{card.name}
+            div(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
+              img(class="img-fluid img-max" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
+              span(class='figure-caption') #{card.name}
 
   script(src="/javascripts/cardsListFunctions.js")
   link(rel="stylesheet", href="/stylesheets/cardsListStyle.css")
