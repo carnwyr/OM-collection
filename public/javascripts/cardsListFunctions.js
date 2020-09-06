@@ -268,10 +268,10 @@ function showAlert(alert) {
 }
 
 function cardClicked(e) {
-	if (!selectionMode) {
-		window.location = $(this).attr('href');
+	if (!selectionMode)
 		return;
-	}
+	if (e)
+		e.preventDefault();
 
 	var image = $(this).find('img');
 	var cardName = $(this).attr('href').replace('card/', '');

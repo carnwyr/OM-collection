@@ -161,7 +161,7 @@ block content
       if cardsList.filter(card => card.type == "Demon").length != 0
         each card in cardsList
           if card.type == "Demon"
-            div(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
+            a(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
               img(class="img-fluid img-max" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
               span(class='figure-caption img-max') #{card.name}
 
@@ -172,7 +172,7 @@ block content
       if cardsList.filter(card => card.type == "Memory").length != 0
         each card in cardsList
           if card.type == "Memory"
-            div(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
+            a(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
               img(class="img-fluid img-max" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
               span(class='figure-caption img-max') #{card.name}
 
