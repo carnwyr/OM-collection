@@ -85,11 +85,20 @@ block content
 				div(class='row mx-0 mb-4')
 					div(class="col-4")
 						div(class="image-area mt-2 h-100")
-							img(id="imageResultL" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + ".jpg")
+							div(style='position: relative')
+								img(id="imageResultL" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + ".jpg")
+								button(class='close text-light bg-dark rounded-circle')
+									span(style='position: relative; bottom: 3px') &times;
 					div(class="col-4")
 						div(class="image-area mt-2 h-100")
-							img(id="imageResultLB" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + "_b.jpg")
+							div(style='position: relative')
+								img(id="imageResultLB" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + "_b.jpg")
+								button(class='close text-light bg-dark rounded-circle')
+									span(style='position: relative; bottom: 3px') &times;
 					div(class="col-4")
 						div(class="image-area mt-2 h-100 d-flex")
-							img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm mx-auto d-block align-self-center" style='max-width: 120px;' src="/images/cards/S/" + card.uniqueName + ".jpg")
+							div(class=' mx-auto align-self-center' style='position: relative')
+								img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm d-block" style='max-width: 120px;' src="/images/cards/S/" + card.uniqueName + ".jpg")
+								button(class='close text-light bg-dark rounded-circle')
+									span(style='position: relative; bottom: 3px') &times;
 				button(class='btn btn-primary') Save

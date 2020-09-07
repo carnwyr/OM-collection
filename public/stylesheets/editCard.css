@@ -46,3 +46,13 @@ select:-webkit-scrollbar { /*For WebKit Browsers*/
     width: 0;
     height: 0;
 }
+
+.image-area button {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  cursor: pointer;
+  z-index: 3;
+  height: 25px;
+  width: 25px;
+}
