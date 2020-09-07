@@ -2,6 +2,7 @@ extends layout
 
 block content
 	link(rel="stylesheet", href="/stylesheets/editCard.css")
+	script(src="/javascripts/editCardFunctions.js")
 
 	div(class="container")
 		div(class="row text-left mb-3")
@@ -55,25 +56,38 @@ block content
 					label(for="number") Number
 					input(class='form-control' type="text" id="number" name="number")
 				div(class='row mx-0')
-					div(class="col-5 input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
-						input(id="uploadL" type="file" class="form-control border-0 upload")
-						label(for="uploadL" class="font-weight-light text-muted uploadLabel") Choose large image
-						div(class="input-group-append")
-							label(for="uploadL" class="btn btn-light m-0 rounded-pill px-4")
-								i(class="lnr lnr-cloud-upload mr-2 text-muted" style='position: relative; top: 2px;')
-								small(class="text-uppercase font-weight-bold text-muted") Choose file
-					div(class='col-2')
-					div(class="col-5 input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
-						input(id="uploadS" type="file" class="form-control border-0 upload")
-						label(for="uploadS" class="font-weight-light text-muted uploadLabel") Choose small image
-						div(class="input-group-append")
-							label(for="uploadS" class="btn btn-light m-0 rounded-pill px-4")
-								i(class="lnr lnr-cloud-upload mr-2 text-muted" style='position: relative; top: 2px;')
-								small(class="text-uppercase font-weight-bold text-muted") Choose file
+					div(class="col-4")
+						div(class='input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary')
+							input(id="uploadL" type="file" class="form-control border-0 upload")
+							label(for="uploadL" class="font-weight-light text-muted uploadLabel") Original image
+							div(class="input-group-append")
+								label(for="uploadL" class="btn btn-light m-0 rounded-pill px-4")
+									i(class="lnr lnr-cloud-upload mr-2 text-muted" style='position: relative; top: 2px;')
+									small(class="text-uppercase font-weight-bold text-muted") Choose file
+					div(class="col-4")
+						div(class="input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
+							input(id="uploadLB" type="file" class="form-control border-0 upload")
+							label(for="uploadLB" class="font-weight-light text-muted uploadLabel") Bloomed image
+							div(class="input-group-append")
+								label(for="uploadLB" class="btn btn-light m-0 rounded-pill px-4")
+									i(class="lnr lnr-cloud-upload mr-2 text-muted" style='position: relative; top: 2px;')
+									small(class="text-uppercase font-weight-bold text-muted") Choose file
+					div(class="col-4")
+						div(class="input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
+							input(id="uploadS" type="file" class="form-control border-0 upload")
+							label(for="uploadS" class="font-weight-light text-muted uploadLabel") Preview image
+							div(class="input-group-append")
+								label(for="uploadS" class="btn btn-light m-0 rounded-pill px-4")
+									i(class="lnr lnr-cloud-upload mr-2 text-muted" style='position: relative; top: 2px;')
+									small(class="text-uppercase font-weight-bold text-muted") Choose file
 				div(class='row mx-0 mb-4')
-					div(class="col-5 image-area imageAreaL mt-2")
-						img(id="imageResultL" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block")
-					div(class='col-2')
-					div(class="col-5 image-area imageAreaS mt-2")
-						img(id="imageResultS" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block")
+					div(class="col-4")
+						div(class="image-area mt-2 h-100")
+							img(id="imageResultL" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block")
+					div(class="col-4")
+						div(class="image-area mt-2 h-100")
+							img(id="imageResultLB" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block")
+					div(class="col-4")
+						div(class="image-area mt-2 h-100 d-flex")
+							img(id="imageResultS" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block align-self-center" style='max-width: 120px;')
 				button(class='btn btn-primary') Save
