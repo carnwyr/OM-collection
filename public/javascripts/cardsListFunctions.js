@@ -3,6 +3,7 @@ const doneTypingInterval = 500;
 var typingTimer;
 var changedCards = {};
 var selectionMode = false;
+var topBtn = document.getElementById("b2t");
 
 $(document).ready(function(){
 	$(".img-max").css("transition", "all .5s ease");
@@ -336,3 +337,13 @@ function addCardsToChangedList(cardsToSwitch, select) {
 		changedCards[name] = select;
 	});
 }
+
+window.onscroll = function() {
+	if (document.body.scrollTop > 64 || document.documentElement.scrollTop > 64) {
+		$(topBtn).fadeIn();
+	} else {
+		$(topBtn).fadeOut();
+	}
+};
+
+topBtn.onclick = () => $("html, body").animate({ scrollTop: 0 }, 1024);

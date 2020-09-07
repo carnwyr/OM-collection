@@ -99,3 +99,18 @@
   font-weight: bold;
   color: #8d6fe2;
 }
+
+/* b2t */
+
+.b2t {
+  display: inline-block;
+  cursor: pointer;
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 99;
+  border-radius: 50%;
+  background-color: white;
+  width: 64px;
+  height: 64px;
+}
