@@ -174,3 +174,15 @@ exports.updateOwnedCards = function(req, res) {
 		});
 	});
 };
+
+exports.editCardGet = function(req, res, next) {
+	Cards.findOne({uniqueName: req.params.id}, async function(err, cardData) {
+		if (err) { return next(err); }
+		if (!cardData) {
+			var err = new Error('Card not found');
+			return next(err);
+		}
+
+		res.render('cardEdit', { title: 'Edit Card', card: cardData, user: req.user });
+	});
+};

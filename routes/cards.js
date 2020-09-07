@@ -8,6 +8,9 @@ var usersController = require('../controllers/usersController');
 router.post('/:id/addToCollection', usersController.isLoggedIn(), cardsController.addToCollection);
 router.post('/:id/removeFromCollection', usersController.isLoggedIn(), cardsController.removeFromCollection);
 
+// Card edit page
+router.get('/:id/edit', usersController.isAdmin(), cardsController.editCardGet);
+
 // Card detail page
 router.get('/:id', cardsController.cardDetail);
 

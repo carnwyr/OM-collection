@@ -1,0 +1,79 @@
+extends layout
+
+block content
+	link(rel="stylesheet", href="/stylesheets/editCard.css")
+
+	div(class="container")
+		div(class="row text-left mb-3")
+			div(class="col-12")
+				h1(class="text-primary pb-2" style="border-bottom: 2px solid; border-color: #8d6fe2;")= title
+
+		form(class='card shadow rounded mb-4')
+			div(class='card-body mx-4')
+				div(class='form-group')
+					label(for="name") Name
+					input(class='form-control' type="text" id="name" name="name")
+				div(class='form-group')
+					label(for="uniqueName") Unique name
+					input(class='form-control' type="text" id="uniqueName" name="uniqueName")
+					small(class='form-text text-muted') Must use underscore instead of spaces, can't use \/:*?"<>|
+				div(class='form-group')
+					label(for="type") Type
+					select(class='custom-select' id="type" name="type")
+						option(selected) Demon
+						option(value='1') Memory
+				div(class='form-group')
+					label(for="rarity") Rarity
+					select(class='custom-select' id="rarity" name="rarity")
+						option(selected) N
+						option(value='1') R
+						option(value='2') SR
+						option(value='3') SSR
+						option(value='4') UR
+						option(value='5') UR+
+				div(class='form-group')
+					label(for="attribute") Attribute
+					select(class='custom-select' id="attribute" name="attribute")
+						option(selected) Pride
+						option(value='1') Greed
+						option(value='2') Envy
+						option(value='3') Wrath
+						option(value='4') Lust
+						option(value='5') Gluttony
+						option(value='6') Sloth
+				div(class='form-group')
+					label(for="characters") Characters
+					select(class='custom-select' id="characters" name="characters" size=7 multiple)
+						option(value='1') Lucifer
+						option(value='2') Mammon
+						option(value='3') Leviathan
+						option(value='4') Satan
+						option(value='5') Asmodeus
+						option(value='6') Beelzebub
+						option(value='7') Belphegor
+				div(class='form-group')
+					label(for="number") Number
+					input(class='form-control' type="text" id="number" name="number")
+				div(class='row mx-0')
+					div(class="col-5 input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
+						input(id="uploadL" type="file" class="form-control border-0 upload")
+						label(for="uploadL" class="font-weight-light text-muted uploadLabel") Choose large image
+						div(class="input-group-append")
+							label(for="uploadL" class="btn btn-light m-0 rounded-pill px-4")
+								i(class="lnr lnr-cloud-upload mr-2 text-muted" style='position: relative; top: 2px;')
+								small(class="text-uppercase font-weight-bold text-muted") Choose file
+					div(class='col-2')
+					div(class="col-5 input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
+						input(id="uploadS" type="file" class="form-control border-0 upload")
+						label(for="uploadS" class="font-weight-light text-muted uploadLabel") Choose small image
+						div(class="input-group-append")
+							label(for="uploadS" class="btn btn-light m-0 rounded-pill px-4")
+								i(class="lnr lnr-cloud-upload mr-2 text-muted" style='position: relative; top: 2px;')
+								small(class="text-uppercase font-weight-bold text-muted") Choose file
+				div(class='row mx-0 mb-4')
+					div(class="col-5 image-area imageAreaL mt-2")
+						img(id="imageResultL" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block")
+					div(class='col-2')
+					div(class="col-5 image-area imageAreaS mt-2")
+						img(id="imageResultS" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block")
+				button(class='btn btn-primary') Save
