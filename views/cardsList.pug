@@ -35,14 +35,14 @@ block content
       div(class="col-12")
         div(class="card shadow rounded")
           div(class="card-body d-flex flex-wrap justify-content-around p-3")
-            form(id="searchForm" class="flex-grow-1 mr-sm-3 mb-2 mb-sm-0")
+            form(id="searchForm" class="flex-grow-1 mr-sm-3 mb-2 mb-md-0")
               div(class="input-group")
                 input(type="text" class="form-control text-primary rounded-pill" id="nameFilter" placeholder="Search for card name..." style = "border: 0px;")
                 span(class="input-group-append")
                   div(class="input-group-text border-0 bg-transparent" style="z-index: 3; margin: -36px")
                     i(class="lnr lnr-magnifier text-secondary")
             div(class="mx-auto")
-              button(id="expandFilters" class="btn btn-secondary text-white btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 100px") Filters
+              button(id="expandFilters" class="btn btn-primary bg-secondary border-secondary text-white btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 100px") Filters
               button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill ml-2 mb-0") Reset filters
 
     div(id="filters" class="row text-left collapse")
