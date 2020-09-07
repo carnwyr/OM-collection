@@ -29,9 +29,22 @@ $(document).ready(function(){
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 	$('#expandFilters').on('click', function() { $(this).text($(this).text() === "Filters" ? "Hide filters" : "Filters"); })
 
+	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
+
+	$(window).scroll(swichBackToTopButton);
+	swichBackToTopButton();
+
 	fillRank("demonSection");
 	fillRank("memorySection");
 });
+
+function swichBackToTopButton() {
+	if ($(window).scrollTop() > 64) {
+		$("#b2t").fadeIn();
+	} else {
+		$("#b2t").fadeOut();
+	}
+}
 
 function fillRank(container, cardsCount) {
 	$('#'+container).find('.placeholder').remove();
