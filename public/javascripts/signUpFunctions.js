@@ -9,7 +9,7 @@ $(document).ready(function(){
 	$("input#confirmPassword").attr('value', confirmPassword);
 	if (confirmPassword) { checkConfirmationPassword(); }
 
-	$("input#username").on('keyup', checkUsername);
+	$("input#username").on('focusout', checkUsername);
 	$("input#password").on('keyup', checkPassword);
 	$("input#confirmPassword").on('keyup', checkConfirmationPassword);
 	$("button#signUp").on('click', checkSignUp);
@@ -18,6 +18,11 @@ $(document).ready(function(){
 function checkUsername(e) {
 	var username = $("input#username").val();
 	$("input#username").attr('value', username);
+
+	if (!/^[0-9a-zA-Z_.-]+$/.test(username)) {
+		$("small#usernameError").html("Username can only contain alphabets, numbers, and . _ -");
+		return;
+	}
 
 	$.ajax({
         type: 'post',
