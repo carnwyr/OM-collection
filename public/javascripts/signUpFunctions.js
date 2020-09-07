@@ -19,7 +19,7 @@ function checkUsername(e) {
 	var username = $("input#username").val();
 	$("input#username").attr('value', username);
 
-	if (!/^[0-9a-zA-Z_.-]+$/.test(username).test(username)) {
+	if (!/^[0-9a-zA-Z_.-]+$/.test(username)) {
 		$("small#usernameError").html("Username can only contain alphabets, numbers, and . _ -");
 		return;
 	}
