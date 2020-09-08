@@ -48,7 +48,7 @@ function saveChanges(e) {
     if (!validateFields()) {
         return;
     }
-    sendCardData();
+    updateCard();
 }
 
 function validateFields() {
@@ -85,7 +85,41 @@ function showAlert(isSuccess, message) {
       }, 3000);
 }
 
-function sendCardData() {
+function updateCard() {
+    var images = {};
+    var readL = readImage($('#uploadL')[0]);
+    var readLB = readImage($('#uploadLB')[0]);
+    var readS = readImage($('#uploadS')[0]);
+
+    Promise.all([readL, readLB, readS]).then(values => {
+        if (values[0]) images.L = values[0];
+        if (values[1]) images.LB = values[1];
+        if (values[2]) images.S = values[2];
+        sendCardData(images);
+    }, reason => {
+        showAlert(false, "Can't load images\n" + reason.message);
+    });
+}
+
+function readImage(upload) {
+    return new Promise((resolve, reject) => {
+        if (upload.files && upload.files[0]) {
+            let reader = new FileReader();
+            reader.onloadend = function (e) {
+                resolve(e.target.result);
+            };
+            try {
+                reader.readAsDataURL(upload.files[0]);
+            } catch(err) {
+                reject(err);
+            }
+        } else {
+            resolve('');
+        }
+    });
+}
+
+function sendCardData(images) {
     var cardData = {
         name: $('#name').val(),
         uniqueName: $('#uniqueName').val(),
@@ -94,7 +128,8 @@ function sendCardData() {
         attribute: $('#attribute').val(),
         characters: $('#characters').val(),
         number: $('#number').val(),
-        originalUniqueName: originalUniqueName
+        originalUniqueName: originalUniqueName,
+        images: images
     };
     
     $.ajax({
@@ -106,7 +141,7 @@ function sendCardData() {
     .done(function(result){
         if (result.err) {
             showAlert(false, result.message);
-            return false;
+            return;
         }
         showAlert(true, 'Card successfully updated');
     });

@@ -7,6 +7,7 @@ const passport = require('passport')
 const flash = require('connect-flash')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
+const bodyparser = require("body-parser");
 require('dotenv').config();
 
 var cardsController = require('./controllers/cardsController');
@@ -18,7 +19,7 @@ var app = express();
 
 var mongoose = require('mongoose');
 var mongoDB = process.env.URI;
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -27,13 +28,15 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
+
+app.use(express.urlencoded({limit: '50mb', extended: true}));
+app.use(express.json({ limit: "50mb" }));
 
 app.use(session({
     store: new MongoStore({

@@ -3,6 +3,7 @@ const CardsCollection = require('../models/cardsCollection');
 const Users = require('../models/users.js');
 
 const async = require('async');
+const fs = require('fs');
 
 exports.index = function(req, res, next) {
 	res.render('index', { title: 'Cards collection', user: req.user });
@@ -194,7 +195,7 @@ exports.updateCard = async function(req, res, next) {
 	if (originalUniqueName === '' || originalUniqueName !== newUniqueName) {
 		var [err, nameExists] = await isNameUnique(newUniqueName);
 		if (err) {
-			res.json({ err: true, message: err });
+			res.json({ err: true, message: err.message });
 			return;
 		}
 		if (nameExists) {
@@ -204,11 +205,12 @@ exports.updateCard = async function(req, res, next) {
 	}
 
 	try {
-		var update = req.body.cardData;
-		delete update.originalUniqueName;
-		await Cards.findOneAndUpdate({uniqueName: originalUniqueName}, update);
+		await Cards.findOneAndUpdate({uniqueName: originalUniqueName}, req.body.cardData);
+
+		saveImage(req.body.cardData.images.L, 'L', false);
+
 	} catch (err) {
-		res.json({ err: true, message: err });
+		res.json({ err: true, message: err.message });
 		return;
 	}
 
@@ -224,4 +226,15 @@ async function isNameUnique(unqiueName) {
 	}
 	var hasCard = card ? true : false;
 	return [null, hasCard];
+}
+
+function saveImage(baseImage, cardSize, isBoomed) {
+	const imagePath = './public/images/cards/';
+	const ext = baseImage.substring(baseImage.indexOf("/")+1, baseImage.indexOf(";base64"));
+    const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
+    const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
+    const base64Data = baseImage.replace(regex, "");
+    const filename = '1.jpg';
+    
+    fs.writeFileSync(imagePath+cardSize+'/'+filename, base64Data, 'base64');
 }
