@@ -34,7 +34,9 @@ function removeImage(e) {
     e.preventDefault();
     $(this).siblings('img').attr('src', '');
     $(this).hide();
-    // remove file
+    
+    var uploadId = '#upload' + $(this).siblings('img').attr('id').replace('imageResult', '');
+    $(uploadId).val('');
 }
 
 function saveChanges(e) {
@@ -51,8 +53,8 @@ function validateFields() {
         return false;
     }
     var images = $('.upload');
-    for (let i = 0; i < images.length; i++) {
-        let fileName = $(images[i]).val();
+    for (let image of images) {
+        let fileName = $(image).val();
         if (fileName) {
             let parts = fileName.split('.');
             let extension = parts[parts.length - 1];
