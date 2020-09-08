@@ -1,3 +1,5 @@
+originalUniqueName = '';
+
 $(document).ready(function(){
     $('#name').on('focusout', fillUniqueName);
 
@@ -8,6 +10,8 @@ $(document).ready(function(){
     $('.image-area button').on('click', removeImage);
 
     $('#save').on('click', saveChanges);
+
+    originalUniqueName = $('#uniqueName').val() ? $('#uniqueName').val() : '';
 });
 
 function fillUniqueName() {
@@ -44,12 +48,17 @@ function saveChanges(e) {
     if (!validateFields()) {
         return;
     }
+    sendCardData();
 }
 
 function validateFields() {
     var uniqueName = $('#uniqueName').val();
     if (/[\\/:*?"<>| ]/.test(uniqueName)) {
         showAlert(false, 'Invalid unique name');
+        return false;
+    }
+    if (!$('#name').val() || !uniqueName || !$('#number')) {
+        showAlert(false, 'Name, unique name and number must be filled');
         return false;
     }
     var images = $('.upload');
@@ -74,4 +83,31 @@ function showAlert(isSuccess, message) {
     setTimeout(function () {
         $(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
       }, 3000);
+}
+
+function sendCardData() {
+    var cardData = {
+        name: $('#name').val(),
+        uniqueName: $('#uniqueName').val(),
+        type: $('#type').val(),
+        rarity: $('#rarity').val(),
+        attribute: $('#attribute').val(),
+        characters: $('#characters').val(),
+        number: $('#number').val(),
+        originalUniqueName: originalUniqueName
+    };
+    
+    $.ajax({
+        type: 'post',
+        url: '/card/updateCard',
+        contentType: 'application/json',
+        data: JSON.stringify({cardData: cardData})
+    })
+    .done(function(result){
+        if (result.err) {
+            showAlert(false, result.message);
+            return false;
+        }
+        showAlert(true, 'Card successfully updated');
+    });
 }

@@ -175,7 +175,7 @@ exports.updateOwnedCards = function(req, res) {
 	});
 };
 
-exports.editCardGet = function(req, res, next) {
+exports.editCard = function(req, res, next) {
 	Cards.findOne({uniqueName: req.params.id}, async function(err, cardData) {
 		if (err) { return next(err); }
 		if (!cardData) {
@@ -186,3 +186,42 @@ exports.editCardGet = function(req, res, next) {
 		res.render('cardEdit', { title: 'Edit Card', card: cardData, user: req.user });
 	});
 };
+
+exports.updateCard = async function(req, res, next) {
+	var originalUniqueName = req.body.cardData.originalUniqueName;
+	var newUniqueName = req.body.cardData.uniqueName;
+
+	if (originalUniqueName === '' || originalUniqueName !== newUniqueName) {
+		var [err, nameExists] = await isNameUnique(newUniqueName);
+		if (err) {
+			res.json({ err: true, message: err });
+			return;
+		}
+		if (nameExists) {
+			res.json({ err: true, message: 'Unique name is already used by another card' });
+			return;
+		}
+	}
+
+	try {
+		var update = req.body.cardData;
+		delete update.originalUniqueName;
+		await Cards.findOneAndUpdate({uniqueName: originalUniqueName}, update);
+	} catch (err) {
+		res.json({ err: true, message: err });
+		return;
+	}
+
+	res.json({ err: null, message: 'Success' });
+};
+
+async function isNameUnique(unqiueName) {
+	var cardQuery = Cards.findOne({uniqueName: unqiueName});
+	try {
+		var card = await cardQuery.exec();
+	} catch (err) {
+		return [err, null];
+	}
+	var hasCard = card ? true : false;
+	return [null, hasCard];
+}
