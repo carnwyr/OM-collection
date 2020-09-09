@@ -57,7 +57,7 @@ function validateFields() {
         showAlert(false, 'Invalid unique name');
         return false;
     }
-    if (!$('#name').val() || !uniqueName || !$('#number')) {
+    if (!$('#name').val() || !uniqueName || !$('#number').val()) {
         showAlert(false, 'Name, unique name and number must be filled');
         return false;
     }
