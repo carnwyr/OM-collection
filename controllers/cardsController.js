@@ -207,16 +207,18 @@ exports.updateCard = async function(req, res, next) {
 	try {
 		await Cards.findOneAndUpdate({uniqueName: originalUniqueName}, req.body.cardData);
 
-		saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.L, 'L', false);
-		saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.LB, 'L', true);
-		saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.S, 'S', false);
+		var promiseL = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.L, 'L', false);
+		var promiseLB = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.LB, 'L', true);
+		var promiseS = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.S, 'S', false);
+
+		Promise.all([promiseL, promiseLB, promiseS])
+			.then(() => { res.json({ err: null, message: 'Success' }); })
+			.catch(reason => { res.json({ err: true, message: reason.message }); });
 
 	} catch (err) {
 		res.json({ err: true, message: err.message });
 		return;
 	}
-
-	res.json({ err: null, message: 'Success' });
 };
 
 async function isNameUnique(unqiueName) {
@@ -233,15 +235,26 @@ async function isNameUnique(unqiueName) {
 function saveImage(oldName, newName, baseImage, cardSize, isBoomed) {
 	if (oldName === newName) {
 		if (baseImage) {
-			writeImage(newName, baseImage, cardSize, isBoomed);
+			return writeImage(newName, baseImage, cardSize, isBoomed);
 		}
 	} else {
 		var oldImagePath = './public/images/cards/' + cardSize + '/' + oldName + (isBoomed?'_b':'') + '.jpg';
 		if (baseImage) {
-			fs.unlinkSync(oldImagePath);
-			writeImage(newName, baseImage, cardSize, isBoomed);
+			var deletePromise = new Promise((resolve, reject) => {
+				fs.unlink(oldImagePath, err => {
+					if (err) reject(err);
+    				resolve();
+				});
+			});
+			var writePromise = writeImage(newName, baseImage, cardSize, isBoomed);
+			return Promise.all([deletePromise, writePromise]);
 		} else {
-			fs.renameSync(oldImagePath, oldImagePath.replace(oldName, newName));
+			return new Promise((resolve, reject) => {
+				fs.rename(oldImagePath, oldImagePath.replace(oldName, newName), err => {
+					if (err) reject(err);
+	    			resolve();
+				});
+			});
 		}
 	}
 }
@@ -251,7 +264,13 @@ function writeImage(name, baseImage, cardSize, isBoomed) {
     const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
     const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
     const base64Data = baseImage.replace(regex, "");
+    const imageData = new Buffer(base64Data, 'base64');
     const imagePath = './public/images/cards/' + cardSize + '/' + name + (isBoomed?'_b':'') + '.jpg';
     
-    fs.writeFileSync(imagePath, base64Data, 'base64');
+    return new Promise((resolve, reject) => {
+	    fs.writeFile(imagePath, imageData, err => {
+	    	if (err) reject(err);
+	    	resolve();
+	    });
+	});
 }
