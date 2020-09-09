@@ -40,7 +40,7 @@ block content
                 input(type="text" class="form-control text-primary rounded-pill" id="nameFilter" placeholder="Search for card name..." style = "border: 0px;")
                 span(class="input-group-append")
                   div(class="input-group-text border-0 bg-transparent" style="z-index: 3; margin: -36px")
-                    i(class="lnr lnr-magnifier text-secondary")
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
             div(class="mx-auto")
               button(id="expandFilters" class="btn btn-primary bg-secondary border-secondary text-white btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 100px") Filters
               button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill ml-2 mb-0") Reset filters
@@ -156,7 +156,8 @@ block content
 
     div(class="row text-left mt-4" id="demonCards")
       div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon cards
+        h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
     div(class='collapse show' id='demonWrapper')
       div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
         if cardsList.filter(card => card.type == "Demon").length != 0
@@ -168,7 +169,8 @@ block content
 
     div(class="row text-left" id="memoryCards")
       div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory cards
+        h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
     div(class='collapse show' id='memoryWrapper')
       div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
         if cardsList.filter(card => card.type == "Memory").length != 0
