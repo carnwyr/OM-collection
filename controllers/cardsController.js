@@ -207,7 +207,9 @@ exports.updateCard = async function(req, res, next) {
 	try {
 		await Cards.findOneAndUpdate({uniqueName: originalUniqueName}, req.body.cardData);
 
-		saveImage(req.body.cardData.images.L, 'L', false);
+		saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.L, 'L', false);
+		saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.LB, 'L', true);
+		saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.S, 'S', false);
 
 	} catch (err) {
 		res.json({ err: true, message: err.message });
@@ -228,13 +230,28 @@ async function isNameUnique(unqiueName) {
 	return [null, hasCard];
 }
 
-function saveImage(baseImage, cardSize, isBoomed) {
-	const imagePath = './public/images/cards/';
+function saveImage(oldName, newName, baseImage, cardSize, isBoomed) {
+	if (oldName === newName) {
+		if (baseImage) {
+			writeImage(newName, baseImage, cardSize, isBoomed);
+		}
+	} else {
+		var oldImagePath = './public/images/cards/' + cardSize + '/' + oldName + (isBoomed?'_b':'') + '.jpg';
+		if (baseImage) {
+			fs.unlinkSync(oldImagePath);
+			writeImage(newName, baseImage, cardSize, isBoomed);
+		} else {
+			fs.renameSync(oldImagePath, oldImagePath.replace(oldName, newName));
+		}
+	}
+}
+
+function writeImage(name, baseImage, cardSize, isBoomed) {
 	const ext = baseImage.substring(baseImage.indexOf("/")+1, baseImage.indexOf(";base64"));
     const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
     const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
     const base64Data = baseImage.replace(regex, "");
-    const filename = '1.jpg';
+    const imagePath = './public/images/cards/' + cardSize + '/' + name + (isBoomed?'_b':'') + '.jpg';
     
-    fs.writeFileSync(imagePath+cardSize+'/'+filename, base64Data, 'base64');
+    fs.writeFileSync(imagePath, base64Data, 'base64');
 }
