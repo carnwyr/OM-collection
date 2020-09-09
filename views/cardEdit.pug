@@ -26,31 +26,31 @@ block content
 				div(class='form-group')
 					label(for="type") Type
 					select(class='custom-select' id="type" name="type")
-						option(value='Demon' selected=(card?card.type:''==='Demon')) Demon
-						option(value='Memory' selected=(card?card.type:''==='Memory')) Memory
+						option(value='Demon' selected=(card?card.type==='Demon':true)) Demon
+						option(value='Memory' selected=(card?card.type==='Memory':false)) Memory
 				div(class='form-group')
 					label(for="rarity") Rarity
 					select(class='custom-select' id="rarity" name="rarity")
-						option(value='N' selected=(card?card.rarity:''==='N')) N
-						option(value='R' selected=(card?card.rarity:''==='R')) R
-						option(value='SR' selected=(card?card.rarity:''==='SR')) SR
-						option(value='SSR' selected=(card?card.rarity:''==='SSR')) SSR
-						option(value='UR' selected=(card?card.rarity:''==='UR')) UR
-						option(value='UR+' selected=(card?card.rarity:''==='UR+')) UR+
+						option(value='N' selected=(card?card.rarity==='N':true)) N
+						option(value='R' selected=(card?card.rarity==='R':false)) R
+						option(value='SR' selected=(card?card.rarity==='SR':false)) SR
+						option(value='SSR' selected=(card?card.rarity==='SSR':false)) SSR
+						option(value='UR' selected=(card?card.rarity==='UR':false)) UR
+						option(value='UR+' selected=(card?card.rarity==='UR+':false)) UR+
 				div(class='form-group')
 					label(for="attribute") Attribute
 					select(class='custom-select' id="attribute" name="attribute")
-						option(value='Pride' selected=(card?card.attribute:''==='Pride')) Pride
-						option(value='Greed' selected=(card?card.attribute:''==='Greed')) Greed
-						option(value='Envy' selected=(card?card.attribute:''==='Envy')) Envy
-						option(value='Wrath' selected=(card?card.attribute:''==='Wrath')) Wrath
-						option(value='Lust' selected=(card?card.attribute:''==='Lust')) Lust
-						option(value='Gluttony' selected=(card?card.attribute:''==='Gluttony')) Gluttony
-						option(value='Sloth' selected=(card?card.attribute:''==='Sloth')) Sloth
+						option(value='Pride' selected=(card?card.attribute==='Pride':true)) Pride
+						option(value='Greed' selected=(card?card.attribute==='Greed':false)) Greed
+						option(value='Envy' selected=(card?card.attribute==='Envy':false)) Envy
+						option(value='Wrath' selected=(card?card.attribute==='Wrath':false)) Wrath
+						option(value='Lust' selected=(card?card.attribute==='Lust':false)) Lust
+						option(value='Gluttony' selected=(card?card.attribute==='Gluttony':false)) Gluttony
+						option(value='Sloth' selected=(card?card.attribute==='Sloth':false)) Sloth
 				div(class='form-group')
 					label(for="characters") Characters
 					select(class='custom-select' id="characters" name="characters" size=7 multiple)
-						option(value='Lucifer' selected=(card?card.characters.includes("Lucifer"):false)) Lucifer
+						option(value='Lucifer' selected=(card?card.characters.includes("Lucifer"):true)) Lucifer
 						option(value='Mammon' selected=(card?card.characters.includes("Mammon"):false)) Mammon
 						option(value='Leviathan' selected=(card?card.characters.includes("Leviathan"):false)) Leviathan
 						option(value='Satan' selected=(card?card.characters.includes("Satan"):false)) Satan

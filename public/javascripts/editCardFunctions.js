@@ -143,6 +143,7 @@ function sendCardData(images) {
             showAlert(false, result.message);
             return;
         }
+        originalUniqueName = $('#uniqueName').val();
         showAlert(true, 'Card successfully updated');
     });
 }
