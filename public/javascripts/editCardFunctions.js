@@ -82,7 +82,7 @@ function showAlert(isSuccess, message) {
     $(alert).show().animate({top: 65}, 500);
     setTimeout(function () {
         $(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
-      }, 3000);
+      }, 5000);
 }
 
 function updateCard() {

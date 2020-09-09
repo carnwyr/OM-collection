@@ -15,6 +15,8 @@ block content
           button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
           if user.isAdmin
             a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/edit") Edit card
+          if user.isAdmin
+            a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/delete") Delete card
 
       div(class="d-block d-lg-none col-12 col-md-7")
         if card.type == "Demon"
@@ -59,6 +61,9 @@ block content
             if user.isAdmin
               div.mt-2
                 a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/edit") Edit card
+            if user.isAdmin
+              div.mt-2
+                a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/delete") Delete card
 
 
   script(src="/javascripts/cardDetailFunctions.js")

@@ -4,7 +4,7 @@ block content
 	link(rel="stylesheet", href="/stylesheets/editCard.css")
 	script(src="/javascripts/editCardFunctions.js")
 	script.
-		var cardName = !{JSON.stringify(card.uniqueName)};
+		var cardName = !{JSON.stringify(card ? card.uniqueName : '')};
 	
 	div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px")
 	div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px")
@@ -18,48 +18,48 @@ block content
 			div(class='card-body mx-4')
 				div(class='form-group')
 					label(for="name") Name
-					input(class='form-control' type="text" id="name" name="name" value=card.name)
+					input(class='form-control' type="text" id="name" name="name" value=card?card.name:'')
 				div(class='form-group')
 					label(for="uniqueName") Unique name
-					input(class='form-control' type="text" id="uniqueName" name="uniqueName" value=card.uniqueName)
+					input(class='form-control' type="text" id="uniqueName" name="uniqueName" value=card?card.uniqueName:'')
 					small(class='form-text text-muted') Must use underscore instead of spaces, can't use \/:*?"<>|
 				div(class='form-group')
 					label(for="type") Type
 					select(class='custom-select' id="type" name="type")
-						option(value='Demon' selected=(card.type=='Demon')) Demon
-						option(value='Memory' selected=(card.type=='Memory')) Memory
+						option(value='Demon' selected=(card?card.type:''==='Demon')) Demon
+						option(value='Memory' selected=(card?card.type:''==='Memory')) Memory
 				div(class='form-group')
 					label(for="rarity") Rarity
 					select(class='custom-select' id="rarity" name="rarity")
-						option(value='N' selected=(card.rarity=='N')) N
-						option(value='R' selected=(card.rarity=='R')) R
-						option(value='SR' selected=(card.rarity=='SR')) SR
-						option(value='SSR' selected=(card.rarity=='SSR')) SSR
-						option(value='UR' selected=(card.rarity=='UR')) UR
-						option(value='UR+' selected=(card.rarity=='UR+')) UR+
+						option(value='N' selected=(card?card.rarity:''==='N')) N
+						option(value='R' selected=(card?card.rarity:''==='R')) R
+						option(value='SR' selected=(card?card.rarity:''==='SR')) SR
+						option(value='SSR' selected=(card?card.rarity:''==='SSR')) SSR
+						option(value='UR' selected=(card?card.rarity:''==='UR')) UR
+						option(value='UR+' selected=(card?card.rarity:''==='UR+')) UR+
 				div(class='form-group')
 					label(for="attribute") Attribute
 					select(class='custom-select' id="attribute" name="attribute")
-						option(value='Pride' selected=(card.attribute=='Pride')) Pride
-						option(value='Greed' selected=(card.attribute=='Greed')) Greed
-						option(value='Envy' selected=(card.attribute=='Envy')) Envy
-						option(value='Wrath' selected=(card.attribute=='Wrath')) Wrath
-						option(value='Lust' selected=(card.attribute=='Lust')) Lust
-						option(value='Gluttony' selected=(card.attribute=='Gluttony')) Gluttony
-						option(value='Sloth' selected=(card.attribute=='Sloth')) Sloth
+						option(value='Pride' selected=(card?card.attribute:''==='Pride')) Pride
+						option(value='Greed' selected=(card?card.attribute:''==='Greed')) Greed
+						option(value='Envy' selected=(card?card.attribute:''==='Envy')) Envy
+						option(value='Wrath' selected=(card?card.attribute:''==='Wrath')) Wrath
+						option(value='Lust' selected=(card?card.attribute:''==='Lust')) Lust
+						option(value='Gluttony' selected=(card?card.attribute:''==='Gluttony')) Gluttony
+						option(value='Sloth' selected=(card?card.attribute:''==='Sloth')) Sloth
 				div(class='form-group')
 					label(for="characters") Characters
 					select(class='custom-select' id="characters" name="characters" size=7 multiple)
-						option(value='Lucifer' selected=(card.characters.includes("Lucifer"))) Lucifer
-						option(value='Mammon' selected=(card.characters.includes("Mammon"))) Mammon
-						option(value='Leviathan' selected=(card.characters.includes("Leviathan"))) Leviathan
-						option(value='Satan' selected=(card.characters.includes("Satan"))) Satan
-						option(value='Asmodeus' selected=(card.characters.includes("Asmodeus"))) Asmodeus
-						option(value='Beelzebub' selected=(card.characters.includes("Beelzebub"))) Beelzebub
-						option(value='Belphegor' selected=(card.characters.includes("Belphegor"))) Belphegor
+						option(value='Lucifer' selected=(card?card.characters.includes("Lucifer"):false)) Lucifer
+						option(value='Mammon' selected=(card?card.characters.includes("Mammon"):false)) Mammon
+						option(value='Leviathan' selected=(card?card.characters.includes("Leviathan"):false)) Leviathan
+						option(value='Satan' selected=(card?card.characters.includes("Satan"):false)) Satan
+						option(value='Asmodeus' selected=(card?card.characters.includes("Asmodeus"):false)) Asmodeus
+						option(value='Beelzebub' selected=(card?card.characters.includes("Beelzebub"):false)) Beelzebub
+						option(value='Belphegor' selected=(card?card.characters.includes("Belphegor"):false)) Belphegor
 				div(class='form-group')
 					label(for="number") Number
-					input(class='form-control' type="text" id="number" name="number" value=card.number)
+					input(class='form-control' type="text" id="number" name="number" value=card?card.number:'')
 				div(class='row mx-0')
 					div(class="col-4")
 						div(class='input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary')
@@ -89,20 +89,29 @@ block content
 					div(class="col-4")
 						div(class="image-area mt-2 h-100")
 							div(style='position: relative')
-								img(id="imageResultL" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + ".jpg")
-								button(class='close text-light bg-dark rounded-circle')
+								if card
+									img(id="imageResultL" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + ".jpg")
+								else
+									img(id="imageResultL" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="#")
+								//button(class='close text-light bg-dark rounded-circle')
 									span(style='position: relative; bottom: 3px') &times;
 					div(class="col-4")
 						div(class="image-area mt-2 h-100")
 							div(style='position: relative')
-								img(id="imageResultLB" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + "_b.jpg")
-								button(class='close text-light bg-dark rounded-circle')
+								if card
+									img(id="imageResultLB" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + "_b.jpg")
+								else
+									img(id="imageResultLB" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="#")
+								//button(class='close text-light bg-dark rounded-circle')
 									span(style='position: relative; bottom: 3px') &times;
 					div(class="col-4")
 						div(class="image-area mt-2 h-100 d-flex")
 							div(class=' mx-auto align-self-center' style='position: relative')
-								img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm d-block" style='max-width: 120px;' src="/images/cards/S/" + card.uniqueName + ".jpg")
-								button(class='close text-light bg-dark rounded-circle')
+								if card
+									img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm d-block" style='max-width: 120px;' src="/images/cards/S/" + card.uniqueName + ".jpg")
+								else
+									img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" style='max-width: 120px;' src="#")
+								//button(class='close text-light bg-dark rounded-circle')
 									span(style='position: relative; bottom: 3px') &times;
 				
 				button(id='save' class='btn btn-primary') Save
