@@ -10,7 +10,7 @@ block content
     div.row
       //- Mobile/ Tablet Screen
       if user
-        div(class="d-flex justify-content-around mx-auto col-sm-6 d-md-none" style="margin-bottom:10px;")
+        div(class="d-flex justify-content-around mx-auto col-12 d-md-none" style="margin-bottom:10px;")
           button.btn.btn-primary.addCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Add to collection
           button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
           if user.isAdmin
