@@ -3,6 +3,7 @@ const CardsCollection = require('../models/cardsCollection');
 const Users = require('../models/users.js');
 
 const async = require('async');
+const fs = require('fs');
 
 exports.index = function(req, res, next) {
 	res.render('index', { title: 'Cards collection', user: req.user });
@@ -172,5 +173,164 @@ exports.updateOwnedCards = function(req, res) {
 		}).catch(err => {
 			res.send('error');
 		});
+	});
+};
+
+exports.editCard = function(req, res, next) {
+	if (!req.params.id) {
+		return res.render('cardEdit', { title: 'Add Card', user: req.user });
+	}
+
+	Cards.findOne({uniqueName: req.params.id}, async function(err, cardData) {
+		if (err) { return next(err); }
+		if (!cardData) {
+			var err = new Error('Card not found');
+			return next(err);
+		}
+
+		return res.render('cardEdit', { title: 'Edit Card', card: cardData, user: req.user });
+	});
+};
+
+exports.updateCard = async function(req, res, next) {
+	var originalUniqueName = req.body.cardData.originalUniqueName;
+	var newUniqueName = req.body.cardData.uniqueName;
+
+	if (originalUniqueName === '') {
+		await addNewCard(req.body.cardData, res);
+		return;
+	}
+
+	if (originalUniqueName === '' || originalUniqueName !== newUniqueName) {
+		var [err, nameExists] = await isNameUnique(newUniqueName);
+		if (err) {
+			return res.json({ err: true, message: err.message });
+		}
+		if (nameExists) {
+			return res.json({ err: true, message: 'Unique name is already used by another card' });
+		}
+	}
+
+	try {
+		await Cards.findOneAndUpdate({uniqueName: originalUniqueName}, req.body.cardData);
+
+		var promiseL = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.L, 'L', false);
+		var promiseLB = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.LB, 'L', true);
+		var promiseS = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.S, 'S', false);
+
+		Promise.all([promiseL, promiseLB, promiseS])
+			.then(() => { res.json({ err: null, message: 'Success' }); })
+			.catch(reason => { res.json({ err: true, message: reason.message }); });
+
+	} catch (err) {
+		return res.json({ err: true, message: err.message });
+	}
+};
+
+async function isNameUnique(unqiueName) {
+	var cardQuery = Cards.findOne({uniqueName: unqiueName});
+	try {
+		var card = await cardQuery.exec();
+	} catch (err) {
+		return [err, null];
+	}
+	var hasCard = card ? true : false;
+	return [null, hasCard];
+}
+
+function saveImage(oldName, newName, baseImage, cardSize, isBoomed) {
+	if (oldName === newName) {
+		if (baseImage) {
+			return writeImage(newName, baseImage, cardSize, isBoomed);
+		}
+	} else {
+		var oldImagePath = './public/images/cards/' + cardSize + '/' + oldName + (isBoomed?'_b':'') + '.jpg';
+		if (baseImage) {
+			var deletePromise = new Promise((resolve, reject) => {
+				fs.unlink(oldImagePath, err => {
+					if (err) reject(err);
+    				resolve();
+				});
+			});
+			var writePromise = writeImage(newName, baseImage, cardSize, isBoomed);
+			return Promise.all([deletePromise, writePromise]);
+		} else {
+			return new Promise((resolve, reject) => {
+				fs.rename(oldImagePath, oldImagePath.replace(oldName, newName), err => {
+					if (err) reject(err);
+	    			resolve();
+				});
+			});
+		}
+	}
+}
+
+function writeImage(name, baseImage, cardSize, isBoomed) {
+	if(!baseImage) return;
+
+	const ext = baseImage.substring(baseImage.indexOf("/")+1, baseImage.indexOf(";base64"));
+    const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
+    const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
+    const base64Data = baseImage.replace(regex, "");
+    const imageData = new Buffer.from(base64Data, 'base64');
+    const imagePath = './public/images/cards/' + cardSize + '/' + name + (isBoomed?'_b':'') + '.jpg';
+    
+    return new Promise((resolve, reject) => {
+	    fs.writeFile(imagePath, imageData, err => {
+	    	if (err) reject(err);
+	    	resolve();
+	    });
+	});
+}
+
+async function addNewCard(cardData, res) {
+	try {
+		var {originalUniqueName, images, ...cardProperties} = cardData;
+		await Cards.create(cardData, (err, doc) => {
+			if(err) {
+				return res.json({ err: true, message: err.message });
+			}
+		});
+
+		var promiseL = writeImage(cardData.uniqueName, cardData.images.L, 'L', false);
+		var promiseLB = writeImage(cardData.uniqueName, cardData.images.LB, 'L', true);
+		var promiseS = writeImage(cardData.uniqueName, cardData.images.S, 'S', false);
+
+		Promise.all([promiseL, promiseLB, promiseS])
+			.then(() => { res.json({ err: null, message: 'Success' }); })
+			.catch(reason => { res.json({ err: true, message: reason.message }); });
+
+	} catch (err) {
+		return res.json({ err: true, message: err.message });
+	}
+}
+
+exports.deleteCard = function(req, res, next) {
+	var cardName = req.params.id;
+	Cards.deleteOne({ uniqueName: cardName }, err => {
+		if (err) { return next(err); }
+
+		var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
+		var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
+		var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');
+
+		Promise.all([promiseL, promiseLB, promiseS])
+			.then(() => { return res.redirect('/cards'); })
+			.catch(reason => { return next(err); });
+	});
+}
+
+function deleteFile(file) {
+  	return new Promise(function(resolve, reject) {
+	    fs.access(file, fs.W_OK, function(err) {
+	      	if (!err) {
+		        fs.unlink(file, function(err) {
+		          	if (err) { return reject(err); }
+		          	resolve();
+		        });
+	      	} else {
+	        	resolve();
+	      	}
+	    });
 	});
 };

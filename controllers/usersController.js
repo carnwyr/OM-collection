@@ -101,6 +101,16 @@ exports.isLoggedIn = function () {
 	}
 }
 
+exports.isAdmin = function () {
+	return function (req, res, next) {
+		if (req.user && req.user.isAdmin) {
+			return next()
+		}
+		var err = new Error('You have no permission for this action');
+		return next(err);
+	}
+}
+
 passport.use(new LocalStrategy({ passReqToCallback : true },
 	function(req, username, password, next) {
 		Users.findOne({ 'name': { $regex : new RegExp('^' + username + '$', "i") }}, function (err, user) {
