@@ -1,12 +1,37 @@
 extends layout
 
 block content
+  div(class="modal fade" id="contactLaele" tabindex="-1" role="dialog" aria-labelledby="contactLaeleLabel" aria-hidden="true")
+    div(class="modal-dialog" role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h5(class="modal-title" id="contactLaeleLabel") Contact Laele
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span( aria-hidden="true") &times;
+        div(class="modal-body")
+          p Discord: carnwyr#6733
+          span Email:&nbsp;
+            a(href="mailto:carnwyr@gmail.com") carnwyr@gmail.com
+        div(class="modal-footer")
+          button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Close
+  div(class="modal fade" id="contactChar" tabindex="-1" role="dialog" aria-labelledby="contactCharLabel" aria-hidden="true")
+    div(class="modal-dialog" role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h5(class="modal-title" id="contactCharLabel") Contact char
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span( aria-hidden="true") &times;
+        div(class="modal-body")
+          p Discord: char#9463
+        div(class="modal-footer")
+          button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Close
+
   div.row
     section.landing-page
       div.card.hovercard
         div.cardheader
         div.avatar
-          img(alt="pfp" src="https://media.discordapp.net/attachments/673339200782729276/703354748945825833/unknown.png")
+          img(alt="pfp" src="/images/karasu.png")
       div.container
         div.row(style="margin-top:128px;")
           div.col-12.mx-auto
@@ -22,20 +47,30 @@ block content
                   h5.card-title What's this?
                   p.card-text
                     | OM!Collection is a website for you to record and share your cards online. It's built by fans on a completely voluntary basis. We are not associated in any way with our official developers (great job they did making the game &#x1F44F;).
-                    | <br /><br />
-                    | The website is still in a (not even) beta mode (as I'm typing). And, no clue how many people will use it. But, if you ever need to talk to us, let it be a bug report or suggestion, we'll create a discord server (probably). See you there.
+                    h5.card-title Contacts
+                    div
+                      | Need help? Link to Discord server:&nbsp;
+                      a(href="https://discord.gg/rFvYv5n")  discord.gg/rFvYv5n
+                    div.d-flex
+                      div(data-toggle='modal' data-target="#contactLaele" style='cursor: pointer')
+                        img(class="pfp" alt="pfp" src="/images/karasu.png")
+                        span.mr-5 Laele
+                      div(data-toggle='modal' data-target="#contactChar" style='cursor: pointer')
+                        img(class="pfp" alt="pfp" src="/images/karasu.png")
+                        span char
           div.col-12.col-md-6.mb-4
             div#About.card.shadow.rounded.h-100
               div.card-body
                 h5.card-title How does it work?
                 p.card-text
-                | Click on Sign Up to make an account. Then, head over to All Cards to "manage" your collection. Feel free to contact us for any questions.
-                <br /><br />
-                h5.card-title Talk to?
-                img(class="pfp" alt="pfp" src="https://media.discordapp.net/attachments/673339200782729276/703354748945825833/unknown.png")
-                span.mr-5 Laele
-                img(class="pfp" alt="pfp" src="https://media.discordapp.net/attachments/673339200782729276/703354748945825833/unknown.png")
-                span char
+                  | You can browse the cards gallery without creating an account but if you make one you'll be able to manage your own collection. To do that press Manage Collection button and select the cards you own.
+                  br
+                  br
+                  | Pressing Select All with filters applied will select only the cards that are displayed.
+                  br
+                  br
+                  | After saving you can check your cards in My collection. You can copy the link to that page and share it with other players, they'll be able to see your cards as well.
+                
     link(rel="stylesheet" href="/stylesheets/homepage.css")
 
 block footer
