@@ -29,6 +29,8 @@ $(document).ready(function(){
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 	$('#expandFilters').on('click', function() { $(this).text($(this).text() === "Filters" ? "Hide filters" : "Filters"); })
 
+	$("button#copyLink").on("click", copyCollectionLink);
+
 	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
 
 	$(window).scroll(swichBackToTopButton);
@@ -348,4 +350,32 @@ function addCardsToChangedList(cardsToSwitch, select) {
 	cardNames.forEach(function(name) {
 		changedCards[name] = select;
 	});
+}
+
+
+// Share Collection Modal
+var modal = document.getElementById("share");
+var btn = document.getElementById("shareCollection");
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function() {
+	$("#userLink").val(window.location.href);
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+function copyCollectionLink() {
+  var copyText = document.getElementById("userLink");
+  copyText.select();
+  copyText.setSelectionRange(0, 9999);
+  document.execCommand("copy");
 }
