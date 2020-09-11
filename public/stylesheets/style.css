@@ -1,3 +1,8 @@
+body {
+  padding-top: 70px;
+  background: url("/images/background_sheep.png") fixed;
+}
+
 /* BOOTSTRAP OVERRIDES */
 .bg-primary {
   background: rgb(219, 158, 251);
@@ -20,10 +25,6 @@
 /* HEADER */
 .navbar-brand {
   padding-top: 0.15rem;
-}
-body {
-  padding-top: 70px;
-  background: url("/images/background_sheep.png") fixed;
 }
 
 /* FOOTER */
@@ -65,4 +66,4 @@ body {
 /* MISC */
 .navbar-toggler {
    outline: none !important;
-} 
+}
