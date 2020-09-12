@@ -29,6 +29,9 @@ $(document).ready(function(){
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 	$('#expandFilters').on('click', function() { $(this).text($(this).text() === "Filters" ? "Hide filters" : "Filters"); })
 
+	$("#shareCollection").on("click", () => { $("#userLink").val(window.location.href); });
+	$("#copyLink").on("click", copyCollectionLink);
+
 	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
 
 	$(window).scroll(swichBackToTopButton);
@@ -111,7 +114,7 @@ function filterApplied() {
 
 	$(".cardPreview").fadeOut(400).promise().done(function() {
 		var cardsToDisplay = filterCardsToDisplay($(".cardPreview"), filters, search);
-		
+
 		var currentCardsInRow = getRowCapacity();
 		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
 		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
@@ -246,7 +249,7 @@ function switchCardsSelection(cardNames) {
 	var invisibleCards = $('.cardPreview').filter(function() {
 		return !$(this).isInViewport();
 	}).find('img.img-max');
-	
+
 	if (selectionMode) {
 		var selectOwnedCards = function(cardNames) { $('.cardPreview').filter(function() {
 			return !cardNames.includes($(this).attr('href').replace('card/', ''));
@@ -348,4 +351,11 @@ function addCardsToChangedList(cardsToSwitch, select) {
 	cardNames.forEach(function(name) {
 		changedCards[name] = select;
 	});
+}
+
+function copyCollectionLink() {
+	var copyText = document.getElementById("userLink");
+	copyText.select();
+	copyText.setSelectionRange(0, 9999);
+	document.execCommand("copy");
 }
