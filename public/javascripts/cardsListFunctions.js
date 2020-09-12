@@ -159,6 +159,10 @@ function filterCardsToDisplay(cards, filters, search) {
 }
 
 function applyEffectWithoutTransition(elements, effect, args) {
+	if (elements.length === 0) {
+		effect(args);
+		return;
+	}
 	elements.addClass('no-transition');
 	effect(args);
 	elements[0].offsetHeight;
