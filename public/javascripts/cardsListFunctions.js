@@ -211,14 +211,14 @@ function switchSelectionMode() {
 			})
 			.done(function(result){
 				if (result === 'error') {
-					showAlert("div#failAlert");
+					showAlert("div#failAlert", "Something went wrong, please reload the page");
 					return;
 				}
 				changedCards = {};
 				selectionMode = false;
 				switchManagementButtons();
 				switchCardsSelection()
-				showAlert("div#successAlert");
+				showAlert("div#successAlert", "Collection modified successfully");
 			});
 		} else {
 			changedCards = {};
@@ -277,7 +277,8 @@ $.fn.isInViewport = function () {
 	return elementBottom > viewportTop && elementTop < viewportBottom;
 }
 
-function showAlert(alert) {
+function showAlert(alert, message) {
+	$(alert).html(message);
     $(alert).show().animate({top: 65}, 500);
     setTimeout(function () {
         $(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
@@ -358,4 +359,5 @@ function copyCollectionLink() {
 	copyText.select();
 	copyText.setSelectionRange(0, 9999);
 	document.execCommand("copy");
+	showAlert("div#successAlert", "Link successfully copied!");
 }
