@@ -20,7 +20,7 @@ function checkUsername(e) {
 	$("input#username").attr('value', username);
 
 	if (!/^[0-9a-zA-Z_.-]+$/.test(username)) {
-		$("small#usernameError").html("Username can only contain alphabets, numbers, and . _ -");
+		$("small#usernameError").html("Username can only contain alphabets, numbers, and ._-");
 		return;
 	}
 
@@ -54,6 +54,12 @@ function checkPassword(e) {
 	$("input#password").attr('value', password);
 
 	var confirmPassword = $("input#confirmPassword").val();
+
+	if (!/^[0-9a-zA-Z!@#$%^]+$/.test(password)) {
+		$("small#passwordError").html("Password can only contain alphabets, numbers, and !@#$%^");
+		return;
+	}
+
 	if (password.length < 8) {
 		$("small#passwordError").html('Password must be at least 8 characters long');
 		return;

@@ -13,7 +13,7 @@ block content
               span.floating-label Username
               small#usernameError.form-text.text-danger
             div.form-label-group
-              input#password.form-control(type="password" name="password" pattern=".{8,}" maxlength="50" autocomplete="off" required)
+              input#password.form-control(type="password" name="password" pattern="[A-Za-z0-9!@#$%^]+.{8,}" maxlength="50" autocomplete="off" required)
               span.floating-label Password
               small#passwordError.form-text.text-danger
             div.form-label-group
