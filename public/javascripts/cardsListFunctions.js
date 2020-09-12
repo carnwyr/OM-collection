@@ -29,6 +29,9 @@ $(document).ready(function(){
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 	$('#expandFilters').on('click', function() { $(this).text($(this).text() === "Filters" ? "Hide filters" : "Filters"); })
 
+	$("#shareCollection").on("click", () => { $("#userLink").val(window.location.href); });
+	$("#copyLink").on("click", copyCollectionLink);
+
 	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
 
 	$(window).scroll(swichBackToTopButton);
@@ -111,7 +114,7 @@ function filterApplied() {
 
 	$(".cardPreview").fadeOut(400).promise().done(function() {
 		var cardsToDisplay = filterCardsToDisplay($(".cardPreview"), filters, search);
-		
+
 		var currentCardsInRow = getRowCapacity();
 		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
 		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
@@ -212,14 +215,14 @@ function switchSelectionMode() {
 			})
 			.done(function(result){
 				if (result === 'error') {
-					showAlert("div#failAlert");
+					showAlert("div#failAlert", "Something went wrong, please reload the page");
 					return;
 				}
 				changedCards = {};
 				selectionMode = false;
 				switchManagementButtons();
 				switchCardsSelection()
-				showAlert("div#successAlert");
+				showAlert("div#successAlert", "Collection modified successfully");
 			});
 		} else {
 			changedCards = {};
@@ -250,7 +253,7 @@ function switchCardsSelection(cardNames) {
 	var invisibleCards = $('.cardPreview').filter(function() {
 		return !$(this).isInViewport();
 	}).find('img.img-max');
-	
+
 	if (selectionMode) {
 		var selectOwnedCards = function(cardNames) { $('.cardPreview').filter(function() {
 			return !cardNames.includes($(this).attr('href').replace('card/', ''));
@@ -278,7 +281,8 @@ $.fn.isInViewport = function () {
 	return elementBottom > viewportTop && elementTop < viewportBottom;
 }
 
-function showAlert(alert) {
+function showAlert(alert, message) {
+	$(alert).html(message);
     $(alert).show().animate({top: 65}, 500);
     setTimeout(function () {
         $(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
@@ -352,4 +356,12 @@ function addCardsToChangedList(cardsToSwitch, select) {
 	cardNames.forEach(function(name) {
 		changedCards[name] = select;
 	});
+}
+
+function copyCollectionLink() {
+	var copyText = document.getElementById("userLink");
+	copyText.select();
+	copyText.setSelectionRange(0, 9999);
+	document.execCommand("copy");
+	showAlert("div#successAlert", "Link successfully copied!");
 }
