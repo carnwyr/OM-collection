@@ -307,14 +307,15 @@ async function addNewCard(cardData, res) {
 
 exports.deleteCard = function(req, res, next) {
 	var cardName = req.params.id;
-	Cards.deleteOne({ uniqueName: cardName }, err => {
+	Cards.findOneAndDelete({ uniqueName: cardName }, (err, doc) => {
 		if (err) { return next(err); }
 
+		var promiseCollection = CardsCollection.deleteMany({card: doc._id}).exec();
 		var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
 		var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
 		var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');
 
-		Promise.all([promiseL, promiseLB, promiseS])
+		Promise.all([promiseCollection, promiseL, promiseLB, promiseS])
 			.then(() => { return res.redirect('/cards'); })
 			.catch(reason => { return next(err); });
 	});
