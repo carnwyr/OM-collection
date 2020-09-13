@@ -32,7 +32,8 @@ exports.signupPost = [
 		.notEmpty().withMessage("Username can't be empty")
 		.matches(/^[A-Za-z0-9._-]+$/).withMessage('Username contains invalid characters'),
 	body('password')
-		.isLength({ min: 8 }),
+		.isLength({ min: 8 })
+		.matches(/^[0-9a-zA-Z!@#$%^]+$/).withMessage('Password contains invalid characters'),
 	body('username').escape(),
 	body('password').escape(),
 	async function(req, res, next) {
