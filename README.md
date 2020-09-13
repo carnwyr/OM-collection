@@ -8,7 +8,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <h1 align="center">Obey Me! Collection</h3>
+  <h1 align="center">Karasu OS</h3>
 
   <p align="center">
     A website to track the cards you own in the mobile game Obey Me!
@@ -36,7 +36,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Obey Me! is a gacha game developed by NTT Solmare. It offers a wide variety of cards that can be gathered by the players. Obey Me! Collection (or OM!Collection for short) was created to make it easier to track the cards that you own and the ones that you still need to acquire. 
+Obey Me! is a gacha game developed by NTT Solmare. It offers a wide variety of cards that can be gathered by the players. Karasu OS was created to make it easier to track the cards that you own and the ones that you still need to acquire. 
 
 Here are its main features:
 * Browse the full collection of cards with the ability to filter it by rarity, attribute, character or the card's name
@@ -141,4 +141,3 @@ Project Link: [https://github.com/carnwyr/OM-collection](https://github.com/carn
 * [Pug](https://pugjs.org/)
 * [Mongoose](https://mongoosejs.com/)
 * [Themestr](https://themestr.app/)
-* [Linearicons](https://linearicons.com/)
