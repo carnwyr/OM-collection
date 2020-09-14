@@ -5,7 +5,7 @@ $(document).ready(function(){
 	if (!document.cookie.split('; ').find(row => row.startsWith("closedSupportToast"))) {
     $("#supportToast").removeClass("d-none").toast("show");
   }
-	$("button#closeToast").on("click", () => {
+	$("button#closeToast, #supportNow").on("click", () => {
 		document.cookie = "closedSupportToast=true; expires=" + cookieExpiryDate() + ";";
 		$("#supportToast").remove();
 	})
