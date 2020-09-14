@@ -3,7 +3,19 @@ $(document).ready(function(){
 	$('.navbar .nav-item a[href="' + location.pathname + '"]').closest('li').addClass('active');
 
 	if (!document.cookie.split('; ').find(row => row.startsWith("closedSupportToast"))) {
-    $(".toast").toast("show");
+    $("#supportToast").removeClass("d-none").toast("show");
   }
-	$("button#closeToast").on("click", () => { document.cookie = "closedSupportToast=true; expires=Fri, 31 Dec 2020 23:59:59 GMT"; })
+	$("button#closeToast").on("click", () => {
+		document.cookie = "closedSupportToast=true; expires=" + cookieExpiryDate() + ";";
+		$("#supportToast").remove();
+	})
 });
+
+// cookie expires in three months
+function cookieExpiryDate() {
+	var d = new Date();
+
+	d.setMonth(d.getMonth() + 3);
+
+	return d.toUTCString();
+}
