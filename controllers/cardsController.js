@@ -57,15 +57,15 @@ exports.cardDetail = function(req, res, next) {
 		}
 
 		if (req.user) {
-			var [err, hasCard] = await isCardInCollection(req.user._id, cardData._id);
+			var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
 			if (err) { return next(err); }
 		}
 		res.render('cardDetail', { title: 'Card Details', card: cardData, user: req.user, hasCard: hasCard });
 	});
 };
 
-async function isCardInCollection(userId, cardId) {
-	var collectionQuery = CardsCollection.findOne({user: userId, card: cardId});
+async function isCardInCollection(user, card) {
+	var collectionQuery = CardsCollection.findOne({user: user, card: card});
 	try {
 		var pair = await collectionQuery.exec();
 	} catch(err) {
@@ -76,48 +76,37 @@ async function isCardInCollection(userId, cardId) {
 }
 
 exports.addToCollection = function(req, res) {
-	Cards.findOne({uniqueName: req.params.id}, function(err, cardData) {
+	var pair = CardsCollection({
+		user: req.user.name,
+		card: req.params.id
+	});
+	pair.save(function (err) {
 		if (err) { res.send('error'); return; }
-		if (!cardData) { res.send('no card'); return; }
-
-		var pair = CardsCollection({
-			user: req.user._id,
-			card: cardData._id
-		});
-		pair.save(function (err) {
-			if (err) { res.send('error'); return; }
-			res.send('ok');
-		});
+		res.send('ok');
 	});
 };
 
 exports.removeFromCollection = function(req, res) {
-	Cards.findOne({uniqueName: req.params.id}, function(err, cardData) {
+	CardsCollection.deleteOne({user: req.user.name, card: req.params.id}, function(err, pair) {
 		if (err) { res.send('error'); return; }
-		if (!cardData) { res.send('no card'); return; }
-
-		CardsCollection.deleteOne({user: req.user._id, card: cardData._id}, function(err, pair) {
-			if (err) { res.send('error'); return; }
-			res.send('ok');
-		});
+		res.send('ok');
 	});
 };
 
 exports.cardsCollection = async function(req, res, next) {
-	var [err, userId] = await getUserId(req.user, req.params.username);
-	if (err) { return next(err); }
 	if (req.user && req.user.name === req.params.username) {
 		var title = 'My Collection';
 	} else {
 		var title = req.params.username + "'s Collection";
 	}
-	CardsCollection.find({'user': userId})
-		.populate('card')
-		.exec(function (err, cardsList) {
+	CardsCollection.find({user: req.params.username}, function (err, collection) {
+		if (err) { return next(err); }
+		let ownedCards = collection.map(pair => pair.card);
+		Cards.find({uniqueName: {"$in": ownedCards}}, function(err, cardsList) {
 			if (err) { return next(err); }
-			cardsList = cardsList.map(pair => pair.card);
 			cardsList.sort(sortByRarityAndNumber);
 			res.render('cardsList', { title: title, cardsList: cardsList, user: req.user, path: 'collection' });
+		});
 	});
 };
 
@@ -141,38 +130,31 @@ async function getUserId(currentUser, requestedUsername) {
 }
 
 exports.getOwnedCards = function(req, res) {
-	CardsCollection.find({'user': req.user._id})
-		.populate('card')
-		.exec(function (err, cardsList) {
-			if (err) { return next(err); }
-			var cardNames = cardsList.map(userCard => userCard.card.uniqueName);
-			res.send(cardNames);
+	CardsCollection.find({user: req.user.name}, function (err, collection) {
+		if (err) { return next(err); }
+		var cardNames = collection.map(pair => pair.card);
+		res.send(cardNames);
 	});
 };
 
 exports.updateOwnedCards = function(req, res) {
-	Cards.find({uniqueName: {"$in": Object.keys(req.body.changedCards)}}, 'uniqueName', function(err, cards) {
-		if (err) { res.send('error'); return; }
-		if (!cards) { res.send('error'); return; }
+	var addedCards = [];
+	var removedCards = [];
 
-		var addedCards = [];
-		var removedCards = [];
-
-		for (let key in req.body.changedCards) {
-			if (req.body.changedCards[key]) {
-				addedCards.push(new CardsCollection({user: req.user._id, card: cards.find(card => card.uniqueName === key)._id}));
-			} else {
-				removedCards.push(cards.find(card => card.uniqueName === key)._id);
-			}
+	for (let key in req.body.changedCards) {
+		if (req.body.changedCards[key]) {
+			addedCards.push(new CardsCollection({user: req.user.name, card: key}));
+		} else {
+			removedCards.push(key);
 		}
-		var addPromise = CardsCollection.insertMany(addedCards);
-		var removePromise = CardsCollection.deleteMany({user: req.user._id, card: removedCards}).exec();
+	}
+	var addPromise = CardsCollection.insertMany(addedCards);
+	var removePromise = CardsCollection.deleteMany({user: req.user.name, card: removedCards}).exec();
 
-		Promise.all([addPromise, removePromise]).then(value => {
-			res.sendStatus(200);
-		}).catch(err => {
-			res.send('error');
-		});
+	Promise.all([addPromise, removePromise]).then(value => {
+		res.sendStatus(200);
+	}).catch(err => {
+		res.send('error');
 	});
 };
 
@@ -212,13 +194,14 @@ exports.updateCard = async function(req, res, next) {
 	}
 
 	try {
-		await Cards.findOneAndUpdate({uniqueName: originalUniqueName}, req.body.cardData);
+		var promiseCard = Cards.findOneAndUpdate({uniqueName: originalUniqueName}, req.body.cardData).exec();
+		var promiseCollection = CardsCollection.updateMany({ card: originalUniqueName }, { card: newUniqueName }).exec();
 
 		var promiseL = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.L, 'L', false);
 		var promiseLB = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.LB, 'L', true);
 		var promiseS = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.S, 'S', false);
 
-		Promise.all([promiseL, promiseLB, promiseS])
+		Promise.all([promiseCard, promiseCollection, promiseL, promiseLB, promiseS])
 			.then(() => { res.json({ err: null, message: 'Success' }); })
 			.catch(reason => { res.json({ err: true, message: reason.message }); });
 
@@ -307,10 +290,10 @@ async function addNewCard(cardData, res) {
 
 exports.deleteCard = function(req, res, next) {
 	var cardName = req.params.id;
-	Cards.findOneAndDelete({ uniqueName: cardName }, (err, doc) => {
+	Cards.findOneAndDelete({ uniqueName: cardName }, (err, card) => {
 		if (err) { return next(err); }
 
-		var promiseCollection = CardsCollection.deleteMany({card: doc._id}).exec();
+		var promiseCollection = CardsCollection.deleteMany({card: card.name}).exec();
 		var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
 		var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
 		var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');

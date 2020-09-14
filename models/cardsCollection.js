@@ -4,8 +4,8 @@ var Schema = mongoose.Schema;
 
 var CardsCollectionSchema = new Schema(
   {
-    user: {type: Schema.Types.ObjectId, required: true, ref: 'users'},
-    card: {type: Schema.Types.ObjectId, required: true, ref: 'cards'}
+    user: {type: String, required: true},
+    card: {type: String, required: true}
   },
   {
   	collection: 'cardsCollection'
