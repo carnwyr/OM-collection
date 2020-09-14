@@ -60,12 +60,11 @@ block content
             div(class="mx-auto")
               button(id="expandFilters" class="btn btn-primary bg-secondary border-secondary text-white btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 100px") Filters
               button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill ml-2 mb-0") Reset filters
-
     div(id="filters" class="row text-left collapse")
       div.col-12.col-md-6.pr-md-1.mb-2
-        div(id="rarityFilter" class="card mb-2 shadow rounded")
-          div(class="card-header pb-0") Rarity
-          div(class="card-body")
+        div(id="rarityFilter" class="card mb-2 shadow rounded" style="border-left: 4px solid #8B9AF0;")
+          div(class="card-header pb-2") Rarity
+          div(class="card-body pt-2")
             form(id="rarityForm")
               div(class="container")
                 div(class="row")
@@ -90,9 +89,9 @@ block content
                   div(class="custom-control custom-checkbox col-1")
                     input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
                     label(class="custom-control-label" for="checkRarityUR+") UR+
-        div(id="attributeFilter" class="card shadow rounded")
-          div(class="card-header pb-0") Attribute
-          div(class="card-body")
+        div(id="attributeFilter" class="card shadow rounded" style="border-left: 4px solid #F06292;")
+          div(class="card-header pb-2") Attribute
+          div(class="card-body pt-2")
             form(id="attributeForm")
               div(class="container")
                 div(class="row")
@@ -121,7 +120,7 @@ block content
                     input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
                     label(class="custom-control-label" for="checkAttributeSloth") Sloth
       div.col-12.col-md-6.pl-md-1.mb-2
-        div(id="characterFilter" class="card shadow rounded h-100")
+        div(id="characterFilter" class="card shadow rounded h-100" style="border-left: 4px solid #C297EC;")
           div(class="card-header") Character
           div(class="card-body")
             form(id="characterForm")
