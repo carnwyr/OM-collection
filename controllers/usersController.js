@@ -92,6 +92,10 @@ exports.signupCheckUsername = async function(req, res) {
 	res.send(true);
 }
 
+exports.accountPage = function(req, res, next) {
+	res.render('account', { title: 'Account settings', user: req.user });
+}
+
 exports.isLoggedIn = function () {
 	return function (req, res, next) {
 		if (req.isAuthenticated()) {
@@ -105,6 +109,16 @@ exports.isLoggedIn = function () {
 exports.isAdmin = function () {
 	return function (req, res, next) {
 		if (req.user && req.user.isAdmin) {
+			return next()
+		}
+		var err = new Error('You have no permission for this action');
+		return next(err);
+	}
+}
+
+exports.isSameUser = function () {
+	return function (req, res, next) {
+		if (req.user && (req.user.name == req.params.name || req.user.isAdmin)) {
 			return next()
 		}
 		var err = new Error('You have no permission for this action');

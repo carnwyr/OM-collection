@@ -3,12 +3,19 @@ $(document).ready(function(){
 	$('.navbar .nav-item a[href="' + location.pathname + '"]').closest('li').addClass('active');
 
 	if (!document.cookie.split('; ').find(row => row.startsWith("closedSupportToast"))) {
-    $("#supportToast").removeClass("d-none").toast("show");
-  }
+	    $("#supportToast").removeClass("d-none").toast("show");
+	}
+
 	$("button#closeToast, #supportNow").on("click", () => {
 		document.cookie = "closedSupportToast=true; expires=" + cookieExpiryDate() + ";";
 		$("#supportToast").remove();
-	})
+	});
+
+	$('.navbar .dropdown').hover(function() {
+		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+	}, function() {
+		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
+	});
 });
 
 // cookie expires in three months
