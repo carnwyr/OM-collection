@@ -129,12 +129,12 @@ exports.sendVerificationEmail = function(req, res, next) {
 						secure: true,
 						port: 465,
 						auth: {
-							user: 'karasu.os.mail@gmail.com',
-							pass: 'vaf4XgN0cJ'
+							user: process.env.EMAIL,
+							pass: process.env.EMAIL_PASSWORD
 						}
 					});
 					var mailOptions = {
-						from: 'karasu.os.mail@gmail.com',
+						from: process.env.EMAIL,
 						to: req.body.email,
 						subject: 'Email confirmation',
 						text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
