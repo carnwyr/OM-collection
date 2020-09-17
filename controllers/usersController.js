@@ -1,10 +1,14 @@
 const Users = require('../models/users.js')
+const Codes = require('../models/verificationCodes.js')
 
 const bcrypt = require('bcrypt')
+const cryptoRandomString = require('crypto-random-string');
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const { body, validationResult } = require('express-validator');
 const async = require('async');
+const nodemailer = require('nodemailer');
+
 require('dotenv').config();
 
 exports.loginGet = function(req, res, next) {
@@ -96,6 +100,77 @@ exports.accountPage = function(req, res, next) {
 	res.render('account', { title: 'Account settings', user: req.user });
 }
 
+exports.sendVerificationEmail = function(req, res, next) {
+	Users.findOne({ name: req.params.name}, function (err, user) {
+		if (err) {
+			return res.json({ err: true, message: err.message });
+		}
+		if (!user) {
+			var err = new Error('Wrong password');
+			return next(null, false, req.flash('message', 'No such user'))
+		}
+		bcrypt.compare(password, user.password, function (err, result) {
+			if (err) {
+				return res.json({ err: true, message: err.message });
+			}
+			if (!result) {
+				var err = new Error('Wrong password');
+				return res.json({ err: true, message: err.message });
+			}
+			else {
+				Codes.deleteMany({user: req.params.name}, (err) => {
+					if (err) {
+						return res.json({ err: true, message: err.message });
+					}
+
+					var code = cryptoRandomString({length: 128, type: 'url-safe'});
+					var transporter = nodemailer.createTransport({
+						host: 'smtp.gmail.com',
+						secure: true,
+						port: 465,
+						auth: {
+							user: 'karasu.os.mail@gmail.com',
+							pass: 'vaf4XgN0cJ'
+						}
+					});
+					var mailOptions = {
+						from: 'karasu.os.mail@gmail.com',
+						to: req.body.email,
+						subject: 'Email confirmation',
+						text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
+					};
+				});
+
+				transporter.sendMail(mailOptions, function(err, info){
+					if (err) {
+						return res.json({ err: true, message: err.message });
+					} else {
+						return res.json({ err: false });
+					}
+				}); 
+			}
+		});
+	})
+}
+
+exports.verifyEmail function(req, res, next) {
+	Codes.findOneAndDelete({user: req.params.name, code: req.params.code}, (err, record) => {
+		if (err) {
+			return next(err);
+		}
+		if (!record) {
+			var err = new Error('Invalid link');
+			return next(err);
+		}
+		var setEmail = Users.updateOne({name: req.user.name}, {email: record.email}, (err) => {
+			if (err) {
+				return next(err);
+			}
+			res.redirect('/user/'+record.user);
+		});
+	});
+}
+
 exports.isLoggedIn = function () {
 	return function (req, res, next) {
 		if (req.isAuthenticated()) {
@@ -121,7 +196,7 @@ exports.isSameUser = function () {
 		if (req.user && (req.user.name == req.params.name || req.user.isAdmin)) {
 			return next()
 		}
-		var err = new Error('You have no permission for this action');
+		var err = new Error('You must be logged in your account');
 		return next(err);
 	}
 }
