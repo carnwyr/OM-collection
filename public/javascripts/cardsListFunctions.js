@@ -34,14 +34,14 @@ $(document).ready(function(){
 
 	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
 
-	$(window).scroll(swichBackToTopButton);
-	swichBackToTopButton();
+	$(window).scroll(switchBackToTopButton);
+	switchBackToTopButton();
 
 	fillRank("demonSection");
 	fillRank("memorySection");
 });
 
-function swichBackToTopButton() {
+function switchBackToTopButton() {
 	if ($(window).scrollTop() > 64) {
 		$("#b2t").fadeIn();
 	} else {
