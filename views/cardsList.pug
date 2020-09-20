@@ -26,7 +26,7 @@ block content
     //- Card Navigation
     div(class="card sticky-top sticky-offset mb-3 shadow rounded")
       div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
-        div(class="d-flex mb-2 mb-lg-0" + (user ? " mr-lg-auto" : ""))
+        div(class="d-flex mb-2 mb-lg-0" + (user && path === "list" || title === "My Collection" ? " mr-lg-auto" : ""))
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
             span(class="d-none d-sm-block") Go to Demon Cards
             span(class="d-sm-none") Demon
@@ -44,7 +44,7 @@ block content
         if user
           if path === "list"
             button(class="btn btn-primary btn-md mb-0" id="manageCollection") Manage Collection
-          else
+          else if title === "My Collection"
             button(type="button" id="shareCollection" class="btn btn-primary" data-toggle="modal" data-target="#openLink") Share My Collection!
 
     div(id="searchBar" class="row text-left mb-3")
