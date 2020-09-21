@@ -32,7 +32,7 @@ function sortByRarityAndNumber(card1, card2) {
 
 function compareByRarity(rarity1, rarity2) {
 	var rarities = {
-		"N": 1, 
+		"N": 1,
 		"R": 2,
 		"SR": 3,
 		"SSR": 4,
@@ -60,7 +60,7 @@ exports.cardDetail = function(req, res, next) {
 			var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
 			if (err) { return next(err); }
 		}
-		res.render('cardDetail', { title: 'Card Details', card: cardData, user: req.user, hasCard: hasCard });
+		res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: hasCard });
 	});
 };
 
@@ -94,6 +94,23 @@ exports.removeFromCollection = function(req, res) {
 };
 
 exports.cardsCollection = async function(req, res, next) {
+	// dict[key][0] is owned copies [1] is total db copies
+	var cardStats = {
+		Lucifer: [0, 0],
+		Mammon: [0, 0],
+		Leviathan: [0, 0],
+		Satan: [0, 0],
+		Asmodeus: [0, 0],
+		Beelzebub: [0, 0],
+		Belphegor: [0, 0],
+		Diavolo: [0, 0],
+		Barbatos: [0, 0],
+		Luke: [0, 0],
+		Simeon: [0, 0],
+		Solomon: [0, 0],
+		"Little D": [0, 0]
+	};
+
 	if (req.user && req.user.name === req.params.username) {
 		var title = 'My Collection';
 	} else {
@@ -105,7 +122,27 @@ exports.cardsCollection = async function(req, res, next) {
 		Cards.find({uniqueName: {"$in": ownedCards}}, function(err, cardsList) {
 			if (err) { return next(err); }
 			cardsList.sort(sortByRarityAndNumber);
-			res.render('cardsList', { title: title, cardsList: cardsList, user: req.user, path: 'collection' });
+
+			// chard -> card characters
+			Cards.find({}, 'characters', function (err, chard) {
+				if (err) { return next(err); }
+				chard.forEach(el => {
+					el.characters.forEach(i => {
+						if (cardStats[i]) {
+							cardStats[i][1] += 1;
+							console.log(cardStats[i][1], el.characters)
+						} else {
+							console.log(chard) // error in characters array
+						}
+					});
+				});
+
+				for (var key in cardStats) {
+					cardStats[key][0] = cardsList.filter(card => card.characters.includes(key)).length;
+				}
+
+				res.render('cardsList', { title: title, cardsList: cardsList, cardStats: cardStats, user: req.user, path: 'collection' });
+			});
 		});
 	});
 };
@@ -257,7 +294,7 @@ function writeImage(name, baseImage, cardSize, isBoomed) {
     const base64Data = baseImage.replace(regex, "");
     const imageData = new Buffer.from(base64Data, 'base64');
     const imagePath = './public/images/cards/' + cardSize + '/' + name + (isBoomed?'_b':'') + '.jpg';
-    
+
     return new Promise((resolve, reject) => {
 	    fs.writeFile(imagePath, imageData, err => {
 	    	if (err) reject(err);
