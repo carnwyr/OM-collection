@@ -101,64 +101,74 @@ exports.accountPage = function(req, res, next) {
 }
 
 exports.sendVerificationEmail = function(req, res, next) {
-	Users.findOne({ name: req.params.name}, function (err, user) {
+	Users.find({email: req.body.userData.email}, function(err, users) {
 		if (err) {
 			return res.json({ err: true, message: err.message });
 		}
-		if (!user) {
-			return next(null, false, req.flash('message', 'No such user'))
+		if (users) {
+			var err = new Error('Email taken');
+				return res.json({ err: true, message: err.message });
 		}
-		bcrypt.compare(req.body.userData.password, user.password, function (err, result) {
+		Users.findOne({ name: req.params.name }, function (err, user) {
 			if (err) {
 				return res.json({ err: true, message: err.message });
 			}
-			if (!result) {
-				var err = new Error('Wrong password');
+			if (!user) {
+				var err = new Error('No such user');
 				return res.json({ err: true, message: err.message });
 			}
-			else {
-				Codes.deleteMany({user: req.params.name}, (err) => {
-					if (err) {
-						return res.json({ err: true, message: err.message });
-					}
-					var code = cryptoRandomString({length: 128, type: 'url-safe'});
-					var record = new Codes({
-						user: req.params.name,
-						email: req.body.userData.email,
-						code: code
-					});
-					record.save(function (err) {
+			bcrypt.compare(req.body.userData.password, user.password, function (err, result) {
+				if (err) {
+					return res.json({ err: true, message: err.message });
+				}
+				if (!result) {
+					var err = new Error('Wrong password');
+					return res.json({ err: true, message: err.message });
+				}
+				else {
+					Codes.deleteMany({user: req.params.name}, (err) => {
 						if (err) {
 							return res.json({ err: true, message: err.message });
 						}
-						var transporter = nodemailer.createTransport({
-						host: 'smtp.gmail.com',
-						secure: true,
-						port: 465,
-						auth: {
-							user: process.env.EMAIL,
-							pass: process.env.EMAIL_PASSWORD
-						}
+						var code = cryptoRandomString({length: 128, type: 'url-safe'});
+						var record = new Codes({
+							user: req.params.name,
+							email: req.body.userData.email,
+							code: code
 						});
-						var mailOptions = {
-							from: process.env.EMAIL,
-							to: req.body.userData.email,
-							subject: 'Email confirmation',
-							text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
-						};
-						transporter.sendMail(mailOptions, function(err, info){
+						record.save(function (err) {
 							if (err) {
 								return res.json({ err: true, message: err.message });
-							} else {
-								return res.json({ err: false });
 							}
-						}); 
+							var transporter = nodemailer.createTransport({
+								host: 'smtp.gmail.com',
+								secure: true,
+								port: 465,
+								auth: {
+									user: process.env.EMAIL,
+									pass: process.env.EMAIL_PASSWORD
+								}
+							});
+							var mailOptions = {
+								from: process.env.EMAIL,
+								to: req.body.userData.email,
+								subject: 'Email confirmation',
+								text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
+							};
+							transporter.sendMail(mailOptions, function(err, info){
+								if (err) {
+									return res.json({ err: true, message: err.message });
+								} else {
+									return res.json({ err: false });
+								}
+							}); 
+						});
+						
 					});
-					
-				});
-			}
-		});
-	})
+				}
+			});
+		})
+	});
 }
 
 exports.verifyEmail = function(req, res, next) {
@@ -180,15 +190,15 @@ exports.verifyEmail = function(req, res, next) {
 }
 
 exports.changePassword = function(req, res, next) {
-	Users.findOne({ name: req.params.name}, function (err, user) {
+	Users.findOne({ name: req.params.name }, function (err, user) {
 		if (err) {
 			return res.json({ err: true, message: err.message });
 		}
 		if (!user) {
-			return next(null, false, req.flash('message', 'No such user'))
+			var err = new Error('No such user');
+			return res.json({ err: true, message: err.message });
 		}
 		bcrypt.compare(req.body.passwordData.old, user.password, function (err, result) {
-		console.log(user.password)
 			if (err) {
 				return res.json({ err: true, message: err.message });
 			}
@@ -213,6 +223,56 @@ exports.changePassword = function(req, res, next) {
 				});
 			});
 		});
+	});
+}
+
+exports.restorePassword = function(req, res, next) {
+	Users.findOne({ email: req.body.email }, function (err, user) {
+		if (err) {
+			return res.json({ err: true, message: err.message });
+		}
+		if (!user) {
+			var err = new Error('No such user');
+			return res.json({ err: true, message: err.message });
+		}
+		var newPassword = cryptoRandomString({length: 8, type: 'alphanumeric'});
+		var transporter = nodemailer.createTransport({
+			host: 'smtp.gmail.com',
+			secure: true,
+			port: 465,
+			auth: {
+				user: process.env.EMAIL,
+				pass: process.env.EMAIL_PASSWORD
+			}
+		});
+		var mailOptions = {
+			from: process.env.EMAIL,
+			to: req.body.userData.email,
+			subject: 'Restore password',
+			text: "Username: " + user.name + "\nNew password: " + newPassword;
+		};
+		transporter.sendMail(mailOptions, function(err, info){
+			if (err) {
+				return res.json({ err: true, message: err.message });
+			} else {
+				bcrypt.genSalt(12, (err, salt) => {
+					if (err) {
+						return res.json({ err: true, message: err.message });
+					}
+					bcrypt.hash(newPassword, salt, function (err, hash) {
+						if (err) {
+							return res.json({ err: true, message: err.message });
+						}
+						var setPassword = Users.updateOne({name: user.name}, {password: hash}, (err) => {
+							if (err) {
+								return res.json({ err: true, message: err.message });
+							}
+							return res.json({ err: false });
+						});
+					});
+				});
+			}
+		}); 
 	});
 }
 
