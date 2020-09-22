@@ -108,5 +108,5 @@
   background-color: white;
   width: 64px;
   height: 64px;
-  padding-top: 16px;
+  padding-top: 16px !important;
 }
