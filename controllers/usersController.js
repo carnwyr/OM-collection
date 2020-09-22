@@ -106,12 +106,10 @@ exports.sendVerificationEmail = function(req, res, next) {
 			return res.json({ err: true, message: err.message });
 		}
 		if (!user) {
-			var err = new Error('Wrong password');
 			return next(null, false, req.flash('message', 'No such user'))
 		}
 		bcrypt.compare(req.body.userData.password, user.password, function (err, result) {
 			if (err) {
-				console.log(err);
 				return res.json({ err: true, message: err.message });
 			}
 			if (!result) {
@@ -177,6 +175,43 @@ exports.verifyEmail = function(req, res, next) {
 				return next(err);
 			}
 			res.redirect('/user/'+record.user);
+		});
+	});
+}
+
+exports.changePassword = function(req, res, next) {
+	Users.findOne({ name: req.params.name}, function (err, user) {
+		if (err) {
+			return res.json({ err: true, message: err.message });
+		}
+		if (!user) {
+			return next(null, false, req.flash('message', 'No such user'))
+		}
+		bcrypt.compare(req.body.passwordData.old, user.password, function (err, result) {
+		console.log(user.password)
+			if (err) {
+				return res.json({ err: true, message: err.message });
+			}
+			if (!result) {
+				var err = new Error('Wrong password');
+				return res.json({ err: true, message: err.message });
+			}
+			bcrypt.genSalt(12, (err, salt) => {
+				if (err) {
+					return res.json({ err: true, message: err.message });
+				}
+				bcrypt.hash(req.body.passwordData.new, salt, function (err, hash) {
+					if (err) {
+						return res.json({ err: true, message: err.message });
+					}
+					var setPassword = Users.updateOne({name: req.params.name}, {password: hash}, (err) => {
+						if (err) {
+							return res.json({ err: true, message: err.message });
+						}
+						return res.json({ err: false });
+					});
+				});
+			});
 		});
 	});
 }

@@ -7,6 +7,9 @@ var usersController = require('../controllers/usersController');
 router.post('/:name/sendVerificationEmail', usersController.isSameUser(), usersController.sendVerificationEmail);
 router.get('/:name/confirmEmail/:code', usersController.isSameUser(), usersController.verifyEmail);
 
+// Password change and remind
+router.post('/:name/changePassword', usersController.isSameUser(), usersController.changePassword);
+
 // Account settings page
 router.get('/:name', usersController.isSameUser(), usersController.accountPage);
 
