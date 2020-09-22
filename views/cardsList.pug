@@ -1,7 +1,7 @@
 extends layout
 
 mixin charPercent(character)
-  - const colours = {Lucifer:"#42A5F5", Mammon:"#FFEE58", Leviathan:"#FFA726", Satan:"#66BB6A", Asmodeus:"#EC407A", Beelzebub:"#EF5350", Belphegor:"#AB47BC"};
+  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD"};
   - var ownNum = cardStats[character][0];
   - var totalNum = cardStats[character][1];
   - var percentage = (ownNum / totalNum * 100).toPrecision(3);
@@ -42,17 +42,17 @@ block content
         div.card-body
           div.row
             div.col-md-4
-              h5.card-title Cool Stuff
+              h5.card-title Cool Stats
               ul
                 if title === "My Collection"
                   span I
                 else
-                  span #{user.name}
+                  span #{title.substring(0, title.indexOf("'"))}
                 | &nbsp;have
                 li #{cardsList.filter(card => card.type == "Demon").length} Demon Cards
                 li #{cardsList.filter(card => card.type == "Memory").length} Memory Cards
             div.col-md-8
-              h5.card-title Cards Collected per Character
+              h5.card-title Achievements
               div.row
                 div.col-md-6
                   +charPercent("Lucifer")
