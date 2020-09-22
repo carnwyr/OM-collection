@@ -1,17 +1,21 @@
 $(document).ready(function(){
     $('#sendVerification').on('click', sendVerificationMessage);
-};
+});
 
 function sendVerificationMessage() {
 	if (!validateFields()) {
 		showAlert(false, "Imvalid fields");
 		return;
 	}
+	var userData = {
+		email: $('#email').val(),
+		password: $('#password').val()
+	};
 	$.ajax({
         type: 'post',
-        url: '/user/'+user+'/sendVerificationEmail',
+        url: '/user/'+username+'/sendVerificationEmail',
         contentType: 'application/json',
-        data: JSON.stringify({data: {email: $('#email').val(), password: $('#password').val()}})
+        data: JSON.stringify({userData: userData})
     })
     .done(function(result){
         if (result.err) {

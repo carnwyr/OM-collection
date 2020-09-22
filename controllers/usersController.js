@@ -109,8 +109,9 @@ exports.sendVerificationEmail = function(req, res, next) {
 			var err = new Error('Wrong password');
 			return next(null, false, req.flash('message', 'No such user'))
 		}
-		bcrypt.compare(password, user.password, function (err, result) {
+		bcrypt.compare(req.body.userData.password, user.password, function (err, result) {
 			if (err) {
+				console.log(err);
 				return res.json({ err: true, message: err.message });
 			}
 			if (!result) {
@@ -122,9 +123,17 @@ exports.sendVerificationEmail = function(req, res, next) {
 					if (err) {
 						return res.json({ err: true, message: err.message });
 					}
-
 					var code = cryptoRandomString({length: 128, type: 'url-safe'});
-					var transporter = nodemailer.createTransport({
+					var record = new Codes({
+						user: req.params.name,
+						email: req.body.userData.email,
+						code: code
+					});
+					record.save(function (err) {
+						if (err) {
+							return res.json({ err: true, message: err.message });
+						}
+						var transporter = nodemailer.createTransport({
 						host: 'smtp.gmail.com',
 						secure: true,
 						port: 465,
@@ -132,28 +141,29 @@ exports.sendVerificationEmail = function(req, res, next) {
 							user: process.env.EMAIL,
 							pass: process.env.EMAIL_PASSWORD
 						}
+						});
+						var mailOptions = {
+							from: process.env.EMAIL,
+							to: req.body.userData.email,
+							subject: 'Email confirmation',
+							text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
+						};
+						transporter.sendMail(mailOptions, function(err, info){
+							if (err) {
+								return res.json({ err: true, message: err.message });
+							} else {
+								return res.json({ err: false });
+							}
+						}); 
 					});
-					var mailOptions = {
-						from: process.env.EMAIL,
-						to: req.body.email,
-						subject: 'Email confirmation',
-						text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
-					};
+					
 				});
-
-				transporter.sendMail(mailOptions, function(err, info){
-					if (err) {
-						return res.json({ err: true, message: err.message });
-					} else {
-						return res.json({ err: false });
-					}
-				}); 
 			}
 		});
 	})
 }
 
-exports.verifyEmail function(req, res, next) {
+exports.verifyEmail = function(req, res, next) {
 	Codes.findOneAndDelete({user: req.params.name, code: req.params.code}, (err, record) => {
 		if (err) {
 			return next(err);
