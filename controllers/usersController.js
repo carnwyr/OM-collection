@@ -73,7 +73,7 @@ exports.signupPost = [
 	}
 ];
 
-async function userExists(username) {
+exports.userExists = async function(username) {
 	var userQuery = Users.findOne({ 'name': { $regex : new RegExp('^' + username + '$', "i") } });
 	try {
 		var user = await userQuery.exec();

@@ -348,7 +348,7 @@ function addCardsToChangedList(cardsToSwitch, select) {
 	var cardNames = [];
 	for (var i=0; typeof(cardsToSwitch[i])!='undefined'; cardNames.push(cardsToSwitch[i++].getAttribute('href').replace('card/', '')));
 	for (const [key, value] of Object.entries(changedCards)) {
-		if (key in cardNames) {
+		if (cardNames.includes(key)) {
 			delete changedCards[key];
 			cardNames.splice(cardNames.indexOf(key), 1);
 		}

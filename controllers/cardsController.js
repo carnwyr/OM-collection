@@ -5,6 +5,8 @@ const Users = require('../models/users.js');
 const async = require('async');
 const fs = require('fs');
 
+var usersController = require('../controllers/usersController');
+
 exports.index = function(req, res, next) {
 	res.render('index', { title: 'Cards collection', user: req.user });
 };
@@ -94,6 +96,14 @@ exports.removeFromCollection = function(req, res) {
 };
 
 exports.cardsCollection = async function(req, res, next) {
+	var [err, exists] = await usersController.userExists(req.params.username);
+	if (err) {
+		return next(err);
+	} else if (!exists) {
+		var err = new Error("User not found");
+		return next(err);
+	}
+
 	// dict[key][0] is owned copies [1] is total db copies
 	var cardStats = {
 		Lucifer: [0, 0],
