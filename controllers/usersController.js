@@ -247,9 +247,9 @@ exports.restorePassword = function(req, res, next) {
 		});
 		var mailOptions = {
 			from: process.env.EMAIL,
-			to: req.body.userData.email,
+			to: req.body.email,
 			subject: 'Restore password',
-			text: "Username: " + user.name + "\nNew password: " + newPassword;
+			text: "Username: " + user.name + "\nNew password: " + newPassword
 		};
 		transporter.sendMail(mailOptions, function(err, info){
 			if (err) {
