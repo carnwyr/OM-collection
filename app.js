@@ -14,6 +14,7 @@ var cardsController = require('./controllers/cardsController');
 
 var indexRouter = require('./routes/index');
 var cardsRouter = require('./routes/cards');
+var userRouter = require('./routes/user');
 
 var app = express();
 
@@ -47,7 +48,7 @@ app.use(session({
     saveUninitialized: false,
     cookie : {
         maxAge: 1000* 60 * 60 *24 * 90,
-        sameSite: 'strict'
+        sameSite: 'lax'
     }
 }))
 app.use(passport.initialize())
@@ -56,6 +57,7 @@ app.use(flash());
 
 app.use('/', indexRouter);
 app.use('/card', cardsRouter);
+app.use('/user', userRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));

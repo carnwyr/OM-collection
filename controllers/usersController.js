@@ -1,23 +1,27 @@
 const Users = require('../models/users.js')
+const Codes = require('../models/verificationCodes.js')
 
 const bcrypt = require('bcrypt')
+const cryptoRandomString = require('crypto-random-string');
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const { body, validationResult } = require('express-validator');
 const async = require('async');
+const nodemailer = require('nodemailer');
+
 require('dotenv').config();
 
 exports.loginGet = function(req, res, next) {
   res.render('login', { title: 'Login', message: req.flash('message'), user: req.user });
 };
 
-exports.loginPost = passport.authenticate('local',{ 
+exports.loginPost = passport.authenticate('local',{
 	successRedirect: '/',
 	failureRedirect: '/login',
 	failureFlash: true
 });
 
-exports.logout = function(req, res) {     
+exports.logout = function(req, res) {
   req.session.destroy(function (err) {
   	res.redirect('/');
   });
@@ -45,7 +49,7 @@ exports.signupPost = [
 
 		var [err, exists] = await userExists(req.body.username);
 		if (err) { return next(err); }
-			
+
 		if (exists) {
 			req.flash('message', 'Username taken')
 			res.render('signup', { title: 'Signup', user: req.user });
@@ -92,6 +96,186 @@ exports.signupCheckUsername = async function(req, res) {
 	res.send(true);
 }
 
+exports.accountPage = function(req, res, next) {
+	res.render('account', { title: 'Account settings', user: req.user });
+}
+
+exports.sendVerificationEmail = function(req, res, next) {
+	Users.find({email: req.body.userData.email}, function(err, users) {
+		if (err) {
+			return res.json({ err: true, message: err.message });
+		}
+		if (users && users.length) {
+      var err = new Error('Email taken');
+      return res.json({ err: true, message: err.message });
+		}
+		Users.findOne({ name: req.params.name }, function (err, user) {
+			if (err) {
+				return res.json({ err: true, message: err.message });
+			}
+			if (!user) {
+				var err = new Error('No such user');
+				return res.json({ err: true, message: err.message });
+			}
+			bcrypt.compare(req.body.userData.password, user.password, function (err, result) {
+				if (err) {
+					return res.json({ err: true, message: err.message });
+				}
+				if (!result) {
+					var err = new Error('Wrong password');
+					return res.json({ err: true, message: err.message });
+				}
+				else {
+					Codes.deleteMany({user: req.params.name}, (err) => {
+						if (err) {
+							return res.json({ err: true, message: err.message });
+						}
+						var code = cryptoRandomString({length: 128, type: 'url-safe'});
+						var record = new Codes({
+							user: req.params.name,
+							email: req.body.userData.email,
+							code: code
+						});
+						record.save(function (err) {
+							if (err) {
+								return res.json({ err: true, message: err.message });
+							}
+							var transporter = nodemailer.createTransport({
+								host: 'smtp.gmail.com',
+								secure: true,
+								port: 465,
+								auth: {
+									user: process.env.EMAIL,
+									pass: process.env.EMAIL_PASSWORD
+								}
+							});
+							var mailOptions = {
+								from: process.env.EMAIL,
+								to: req.body.userData.email,
+								subject: 'Email confirmation',
+								text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
+							};
+							transporter.sendMail(mailOptions, function(err, info){
+								if (err) {
+									return res.json({ err: true, message: err.message });
+								} else {
+									return res.json({ err: false });
+								}
+							});
+						});
+
+					});
+				}
+			});
+		})
+	});
+}
+
+exports.verifyEmail = function(req, res, next) {
+	Codes.findOneAndDelete({user: req.params.name, code: req.params.code}, (err, record) => {
+		if (err) {
+			return next(err);
+		}
+		if (!record) {
+			var err = new Error('Invalid link');
+			return next(err);
+		}
+		var setEmail = Users.updateOne({name: req.user.name}, {email: record.email}, (err) => {
+			if (err) {
+				return next(err);
+			}
+			res.redirect('/user/'+record.user);
+		});
+	});
+}
+
+exports.changePassword = function(req, res, next) {
+	Users.findOne({ name: req.params.name }, function (err, user) {
+		if (err) {
+			return res.json({ err: true, message: err.message });
+		}
+		if (!user) {
+			var err = new Error('No such user');
+			return res.json({ err: true, message: err.message });
+		}
+		bcrypt.compare(req.body.passwordData.old, user.password, function (err, result) {
+			if (err) {
+				return res.json({ err: true, message: err.message });
+			}
+			if (!result) {
+				var err = new Error('Wrong password');
+				return res.json({ err: true, message: err.message });
+			}
+			bcrypt.genSalt(12, (err, salt) => {
+				if (err) {
+					return res.json({ err: true, message: err.message });
+				}
+				bcrypt.hash(req.body.passwordData.new, salt, function (err, hash) {
+					if (err) {
+						return res.json({ err: true, message: err.message });
+					}
+					var setPassword = Users.updateOne({name: req.params.name}, {password: hash}, (err) => {
+						if (err) {
+							return res.json({ err: true, message: err.message });
+						}
+						return res.json({ err: false });
+					});
+				});
+			});
+		});
+	});
+}
+
+exports.restorePassword = function(req, res, next) {
+	Users.findOne({ email: req.body.email }, function (err, user) {
+		if (err) {
+			return res.json({ err: true, message: err.message });
+		}
+		if (!user) {
+			var err = new Error('No such user');
+			return res.json({ err: true, message: err.message });
+		}
+		var newPassword = cryptoRandomString({length: 8, type: 'alphanumeric'});
+		var transporter = nodemailer.createTransport({
+			host: 'smtp.gmail.com',
+			secure: true,
+			port: 465,
+			auth: {
+				user: process.env.EMAIL,
+				pass: process.env.EMAIL_PASSWORD
+			}
+		});
+		var mailOptions = {
+			from: process.env.EMAIL,
+			to: req.body.email,
+			subject: 'Restore password',
+			text: "Username: " + user.name + "\nNew password: " + newPassword
+		};
+		transporter.sendMail(mailOptions, function(err, info){
+			if (err) {
+				return res.json({ err: true, message: err.message });
+			} else {
+				bcrypt.genSalt(12, (err, salt) => {
+					if (err) {
+						return res.json({ err: true, message: err.message });
+					}
+					bcrypt.hash(newPassword, salt, function (err, hash) {
+						if (err) {
+							return res.json({ err: true, message: err.message });
+						}
+						var setPassword = Users.updateOne({name: user.name}, {password: hash}, (err) => {
+							if (err) {
+								return res.json({ err: true, message: err.message });
+							}
+							return res.json({ err: false });
+						});
+					});
+				});
+			}
+		});
+	});
+}
+
 exports.isLoggedIn = function () {
 	return function (req, res, next) {
 		if (req.isAuthenticated()) {
@@ -108,6 +292,16 @@ exports.isAdmin = function () {
 			return next()
 		}
 		var err = new Error('You have no permission for this action');
+		return next(err);
+	}
+}
+
+exports.isSameUser = function () {
+	return function (req, res, next) {
+		if (req.user && (req.user.name == req.params.name || req.user.isAdmin)) {
+			return next()
+		}
+		var err = new Error('You must be logged in your account');
 		return next(err);
 	}
 }
