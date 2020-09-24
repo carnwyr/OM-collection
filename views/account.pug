@@ -50,24 +50,27 @@ block content
 
 	div(class="container")
 		div(class="row justify-content-center mb-3")
-			h2(class="col-10 text-primary text-center py-2" style='border-bottom: 2px solid; border-color: #8d6fe2;') #{user.name}'s Account Settings
-			div(class="card rounded shadow col-10")
-				div(class="card-body")
+			h2(class="col-lg-10 text-primary text-center py-2" style='border-bottom: 2px solid; border-color: #8d6fe2;') #{user.name}'s Account Settings
+			div(class="card rounded shadow col-lg-10")
+				div(class="card-body col-lg-6 mx-auto")
 
 					if user.email
 						- var emailStatus = user.email
 						- var buttonText = "Change email"
+						- var emailMsg = "This is the email that will receive instructions for password recovery."
 					else
 						- var emailStatus = "No emails linked"
 						- var buttonText = "Link email"
+						- var emailMsg = "To enable password recovery, link your email address."
 
-					div(class="input-group row mb-3")
-						label(for="staticEmail" class="col-sm-4 col-form-label text-sm-right") Email
-						div.col-sm-4
+					div(class="row mb-3")
+						label(for="staticEmail" class="col-12 col-form-label") Email
+							if !user.email
+								span(class="badge badge-pill badge-warning ml-1") !
+						p.col-12.text-muted= emailMsg
+						div.col-lg-8.mb-2.mb-lg-0
 							input(type="text" readonly class="form-control" id="staticEmail" value=emailStatus)
-						button(class="btn btn-primary" id="setEmail" data-toggle="modal" data-target="#emailModal")= buttonText
-					div(class="input-group row mb-3")
-						label(for="inputPassword" class="col-sm-4 col-form-label text-sm-right") Password
-						div.col-sm-4
-							input(type="password" class="form-control" id="inputPassword" placeholder="" disabled)
-						button(class="btn btn-primary" id="setPassword" data-toggle="modal" data-target="#passwordModal") Change Password
+						button(class="btn btn-primary mx-3 mx-lg-0" id="setEmail" data-toggle="modal" data-target="#emailModal")= buttonText
+					div(class="row mb-3")
+						label(for="inputPassword" class="col-12 col-form-label") Password
+						button(class="btn btn-primary mx-3" id="setPassword" data-toggle="modal" data-target="#passwordModal") Change Password

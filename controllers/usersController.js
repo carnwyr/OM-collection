@@ -15,13 +15,13 @@ exports.loginGet = function(req, res, next) {
   res.render('login', { title: 'Login', message: req.flash('message'), user: req.user });
 };
 
-exports.loginPost = passport.authenticate('local',{ 
+exports.loginPost = passport.authenticate('local',{
 	successRedirect: '/',
 	failureRedirect: '/login',
 	failureFlash: true
 });
 
-exports.logout = function(req, res) {     
+exports.logout = function(req, res) {
   req.session.destroy(function (err) {
   	res.redirect('/');
   });
@@ -49,7 +49,7 @@ exports.signupPost = [
 
 		var [err, exists] = await userExists(req.body.username);
 		if (err) { return next(err); }
-			
+
 		if (exists) {
 			req.flash('message', 'Username taken')
 			res.render('signup', { title: 'Signup', user: req.user });
@@ -105,9 +105,9 @@ exports.sendVerificationEmail = function(req, res, next) {
 		if (err) {
 			return res.json({ err: true, message: err.message });
 		}
-		if (users) {
-			var err = new Error('Email taken');
-				return res.json({ err: true, message: err.message });
+		if (users && users.length) {
+      var err = new Error('Email taken');
+      return res.json({ err: true, message: err.message });
 		}
 		Users.findOne({ name: req.params.name }, function (err, user) {
 			if (err) {
@@ -161,9 +161,9 @@ exports.sendVerificationEmail = function(req, res, next) {
 								} else {
 									return res.json({ err: false });
 								}
-							}); 
+							});
 						});
-						
+
 					});
 				}
 			});
@@ -272,7 +272,7 @@ exports.restorePassword = function(req, res, next) {
 					});
 				});
 			}
-		}); 
+		});
 	});
 }
 

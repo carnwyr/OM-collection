@@ -50,17 +50,19 @@ html(lang='en-US')
               a(class="dropdown-toggle nav-link text-white" role='button' id='accountDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Account
               div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="accountDropdownButton")
                 a(class="nav-link dropdown-item", href='/user/'+user.name)
-                  span(class="text-dark") Settings
+                  span(class="text-dark") Settings&nbsp;
+                  if !user.email
+                    span(class="badge badge-warning") !
                 a(class="nav-link dropdown-item", href='/logout')
                   span(class="text-dark") Logout
             li(class="nav-item d-md-none")
               a(class="nav-link", href='/user/'+user.name)
-                span(class="d-md-none") Account Settings
-                span(class="d-none d-md-block text-white") Account Settings
+                span Settings&nbsp;
+                if !user.email
+                  span(class="badge badge-warning") !
             li(class="nav-item d-md-none")
               a(class="nav-link", href='/logout')
-                span(class="d-md-none") Logout
-                span(class="d-none d-md-block text-white") Logout
+                span Logout
 
     div(class="toast d-none" id="supportToast" role="alert" data-delay="700" data-autohide="false")
       div(class="toast-header")
