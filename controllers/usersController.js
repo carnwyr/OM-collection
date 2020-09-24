@@ -232,7 +232,7 @@ exports.restorePassword = function(req, res, next) {
 			return res.json({ err: true, message: err.message });
 		}
 		if (!user) {
-			var err = new Error('No such user');
+			var err = new Error('Email not verified');
 			return res.json({ err: true, message: err.message });
 		}
 		var newPassword = cryptoRandomString({length: 8, type: 'alphanumeric'});

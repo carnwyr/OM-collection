@@ -2,6 +2,24 @@ extends layout
 
 block content
 
+  div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px")
+  div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px")
+
+
+  div(class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="forgotPassword" aria-hidden="true")
+    div(class="modal-dialog" role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h5(class="modal-title" id="forgotPassword") Account recovery
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span( aria-hidden="true") &times;
+        div(class="modal-body")
+          p Enter the verified email address associated with your account. We will send you a temporary password.
+          label(for="email") Email
+          input(class='form-control' type="email" id="email" name="email")
+        div(class="modal-footer")
+          button(type="button" class="btn btn-secondary text-light" id="sendRecoveryEmail" onclick="sendRecoveryEmail()") Send password recovery email
+
   div.row
     div(class="col-12 col-lg-6 mx-auto")
       div(class="card card-signin flex-row my-5")
@@ -18,6 +36,7 @@ block content
             div.form-label-group
               input#password.form-control(type="password" name="password" autocomplete="off" required)
               span.floating-label Password
+              a.small(href="#" role="button" id="forgotPassword" data-toggle="modal" data-target="#emailModal") Forgot password
             div(class="custom-control custom-checkbox mb-3")
               input#checkPassword.custom-control-input(type="checkbox" onclick="togglePass()")
               label(class="custom-control-label" for="checkPassword") Show password
@@ -46,5 +65,31 @@ block content
       $("input#username").on('keyup', function() { var username = $("input#username").val(); $("input#username").attr('value', username); });
       $("input#password").on('keyup', function() { var password = $("input#password").val(); $("input#password").attr('value', password); });
     });
+
+    function sendRecoveryEmail() {
+      $.ajax({
+        type: "post",
+        url: "/user/restorePassword",
+        contentType: "application/json",
+        data: JSON.stringify({ email: $("input#email").val() })
+      }).done(function(result) {
+        if (result.err) {
+          showAlert(false, result.message);
+          return;
+        }
+        showAlert(true, "Temporary password sent");
+      });
+    }
+
+    function showAlert(isSuccess, message) {
+      var alert = isSuccess ? "#successAlert" : "#failAlert";
+      $(alert).html(message);
+      $(alert).show().animate({ top: 65 }, 500);
+      setTimeout(function() {
+        $(alert).animate({ top: -100 }, 500).promise().done(function() {
+            $(alert).hide();
+          });
+      }, 3500);
+    }
 
   link(rel='stylesheet' href='/stylesheets/forms.css')
