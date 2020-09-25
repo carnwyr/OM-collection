@@ -15,7 +15,7 @@ exports.cardsList = function(req, res, next) {
 	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
 		if (err) { return next(err); }
 		cardsList.sort(sortByRarityAndNumber);
-		res.render('cardsList', { title: 'Cards List', cardsList: cardsList, user: req.user, path: 'list' });
+		res.render('cardsList', { title: 'Gallery', cardsList: cardsList, user: req.user, path: 'list' });
 	});
 };
 

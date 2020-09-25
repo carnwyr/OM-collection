@@ -5,7 +5,7 @@ $(document).ready(function(){
 
 function sendVerificationMessage() {
 	if (!validateFieldsEmail()) {
-		showAlert(false, "Imvalid fields");
+		showAlert(false, "Invalid fields");
 		return;
 	}
 	var userData = {
