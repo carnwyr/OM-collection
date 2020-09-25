@@ -45,10 +45,9 @@ block content
               h5.card-title Cool Stats
               ul
                 if title === "My Collection"
-                  span I
+                  span I have
                 else
-                  span #{title.substring(0, title.indexOf("'"))}
-                | &nbsp;has
+                  span #{title.substring(0, title.indexOf("'"))} has
                 li #{cardsList.filter(card => card.type == "Demon").length} Demon Cards
                 li #{cardsList.filter(card => card.type == "Memory").length} Memory Cards
             div.col-md-8
