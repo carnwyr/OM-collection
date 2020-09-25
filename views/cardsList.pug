@@ -45,10 +45,9 @@ block content
               h5.card-title Cool Stats
               ul
                 if title === "My Collection"
-                  span I
+                  span I have
                 else
-                  span #{title.substring(0, title.indexOf("'"))}
-                | &nbsp;have
+                  span #{title.substring(0, title.indexOf("'"))} has
                 li #{cardsList.filter(card => card.type == "Demon").length} Demon Cards
                 li #{cardsList.filter(card => card.type == "Memory").length} Memory Cards
             div.col-md-8
@@ -64,6 +63,8 @@ block content
                   +charPercent("Beelzebub")
                   +charPercent("Belphegor")
           small.text-muted Percentage of cards collected per character is calculated based on the entire collection (both demon and memory cards).
+          hr
+          p.text-center.text-muted.mb-0(style="opacity:64%;") More features coming!
 
     //- Card Navigation
     div(class="card sticky-top sticky-offset mb-3 shadow rounded")
