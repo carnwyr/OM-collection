@@ -29,8 +29,14 @@ html(lang='en-US')
             li(class="nav-item")
               a(class="nav-link", href='/' + user.name + '/collection') My collection
           if user && user.isAdmin
-            li(class="nav-item")
-              a(class="nav-link", href='/card/new') Add new card
+            li(class="nav-item dropdown d-none d-md-block")
+              a(class="dropdown-toggle nav-link" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
+              div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="adminDropdownButton")
+                a(class="nav-link dropdown-item", href='/card/new')
+                  span(class="text-dark") Add new card
+            li(class="nav-item d-md-none")
+              a(class="nav-link", href='/card/new')
+                span Add new card
         ul(class="navbar-nav ml-auto")
           li(class="nav-item d-none d-md-block")
             div(class="nav-link" style="position:relative;bottom:1px")
