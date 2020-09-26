@@ -47,7 +47,7 @@ exports.signupPost = [
 			return;
 		}
 
-		var [err, exists] = await userExists(req.body.username);
+		var [err, exists] = await exports.userExists(req.body.username);
 		if (err) { return next(err); }
 
 		if (exists) {
@@ -88,7 +88,7 @@ exports.userExists = async function(username) {
 }
 
 exports.signupCheckUsername = async function(req, res) {
-	var [err, exists] = await userExists(req.body.username);
+	var [err, exists] = await exports.userExists(req.body.username);
 	if (err) { res.send('error'); return; }
 	if (!exists) {
 		res.send(false);
