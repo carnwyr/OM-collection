@@ -55,15 +55,26 @@ exports.cardDetail = function(req, res, next) {
 	Cards.findOne({uniqueName: req.params.id}, async function(err, cardData) {
 		if (err) { return next(err); }
 		if (!cardData) {
-			var err = new Error('Card not found');
-			return next(err);
+			if (req.user && req.user.isAdmin) {
+				HiddenCards.findOne({uniqueName: req.params.id}, function(err, cardData) {
+					if (err) { return next(err); }
+					if (!cardData) {
+						var err = new Error('Card not found');
+						return next(err);
+					}
+					return res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: false, isHidden: true });
+				});
+			} else {
+				var err = new Error('Card not found');
+				return next(err);
+			}
 		}
 
 		if (req.user) {
 			var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
 			if (err) { return next(err); }
 		}
-		res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: hasCard });
+		res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
 	});
 };
 

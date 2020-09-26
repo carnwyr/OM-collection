@@ -19,10 +19,13 @@ block content
       //- Mobile/ Tablet Screen
       if user
         div(class="d-flex justify-content-around mx-auto col-12 d-md-none" style="margin-bottom:10px;")
-          button.btn.btn-primary.addCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Add to collection
-          button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
-          if user.isAdmin
+          if !isHidden
+            button.btn.btn-primary.addCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Add to collection
+            button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
+          if !isHidden && user.isAdmin
             a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/edit") Edit card
+          if isHidden && user.isAdmin
+            a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/makePublic") Make public
           if user.isAdmin
             button.btn.btn-primary.editCardButton(data-toggle='modal' data-target="#confirmDelete") Delete card
 
@@ -68,11 +71,15 @@ block content
                   |,&nbsp;
         if user
           div(class='d-none d-md-block' style="margin:10px 0;")
-            button.btn.btn-primary.addCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Add to collection
-            button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
-            if user.isAdmin
+            if !isHidden
+              button.btn.btn-primary.addCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Add to collection
+              button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
+            if (!isHidden && user.isAdmin)
               div.mt-2
                 a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/edit") Edit card
+            if isHidden && user.isAdmin
+              div.mt-2
+                a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/makePublic") Make public
             if user.isAdmin
               div.mt-2
                 button.btn.btn-primary.editCardButton(data-toggle='modal' data-target="#confirmDelete") Delete card
