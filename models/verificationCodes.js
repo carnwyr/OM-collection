@@ -10,4 +10,4 @@ var CodesSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model('verificationCodes', CodesSchema);
+module.exports = mongoose.model('verificationCodes', CodesSchema, 'verificationCodes');

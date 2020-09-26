@@ -1,6 +1,7 @@
 const Cards = require('../models/cards');
 const CardsCollection = require('../models/cardsCollection');
 const Users = require('../models/users.js');
+const HiddenCards = require('../models/hiddenCards.js');
 
 const async = require('async');
 const fs = require('fs');
@@ -315,12 +316,21 @@ function writeImage(name, baseImage, cardSize, isBoomed) {
 
 async function addNewCard(cardData, res) {
 	try {
-		var {originalUniqueName, images, ...cardProperties} = cardData;
-		await Cards.create(cardData, (err, doc) => {
-			if(err) {
-				return res.json({ err: true, message: err.message });
-			}
-		});
+		var {originalUniqueName, images, isHidden, ...cardProperties} = cardData;
+		console.log(isHidden)
+		if (isHidden) {
+			await HiddenCards.create(cardData, (err, doc) => {
+				if(err) {
+					return res.json({ err: true, message: err.message });
+				}
+			});
+		} else {
+			await Cards.create(cardData, (err, doc) => {
+				if(err) {
+					return res.json({ err: true, message: err.message });
+				}
+			});
+		}
 
 		var promiseL = writeImage(cardData.uniqueName, cardData.images.L, 'L', false);
 		var promiseLB = writeImage(cardData.uniqueName, cardData.images.LB, 'L', true);
