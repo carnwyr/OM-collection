@@ -9,6 +9,7 @@ router.get('/', cardsController.index);
 
 // Cards list
 router.get('/cards', cardsController.cardsList);
+router.get('/hiddenCards', usersController.isAdmin(), cardsController.hiddenCardsList);
 
 // Account management
 router.get('/login', usersController.loginGet);

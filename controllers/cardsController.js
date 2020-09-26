@@ -206,6 +206,14 @@ exports.updateOwnedCards = function(req, res) {
 	});
 };
 
+exports.hiddenCardsList = function(req, res, next) {
+	HiddenCards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
+		if (err) { return next(err); }
+		cardsList.sort(sortByRarityAndNumber);
+		res.render('cardsList', { title: 'Hidden Cards', cardsList: cardsList, user: req.user, path: 'hidden' });
+	});
+}
+
 exports.editCard = function(req, res, next) {
 	if (!req.params.id) {
 		return res.render('cardEdit', { title: 'Add Card', user: req.user });
