@@ -68,13 +68,13 @@ exports.cardDetail = function(req, res, next) {
 				var err = new Error('Card not found');
 				return next(err);
 			}
+		} else {
+			if (req.user) {
+				var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
+				if (err) { return next(err); }
+			}
+			res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
 		}
-
-		if (req.user) {
-			var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
-			if (err) { return next(err); }
-		}
-		res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
 	});
 };
 
@@ -366,10 +366,10 @@ async function addNewCard(cardData, res) {
 
 exports.deleteCard = function(req, res, next) {
 	var cardName = req.params.id;
-	Cards.findOneAndDelete({ uniqueName: cardName }, (err, card) => {
+	Cards.findOneAndRemove({ uniqueName: cardName }, (err, card) => {
 		if (err) { return next(err); }
 
-		var promiseCollection = CardsCollection.deleteMany({card: card.name}).exec();
+		var promiseCollection = CardsCollection.deleteMany({card: card.uniqueName}).exec();
 		var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
 		var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
 		var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');
@@ -394,3 +394,18 @@ function deleteFile(file) {
 	    });
 	});
 };
+
+exports.makeCardPublic = function(req, res, next) {
+	HiddenCards.findOneAndRemove({ uniqueName: req.params.id }, (err, card) => {
+		if (err) { return next(err); }
+		if (!card) {
+			var err = new Error("No such card");
+			return next(err);
+		}
+		var newCard = new Cards(card.toObject());
+		newCard.save((err, doc) => {
+			if (err) { return next(err); }
+			res.redirect("/card/"+doc.uniqueName);
+		});
+	});
+}
