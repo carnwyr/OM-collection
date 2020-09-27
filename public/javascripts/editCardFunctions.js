@@ -129,7 +129,8 @@ function sendCardData(images) {
         characters: $('#characters').val(),
         number: $('#number').val(),
         originalUniqueName: originalUniqueName,
-        images: images
+        images: images,
+        isHidden: $('#isHidden')?$('#isHidden').prop('checked'):false
     };
     
     $.ajax({

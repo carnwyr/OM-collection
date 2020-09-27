@@ -17,6 +17,9 @@ router.post('/:id/removeFromCollection', usersController.isLoggedIn(), cardsCont
 // Card edit page
 router.get('/:id/edit', usersController.isAdmin(), cardsController.editCard);
 
+// Make hidden card available to everyone
+router.get('/:id/makePublic', usersController.isAdmin(), cardsController.makeCardPublic);
+
 // Delete card
 router.get('/:id/delete', usersController.isAdmin(), cardsController.deleteCard);
 

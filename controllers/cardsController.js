@@ -1,6 +1,7 @@
 const Cards = require('../models/cards');
 const CardsCollection = require('../models/cardsCollection');
 const Users = require('../models/users.js');
+const HiddenCards = require('../models/hiddenCards.js');
 
 const async = require('async');
 const fs = require('fs');
@@ -54,15 +55,26 @@ exports.cardDetail = function(req, res, next) {
 	Cards.findOne({uniqueName: req.params.id}, async function(err, cardData) {
 		if (err) { return next(err); }
 		if (!cardData) {
-			var err = new Error('Card not found');
-			return next(err);
+			if (req.user && req.user.isAdmin) {
+				HiddenCards.findOne({uniqueName: req.params.id}, function(err, cardData) {
+					if (err) { return next(err); }
+					if (!cardData) {
+						var err = new Error('Card not found');
+						return next(err);
+					}
+					return res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: false, isHidden: true });
+				});
+			} else {
+				var err = new Error('Card not found');
+				return next(err);
+			}
+		} else {
+			if (req.user) {
+				var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
+				if (err) { return next(err); }
+			}
+			res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
 		}
-
-		if (req.user) {
-			var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
-			if (err) { return next(err); }
-		}
-		res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: hasCard });
 	});
 };
 
@@ -205,6 +217,14 @@ exports.updateOwnedCards = function(req, res) {
 	});
 };
 
+exports.hiddenCardsList = function(req, res, next) {
+	HiddenCards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
+		if (err) { return next(err); }
+		cardsList.sort(sortByRarityAndNumber);
+		res.render('cardsList', { title: 'Hidden Cards', cardsList: cardsList, user: req.user, path: 'hidden' });
+	});
+}
+
 exports.editCard = function(req, res, next) {
 	if (!req.params.id) {
 		return res.render('cardEdit', { title: 'Add Card', user: req.user });
@@ -315,12 +335,20 @@ function writeImage(name, baseImage, cardSize, isBoomed) {
 
 async function addNewCard(cardData, res) {
 	try {
-		var {originalUniqueName, images, ...cardProperties} = cardData;
-		await Cards.create(cardData, (err, doc) => {
-			if(err) {
-				return res.json({ err: true, message: err.message });
-			}
-		});
+		var {originalUniqueName, images, isHidden, ...cardProperties} = cardData;
+		if (isHidden) {
+			await HiddenCards.create(cardData, (err, doc) => {
+				if(err) {
+					return res.json({ err: true, message: err.message });
+				}
+			});
+		} else {
+			await Cards.create(cardData, (err, doc) => {
+				if(err) {
+					return res.json({ err: true, message: err.message });
+				}
+			});
+		}
 
 		var promiseL = writeImage(cardData.uniqueName, cardData.images.L, 'L', false);
 		var promiseLB = writeImage(cardData.uniqueName, cardData.images.LB, 'L', true);
@@ -337,18 +365,33 @@ async function addNewCard(cardData, res) {
 
 exports.deleteCard = function(req, res, next) {
 	var cardName = req.params.id;
-	Cards.findOneAndDelete({ uniqueName: cardName }, (err, card) => {
+	Cards.findOneAndRemove({ uniqueName: cardName }, (err, card) => {
 		if (err) { return next(err); }
-
-		var promiseCollection = CardsCollection.deleteMany({card: card.name}).exec();
-		var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
-		var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
-		var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');
-
-		Promise.all([promiseCollection, promiseL, promiseLB, promiseS])
-			.then(() => { return res.redirect('/cards'); })
-			.catch(reason => { return next(err); });
+		if (card) {
+			removeCardDependencies(cardName, res, next);
+		} else {
+			HiddenCards.findOneAndRemove({ uniqueName: cardName }, (err, card) => {
+				if (err) { return next(err); }
+				if (card) {
+					removeCardDependencies(cardName, res, next);
+				} else {
+					var err = new Error("No such card");
+					return next(err);
+				}
+			});
+		}
 	});
+}
+
+function removeCardDependencies(cardName, res, next) {
+	var promiseCollection = CardsCollection.deleteMany({card: cardName}).exec();
+	var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
+	var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
+	var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');
+
+	Promise.all([promiseCollection, promiseL, promiseLB, promiseS ])
+		.catch(reason => { return next(reason); })
+		.then(() => { return res.redirect('/cards'); });
 }
 
 function deleteFile(file) {
@@ -365,3 +408,18 @@ function deleteFile(file) {
 	    });
 	});
 };
+
+exports.makeCardPublic = function(req, res, next) {
+	HiddenCards.findOneAndRemove({ uniqueName: req.params.id }, (err, card) => {
+		if (err) { return next(err); }
+		if (!card) {
+			var err = new Error("No such card");
+			return next(err);
+		}
+		var newCard = new Cards(card.toObject());
+		newCard.save((err, doc) => {
+			if (err) { return next(err); }
+			res.redirect("/card/"+doc.uniqueName);
+		});
+	});
+}
