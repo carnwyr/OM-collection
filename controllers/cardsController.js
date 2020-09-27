@@ -336,7 +336,6 @@ function writeImage(name, baseImage, cardSize, isBoomed) {
 async function addNewCard(cardData, res) {
 	try {
 		var {originalUniqueName, images, isHidden, ...cardProperties} = cardData;
-		console.log(isHidden)
 		if (isHidden) {
 			await HiddenCards.create(cardData, (err, doc) => {
 				if(err) {
@@ -368,16 +367,31 @@ exports.deleteCard = function(req, res, next) {
 	var cardName = req.params.id;
 	Cards.findOneAndRemove({ uniqueName: cardName }, (err, card) => {
 		if (err) { return next(err); }
-
-		var promiseCollection = CardsCollection.deleteMany({card: card.uniqueName}).exec();
-		var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
-		var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
-		var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');
-
-		Promise.all([promiseCollection, promiseL, promiseLB, promiseS])
-			.then(() => { return res.redirect('/cards'); })
-			.catch(reason => { return next(err); });
+		if (card) {
+			removeCardDependencies(cardName, res, next);
+		} else {
+			HiddenCards.findOneAndRemove({ uniqueName: cardName }, (err, card) => {
+				if (err) { return next(err); }
+				if (card) {
+					removeCardDependencies(cardName, res, next);
+				} else {
+					var err = new Error("No such card");
+					return next(err);
+				}
+			});
+		}
 	});
+}
+
+function removeCardDependencies(cardName, res, next) {
+	var promiseCollection = CardsCollection.deleteMany({card: cardName}).exec();
+	var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
+	var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
+	var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');
+
+	Promise.all([promiseCollection, promiseL, promiseLB, promiseS ])
+		.catch(reason => { return next(reason); })
+		.then(() => { return res.redirect('/cards'); });
 }
 
 function deleteFile(file) {
