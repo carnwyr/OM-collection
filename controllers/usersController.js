@@ -55,7 +55,7 @@ exports.signupPost = [
 			res.render('signup', { title: 'Signup', user: req.user });
 		}
 		else {
-			bcrypt.genSalt(process.env.SALT_ROUNDS, (err, salt) => {
+			bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
 				if (err) { return next(err); }
 				bcrypt.hash(req.body.password, salt, function (err, hash) {
 					if (err) { return next(err); }
@@ -206,7 +206,7 @@ exports.changePassword = function(req, res, next) {
 				var err = new Error('Wrong password');
 				return res.json({ err: true, message: err.message });
 			}
-			bcrypt.genSalt(process.env.SALT_ROUNDS, (err, salt) => {
+			bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
 				if (err) {
 					return res.json({ err: true, message: err.message });
 				}
@@ -255,7 +255,7 @@ exports.restorePassword = function(req, res, next) {
 			if (err) {
 				return res.json({ err: true, message: err.message });
 			} else {
-				bcrypt.genSalt(process.env.SALT_ROUNDS, (err, salt) => {
+				bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
 					if (err) {
 						return res.json({ err: true, message: err.message });
 					}
