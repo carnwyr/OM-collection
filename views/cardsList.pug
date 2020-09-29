@@ -41,28 +41,47 @@ block content
       div.card.rounded.shadow.mb-3
         div.card-body
           div.row
-            div.col-md-4
-              h5.card-title Cool Stats
-              ul
-                if title === "My Collection"
-                  span I have
-                else
-                  span #{title.substring(0, title.indexOf("'"))} has
-                li #{cardsList.filter(card => card.type == "Demon").length} Demon Cards
-                li #{cardsList.filter(card => card.type == "Memory").length} Memory Cards
+            div.col-md-4.container.text-center
+              div.row.px-4.h-100.align-items-center
+                div.col-6.d-flex.flex-column
+                  div.lead.text-primary Demon cards
+                  img.img-fluid.p-2(src='/images/demon_card.png')
+                  div #{cardsList.filter(card => card.type == "Demon").length} of 100
+                  small.text-muted 5%
+                div.col-6.d-flex.flex-column
+                  div.lead.text-primary Memory cards
+                  img.img-fluid.p-2(src='/images/memory_card.png')
+                  div #{cardsList.filter(card => card.type == "Memory").length} of 100
+                  small.text-muted 5%
             div.col-md-8
-              h5.card-title Achievements
-              div.row
-                div.col-md-6
-                  +charPercent("Lucifer")
-                  +charPercent("Mammon")
-                  +charPercent("Leviathan")
-                  +charPercent("Satan")
-                div.col-md-6
-                  +charPercent("Asmodeus")
-                  +charPercent("Beelzebub")
-                  +charPercent("Belphegor")
-          small.text-muted Percentage of cards collected per character is calculated based on the entire collection (both demon and memory cards).
+              nav
+                div.nav.nav-pills(id='statsNavTab' role='tablist')
+                  a.nav-item.nav-link.active(id='charNavTab' data-toggle='tab' href='#charNav' role='tab' aria-controls="charNav" aria-selected="true") Characters
+                  a.nav-item.nav-link(id='rarityNavTab' data-toggle='tab' href='#rarityNav' role='tab' aria-controls="rarityNav" aria-selected="true") Rarity
+              div.tab-content(id='statsNavContent')
+                div.container.tab-pane.fade.px-0.show.active(id='charNav' role='tabpanel' aria-labelledby='charNavTab')
+                  div.row
+                    div.col-md-6
+                      +charPercent("Lucifer")
+                      +charPercent("Mammon")
+                      +charPercent("Leviathan")
+                      +charPercent("Satan")
+                    div.col-md-6
+                      +charPercent("Asmodeus")
+                      +charPercent("Beelzebub")
+                      +charPercent("Belphegor")
+                div.container.tab-pane.fade.px-0(id='rarityNav' role='tabpanel' aria-labelledby='rarityNavTab')
+                  div.row
+                    div.col-md-6
+                      +charPercent("Lucifer")
+                      +charPercent("Mammon")
+                      +charPercent("Leviathan")
+                      +charPercent("Satan")
+                    div.col-md-6
+                      +charPercent("Asmodeus")
+                      +charPercent("Beelzebub")
+                      +charPercent("Belphegor")
+              div.small.text-muted.mt-3 Percentage is calculated based on the entire collection (both demon and memory cards).
           hr
           p.text-center.text-muted.mb-0(style="opacity:64%;") More features coming!
 
