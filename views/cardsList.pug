@@ -1,14 +1,17 @@
 extends layout
 
-mixin percentBar(percentage, name)
-  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD"};
+mixin percentBar(owned, total, name)
+  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#b01f15", Barbatos:"#7bedc5", Luke:"#f0d471", Simeon:"#b89087", Solomon:"#d1d1d1", "Little D":"#1c1c1c", N:"#ebebeb", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", URp:"#ffe16b"};
+  - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
+  -function test(p) {return p;}
+  - var percentage = roundPercentage(owned / total * 100);
   span= name
-  small &nbsp;- #{percentage}%
+  small &nbsp;- #{owned} of #{total} (#{percentage}%)
     if percentage >= 100
       | &nbsp;&#x1F31F;
   div.progress.mb-1
-    div(class="progress-bar" role="progressbar" style={width: percentage + '%', background: colours[name]})
-    //aria-valuenow=ownNum aria-valuemin="0" aria-valuemax=totalNum)
+    //div(class="progress-bar" role="progressbar" style={width: percentage + '%', background: colours[name.replace('+', 'p')]})
+    div(id="bar"+name.replace('+', 'p') class="progress-bar" role="progressbar" style={width: percentage + '%', background: colours[name.replace('+', 'p')]} aria-valuenow=owned aria-valuemin="0" aria-valuemax=total)
 
 block content
   div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Collection modified successfully
@@ -36,6 +39,7 @@ block content
 
     //- Collection Stats
     if path === "collection"
+      - function roundPercentage(percentage) {if (percentage > 1) { percentage = Math.round(percentage); } else { percentage = Math.round(percentage * 10) / 10; } return percentage;}
       div.card.rounded.shadow.mb-3
         div.card-body
           div.row
@@ -44,7 +48,6 @@ block content
                 div.col-6.d-flex.flex-column
                   div.lead.text-primary Demon cards
                   img.img-fluid.p-2(src='/images/demon_card.png')
-                  - function roundPercentage(percentage) {if (percentage > 1) { percentage = Math.round(percentage); } else { percentage = Math.round(percentage * 10) / 10; } return percentage;}
                   div #{cardStats.cards.Demon[0]} of #{cardStats.cards.Demon[1]}
                   - var demonPercentage = roundPercentage(cardStats.cards.Demon[0] / cardStats.cards.Demon[1] * 100);
                   small.text-muted #{demonPercentage}%
@@ -58,30 +61,40 @@ block content
               nav
                 div.nav.nav-pills(id='statsNavTab' role='tablist')
                   a.nav-item.nav-link.active(id='charNavTab' data-toggle='tab' href='#charNav' role='tab' aria-controls="charNav" aria-selected="true") Characters
+                  a.nav-item.nav-link(id='sideCharNavTab' data-toggle='tab' href='#sideCharNav' role='tab' aria-controls="sideCharNav" aria-selected="true") Side characters
                   a.nav-item.nav-link(id='rarityNavTab' data-toggle='tab' href='#rarityNav' role='tab' aria-controls="rarityNav" aria-selected="true") Rarity
               div.tab-content(id='statsNavContent')
                 div.container.tab-pane.fade.px-0.show.active(id='charNav' role='tabpanel' aria-labelledby='charNavTab')
                   div.row
                     div.col-md-6
-                      +percentBar(0, "Lucifer")
-                      +percentBar(10, "Mammon")
-                      +percentBar(10, "Leviathan")
-                      +percentBar(10, "Satan")
+                      +percentBar(cardStats.characters.Lucifer[0], cardStats.characters.Lucifer[1], "Lucifer")
+                      +percentBar(cardStats.characters.Mammon[0], cardStats.characters.Mammon[1], "Mammon")
+                      +percentBar(cardStats.characters.Leviathan[0], cardStats.characters.Leviathan[1], "Leviathan")
+                      +percentBar(cardStats.characters.Satan[0], cardStats.characters.Satan[1], "Satan")
                     div.col-md-6
-                      +percentBar(10, "Asmodeus")
-                      +percentBar(10, "Beelzebub")
-                      +percentBar(10, "Belphegor")
+                      +percentBar(cardStats.characters.Asmodeus[0], cardStats.characters.Asmodeus[1], "Asmodeus")
+                      +percentBar(cardStats.characters.Beelzebub[0], cardStats.characters.Beelzebub[1], "Beelzebub")
+                      +percentBar(cardStats.characters.Belphegor[0], cardStats.characters.Belphegor[1], "Belphegor")
+                div.container.tab-pane.fade.px-0(id='sideCharNav' role='tabpanel' aria-labelledby='sideCharNavTab')
+                  div.row
+                    div.col-md-6
+                      +percentBar(cardStats.characters.Diavolo[0], cardStats.characters.Diavolo[1], "Diavolo")
+                      +percentBar(cardStats.characters.Barbatos[0], cardStats.characters.Barbatos[1], "Barbatos")
+                      +percentBar(cardStats.characters.Luke[0], cardStats.characters.Luke[1], "Luke")
+                      +percentBar(cardStats.characters.Simeon[0], cardStats.characters.Simeon[1], "Simeon")
+                    div.col-md-6
+                      +percentBar(cardStats.characters.Solomon[0], cardStats.characters.Solomon[1], "Solomon")
+                      +percentBar(cardStats.characters["Little D"][0], cardStats.characters["Little D"][1], "Little D")
                 div.container.tab-pane.fade.px-0(id='rarityNav' role='tabpanel' aria-labelledby='rarityNavTab')
                   div.row
                     div.col-md-6
-                      +percentBar(10, "Lucifer")
-                      +percentBar(10, "Mammon")
-                      +percentBar(10, "Leviathan")
-                      +percentBar(10, "Satan")
+                      +percentBar(cardStats.rarity.N[0], cardStats.rarity.N[1], "N")
+                      +percentBar(cardStats.rarity.R[0], cardStats.rarity.R[1], "R")
+                      +percentBar(cardStats.rarity.SR[0], cardStats.rarity.SR[1], "SR")
+                      +percentBar(cardStats.rarity.SSR[0], cardStats.rarity.SSR[1], "SSR")
                     div.col-md-6
-                      +percentBar(10, "Asmodeus")
-                      +percentBar(10, "Beelzebub")
-                      +percentBar(10, "Belphegor")
+                      +percentBar(cardStats.rarity.UR[0], cardStats.rarity.UR[1], "UR")
+                      +percentBar(cardStats.rarity.URp[0], cardStats.rarity.URp[1], "UR+")
               div.small.text-muted.mt-3 Percentage is calculated based on the entire collection (both demon and memory cards).
           hr
           p.text-center.text-muted.mb-0(style="opacity:64%;") More features coming!

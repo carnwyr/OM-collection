@@ -110,3 +110,9 @@
   height: 64px;
   padding-top: 16px !important;
 }
+
+#barUR, #barURp {
+  background: url('/images/ur_bar.jpg') !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
