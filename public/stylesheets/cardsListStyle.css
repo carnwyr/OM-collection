@@ -112,7 +112,15 @@
 }
 
 #barUR, #barURp {
-  background: url('/images/ur_bar.jpg') !important;
+  width: 100% !important;
+  background: linear-gradient(to left, #ff59ff, #6370ff, #52fff5, #8aff43, #feb859) !important;
   background-repeat: no-repeat !important;
   background-size: cover !important;
+}
+
+#barCoverUR, #barCoverURp {
+  height: 100%;
+  background-color: rgb(233, 236, 239);
+  margin-left:auto;
+  margin-right:0;
 }
