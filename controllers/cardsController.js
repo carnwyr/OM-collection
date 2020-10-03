@@ -118,19 +118,33 @@ exports.cardsCollection = async function(req, res, next) {
 
 	// dict[key][0] is owned copies [1] is total db copies
 	var cardStats = {
-		Lucifer: [0, 0],
-		Mammon: [0, 0],
-		Leviathan: [0, 0],
-		Satan: [0, 0],
-		Asmodeus: [0, 0],
-		Beelzebub: [0, 0],
-		Belphegor: [0, 0],
-		Diavolo: [0, 0],
-		Barbatos: [0, 0],
-		Luke: [0, 0],
-		Simeon: [0, 0],
-		Solomon: [0, 0],
-		"Little D": [0, 0]
+		characters: {
+			Lucifer: [0, 0],
+			Mammon: [0, 0],
+			Leviathan: [0, 0],
+			Satan: [0, 0],
+			Asmodeus: [0, 0],
+			Beelzebub: [0, 0],
+			Belphegor: [0, 0],
+			Diavolo: [0, 0],
+			Barbatos: [0, 0],
+			Luke: [0, 0],
+			Simeon: [0, 0],
+			Solomon: [0, 0],
+			"Little D": [0, 0]
+		},
+		rarity: {
+			N: [0, 0],
+			R: [0, 0],
+			SR: [0,0],
+			SSR: [0, 0],
+			UR: [0, 0],
+			URp: [0, 0]
+		},
+		cards: {
+			Demon: [0, 0],
+			Memory: [0, 0]
+		}
 	};
 
 	if (req.user && req.user.name === req.params.username) {
@@ -140,31 +154,24 @@ exports.cardsCollection = async function(req, res, next) {
 	}
 	CardsCollection.find({user: req.params.username}, function (err, collection) {
 		if (err) { return next(err); }
-		let ownedCards = collection.map(pair => pair.card);
-		Cards.find({uniqueName: {"$in": ownedCards}}, function(err, cardsList) {
+		var ownedCards = collection.map(pair => pair.card);
+		Cards.find({}, function(err, fullList) {
 			if (err) { return next(err); }
+			var cardsList = fullList.filter(card => ownedCards.includes(card.uniqueName));
 			cardsList.sort(sortByRarityAndNumber);
 
-			// chard -> card characters
-			Cards.find({}, 'characters', function (err, chard) {
-				if (err) { return next(err); }
-				chard.forEach(el => {
-					el.characters.forEach(i => {
-						if (cardStats[i]) {
-							cardStats[i][1] += 1;
-							console.log(cardStats[i][1], el.characters)
-						} else {
-							console.log(chard) // error in characters array
-						}
-					});
-				});
-
-				for (var key in cardStats) {
-					cardStats[key][0] = cardsList.filter(card => card.characters.includes(key)).length;
-				}
-
-				res.render('cardsList', { title: title, cardsList: cardsList, cardStats: cardStats, user: req.user, path: 'collection' });
+			cardsList.forEach(card => {
+				card.characters.forEach(character => cardStats.characters[character][0]++);
+				cardStats.rarity[card.rarity.replace('+', 'p')][0]++;
+				cardStats.cards[card.type][0]++;
 			});
+			fullList.forEach(card => {
+				card.characters.forEach(character => cardStats.characters[character][1]++);
+				cardStats.rarity[card.rarity.replace('+', 'p')][1]++;
+				cardStats.cards[card.type][1]++;
+			});
+			console.log(cardStats)
+			res.render('cardsList', { title: title, cardsList: cardsList, cardStats: cardStats, user: req.user, path: 'collection' });
 		});
 	});
 };
