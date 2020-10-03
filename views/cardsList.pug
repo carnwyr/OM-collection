@@ -1,7 +1,7 @@
 extends layout
 
 mixin percentBar(owned, total, name)
-  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#b01f15", Barbatos:"#7bedc5", Luke:"#f0d471", Simeon:"#b89087", Solomon:"#d1d1d1", "Little D":"#1c1c1c", N:"#ebebeb", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", URp:"#ffe16b"};
+  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#b01f15", Barbatos:"#7bedc5", Luke:"#f0d471", Simeon:"#b89087", Solomon:"#d1d1d1", "Little D":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", URp:"#ffe16b"};
   - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
   -function test(p) {return p;}
   - var percentage = roundPercentage(owned / total * 100);
