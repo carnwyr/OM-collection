@@ -47,6 +47,13 @@ exports.signupPost = [
 			return;
 		}
 
+		let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection'];
+		if (blacklist.includes(req.body.username.toLowerCase())) {
+			req.flash('message', 'Username invalid')
+			res.render('signup', { title: 'Signup', user: req.user });
+			return;
+		}
+
 		var [err, exists] = await exports.userExists(req.body.username);
 		if (err) { return next(err); }
 
@@ -88,10 +95,16 @@ exports.userExists = async function(username) {
 }
 
 exports.signupCheckUsername = async function(req, res) {
+	let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection'];
+	if (blacklist.includes(req.body.username.toLowerCase())) {
+		res.send(true);
+		return;
+	}
 	var [err, exists] = await exports.userExists(req.body.username);
 	if (err) { res.send('error'); return; }
 	if (!exists) {
 		res.send(false);
+		return;
 	}
 	res.send(true);
 }

@@ -35,8 +35,8 @@ function checkUsername(e) {
     		return;
     	}
     	if (data) {
-    		$("small#usernameError").html('Username already taken');
-    		$("input#username")[0].setCustomValidity("Username already taken");
+    		$("small#usernameError").html('Username already taken or invalid');
+    		$("input#username")[0].setCustomValidity("Username already taken or invalid");
     	}
     	else {
     		if (username == '')
