@@ -48,25 +48,27 @@ block content
       div.card.rounded.shadow.mb-3
         div.card-body
           div.row
-            div.col-md-4.container.text-center
-              div.row.px-4.h-100.align-items-center
-                div.col-6.d-flex.flex-column.justify-content-center
-                  div.lead.text-primary Demon cards
+            div.col-12.col-lg-4.container.text-center
+              div.row.px-4.h-100.align-items-center.d-flex
+                div.col-6.d-flex.flex-column.justify-content-center.h-100
+                  div.d-flex.align-items-center.h-100
+                    div.lead.text-primary Demon cards
                   - var demonPercentage = roundPercentage(cardStats.cards.Demon[0] / cardStats.cards.Demon[1] * 100);
                   div(style='position: relative')
                     img.img-fluid.p-2.mx-auto(src='/images/demon_card.png' style='max-width: 120px; width:100%;')
                     div(style={position: 'absolute', top: '0%', left: '0%', height: 100 - demonPercentage + '%', width: '100%', background: 'white', 'mix-blend-mode': 'saturation'})
                   div #{cardStats.cards.Demon[0]} of #{cardStats.cards.Demon[1]}
                   small.text-muted #{demonPercentage}%
-                div.col-6.d-flex.flex-column
-                  div.lead.text-primary Memory cards
+                div.col-6.d-flex.flex-column.justify-content-center.h-100
+                  div.d-flex.align-items-center.h-100
+                    div.lead.text-primary Memory cards
                   - var memoryPercentage = roundPercentage(cardStats.cards.Memory[0] / cardStats.cards.Memory[1] * 100);
                   div(style='position: relative')
                     img.img-fluid.img-max.p-2.mx-auto(src='/images/memory_card.png' style='max-width: 120px; width:100%;')
                     div(style={position: 'absolute', top: '0%', left: '0%', height: 100 - memoryPercentage + '%', width: '100%', background: 'white', 'mix-blend-mode': 'saturation'})
                   div #{cardStats.cards.Memory[0]} of #{cardStats.cards.Memory[1]}
                   small.text-muted #{memoryPercentage}%
-            div.col-md-8
+            div.col-12.col-lg-8.mt-3.mt-lg-0
               nav
                 div.nav.nav-pills(id='statsNavTab' role='tablist')
                   a.nav-item.nav-link.active(id='charNavTab' data-toggle='tab' href='#charNav' role='tab' aria-controls="charNav" aria-selected="true") Characters
