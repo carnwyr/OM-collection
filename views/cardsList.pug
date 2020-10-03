@@ -11,7 +11,10 @@ mixin percentBar(owned, total, name)
       | &nbsp;&#x1F31F;
   div.progress.mb-1
     div(id="bar"+name.replace('+', 'p') class="progress-bar" role="progressbar" style={width: percentage + '%', background: colours[name.replace('+', 'p')]} aria-valuenow=percentage aria-valuemin="0" aria-valuemax="100")
-      if name==='UR' || name==='UR+'
+      if name==='UR+'
+        div(id='barAnimated')
+          div(id="barCover"+name.replace('+', 'p') style={width: (100 - percentage) + '%'})
+      if name==='UR'
         div(id="barCover"+name.replace('+', 'p') style={width: (100 - percentage) + '%'})
 
 block content
