@@ -370,6 +370,7 @@ function copyCollectionLink() {
 function loadStatsImage(e) {
 	$('#statsMessage').html("");
 	$('#statsImage').attr('src', "");
+	var spinner = $('#statsSpinner').show();
 	var statsCard = $('#statsCard')[0].outerHTML;
 	$.ajax({
 		type: 'post',
@@ -377,6 +378,7 @@ function loadStatsImage(e) {
 		data: {html: statsCard}
 	})
 	.done(function(imageData){
+		spinner.hide();
 		if(imageData) {
 			$('#statsImage').attr('src', imageData);
 		} else {

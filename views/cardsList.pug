@@ -24,7 +24,7 @@ block content
 
   //- support karasu toast
   div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true" style="padding-top:128px;")
-    div(class="modal-dialog" role="document")
+    div(class="modal-dialog modal-lg" role="document")
       div(class="modal-content")
         div(class="modal-header")
           h5(class="modal-title text-primary" id="openShareLink") Share
@@ -35,7 +35,8 @@ block content
             input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link")
             div.input-group-append
               button#copyLink.btn.btn-primary.rounded Copy
-          div(id='statsImageContainer')
+          div(class='d-flex justify-content-center align-items-center mt-3' id='statsImageContainer')
+            div(id='statsSpinner' class="spinner-border text-secondary" role="status" style='display: none')
             img(id='statsImage')
             div(id='statsMessage')
 
