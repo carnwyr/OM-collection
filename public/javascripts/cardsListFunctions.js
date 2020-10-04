@@ -31,6 +31,7 @@ $(document).ready(function(){
 
 	$("#shareCollection").on("click", () => { $("#userLink").val(window.location.href); });
 	$("#copyLink").on("click", copyCollectionLink);
+	$('#openLink').on('show.bs.modal', loadStatsImage);
 
 	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
 
@@ -364,4 +365,22 @@ function copyCollectionLink() {
 	copyText.setSelectionRange(0, 9999);
 	document.execCommand("copy");
 	showAlert("div#successAlert", "Link successfully copied!");
+}
+
+function loadStatsImage(e) {
+	$('#statsMessage').html("");
+	$('#statsImage').attr('src', "");
+	var statsCard = $('#statsCard')[0].outerHTML;
+	$.ajax({
+		type: 'post',
+		url: './getStatsImage',
+		data: {html: statsCard}
+	})
+	.done(function(imageData){
+		if(imageData) {
+			$('#statsImage').attr('src', imageData);
+		} else {
+			$('#statsMessage').html("Sorry, couldn't load the image");
+		}
+	});
 }

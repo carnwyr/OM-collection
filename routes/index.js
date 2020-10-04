@@ -23,5 +23,6 @@ router.post('/signup/checkUsername', usersController.signupCheckUsername);
 router.get('/collection/getOwnedCards', usersController.isLoggedIn(), cardsController.getOwnedCards);
 router.post('/collection/updateOwnedCards', usersController.isLoggedIn(), cardsController.updateOwnedCards);
 router.get('/:username/collection', cardsController.cardsCollection);
+router.post('/:username/getStatsImage', cardsController.getStatsImage);
 
 module.exports = router;

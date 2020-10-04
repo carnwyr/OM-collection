@@ -6,6 +6,10 @@ const HiddenCards = require('../models/hiddenCards.js');
 const async = require('async');
 const fs = require('fs');
 
+const nodeHtmlToImage = require('node-html-to-image')
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
 var usersController = require('../controllers/usersController');
 
 exports.index = function(req, res, next) {
@@ -170,11 +174,74 @@ exports.cardsCollection = async function(req, res, next) {
 				cardStats.rarity[card.rarity.replace('+', 'p')][1]++;
 				cardStats.cards[card.type][1]++;
 			});
-			console.log(cardStats)
 			res.render('cardsList', { title: title, cardsList: cardsList, cardStats: cardStats, user: req.user, path: 'collection' });
 		});
 	});
 };
+
+exports.getStatsImage = async function(req, res) {
+	try{
+		const html = req.body.html;
+		const dom = new JSDOM(html, {resources: "usable"});
+
+		var statsHTML = getStatsHtml(dom);
+		try {
+			var imageData = await getReplacedImages();
+			imageData = imageData.map(img => new Buffer.from(img).toString('base64'));
+			imageData = imageData.map(base64 => 'data:image/png;base64,' + base64);
+			imageData = {star: imageData[0], demon: imageData[1], memory: imageData[2]}
+		} catch (err) {
+			console.error(err);
+		}
+
+		var image = await nodeHtmlToImage({
+			html: statsHTML,
+			content: imageData
+		});
+		image = 'data:image/png;base64,' + Buffer.from(image, 'binary').toString('base64');
+		res.send(image);
+	} catch (err) {
+		console.error(err);
+		res.send(null);
+	}
+}
+
+function getStatsHtml(dom) {
+	var head = '<!DOCTYPE html><html lang="en-US"><head><meta charset="utf-8"><title>My Collection</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Obey Me! Collection is a collection of cards and tools for the game Obey Me! by NTT Solmare Corporation."><meta name="keywords" content="Obey Me!, おべいみー, cards, tools"><link rel="icon" type="image/png" href="/images/favicon.png"><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><link rel="stylesheet" href="/stylesheets/theme_1597782929390.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit"><link rel="stylesheet" href="/stylesheets/style.css"><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script><script src="/javascripts/commonFunctions.js"></script><script data-ad-client="ca-pub-1710157662563352" async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script></head>';
+	var statsBlock = dom.window.document.querySelector("#statsNavContent").outerHTML;
+	statsBlock = replaceImageNames(statsBlock);
+	var body = '<body>'+statsBlock+'</body>';
+	return head + body;
+}
+
+function replaceImageNames(html) {
+	return html.replace(/\/images\/completion_star\.png/g, '{{star}}')
+			   .replace(/\/images\/demon_card\.png/g, '{{demon}}')
+			   .replace(/\/images\/memory_card\.png/g, '{{memory}}');
+}
+
+function getReplacedImages() {
+	const p1 = new Promise((resolve, reject) => {
+		fs.readFile('./public/images/completion_star.png', (err,img) => {
+			if (err) reject(err);
+					resolve(img);
+		});
+	});
+	const p2 =  new Promise((resolve, reject) => {
+		fs.readFile('./public/images/demon_card.png', (err,img) => {
+			if (err) reject(err);
+					resolve(img);
+		});
+	});
+	const p3 =  new Promise((resolve, reject) => {
+		fs.readFile('./public/images/memory_card.png', (err,img) => {
+			if (err) reject(err);
+					resolve(img);
+		});
+	});
+
+	return Promise.all([p1, p2, p3]);
+}
 
 async function getUserId(currentUser, requestedUsername) {
 	var userQuery = Users.findOne({ 'name': requestedUsername });
@@ -306,7 +373,7 @@ function saveImage(oldName, newName, baseImage, cardSize, isBoomed) {
 			var deletePromise = new Promise((resolve, reject) => {
 				fs.unlink(oldImagePath, err => {
 					if (err) reject(err);
-    				resolve();
+						resolve();
 				});
 			});
 			var writePromise = writeImage(newName, baseImage, cardSize, isBoomed);
@@ -315,7 +382,7 @@ function saveImage(oldName, newName, baseImage, cardSize, isBoomed) {
 			return new Promise((resolve, reject) => {
 				fs.rename(oldImagePath, oldImagePath.replace(oldName, newName), err => {
 					if (err) reject(err);
-	    			resolve();
+						resolve();
 				});
 			});
 		}

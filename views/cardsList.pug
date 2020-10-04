@@ -27,7 +27,7 @@ block content
     div(class="modal-dialog" role="document")
       div(class="modal-content")
         div(class="modal-header")
-          h5(class="modal-title" id="openShareLink") Share
+          h5(class="modal-title text-primary" id="openShareLink") Share
           button(type="button" class="close" data-dismiss="modal" aria-label="Close")
             span(aria-hidden="true") &times;
         div(class="modal-body mb-2")
@@ -35,6 +35,9 @@ block content
             input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link")
             div.input-group-append
               button#copyLink.btn.btn-primary.rounded Copy
+          div(id='statsImageContainer')
+            img(id='statsImage')
+            div(id='statsMessage')
 
   div(class="container")
     //- Page Heading
@@ -45,7 +48,7 @@ block content
     //- Collection Stats
     if path === "collection"
       - function roundPercentage(percentage) {if (percentage > 1) { percentage = Math.round(percentage); } else { percentage = Math.round(percentage * 10) / 10; } return percentage;}
-      div.card.rounded.shadow.mb-3
+      div.card.rounded.shadow.mb-3(id='statsCard')
         div.card-body
           div.row
             div.col-12.col-lg-4.container.text-center
