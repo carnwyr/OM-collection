@@ -380,6 +380,25 @@ function loadStatsImage(e) {
 	.done(function(imageData){
 		spinner.hide();
 		if(imageData) {
+			/*var canvas = document.createElement('canvas');
+			var context = canvas.getContext("2d");
+
+			var total = new Image();
+			var chars = new Image();
+			var sideChars = new Image();
+			var rarity = new Image();
+			total.scr = imageData[0];
+			chars.scr = imageData[1];
+			sideChars.scr = imageData[2];
+			rarity.scr = imageData[3];
+
+			context.drawImage(total, 0, 0);
+			context.drawImage(chars, 0, total.height);
+			context.drawImage(sideChars, 0, total.height + chars.height);
+			context.drawImage(rarity, 0, total.height + chars.height + rarity.height);
+
+			var img = canvas.toDataURL("image/png");*/
+
 			$('#statsImage').attr('src', imageData);
 		} else {
 			$('#statsMessage').html("Sorry, couldn't load the image");

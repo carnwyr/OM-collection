@@ -183,32 +183,39 @@ exports.getStatsImage = async function(req, res) {
 	try{
 		const html = req.body.html;
 		const dom = new JSDOM(html, {resources: "usable"});
-
-		var statsHTML = getStatsHtml(dom);
-		try {
-			var imageData = await getReplacedImages();
-			imageData = imageData.map(img => new Buffer.from(img).toString('base64'));
-			imageData = imageData.map(base64 => 'data:image/png;base64,' + base64);
-			imageData = {star: imageData[0], demon: imageData[1], memory: imageData[2]}
-		} catch (err) {
-			console.error(err);
-		}
-
-		var image = await nodeHtmlToImage({
-			html: statsHTML,
-			content: imageData
-		});
-		image = 'data:image/png;base64,' + Buffer.from(image, 'binary').toString('base64');
-		res.send(image);
+		var result = await getBigStatsImage(['#statsTotal', '#charNav', '#sideCharNav', '#rarityNav'], dom);
+		res.send(result);
 	} catch (err) {
 		console.error(err);
 		res.send(null);
 	}
 }
 
-function getStatsHtml(dom) {
+async function getBigStatsImage(ids, dom) {
+	try {
+		var statsHTML = getStatsHtml(ids, dom);
+		var imageData = await getReplacedImages();
+		imageData = imageData.map(img => new Buffer.from(img).toString('base64'));
+		imageData = imageData.map(base64 => 'data:image/png;base64,' + base64);
+		imageData = {star: imageData[0], demon: imageData[1], memory: imageData[2]}
+	
+		var image = await nodeHtmlToImage({
+			html: statsHTML,
+			content: imageData
+		});
+		image = 'data:image/png;base64,' + Buffer.from(image, 'binary').toString('base64');
+		return image;
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+}
+
+function getStatsHtml(ids, dom) {
 	var head = '<!DOCTYPE html><html lang="en-US"><head><meta charset="utf-8"><title>My Collection</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Obey Me! Collection is a collection of cards and tools for the game Obey Me! by NTT Solmare Corporation."><meta name="keywords" content="Obey Me!, おべいみー, cards, tools"><link rel="icon" type="image/png" href="/images/favicon.png"><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><link rel="stylesheet" href="/stylesheets/theme_1597782929390.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit"><link rel="stylesheet" href="/stylesheets/style.css"><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script><script src="/javascripts/commonFunctions.js"></script><script data-ad-client="ca-pub-1710157662563352" async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script></head>';
-	var statsBlock = dom.window.document.querySelector("#statsNavContent").outerHTML;
+	var statsBlock ='';
+	dom.window.document.querySelectorAll('.tab-pane').forEach(el => el.setAttribute("class", "active"));
+	ids.forEach(id => statsBlock += dom.window.document.querySelector(id).outerHTML);
 	statsBlock = replaceImageNames(statsBlock);
 	var body = '<body>'+statsBlock+'</body>';
 	return head + body;
