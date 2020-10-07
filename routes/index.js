@@ -3,9 +3,13 @@ var router = express.Router();
 
 var cardsController = require('../controllers/cardsController');
 var usersController = require('../controllers/usersController');
+var miscController = require('../controllers/miscController');
 
 // Home page
 router.get('/', cardsController.index);
+
+// Privacy policy
+router.get('/policies', miscController.privacyPolicy);
 
 // Cards list
 router.get('/cards', cardsController.cardsList);

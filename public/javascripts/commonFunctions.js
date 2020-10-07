@@ -5,10 +5,17 @@ $(document).ready(function(){
 	if (!document.cookie.split('; ').find(row => row.startsWith("closedSupportToast"))) {
 	    $("#supportToast").removeClass("d-none").toast("show");
 	}
+	if (!document.cookie.split('; ').find(row => row.startsWith("acceptedCookies"))) {
+	    $("#cookieToast").removeClass("d-none").toast("show");
+	}
 
 	$("button#closeToast, #supportNow").on("click", () => {
 		document.cookie = "closedSupportToast=true; expires=" + cookieExpiryDate() + ";";
-		$("#supportToast").remove();
+		$("#supportToast").toast("hide");
+	});
+	$("button#acceptCookies").on("click", () => {
+		document.cookie = "acceptedCookies=true; expires=" + cookieExpiryDate() + ";";
+		$("#cookieToast").toast("hide");
 	});
 
 	$('.navbar .dropdown').hover(function() {

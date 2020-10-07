@@ -81,11 +81,22 @@ html(lang='en-US')
         button(type="button" id="closeToast" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close")
           span(aria-hidden="true") &times;
       div(class="toast-body")
-        p Hi, there! Karasu-os needs <u>your</u> help to provide the best content for <u>you</u>!
+        p Hi, there! Karasu-os needs <u>your</u> help to stay ad-free!
         a(type="button" href="https://www.buymeacoffee.com/karasuos" class="btn btn-primary btn-sm btn-block" id="supportNow") Help Now
+
+    div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
+      div(class="toast-body")
+        span This site uses cookies to improve your experience.&nbsp;
+            a(href="/policies") More information
+        button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
+          span(aria-hidden="true") Got it &#x1F44D
 
     div(class='container-fluid')
       block content
+      div.col-12.my-3
+        <ins class="adsbygoogle" style="display:block; background:white;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        script.
+          (adsbygoogle = window.adsbygoogle || []).push({});
 
     block footer
       footer(class="site-footer bg-primary navbar-dark mt-auto")
@@ -111,6 +122,10 @@ html(lang='en-US')
               span
               |
               a(class="text-light" href="/") Contact Us
+              |
+              span.text-secondary &nbsp;|&nbsp;
+              |
+              a(class="text-light" href="/policies") Privacy Policy
               |
               span.text-secondary &nbsp;|&nbsp;
               |
