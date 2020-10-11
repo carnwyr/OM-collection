@@ -48,7 +48,7 @@ block content
 
     //- Collection Stats
     if path === "collection"
-      - function roundPercentage(percentage) {if (percentage > 1) { percentage = Math.round(percentage); } else { percentage = Math.round(percentage * 10) / 10; } return percentage;}
+      - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
       div.card.rounded.shadow.mb-3(id='statsCard')
         div.card-body
           div.row

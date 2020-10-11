@@ -425,6 +425,7 @@ function prepareHtml() {
 
 	container.appendChild(document.getElementById('statsTotal').cloneNode(true));
 	$(container).find('#statsTotal').attr('style', 'max-width: 400px');
+	$(container).find('#statsTotal').addClass('mb-3');
 	container.appendChild(document.getElementById('charNav').cloneNode(true));
 	$(container).find('#charNav').addClass('mb-4');
 	container.appendChild(document.getElementById('sideCharNav').cloneNode(true));
