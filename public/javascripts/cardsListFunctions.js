@@ -368,14 +368,14 @@ function copyCollectionLink() {
 }
 
 function loadStatsImage(e) {
+	var html = prepareHtml();
 	$('#statsMessage').html("");
 	$('#statsImage').attr('src', "");
 	var spinner = $('#statsSpinner').show();
-	var statsCard = $('#statsCard')[0].outerHTML;
 	$.ajax({
 		type: 'post',
 		url: './getStatsImage',
-		data: {html: statsCard}
+		data: {html: html}
 	})
 	.done(function(imageData){
 		spinner.hide();
@@ -404,4 +404,37 @@ function loadStatsImage(e) {
 			$('#statsMessage').html("Sorry, couldn't load the image");
 		}
 	});
+}
+
+function prepareHtml() {
+	var head = $(document.head.cloneNode(true));
+	var links = $('body link').clone().appendTo(head);
+	$(head).find('link').each(function() {
+		if ($(this).attr('href')==='/stylesheets/style.css') {
+			$(this).remove();
+			return;
+		}
+		if ($(this).attr('href')[0]==='/') {
+			$(this).attr('href', "http://localhost:3000" + $(this).attr('href'));
+		}
+	});
+	
+	var body = document.createElement('body');
+	var container = document.createElement('div');
+	container.className = 'container-fluid';
+
+	container.appendChild(document.getElementById('statsTotal').cloneNode(true));
+	$(container).find('#statsTotal').attr('style', 'max-width: 400px');
+	container.appendChild(document.getElementById('charNav').cloneNode(true));
+	$(container).find('#charNav').addClass('mb-4');
+	container.appendChild(document.getElementById('sideCharNav').cloneNode(true));
+	$(container).find('#sideCharNav').addClass('show active mb-4');
+	container.appendChild(document.getElementById('rarityNav').cloneNode(true));
+	$(container).find('#rarityNav').addClass('show active mb-4');
+	container.appendChild(document.createElement('div'));
+
+	var newHTML = document.implementation.createHTMLDocument();
+	$(head).children().appendTo($(newHTML).find('head')[0]);
+	newHTML.body.appendChild(container);
+	return new XMLSerializer().serializeToString(newHTML);
 }
