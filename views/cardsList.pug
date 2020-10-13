@@ -24,10 +24,10 @@ block content
 
   //- share collection
   div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true" style="padding-top:128px;")
-    div(class="modal-dialog" role="document")
+    div(class="modal-dialog modal-lg" role="document")
       div(class="modal-content")
         div(class="modal-header")
-          h5(class="modal-title" id="openShareLink") Share
+          h5(class="modal-title text-primary" id="openShareLink") Share
           button(type="button" class="close" data-dismiss="modal" aria-label="Close")
             span(aria-hidden="true") &times;
         div(class="modal-body mb-2")
@@ -35,6 +35,11 @@ block content
             input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link")
             div.input-group-append
               button#copyLink.btn.btn-primary.rounded Copy
+          div.text-center.text-secondary.mt-2 Stats image to copy and share
+          div(class='d-flex justify-content-center align-items-center mt-3' id='statsImageContainer')
+            div(id='statsSpinner' class="spinner-border text-secondary" role="status" style='display: none')
+            img(id='statsImage' class='img-fluid')
+            div(id='statsMessage')
 
   div(class="container")
     //- Page Heading
@@ -44,11 +49,11 @@ block content
 
     //- Collection Stats
     if path === "collection"
-      - function roundPercentage(percentage) {if (percentage > 1) { percentage = Math.round(percentage); } else { percentage = Math.round(percentage * 10) / 10; } return percentage;}
-      div.card.rounded.shadow.mb-3
+      - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
+      div.card.rounded.shadow.mb-3(id='statsCard')
         div.card-body
           div.row
-            div.col-12.col-lg-4.container.text-center
+            div.col-12.col-lg-4.container.text-center(id='statsTotal')
               div.row.px-4.h-100.align-items-center.d-flex
                 div.col-6.d-flex.flex-column.justify-content-center.h-100
                   div.d-flex.align-items-center.justify-content-center.cardTextWrapper
@@ -115,7 +120,7 @@ block content
           p.text-center.text-muted.mb-0(style="opacity:64%;") More features coming!
 
     //- Card Navigation
-    div(class="card sticky-top sticky-offset mb-3 shadow rounded")
+    div(class="card sticky-top sticky-offset mb-3 shadow rounded fixedStyle")
       div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
         div(class="d-flex mb-2 mb-lg-0" + (user && path === "list" || title === "My Collection" ? " mr-lg-auto" : ""))
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
