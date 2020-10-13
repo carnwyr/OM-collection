@@ -4,6 +4,9 @@ var typingTimer;
 var changedCards = {};
 var selectionMode = false;
 
+var fullStatImage;
+var totalStatImage;
+
 $(document).ready(function(){
 	$(".img-max").css("transition", "all .5s ease");
 	resetFilters();
@@ -380,25 +383,6 @@ function loadStatsImage(e) {
 	.done(function(imageData){
 		spinner.hide();
 		if(imageData) {
-			/*var canvas = document.createElement('canvas');
-			var context = canvas.getContext("2d");
-
-			var total = new Image();
-			var chars = new Image();
-			var sideChars = new Image();
-			var rarity = new Image();
-			total.scr = imageData[0];
-			chars.scr = imageData[1];
-			sideChars.scr = imageData[2];
-			rarity.scr = imageData[3];
-
-			context.drawImage(total, 0, 0);
-			context.drawImage(chars, 0, total.height);
-			context.drawImage(sideChars, 0, total.height + chars.height);
-			context.drawImage(rarity, 0, total.height + chars.height + rarity.height);
-
-			var img = canvas.toDataURL("image/png");*/
-
 			$('#statsImage').attr('src', imageData);
 		} else {
 			$('#statsMessage').html("Sorry, couldn't load the image");
@@ -427,12 +411,18 @@ function prepareHtml() {
 	$(container).find('#statsTotal').attr('style', 'max-width: 400px');
 	$(container).find('#statsTotal').addClass('mb-3');
 	container.appendChild(document.getElementById('charNav').cloneNode(true));
-	$(container).find('#charNav').addClass('mb-4');
+	$(container).find('#charNav').addClass('show active mb-4');
 	container.appendChild(document.getElementById('sideCharNav').cloneNode(true));
 	$(container).find('#sideCharNav').addClass('show active mb-4');
 	container.appendChild(document.getElementById('rarityNav').cloneNode(true));
-	$(container).find('#rarityNav').addClass('show active mb-4');
+	$(container).find('#rarityNav').addClass('show active mb-2');
 	container.appendChild(document.createElement('div'));
+
+	var watermark = document.createElement('div');
+	watermark.innerHTML = window.location.href.split('/').slice(-2)[0] + "'s Obey Me collection stats<br />Made with karasu-os.com";
+	watermark.className = 'text-muted text-right';
+
+	container.appendChild(watermark);
 
 	var newHTML = document.implementation.createHTMLDocument();
 	$(head).children().appendTo($(newHTML).find('head')[0]);
