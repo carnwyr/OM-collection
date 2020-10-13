@@ -42,9 +42,10 @@ block content
             div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
               a(href="/images/cards/L/" + card.uniqueName + ".jpg")
                 img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
-            div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
-              a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
-                img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
+            if card.type == "Demon"
+              div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
+                a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
+                  img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
       //- Desktop Screen
       div(class="d-none d-lg-block col-4")
         div.card.bg-transparent
