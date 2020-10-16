@@ -52,6 +52,12 @@ block content
       - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
       div.card.rounded.shadow.mb-3(id='statsCard')
         div.card-body
+          if title === "My Collection"
+            div.col-12.text-right
+              button(type="button" id="shareCollection" class="btn btn-primary" data-toggle="modal" data-target="#openLink")
+                <svg width="1em" height="1.5em" viewBox="0 0 16 16" class="bi bi-share pb-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
+                |
+                | Share
           div.row
             div.col-12.col-lg-4.container.text-center(id='statsTotal')
               div.row.px-4.h-100.align-items-center.d-flex
@@ -116,13 +122,11 @@ block content
                       +percentBar(cardStats.rarity.UR[0], cardStats.rarity.UR[1], "UR")
                       +percentBar(cardStats.rarity.URp[0], cardStats.rarity.URp[1], "UR+")
               div.small.text-muted.mt-3 Percentage is calculated based on the entire collection (both demon and memory cards).
-          hr
-          p.text-center.text-muted.mb-0(style="opacity:64%;") More features coming!
 
     //- Card Navigation
     div(class="card sticky-top sticky-offset mb-3 shadow rounded fixedStyle")
       div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
-        div(class="d-flex mb-2 mb-lg-0" + (user && path === "list" || title === "My Collection" ? " mr-lg-auto" : ""))
+        div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
             span(class="d-none d-sm-block") Go to Demon Cards
             span(class="d-sm-none") Demon
@@ -137,22 +141,19 @@ block content
         div(class="btn-group d-none" id="manageButtons")
           button(class="btn btn-primary mb-md-0" id="cancelManaging") Cancel
           button(class="btn btn-primary mb-md-0" id="saveManaging") Save
-        if user
-          if path === "list"
+        if user && path === "list"
             button(class="btn btn-primary btn-md mb-0" id="manageCollection") Manage Collection
-          else if title === "My Collection"
-            button(type="button" id="shareCollection" class="btn btn-primary" data-toggle="modal" data-target="#openLink") Share My Collection!
 
     div(id="searchBar" class="row text-left mb-3")
       div(class="col-12")
         div(class="card shadow rounded")
           div(class="card-body d-flex flex-wrap justify-content-around p-3")
             form(id="searchForm" class="flex-grow-1 mr-sm-3 mb-2 mb-md-0")
-              div(class="input-group")
-                input(type="text" class="form-control text-primary rounded-pill" id="nameFilter" placeholder="Search for card name..." style = "border: 0px;")
-                span(class="input-group-append")
-                  div(class="input-group-text border-0 bg-transparent" style="z-index: 3; margin: -36px")
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
+              div(class="input-group rounded-pill" style="background-color:rgba(219,158,251,0.2)")
+                div(class="input-group-text border-0 bg-transparent text-primary" style="z-index: 3;")
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
+                input(type="text" class="form-control text-primary bg-transparent pl-0" id="nameFilter" placeholder="Search for card name..." style = "border: 0px;")
+
             div(class="mx-auto")
               button(id="expandFilters" class="btn btn-primary bg-secondary border-secondary text-white btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 100px") Filters
               button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill ml-2 mb-0") Reset filters

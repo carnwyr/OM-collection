@@ -69,7 +69,8 @@ block content
                each val, index in card.characters
                 |#{val}
                 if index < card.characters.length - 1
-                  |,&nbsp;
+                  | ,
+                  |
         if user
           div(class='d-none d-md-block' style="margin:10px 0;")
             if !isHidden
