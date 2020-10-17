@@ -202,7 +202,8 @@ function switchSelectionMode() {
 	if (!selectionMode) {
 		$.ajax({
 			type: 'get',
-			url: '/collection/getOwnedCards'
+			url: '/collection/getOwnedCards',
+        	cache: false
 		})
 		.done(function(cardNames){
 			selectionMode = true;
@@ -215,7 +216,8 @@ function switchSelectionMode() {
 				type: 'post',
 				url: '/collection/updateOwnedCards',
 				contentType: 'application/json',
-				data: JSON.stringify({changedCards: changedCards})
+				data: JSON.stringify({changedCards: changedCards}),
+        		cache: false
 			})
 			.done(function(result){
 				if (result === 'error') {
@@ -378,7 +380,8 @@ function loadStatsImage(e) {
 	$.ajax({
 		type: 'post',
 		url: './getStatsImage',
-		data: {html: html}
+		data: {html: html},
+        cache: false
 	})
 	.done(function(imageData){
 		spinner.hide();

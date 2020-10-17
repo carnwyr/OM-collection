@@ -16,7 +16,8 @@ function sendVerificationMessage() {
         type: 'post',
         url: '/user/'+username+'/sendVerificationEmail',
         contentType: 'application/json',
-        data: JSON.stringify({userData: userData})
+        data: JSON.stringify({userData: userData}),
+        cache: false
     })
     .done(function(result){
         if (result.err) {
@@ -58,7 +59,8 @@ function changePassword() {
         type: 'post',
         url: '/user/'+username+'/changePassword',
         contentType: 'application/json',
-        data: JSON.stringify({passwordData: passwordData})
+        data: JSON.stringify({passwordData: passwordData}),
+        cache: false
     })
     .done(function(result){
         if (result.err) {
