@@ -18,14 +18,12 @@ $(document).ready(function(){
 			e.preventDefault();
 		}
 	});
-	$('#gotoDemon').on('click', scrollToSection);
-	$('#gotoMemory').on('click', scrollToSection);
+	$('#gotoDemon, #gotoMemory').on('click', scrollToSection);
 	$('button#resetFilters').on('click', function(e) {
 		resetFilters();
 		filterApplied();
 	});
-	$('button#manageCollection').on('click', switchSelectionMode);
-	$('button#saveManaging').on('click', switchSelectionMode);
+	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
 	$('.cardPreview').on('click', cardClicked);
 	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
@@ -43,6 +41,8 @@ $(document).ready(function(){
 
 	fillRank("demonSection");
 	fillRank("memorySection");
+
+	$(window).on('beforeunload', () => {if (selectionMode) return confirm("Do you want to leave without saving your collection?");});
 });
 
 function switchBackToTopButton() {
@@ -405,7 +405,7 @@ function prepareHtml() {
 			$(this).attr('href', "http://localhost:3000" + $(this).attr('href'));
 		}
 	});
-	
+
 	var body = document.createElement('body');
 	var container = document.createElement('div');
 	container.className = 'container-fluid';
