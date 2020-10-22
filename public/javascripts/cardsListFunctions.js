@@ -42,7 +42,7 @@ $(document).ready(function(){
 	fillRank("demonSection");
 	fillRank("memorySection");
 
-	$(window).on('beforeunload', () => {if (selectionMode) return confirm("Do you want to leave without saving your collection?");});
+	$(window).on('beforeunload', () => {if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?");});
 });
 
 function switchBackToTopButton() {
