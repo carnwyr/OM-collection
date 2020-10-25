@@ -13,6 +13,7 @@ router.get('/policies', miscController.privacyPolicy);
 
 // Cards list
 router.get('/cards', cardsController.cardsList);
+router.get('/cards/view', cardsController.fullImgView);
 router.get('/hiddenCards', usersController.isAdmin(), cardsController.hiddenCardsList);
 
 // Account management

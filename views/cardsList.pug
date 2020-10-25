@@ -3,7 +3,6 @@ extends layout
 mixin percentBar(owned, total, name)
   - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "Little D":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", URp:"#ffe16b"};
   - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
-  -function test(p) {return p;}
   - var percentage = roundPercentage(owned / total * 100);
   span= name
   small(style='display:inline-flex;') &nbsp;- #{owned} of #{total} (#{percentage}%)
@@ -45,7 +44,11 @@ block content
     //- Page Heading
     div(class="row text-left mb-3")
       div(class="col-12")
-        h1(class="text-primary pb-2" style="border-bottom: 2px solid; border-color: #8d6fe2;")= title
+        h1(class="text-primary pb-2" style="border-bottom: 2px solid; border-color: #8d6fe2;")
+          if (path !== "fullImgView")
+            = title
+          else
+            a(class="btn btn-outline-primary btn-lg" href="/cards") &larr; Back to icon view
 
     //- Collection Stats
     if path === "collection"
@@ -154,10 +157,22 @@ block content
                 div(class="input-group-text border-0 bg-transparent text-primary" style="z-index: 3;")
                   <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
                 input(type="text" class="form-control text-primary bg-transparent pl-0" id="nameFilter" placeholder="Search for card name..." style = "border: 0px;")
-
             div(class="mx-auto")
               button(id="expandFilters" class="btn btn-primary bg-secondary border-secondary text-white btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 100px") Filters
-              button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill ml-2 mb-0") Reset filters
+              button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill mx-2 mb-0") Reset filters
+              if (path === "list")
+                a(class="btn btn-outline-primary btn-sm mb-0 ml-2" href="/cards/view") View full image
+    if (path === "fullImgView")
+      div.row
+        div.col-12.text-right
+          div(class="btn-group btn-group-toggle" data-toggle="buttons")
+            label(class="btn btn-secondary text-white active")
+              <input type="radio" name="options" id="option1" autocomplete="off" checked> Original
+            label(class="btn btn-secondary text-white")
+              <input type="radio" name="options" id="option2" autocomplete="off"> Bloomed
+
+
+
     div(id="filters" class="row text-left collapse")
       div.col-12.col-md-6.pr-md-1.mb-2
         div(id="rarityFilter" class="card mb-2 shadow rounded" style="border-left: 4px solid #8B9AF0;")
@@ -267,34 +282,50 @@ block content
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLittleD" name="LittleD")
                     label(class="custom-control-label" for="checkCharacterLittleD" style="min-width: 75px;") Little D
 
-    div(class="row text-left mt-4" id="demonCards")
-      div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
-          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-    div(class='collapse show' id='demonWrapper')
-      div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
-        if cardsList.filter(card => card.type == "Demon").length != 0
-          each card in cardsList
-            if card.type == "Demon"
-              a(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
-                img(class="img-fluid img-max" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
-                p(class='figure-caption img-max') #{card.name}
+    if (path === "list" || path === "collection")
+      div(class="row text-left mt-4" id="demonCards")
+        div(class="col-12")
+          h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+      div(class='collapse show' id='demonWrapper')
+        div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
+          if cardsList.filter(card => card.type == "Demon").length != 0
+            each card in cardsList
+              if card.type == "Demon"
+                a(class="text-center mb-2 h-100 icon-container cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
+                  img(class="img-fluid img-max" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
+                  p(class='figure-caption img-max') #{card.name}
 
-    div(class="row text-left" id="memoryCards")
-      div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
-          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-    div(class='collapse show' id='memoryWrapper')
-      div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
-        if cardsList.filter(card => card.type == "Memory").length != 0
-          each card in cardsList
-            if card.type == "Memory"
-              a(class="text-center mb-2 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
-                img(class="img-fluid img-max" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
-                p(class='figure-caption img-max') #{card.name}
+      div(class="row text-left" id="memoryCards")
+        div(class="col-12")
+          h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+      div(class='collapse show' id='memoryWrapper')
+        div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
+          if cardsList.filter(card => card.type == "Memory").length != 0
+            each card in cardsList
+              if card.type == "Memory"
+                a(class="text-center mb-2 h-100 icon-container cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
+                  img(class="img-fluid img-max" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
+                  p(class='figure-caption img-max') #{card.name}
+
+    if (path === "fullImgView")
+      div(class="row text-left" id="demonCards")
+        div(class="col-12")
+          h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+      div(class='collapse show')
+        div(class="row d-flex justify-content-between mx-auto" id="demonSection")
+          if cardsList.filter(card => card.type == "Demon").length != 0
+            each card in cardsList
+              if card.type == "Demon"
+                a(class="text-center mb-2 h-100 full-img-container cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
+                  img(class="img-fluid full-img" loading="lazy" src="/images/cards/L/" + card.uniqueName + ".jpg")
+                  p(class='figure-caption px-1') #{card.name}
 
     div(class="b2t shadow text-primary text-center" id="b2t" type="button" title="Go to Top" style="display:none;")
-      <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
+      div
+        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
 
   script(src="/javascripts/cardsListFunctions.js")
   link(rel="stylesheet", href="/stylesheets/cardsListStyle.css")

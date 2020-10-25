@@ -22,6 +22,14 @@ exports.cardsList = function(req, res, next) {
 	});
 };
 
+exports.fullImgView = function(req, res, next) {
+	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
+		if (err) { return next(err); }
+		cardsList.sort(sortByRarityAndNumber);
+		res.render('cardsList', { title: 'Full Image Gallery', cardsList: cardsList, user: req.user, path: 'fullImgView' });
+	});
+};
+
 function sortByRarityAndNumber(card1, card2) {
 	var rarityOrder = -1 * compareByRarity(card1.rarity, card2.rarity);
 		if (rarityOrder != 0)
@@ -195,7 +203,7 @@ async function getBigStatsImage(ids, html) {
 		imageData = imageData.map(img => new Buffer.from(img).toString('base64'));
 		imageData = imageData.map(base64 => 'data:image/png;base64,' + base64);
 		imageData = {star: imageData[0], demon: imageData[1], memory: imageData[2]}
-	
+
 		var image = await nodeHtmlToImage({
 			html: statsHTML,
 			content: imageData

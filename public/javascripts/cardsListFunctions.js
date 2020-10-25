@@ -56,11 +56,20 @@ function switchBackToTopButton() {
 function fillRank(container, cardsCount) {
 	$('#'+container).find('.placeholder').remove();
 	var visibleCardsCount = cardsCount ? cardsCount : $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
+	var visibleIcons = $('#'+container).find('.icon-container').filter(function() { return $(this).css('display') !== 'none'; }).length;
+	var visibleFullImg = $('#'+container).find('.full-img-container').filter(function() { return $(this).css('display') !== 'none'; }).length;
+	var html, viewType;
 
 	if (visibleCardsCount > 0) {
-		var html = '<div class="invisible placeholder mb-2 h-100">placeholder placeholder placeholder</div>';
+		if (visibleIcons > 0) {
+			html = '<div class="invisible placeholder mb-2 h-100" style="max-width:110px;width:100%;">placeholder placeholder placeholder</div>';
+			viewType = "icon view"
+		} else if (visibleFullImg > 0) {
+			html = '<div class="invisible placeholder mb-2 h-100" style="max-width:180px;width:100%;height:256px;">placeholder placeholder placeholder</div>';
+			viewType = "full image view"
+		}
 
-		var currentCardsInRow = getRowCapacity();
+		var currentCardsInRow = getRowCapacity(viewType);
 
 		if (visibleCardsCount % currentCardsInRow === 0) { return; }
 		else { var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow; }
@@ -69,14 +78,20 @@ function fillRank(container, cardsCount) {
 			$('#'+container).append(html);
 		}
 	} else {
-		var html = '<p class="col-12 text-muted placeholder" style="max-width: none !important;">No matching cards</p>';
+		var html = '<p class="col-12 text-muted placeholder">No matching cards</p>';
 		$('#'+container).append(html);
 	}
 }
 
-function getRowCapacity() {
+function getRowCapacity(viewType) {
 	// max number of cards for xs is 4, on smaller screens it's reduced by 1
-	const cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 4, 992: 6, 1200: 8, xl: 9};
+	var cardsInRow;
+	if (viewType === "icon view") {
+		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 4, 992: 6, 1200: 8, xl: 9};
+	} else {
+		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 2, 992: 3, 1200: 5, xl: 6};
+	}
+
 	for (let [screen, cards] of Object.entries(cardsInRow)) {
 		if (screen === "xl" || $(window).width() <= screen) {
 			return cards;
@@ -125,7 +140,7 @@ function filterApplied() {
 
 		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
 			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') }	;
-			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('.img-max'), showCards);
+			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('.img-max, .full-img'), showCards);
 		}
 		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
 
