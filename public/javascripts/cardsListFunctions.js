@@ -36,6 +36,9 @@ $(document).ready(function(){
 
 	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
 
+	$("#fullViewBtn").on("click", switchToFullView);
+	$("#iconViewBtn").on("click", switchToIconView);
+
 	$(window).scroll(switchBackToTopButton);
 	switchBackToTopButton();
 
@@ -43,6 +46,8 @@ $(document).ready(function(){
 	fillRank("memorySection");
 
 	$(window).on('beforeunload', () => {if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?");});
+
+	$('img').on('load', function(){ $(this).addClass('loaded'); });
 });
 
 function switchBackToTopButton() {
@@ -446,4 +451,74 @@ function prepareHtml() {
 	$(head).children().appendTo($(newHTML).find('head')[0]);
 	newHTML.body.appendChild(container);
 	return new XMLSerializer().serializeToString(newHTML);
+}
+
+function switchToFullView() {
+	var cardsToDisplay = $(".cardPreview:visible");
+	if (cardsToDisplay.length === 0) {
+		return;
+	}
+
+	cardsToDisplay.fadeOut(400).promise().done(function() {
+		$('img.img-max').each(function() {
+			$(this).attr('src', $(this).attr('src').replace('/S/', '/L/'));
+		});
+		$('.icon-container').removeClass('icon-container').addClass('full-img-container');
+		$('.img-max').removeClass('img-max').addClass('full-img');
+		$('.figure-caption').removeClass('full-img').addClass('px-1');
+		$('img').removeClass('loaded');
+
+		var cardHeight = $(cardsToDisplay[0]).height();
+
+		var currentCardsInRow = getRowCapacity();
+		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
+		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
+
+		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
+			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') }	;
+			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('.img-max, .full-img'), showCards);
+		}
+		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
+
+		fillRank("demonSection", $(".cardPreview").filter(function() { $(this).parent().attr('id') === '#demonSection'; }).length);
+		fillRank("memorySection", $(".cardPreview").filter(function() { $(this).parent().attr('id') === '#memorySection'; }).length);
+	});
+
+	$(this).hide();
+	$('#iconViewBtn').show();
+}
+
+function switchToIconView() {
+	var cardsToDisplay = $(".cardPreview:visible");
+	if (cardsToDisplay.length === 0) {
+		return;
+	}
+
+	cardsToDisplay.fadeOut(400).promise().done(function() {
+		$('img.full-img').each(function() {
+			$(this).attr('src', $(this).attr('src').replace('/L/', '/S/'));
+		});
+		$('.full-img-container').removeClass('full-img-container').addClass('icon-container');
+		$('.full-img').removeClass('full-img').addClass('img-max');
+		$('.figure-caption').removeClass('px-1').addClass('img-max');
+		$('img').removeClass('loaded');
+
+		var cardHeight = $(cardsToDisplay[0]).height();
+
+		var currentCardsInRow = getRowCapacity();
+		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
+		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
+
+		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
+			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') }	;
+			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('.img-max, .full-img'), showCards);
+		}
+		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
+
+		fillRank("demonSection", $(".cardPreview").filter(function() { $(this).parent().attr('id') === '#demonSection'; }).length);
+		fillRank("memorySection", $(".cardPreview").filter(function() { $(this).parent().attr('id') === '#memorySection'; }).length);
+	});
+
+	$(this).hide();
+	$('#fullViewBtn').show();
 }
