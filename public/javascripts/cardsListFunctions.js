@@ -7,6 +7,9 @@ var selectionMode = false;
 var fullStatImage;
 var totalStatImage;
 
+let viewType = "icon view";
+let currentView = "icon view";
+
 $(document).ready(function(){
 	$(".img-max").css("transition", "all .5s ease");
 	resetFilters();
@@ -36,8 +39,9 @@ $(document).ready(function(){
 
 	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
 
-	$("#fullViewBtn").on("click", switchToFullView);
-	$("#iconViewBtn").on("click", switchToIconView);
+	$("#iconViewBtn").click(() => switchViewOption("icon view"));
+	$("#fullViewBtn").click(() => switchViewOption("full (original) view"));
+	$("#fullBloomBtn").click(() => switchViewOption("full (bloomed) view"));
 
 	$(window).scroll(switchBackToTopButton);
 	switchBackToTopButton();
@@ -58,12 +62,12 @@ function switchBackToTopButton() {
 	}
 }
 
-function fillRank(container, cardsCount) {
+function fillRank(container) {
 	$('#'+container).find('.placeholder').remove();
-	var visibleCardsCount = cardsCount ? cardsCount : $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
+	var visibleCardsCount = $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
 	var visibleIcons = $('#'+container).find('.icon-container').filter(function() { return $(this).css('display') !== 'none'; }).length;
 	var visibleFullImg = $('#'+container).find('.full-img-container').filter(function() { return $(this).css('display') !== 'none'; }).length;
-	var html, viewType;
+	var html;
 
 	if (visibleCardsCount > 0) {
 		if (visibleIcons > 0) {
@@ -92,9 +96,9 @@ function getRowCapacity(viewType) {
 	// max number of cards for xs is 4, on smaller screens it's reduced by 1
 	var cardsInRow;
 	if (viewType === "icon view") {
-		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 4, 992: 6, 1200: 8, xl: 9};
+		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 2, 992: 5, 1200: 8, xl: 9};
 	} else {
-		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 2, 992: 3, 1200: 5, xl: 6};
+		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 1, 992: 3, 1200: 5, xl: 5};
 	}
 
 	for (let [screen, cards] of Object.entries(cardsInRow)) {
@@ -151,8 +155,8 @@ function filterApplied() {
 
 		$(window).scrollTop(originalPosition);
 
-		fillRank("demonSection", $(cardsToDisplay).filter(function() { $(this).parent().attr('id') === '#demonSection'; }).length);
-		fillRank("memorySection", $(cardsToDisplay).filter(function() { $(this).parent().attr('id') === '#memorySection'; }).length);
+		fillRank("demonSection");
+		fillRank("memorySection");
 	});
 }
 
@@ -453,19 +457,47 @@ function prepareHtml() {
 	return new XMLSerializer().serializeToString(newHTML);
 }
 
-function switchToFullView() {
+function switchViewOption(changeViewTo) {
 	var cardsToDisplay = $(".cardPreview:visible");
-	if (cardsToDisplay.length === 0) {
-		return;
-	}
+	if (currentView === changeViewTo) return;
 
 	cardsToDisplay.fadeOut(400).promise().done(function() {
-		$('img.img-max').each(function() {
-			$(this).attr('src', $(this).attr('src').replace('/S/', '/L/'));
-		});
-		$('.icon-container').removeClass('icon-container').addClass('full-img-container');
-		$('.img-max').removeClass('img-max').addClass('full-img');
-		$('.figure-caption').removeClass('full-img').addClass('px-1');
+		if (changeViewTo === "full (original) view") {
+			$("#viewMenuDropdown>span").text("Full original view");
+
+			$('.cardPreview>div>img').each(function() {
+				$(this).attr('src', $(this).attr('src').replace('/S/', '/L/').replace('_b', ''));
+			});
+			$('.icon-container').removeClass('icon-container').addClass('full-img-container');
+			$('.img-max').removeClass('img-max').addClass('full-img');
+
+			$("#fullViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
+			$("#iconViewBtn>span, #fullBloomBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
+		} else if (changeViewTo === "icon view"){
+			$("#viewMenuDropdown>span").text("Icon view");
+
+			$('.cardPreview>div>img').each(function() {
+				$(this).attr('src', $(this).attr('src').replace('/L/', '/S/').replace('_b', ''));
+			});
+			$('.full-img-container').removeClass('full-img-container').addClass('icon-container');
+			$('.full-img').removeClass('full-img').addClass('img-max');
+
+			$("#iconViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
+			$("#fullViewBtn>span, #fullBloomBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
+		} else {
+			$("#viewMenuDropdown>span").text("Full bloomed view");
+
+			$('#demonSection>.cardPreview>div>img').each(function() {
+				$(this).attr('src', $(this).attr('src').replace('/S/', '/L/').replace('.jpg', '_b.jpg'));
+			});
+			$("#memorySection").attr("style", "display: none !important");
+			$('.icon-container').removeClass('icon-container').addClass('full-img-container');
+			$('.img-max').removeClass('img-max').addClass('full-img');
+
+			$("#fullBloomBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
+			$("#iconViewBtn>span, #fullViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
+		}
+
 		$('img').removeClass('loaded');
 
 		var cardHeight = $(cardsToDisplay[0]).height();
@@ -480,45 +512,15 @@ function switchToFullView() {
 		}
 		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
 
-		fillRank("demonSection", $(".cardPreview").filter(function() { $(this).parent().attr('id') === '#demonSection'; }).length);
-		fillRank("memorySection", $(".cardPreview").filter(function() { $(this).parent().attr('id') === '#memorySection'; }).length);
-	});
-
-	$(this).hide();
-	$('#iconViewBtn').show();
-}
-
-function switchToIconView() {
-	var cardsToDisplay = $(".cardPreview:visible");
-	if (cardsToDisplay.length === 0) {
-		return;
-	}
-
-	cardsToDisplay.fadeOut(400).promise().done(function() {
-		$('img.full-img').each(function() {
-			$(this).attr('src', $(this).attr('src').replace('/L/', '/S/'));
-		});
-		$('.full-img-container').removeClass('full-img-container').addClass('icon-container');
-		$('.full-img').removeClass('full-img').addClass('img-max');
-		$('.figure-caption').removeClass('px-1').addClass('img-max');
-		$('img').removeClass('loaded');
-
-		var cardHeight = $(cardsToDisplay[0]).height();
-
-		var currentCardsInRow = getRowCapacity();
-		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
-		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
-
-		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
-			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') }	;
-			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('.img-max, .full-img'), showCards);
+		fillRank("demonSection")
+		if (changeViewTo !== "full (bloomed) view") {
+			fillRank("memorySection");
+			$("#memorySection").attr("style", "display: block;");
+			$("#memoryWrapper").find("p.placeholder").remove();
+		} else {
+			$("#memoryWrapper").append("<p class=\"col-12 text-muted placeholder\">??? No cards? Memory cards don't have devil's flower, remember? ヽ(ﾟ▽ﾟ)ノ✿</p>")
 		}
-		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
-
-		fillRank("demonSection", $(".cardPreview").filter(function() { $(this).parent().attr('id') === '#demonSection'; }).length);
-		fillRank("memorySection", $(".cardPreview").filter(function() { $(this).parent().attr('id') === '#memorySection'; }).length);
 	});
 
-	$(this).hide();
-	$('#fullViewBtn').show();
+	currentView = changeViewTo;
 }
