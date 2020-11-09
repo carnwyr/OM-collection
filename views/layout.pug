@@ -2,20 +2,22 @@ doctype html
 html(lang='en-US')
   head
     meta(charset='utf-8')
-    title= title
+    title= title+" | Karasu-OS.com"
     meta(name='viewport', content='width=device-width, initial-scale=1')
-    meta(name="description" content="Obey Me! Collection is a collection of cards and tools for the game Obey Me! by NTT Solmare Corporation.")
-    meta(name="keywords" content="Obey Me!, おべいみー, cards, tools")
+    meta(name="description" content=description?description:title+" | Karasu-OS.com")
+    meta(name="keywords" content="Obey Me, おべいみー, cards, tools")
     link(rel="icon" type="image/png" href="/images/favicon.png")
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/theme_1597782929390.css')
     link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Kanit')
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
     script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js')
     script(src='/javascripts/commonFunctions.js')
     <script data-ad-client="ca-pub-1710157662563352" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164556626-4"></script>
+    <script data-name="BMC-Widget" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="karasuos" data-description="Support Karasu OS on Buy me a coffee!" data-message="Thank you for visiting. Join the effort to keep Karasu OS alive! :D" data-color="#FFDD00" data-position="left" data-x_margin="18" data-y_margin="32"></script>
     script.
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -37,6 +39,11 @@ html(lang='en-US')
           if user
             li(class="nav-item")
               a(class="nav-link", href='/' + user.name + '/collection') My collection
+          li(class="nav-item dropdown d-none d-md-block")
+            a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
+            div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="toolsDropdown")
+              a(class="nav-link", href='/surprise_guest')
+                span.text-dark Surprise Guest
           if user && user.isAdmin
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
@@ -84,19 +91,12 @@ html(lang='en-US')
               a(class="nav-link", href='/logout')
                 span Logout
 
-    div(class="toast d-none" id="supportToast" role="alert" data-delay="700" data-autohide="false")
-      div(class="toast-header")
-        strong(class="mr-auto text-primary") Support Karasu-os
-        button(type="button" id="closeToast" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close")
-          span(aria-hidden="true") &times;
-      div(class="toast-body")
-        p Hi, there! Support now to keep Karasu OS online. You get bonuses too!
-        a(type="button" href="https://www.patreon.com/karasu_os" class="btn btn-primary btn-sm btn-block" id="supportNow") Help Now
-
     div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
       div(class="toast-body")
-        span This site uses cookies to improve your experience.&nbsp;
-            a(href="/policies") More information
+        span This site uses cookies to improve your experience.
+          |
+          |
+          a(href="/policies") More information
         button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
           span(aria-hidden="true") Got it &#x1F44D
 

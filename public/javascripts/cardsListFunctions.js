@@ -34,24 +34,11 @@ $(document).ready(function(){
 	$("#copyLink").on("click", copyCollectionLink);
 	$('#openLink').on('show.bs.modal', loadStatsImage);
 
-	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
-
-	$(window).scroll(switchBackToTopButton);
-	switchBackToTopButton();
-
 	fillRank("demonSection");
 	fillRank("memorySection");
 
 	$(window).on('beforeunload', () => {if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?");});
 });
-
-function switchBackToTopButton() {
-	if ($(window).scrollTop() > 64) {
-		$("#b2t").fadeIn();
-	} else {
-		$("#b2t").fadeOut();
-	}
-}
 
 function fillRank(container, cardsCount) {
 	$('#'+container).find('.placeholder').remove();

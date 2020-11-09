@@ -1,21 +1,25 @@
+var collapsedInfo = false;
+
 $(document).ready(function(){
 	$(".navbar .nav-item.active").removeClass('active');
 	$('.navbar .nav-item a[href="' + location.pathname + '"]').closest('li').addClass('active');
 
-	if (!document.cookie.split('; ').find(row => row.startsWith("closedSupportToast"))) {
-	    $("#supportToast").removeClass("d-none").toast("show");
-	}
 	if (!document.cookie.split('; ').find(row => row.startsWith("acceptedCookies"))) {
-	    $("#cookieToast").removeClass("d-none").toast("show");
+		$("#cookieToast").removeClass("d-none").toast("show");
 	}
-
-	$("button#closeToast, #supportNow").on("click", () => {
-		document.cookie = "closedSupportToast=true; expires=" + cookieExpiryDate() + ";";
-		$("#supportToast").toast("hide");
-	});
 	$("button#acceptCookies").on("click", () => {
 		document.cookie = "acceptedCookies=true; expires=" + cookieExpiryDate() + ";";
 		$("#cookieToast").toast("hide");
+	});
+
+	if (document.cookie.split('; ').find(row => row.startsWith("collapsedInfo=false"))) {
+		$("#collapseInfo").removeClass("show");
+		$("a#infoCollapser").attr("aria-expanded", "false");
+		collapsedInfo = true;
+	}
+	$("a#infoCollapser").on("click", () => {
+		document.cookie = `collapsedInfo=${collapsedInfo}; expires=${cookieExpiryDate};`;
+	 	collapsedInfo = !collapsedInfo;
 	});
 
 	$('.navbar .dropdown').hover(function() {
@@ -23,10 +27,18 @@ $(document).ready(function(){
 	}, function() {
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
 	});
+
+	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
+	$(window).scroll(() => {
+		if ($(window).scrollTop() > 64) {
+			$("#b2t").fadeIn();
+		} else {
+			$("#b2t").fadeOut();
+		}
+	});
 });
 
-// cookie expires in three months
-function cookieExpiryDate() {
+var cookieExpiryDate = () => {
 	var d = new Date();
 
 	d.setMonth(d.getMonth() + 3);

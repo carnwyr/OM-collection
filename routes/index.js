@@ -5,11 +5,10 @@ var cardsController = require('../controllers/cardsController');
 var usersController = require('../controllers/usersController');
 var miscController = require('../controllers/miscController');
 
-// Home page
+// Statis pages
 router.get('/', cardsController.index);
-
-// Privacy policy
 router.get('/policies', miscController.privacyPolicy);
+router.get("/surprise_guest", miscController.surpriseGuest);
 
 // Cards list
 router.get('/cards', cardsController.cardsList);
