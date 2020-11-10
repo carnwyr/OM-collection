@@ -26,515 +26,650 @@ block content
                 a(href="https://obey-me-surprise-guest.glitch.me/") here.
       div.col-12.my-2
         div.card.card-body.shadow.rounded
-          table.table.table-bordered.table-responsive.mt-2
+          div#btnContainer
+            a(id="filterCollapser" data-toggle="collapse" href="#spgFilter" role="button" aria-expanded="true" aria-controls="spgFilter") Filters
+          div#spgFilter.collpase.show.mx-auto
+            div.row.mb-2
+              div.col-md-2.text-md-right
+                span.font-weight-bold.text-primary Characters
+              form#spgCharacter.col-md-10.justify-content-around
+                div.form-check.form-check-inline
+                  input#default.form-check-input(type="radio" name="spgRadio" value='' checked)
+                  label(class="form-check-label" for="default") All
+                div.form-check.form-check-inline
+                  input#Lucifer.form-check-input(type="radio" name="spgRadio" value="Lucifer")
+                  label(class="form-check-label" for="Lucifer") Lucifer
+                div.form-check.form-check-inline
+                  input#Mammon.form-check-input(type="radio" name="spgRadio" value="Mammon")
+                  label(class="form-check-label" for="Mammon") Mammon
+                div.form-check.form-check-inline
+                  input#Leviathan.form-check-input(type="radio" name="spgRadio" value="Leviathan")
+                  label(class="form-check-label" for="Leviathan") Leviathan
+                div.form-check.form-check-inline
+                  input#Satan.form-check-input(type="radio" name="spgRadio" value="Satan")
+                  label(class="form-check-label" for="Satan") Satan
+                div.form-check.form-check-inline
+                  input#Asmodeus.form-check-input(type="radio" name="spgRadio" value="Asmodeus")
+                  label(class="form-check-label" for="Asmodeus") Asmodeus
+                div.form-check.form-check-inline
+                  input#Beelzebub.form-check-input(type="radio" name="spgRadio" value="Beelzebub")
+                  label(class="form-check-label" for="Beelzebub") Beelzebub
+                div.form-check.form-check-inline
+                  input#Belphegor.form-check-input(type="radio" name="spgRadio" value="Belphegor")
+                  label(class="form-check-label" for="Belphegor") Belphegor
+            div.row.mb-2
+              div.col-md-2.text-md-right
+                span.font-weight-bold.text-primary Type
+              form#spgType.col-md-10
+                div.form-check.form-check-inline
+                  input#defaultType.form-check-input(type="radio" name="spgRadio2" value='' checked)
+                  label(class="form-check-label" for="defaultType") All
+                div.form-check.form-check-inline
+                  input#dancebattle.form-check-input(type="radio" name="spgRadio2" value="dancebattle")
+                  label(class="form-check-label" for="dancebattle") Dance Battle
+                div.form-check.form-check-inline
+                  input#homescreen.form-check-input(type="radio" name="spgRadio2" value="homescreen")
+                  label(class="form-check-label" for="homescreen") Home Screen
+          div.mb-3.text-center
+            a(class="text-secondary" id="filterCollapser2" data-toggle="collapse" href="#spgFilter" role="button" aria-expanded="true" aria-controls="spgFilter")
+              |
+              |
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+
+          table.table.table-bordered.table-responsive-sm
             thead
               tr
                 th(style="width:12%;") Character
-                th(style="width:15%;") Condition
+                th(style="display:none;") Type
+                th(style="width:16%;") Condition
                 th(style="width:32%;") Dialogue
                 th(style="width:30%;") Action
                 th(style="width:10%;") Points
             tbody#myTable
               tr
-                td(rowspan="12") Lucifer
+                td(id="dancebattle" rowspan="12") Lucifer
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (high five)
                 td(rowspan="2") A high five...? I'm not sure what kind of emotion would prompt one to do so.
                 td high five &gt; apple &gt; head rub
                 td +100
               tr
                 td(style="display:none;") Lucifer
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (high five)
                 td(style="display:none;") A high five...? I'm not sure what kind of emotion would prompt one to do so.
                 td high five &gt; head rub &gt; head rub
                 td +100
               tr
                 td(style="display:none;") Lucifer
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (no high five)
                 td(rowspan="2") I feel wonderful. I could destroy anyone who crosses my path.
                 td apple &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Lucifer
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (no high five)
                 td(style="display:none;") I feel wonderful. I could destroy anyone who crosses my path.
                 td face tap &gt; head rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Lucifer
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 2/1 star win
                 td(rowspan="2") It is not the result I was hoping for... ...but it'll do.
                 td apple &gt; arm tap &gt; arm tap
                 td +120
               tr
                 td(style="display:none;") Lucifer
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 2/1 star win
                 td(style="display:none;") It is not the result I was hoping for... ...but it'll do.
                 td face rub &gt; face rub &gt; arm tap
                 td +80
               tr
-                td(style="display:none;") Lucifer
+                td(id="homescreen" rowspan=6 style="display:none;") Lucifer
+                td(style="display:none;") homescreen
                 td(rowspan="2") night
                 td(rowspan="2") What's wrong? Having trouble falling asleep?
                 td apple &gt; face tap &gt; face tap
                 td +120
               tr
                 td(style="display:none;") Lucifer
+                td(style="display:none;") homescreen
                 td(style="display:none;") night
                 td(style="display:none;") What's wrong? Having trouble falling asleep?
                 td face tap &gt; face tap &gt; face tap
                 td +80
               tr
                 td(style="display:none;") Lucifer
+                td(style="display:none;") homescreen
                 td(rowspan="2") day
                 td(rowspan="2") Are you doing your tasks?
                 td apple &gt; chest tap &gt; chest tap
                 td +120
               tr
                 td(style="display:none;") Lucifer
+                td(style="display:none;") homescreen
                 td(style="display:none;") day
                 td(style="display:none;") Are you doing your tasks?
                 td face tap &gt; face rub &gt; chest tap
                 td +80
               tr
-                td(style="display:none;") Lucifer
+                td(style="display:none;") 11Lucifer
+                td(style="display:none;") homescreen
                 td(rowspan="2") go away
                 td(rowspan="2") Finish this quickly. Do I make myself clear?
                 td apple &gt; chest rub &gt; chest rub
                 td +120
               tr
-                td(style="display:none;") Lucifer
+                td(style="display:none;") 12Lucifer
+                td(style="display:none;") homescreen
                 td(style="display:none;") go away
                 td(style="display:none;") Finish this quickly. Do I make myself clear?
                 td face tap &gt; face tap &gt; chest rub
                 td +80
               tr
-                td(rowspan="12") Mammon
+                td(id="dancebattle" rowspan="12") Mammon
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (high five)
                 td(rowspan="2") Did ya see that?! I'm totally awesome, right!
                 td high five &gt; whip &gt; face rub
                 td +100
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (high five)
                 td(style="display:none;") Did ya see that?! I'm totally awesome, right!
                 td high five &gt; face rub &gt; face rub
                 td +80
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (no high five)
                 td(rowspan="2") Muahahaha. ALL points for MAMMON! Bow down to me!
                 td noodles &gt; face rub &gt; face rub
                 td +120
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (no high five)
                 td(style="display:none;") Muahahaha. ALL points for MAMMON! Bow down to me!
                 td face rub &gt; face rub &gt; face rub
                 td +80
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 2/1 star win
                 td(rowspan="2") Aaaaah, I'm so tired of this. Why do I have to help you out?
                 td noodles &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 2/1 star win
                 td(style="display:none;") Aaaaah, I'm so tired of this. Why do I have to help you out?
                 td face tap &gt; head rub &gt; head rub
                 td +80
               tr
-                td(style="display:none;") Mammon
+                td(id="homescreen" rowspan=6 style="display:none;") Mammon
+                td(style="display:none;") homescreen
                 td(rowspan="2") night
                 td(rowspan="2") *yawn* I'm sleepy.
                 td noodles &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") homescreen
                 td(style="display:none;") night
                 td(style="display:none;") *yawn* I'm sleepy.
                 td face tap &gt; head tap &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") homescreen
                 td(rowspan="2") day
                 td(rowspan="2") What? Got a problem with me and Goldie?
                 td noodles &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") homescreen
                 td(style="display:none;") day
                 td(style="display:none;") What? Got a problem with me and Goldie?
                 td head tap &gt; head rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") homescreen
                 td(rowspan="2") go away
                 td(rowspan="2") What's up? I'm busy here, can't ya tell?
                 td noodles &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Mammon
+                td(style="display:none;") homescreen
                 td(style="display:none;") go away
                 td(style="display:none;") What's up? I'm busy here, can't ya tell?
                 td face tap &gt; chest tap &gt; head rub
                 td +80
               tr
-                td(rowspan="12") Leviathan
+                td(id="dancebattle" rowspan="12") Leviathan
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (high five)
                 td(rowspan="2") *gasp* Don't tell me?! I'm about to get a totally legit... ...high five!
                 td high five &gt; whip &gt; head rub
                 td +100
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (high five)
                 td(style="display:none;") *gasp* Don't tell me?! I'm about to get a totally legit... ...high five!
                 td high five &gt; head rub &gt; head rub
                 td +100
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (no high five)
                 td(rowspan="2") Don't forget to thank me, okay?
                 td pizza &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (no high five)
                 td(style="display:none;") Don't forget to thank me, okay?
                 td head tap &gt; head rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 2/1 star win
                 td(rowspan="2") HA! Can you see how strong I am now? I AM OTAKU! HEAR ME ROAR!
                 td pizza &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 2/1 star win
                 td(style="display:none;") HA! Can you see how strong I am now? I AM OTAKU! HEAR ME ROAR!
                 td head tap &gt; head rub &gt; head rub
                 td +80
               tr
-                td(style="display:none;") Leviathan
+                td(id="homescreen" rowspan=6 style="display:none;") Leviathan
+                td(style="display:none;") homescreen
                 td(rowspan="2") night
                 td(rowspan="2") Midnight... That's when the otakus come out... You know, people like me!
                 td pizza &gt; arm rub &gt; arm rub
                 td +120
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") homescreen
                 td(style="display:none;") night
                 td(style="display:none;") Midnight... That's when the otakus come out... You know, people like me!
                 td arm tap &gt; arm tap &gt; arm rub
                 td +80
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") homescreen
                 td(rowspan="2") day
                 td(rowspan="2") Henry! Oh, Henry! Thine name is wondrous! D'AAH HE'S SO COOL!
                 td pizza &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") homescreen
                 td(style="display:none;") day
                 td(style="display:none;") Henry! Oh, Henry! Thine name is wondrous! D'AAH HE'S SO COOL!
                 td arm tap &gt; arm tap &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") homescreen
                 td(rowspan="2") go away
                 td(rowspan="2") Huh? You want help from me? Only if I get something in return.
                 td pizza &gt; face tap &gt; face tap
                 td +120
               tr
                 td(style="display:none;") Leviathan
+                td(style="display:none;") homescreen
                 td(style="display:none;") go away
                 td(style="display:none;") Huh? You want help from me? Only if I get something in return.
                 td face tap &gt; face tap &gt; face tap
                 td +80
               tr
-                td(rowspan="12") Satan
+                td(id="dancebattle" rowspan="12") Satan
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (high five)
                 td(rowspan="2") That was a nice victory.
                 td high five &gt; pie &gt; pie
                 td +100
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (high five)
                 td(style="display:none;") That was a nice victory.
                 td high five &gt; chest tap &gt; chest tap
                 td +60
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (no high five)
                 td(rowspan="2") Of course we won. After all, I was there.
                 td whip &gt; whip &gt; whip
                 td +120
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (no high five)
                 td(style="display:none;") Of course we won. After all, I was there.
                 td chest tap &gt; chest tap &gt; face tap
                 td +60
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 2/1 star win
                 td(rowspan="2") Don't get too comfortable. Who knows what may happen if you do.
                 td pie &gt; pie &gt; pie
                 td +120
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 2/1 star win
                 td(style="display:none;") Don't get too comfortable. Who knows what may happen if you do.
                 td arm tap &gt; arm tap &gt; chest tap
                 td +60
               tr
-                td(style="display:none;") Satan
+                td(id="homescreen" rowspan=6 style="display:none;") Satan
+                td(style="display:none;") homescreen
                 td(rowspan="2") night
                 td(rowspan="2") I really got into the story, so I lost track of time. Are you also a night owl?
                 td pie &gt; pie &gt; pie
                 td +120
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") homescreen
                 td(style="display:none;") night
                 td(style="display:none;") I really got into the story, so I lost track of time. Are you also a night owl?
                 td face tap &gt; head rub &gt; head rub
                 td +60
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") homescreen
                 td(rowspan="2") day
                 td(rowspan="2") I'm going out to buy a new book. Would you care to join me?
                 td pie &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") homescreen
                 td(style="display:none;") day
                 td(style="display:none;") I'm going out to buy a new book. Would you care to join me?
                 td head tap &gt; head rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") homescreen
                 td(rowspan="2") go away
                 td(rowspan="2") I don't have time for you.
                 td book &gt; chest tap &gt; chest tap
                 td +120
               tr
                 td(style="display:none;") Satan
+                td(style="display:none;") homescreen
                 td(style="display:none;") go away
                 td(style="display:none;") I don't have time for you.
                 td arm tap &gt; arm rub &gt; chest tap
                 td +80
               tr
-                td(rowspan="12") Asmodeus
+                td(id="dancebattle" rowspan="12") Asmodeus
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (high five)
                 td(rowspan="2") You and me together! There’s nothing better!
                 td high five &gt; cupcake &gt; head rub
                 td +100
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (high five)
                 td(style="display:none;") You and me together! There’s nothing better!
                 td high five &gt; head rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (no high five)
                 td(rowspan="2") Aren't you amazed by this beauty?
                 td cupcake &gt; arm rub &gt; arm rub
                 td +120
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (no high five)
                 td(style="display:none;") Aren't you amazed by this beauty?
                 td arm tap &gt; arm tap &gt; arm rub
                 td +80
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 2/1 star win
                 td(rowspan="2") Do you think we are a good match?
                 td cupcake &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 2/1 star win
                 td(style="display:none;") Do you think we are a good match?
                 td head tap &gt; head rub &gt; head rub
                 td +80
               tr
-                td(style="display:none;") Asmodeus
+                td(id="homescreen" rowspan=6 style="display:none;") Asmodeus
+                td(style="display:none;") homescreen
                 td(rowspan="2") night
                 td(rowspan="2") What’s wrong? Do you feel lonely sleeping all by yourself?
                 td cupcake &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") homescreen
                 td(style="display:none;") night
                 td(style="display:none;") What’s wrong? Do you feel lonely sleeping all by yourself?
                 td arm tap &gt; arm tap &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") homescreen
                 td(rowspan="2") day
                 td(rowspan="2") You want more? Guess you can't help it!
                 td cupcake &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") homescreen
                 td(style="display:none;") day
                 td(style="display:none;") You want more? Guess you can't help it!
                 td face rub &gt; head rub &gt; head rub
                 td +100
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") homescreen
                 td(rowspan="2") go away
                 td(rowspan="2") Hm? Do you need something from me?
                 td cupcake &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Asmodeus
+                td(style="display:none;") homescreen
                 td(style="display:none;") go away
                 td(style="display:none;") Hm? Do you need something from me?
                 td face tap &gt; face rub &gt; head rub
                 td +80
               tr
-                td(rowspan="12") Beelzebub
+                td(id="dancebattle" rowspan="12") Beelzebub
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (high five)
                 td(rowspan="2") I will give this victory to you.
                 td high five &gt; burger &gt; arm rub
                 td +100
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (high five)
                 td(style="display:none;") I will give this victory to you.
                 td high five &gt; arm tap &gt; arm rub
                 td +80
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (no high five)
                 td(rowspan="2") Ah, now I can rest and eat some food!
                 td burger &gt; chest rub &gt; chest rub
                 td +120
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (no high five)
                 td(style="display:none;") Ah, now I can rest and eat some food!
                 td head tap &gt; head tap &gt; chest rub
                 td +80
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 2/1 star win
                 td(rowspan="2") My stomach... ...It's SO empty...
                 td burger &gt; arm rub &gt; arm rub
                 td +120
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 2/1 star win
                 td(style="display:none;") My stomach... ...It's SO empty...
                 td chest rub &gt; arm tap &gt; arm rub
                 td +80
               tr
-                td(style="display:none;") Beelzebub
+                td(id="homescreen" rowspan=6 style="display:none;") Beelzebub
+                td(style="display:none;") homescreen
                 td(rowspan="2") night
                 td(rowspan="2") You can't sleep? No problem, I'll make you dinner.
                 td burger &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") homescreen
                 td(style="display:none;") night
                 td(style="display:none;") You can't sleep? No problem, I'll make you dinner.
                 td head rub &gt; head rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") homescreen
                 td(rowspan="2") day
                 td(rowspan="2") Are you eating well?
                 td burger &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") homescreen
                 td(style="display:none;") day
                 td(style="display:none;") Are you eating well?
                 td head tap &gt; head rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") homescreen
                 td(rowspan="2") go away
                 td(rowspan="2") ...Ah, that dumpling looks delicious... *slurp* Hm? Oh, it's you.
                 td burger &gt; chest tap &gt; chest tap
                 td +120
               tr
                 td(style="display:none;") Beelzebub
+                td(style="display:none;") homescreen
                 td(style="display:none;") go away
                 td(style="display:none;") ...Ah, that dumpling looks delicious... *slurp* Hm? Oh, it's you.
                 td chest rub &gt; chest tap &gt; chest tap
                 td +80
               tr
-                td(rowspan="12") Belphegor
+                td(id="dancebattle" rowspan="12") Belphegor
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (high five)
                 td(rowspan="2") We might be compatible.
                 td high five &gt; sushi &gt; head rub
                 td +100
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (high five)
                 td(style="display:none;") We might be compatible.
                 td high five &gt; head rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 3 star (no high five)
                 td(rowspan="2") Did you really think I'd lose?
                 td sushi &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 3 star (no high five)
                 td(style="display:none;") Did you really think I'd lose?
                 td face tap &gt; face rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") dancebattle
                 td(rowspan="2") 2/1 star win
                 td(rowspan="2") This is nothing out of the ordinary.
                 td sushi &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") dancebattle
                 td(style="display:none;") 2/1 star win
                 td(style="display:none;") This is nothing out of the ordinary.
                 td head rub &gt; head rub &gt; head rub
                 td +80
               tr
-                td(style="display:none;") Belphegor
+                td(id="homescreen" rowspan=6 style="display:none;") Belphegor
+                td(style="display:none;") homescreen
                 td(rowspan="2") night
                 td(rowspan="2") Were you watching me sleep?
                 td sushi &gt; arm rub &gt; arm rub
                 td +120
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") homescreen
                 td(style="display:none;") night
                 td(style="display:none;") Were you watching me sleep?
                 td arm tap &gt; arm tap &gt; arm rub
                 td +80
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") homescreen
                 td(rowspan="2") day
                 td(rowspan="2") You're free, right? I know you are. Come shopping with me.
                 td sushi &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") homescreen
                 td(style="display:none;") day
                 td(style="display:none;") You're free, right? I know you are. Come shopping with me.
                 td head rub &gt; head rub &gt; head rub
                 td +80
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") homescreen
                 td(rowspan="2") go away
                 td(rowspan="2") Why do I have spend this time with you?
                 td sushi &gt; head rub &gt; head rub
                 td +120
               tr
                 td(style="display:none;") Belphegor
+                td(style="display:none;") homescreen
                 td(style="display:none;") go away
                 td(style="display:none;") Why do I have spend this time with you?
                 td head tap &gt; head rub &gt; head rub
@@ -548,3 +683,53 @@ block content
       *[aria-expanded="false"]>.chevron {
         transform: scaleY(-1);
       }
+      #filterCollapser2[aria-expanded="true"]::before {
+        content: "collapse ";
+      }
+      #filterCollapser2[aria-expanded="false"]::before {
+        content: "expand ";
+      }
+      #btnContainer {
+        width: 100%;
+        text-align: center;
+        border-bottom: 2px solid var(--secondary);
+        line-height: 0.1rem;
+        margin: 10px 0 20px;
+      }
+      #btnContainer>a {
+        background-color: white;
+        padding: 8px 16px;
+        font-size: large;
+      }
+      @media screen and (max-width: 768px) {
+        #btnContainer {
+          border-bottom: 1px solid var(--secondary);
+        }
+        #btnContainer>a {
+          padding: 4px 8px;
+          font-size: medium;
+        }
+      }
+
+
+    script.
+      $(document).ready(function(){
+        $("#spgCharacter, #spgType").change(function(){
+          var selectedChar = $("input[name='spgRadio']:checked").val();
+          var selectedType = $("input[name='spgRadio2']:checked").val();
+
+          $("#myTable>tr").filter(function() {
+            $(this).toggle($(this).text().includes(selectedChar+selectedType));
+            if (selectedType === "dancebattle") {
+              $("#dancebattle", this).attr("rowspan", 6);
+              $("#homescreen", this).hide();
+              console.log($("#dancebattle"))
+            } else if (selectedType === "homescreen"){
+              $("#homescreen", this).show();
+            } else {
+              $("#dancebattle", this).attr("rowspan", 12);
+              $("#homescreen", this).hide();
+            }
+          });
+        });
+      });
