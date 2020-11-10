@@ -12,16 +12,6 @@ $(document).ready(function(){
 		$("#cookieToast").toast("hide");
 	});
 
-	if (document.cookie.split('; ').find(row => row.startsWith("collapsedInfo=false"))) {
-		$("#collapseInfo").removeClass("show");
-		$("a#infoCollapser").attr("aria-expanded", "false");
-		collapsedInfo = true;
-	}
-	$("a#infoCollapser").on("click", () => {
-		document.cookie = `collapsedInfo=${collapsedInfo}; expires=${cookieExpiryDate};`;
-	 	collapsedInfo = !collapsedInfo;
-	});
-
 	$('.navbar .dropdown').hover(function() {
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
 	}, function() {

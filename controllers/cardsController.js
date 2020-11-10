@@ -18,7 +18,7 @@ exports.cardsList = function(req, res, next) {
 	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
 		if (err) { return next(err); }
 		cardsList.sort(sortByRarityAndNumber);
-		res.render('cardsList', { title: 'Obey Me! Card Gallery', description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.", cardsList: cardsList, user: req.user, path: 'list' });
+		res.render('cardsList', { title: 'Card Gallery', description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.", cardsList: cardsList, user: req.user, path: 'list' });
 	});
 };
 

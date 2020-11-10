@@ -3,5 +3,5 @@ exports.privacyPolicy = function(req, res, next) {
 };
 
 exports.surpriseGuest = function(req, res, next) {
-  res.render('surpriseGuest', { title: 'Obey Me! Surprise Guest', description: "Obey Me! surprise guest information | Karasu-OS.com", user: req.user });
+  res.render('surpriseGuest', { title: 'Surprise Guest', description: "Obey Me! surprise guest information | Karasu-OS.com", user: req.user });
 };

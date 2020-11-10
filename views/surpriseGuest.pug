@@ -6,13 +6,13 @@ block content
       div.col-12
         h1.text-primary.pb-2(style="border-bottom: 2px solid; border-color: #8d6fe2;") Surprise Guest Table
         div(class="card card-body shadow")
-          h5.card-title
-            a(id="infoCollapser" data-toggle="collapse" href="#collapseInfo" role="button" aria-expanded="true" aria-controls="collapseInfo") Info
+          h5.card-title.mb-0
+            a(id="infoCollapser" data-toggle="collapse" href="#collapseInfo" role="button" aria-expanded="false" aria-controls="collapseInfo") Info
               |
               |
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-          div#collapseInfo.collapse.show
-            p.card-text Karasu OS's surprise guest table lists the two best combinations from each of the possible interactions. The first combo is the best possible, the second one is the best possible without spending any gifts. With this being said, there are other combinations which can achieve the same amount of intimacy points.
+          div#collapseInfo.collapse
+            p.card-text.mt-2 Karasu OS's surprise guest table lists the two best combinations from each of the possible interactions. The first combo is the best possible, the second one is the best possible without spending any gifts. With this being said, there are other combinations which can achieve the same amount of intimacy points.
             p.card-text.mb-0 Other resources:
             ul
               li Obey Me fandom wiki have surprise guest page for each of the characters. You should ask google for the specific link you want.
@@ -27,7 +27,7 @@ block content
       div.col-12.my-2
         div.card.card-body.shadow.rounded
           div#btnContainer
-            a(id="filterCollapser" data-toggle="collapse" href="#spgFilter" role="button" aria-expanded="true" aria-controls="spgFilter") Filters
+            span.text-primary Filters
           div#spgFilter.collpase.show.mx-auto
             div.row.mb-2
               div.col-md-2.text-md-right
@@ -71,7 +71,7 @@ block content
                   input#homescreen.form-check-input(type="radio" name="spgRadio2" value="homescreen")
                   label(class="form-check-label" for="homescreen") Home Screen
           div.mb-3.text-center
-            a(class="text-secondary" id="filterCollapser2" data-toggle="collapse" href="#spgFilter" role="button" aria-expanded="true" aria-controls="spgFilter")
+            a(class="text-secondary" id="filterCollapser" data-toggle="collapse" href="#spgFilter" role="button" aria-expanded="true" aria-controls="spgFilter")
               |
               |
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
@@ -683,10 +683,10 @@ block content
       *[aria-expanded="false"]>.chevron {
         transform: scaleY(-1);
       }
-      #filterCollapser2[aria-expanded="true"]::before {
+      #filterCollapser[aria-expanded="true"]::before {
         content: "collapse ";
       }
-      #filterCollapser2[aria-expanded="false"]::before {
+      #filterCollapser[aria-expanded="false"]::before {
         content: "expand ";
       }
       #btnContainer {
@@ -696,7 +696,7 @@ block content
         line-height: 0.1rem;
         margin: 10px 0 20px;
       }
-      #btnContainer>a {
+      #btnContainer>span {
         background-color: white;
         padding: 8px 16px;
         font-size: large;
