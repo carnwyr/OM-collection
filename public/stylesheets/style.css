@@ -85,7 +85,7 @@ body {
   position: fixed;
   bottom: 32px;
   right: 18px;
-  z-index: 99;
+  z-index: 9999;
   border-radius: 50%;
   background-color: white;
   width: 64px;
