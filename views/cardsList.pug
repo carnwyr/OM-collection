@@ -72,7 +72,7 @@ block content
                     div.text-primary.d-block.d-sm-none Memory cards
                   - var memoryPercentage = roundPercentage(cardStats.cards.Memory[0] / cardStats.cards.Memory[1] * 100);
                   div(style='position: relative')
-                    img.img-fluid.img-max.p-2.mx-auto(src='/images/memory_card.png' style='max-width: 120px; width:100%;')
+                    img.img-fluid.p-2.mx-auto(src='/images/memory_card.png' style='max-width: 120px; width:100%;')
                     div.mt-2(style={position: 'absolute', top: '0%', left: '0%', height: 100 - memoryPercentage + '%', width: '100%', background: 'white', 'mix-blend-mode': 'saturation'})
                   div.d-none.d-sm-block #{cardStats.cards.Memory[0]} of #{cardStats.cards.Memory[1]}
                   small.d-block.d-sm-none #{cardStats.cards.Memory[0]} of #{cardStats.cards.Memory[1]}
@@ -276,9 +276,9 @@ block content
             a(id="iconViewBtn" class="dropdown-item" href="#")
               span.font-weight-bold.text-primary Icon view
             div(class="dropdown-divider")
-            a(id="fullViewBtn" class="dropdown-item" href="#")
+            a(id="originalViewBtn" class="dropdown-item" href="#")
               span.font-weight-normal Full original view
-            a(id="fullBloomBtn" class="dropdown-item" href="#")
+            a(id="bloomedViewBtn" class="dropdown-item" href="#")
               span.font-weight-normal Full bloomed view
 
     div(class="row text-left" id="demonCards")
@@ -286,28 +286,26 @@ block content
         h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
     div(class='collapse show' id='demonWrapper')
-      div(class="row d-flex justify-content-around" id="demonSection" style="padding:0 8px;")
+      div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
         if cardsList.filter(card => card.type == "Demon").length != 0
           each card in cardsList
             if card.type == "Demon"
-              a(class="text-center m-1 icon-container cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
-                div.img-max
-                  img(class="img-fluid img-max" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                p(class='figure-caption px-1') #{card.name}
+              a(class="text-center mb-2 mx-1 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
+                img(class="img-fluid w-100" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
+                p(class='figure-caption') #{card.name}
 
     div(class="row text-left" id="memoryCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
     div(class='collapse show' id='memoryWrapper')
-      div(class="row d-flex justify-content-around" id="memorySection" style="padding:0 8px;")
+      div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
         if cardsList.filter(card => card.type == "Memory").length != 0
           each card in cardsList
             if card.type == "Memory"
-              a(class="text-center m-1 icon-container cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
-                div.img-max
-                  img(class="img-fluid img-max" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                p(class='figure-caption px-1') #{card.name}
+              a(class="text-center mb-2 mx-1 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
+                img(class="img-fluid w-100" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
+                p(class='figure-caption') #{card.name}
 
     div(class="b2t shadow text-primary text-center" id="b2t" type="button" title="Go to Top" style="display:none;")
       div

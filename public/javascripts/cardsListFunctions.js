@@ -7,11 +7,11 @@ var selectionMode = false;
 var fullStatImage;
 var totalStatImage;
 
-let viewType = "icon view";
-let currentView = "icon view";
+var viewType = "icon";
+var currentView = "icon";
 
 $(document).ready(function(){
-	$(".img-max").css("transition", "all .5s ease");
+	$(".cardPreview>img").css("transition", "all .5s ease");
 	resetFilters();
 	$("form :input").on('click', formChanged);
 	$("div#filters :input[type!=text]").on('change', filterApplied);
@@ -39,9 +39,9 @@ $(document).ready(function(){
 
 	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
 
-	$("#iconViewBtn").click(() => switchViewOption("icon view"));
-	$("#fullViewBtn").click(() => switchViewOption("full (original) view"));
-	$("#fullBloomBtn").click(() => switchViewOption("full (bloomed) view"));
+	$("#iconViewBtn").click(() => switchViewOption("icon"));
+	$("#originalViewBtn").click(() => switchViewOption("original"));
+	$("#bloomedViewBtn").click(() => switchViewOption("bloomed"));
 
 	$(window).scroll(switchBackToTopButton);
 	switchBackToTopButton();
@@ -51,7 +51,7 @@ $(document).ready(function(){
 
 	$(window).on('beforeunload', () => {if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?");});
 
-	$('img').on('load', function(){ $(this).addClass('loaded'); });
+	$('img').on('load', function(){ $(this).addClass('loaded'); console.log('a');});
 });
 
 function switchBackToTopButton() {
@@ -65,20 +65,16 @@ function switchBackToTopButton() {
 function fillRank(container) {
 	$('#'+container).find('.placeholder').remove();
 	var visibleCardsCount = $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
-	var visibleIcons = $('#'+container).find('.icon-container').filter(function() { return $(this).css('display') !== 'none'; }).length;
-	var visibleFullImg = $('#'+container).find('.full-img-container').filter(function() { return $(this).css('display') !== 'none'; }).length;
 	var html;
 
 	if (visibleCardsCount > 0) {
-		if (visibleIcons > 0) {
-			html = '<div class="invisible placeholder mb-2 h-100" style="max-width:110px;width:100%;">placeholder placeholder placeholder</div>';
-			viewType = "icon view"
-		} else if (visibleFullImg > 0) {
-			html = '<div class="invisible placeholder mb-2 h-100" style="max-width:180px;width:100%;height:256px;">placeholder placeholder placeholder</div>';
-			viewType = "full image view"
+		if (viewType == "icon") {
+			html = '<div class="invisible placeholder mb-2 mx-1 h-100">placeholder placeholder placeholder</div>';
+		} else {
+			html = '<div class="invisible placeholder fullImageView mb-2 mx-1 h-100">placeholder placeholder placeholder</div>';
 		}
 
-		var currentCardsInRow = getRowCapacity(viewType);
+		var currentCardsInRow = getRowCapacity();
 
 		if (visibleCardsCount % currentCardsInRow === 0) { return; }
 		else { var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow; }
@@ -92,13 +88,13 @@ function fillRank(container) {
 	}
 }
 
-function getRowCapacity(viewType) {
+function getRowCapacity() {
 	// max number of cards for xs is 4, on smaller screens it's reduced by 1
 	var cardsInRow;
-	if (viewType === "icon view") {
-		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 2, 992: 5, 1200: 8, xl: 9};
+	if (viewType === "icon") {
+		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 6, 992: 6, 1200: 7, xl: 9};
 	} else {
-		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 1, 992: 3, 1200: 5, xl: 5};
+		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 4, 992: 3, 1200: 4, xl: 5};
 	}
 
 	for (let [screen, cards] of Object.entries(cardsInRow)) {
@@ -149,7 +145,7 @@ function filterApplied() {
 
 		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
 			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') }	;
-			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('.img-max, .full-img'), showCards);
+			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('img'), showCards);
 		}
 		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
 
@@ -282,7 +278,7 @@ function switchCardsSelection(cardNames) {
 
 	var invisibleCards = $('.cardPreview').filter(function() {
 		return !$(this).isInViewport();
-	}).find('img.img-max');
+	}).find('img');
 
 	if (selectionMode) {
 		var selectOwnedCards = function(cardNames) { $('.cardPreview').filter(function() {
@@ -355,7 +351,7 @@ function switchSelectionAll(select) {
 
 	var cardImages = $(cardsToSwitch).filter(function() {
 		return !$(this).isInViewport();
-	}).find('img.img-max');
+	}).find('img');
 
 	if (select) {
 		var changeSelection = function() { $(cardsToSwitch).find('img').removeClass('notSelectedCard'); }
@@ -458,46 +454,62 @@ function prepareHtml() {
 }
 
 function switchViewOption(changeViewTo) {
+	if (viewType === changeViewTo) return;
+
+	const removeFullImageClass = function(target) { $(target).removeClass('fullImageView'); }
+	const addFullImageClass = function(target) { $(target).addClass('fullImageView'); }
+	const replaceSToL = function(target) { return target.replace('/S/', '/L/'); }
+	const replaceLToS = function(target) { return target.replace('/L/', '/S/'); }
+	const removeBloom = function(target) { return target.replace('_b', ''); }
+	const makeBloomed = function(target) { return target.replace('.jpg', '_b.jpg'); }
+
+	const changes = {
+		'icon': {
+			'dropdownText': 'Icon view',
+			'height': '110px',
+			'width': '110px',
+			'fullViewAction': removeFullImageClass,
+			'srcAction': function (target) { return removeBloom(replaceLToS($(target).attr('src'))); }
+		},
+		'original': {
+			'dropdownText': 'Full original view',
+			'height': '256px',
+			'width': '180px',
+			'fullViewAction': addFullImageClass,
+			'srcAction': function (target) { return removeBloom(replaceSToL($(target).attr('src'))); }
+		},
+		'bloomed': {
+			'dropdownText': 'Full bloomed view',
+			'height': '256px',
+			'width': '180px',
+			'fullViewAction': addFullImageClass,
+			'srcAction': function (target) {
+				if ($(target).parent().parent().attr('id') === 'demonSection') return makeBloomed(replaceSToL($(target).attr('src')));
+				else return replaceSToL($(target).attr('src'));
+			}
+		}
+	};
+
 	var cardsToDisplay = $(".cardPreview:visible");
-	if (currentView === changeViewTo) return;
+	viewType = changeViewTo;
+
+	$("#viewMenuDropdown>span").text(changes[viewType]['dropdownText']);
+	for (var mode in changes) {
+	    if (mode == viewType) {
+	    	$("#" + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
+	    } else {
+	    	$("#" + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
+	    }
+	}
 
 	cardsToDisplay.fadeOut(400).promise().done(function() {
-		if (changeViewTo === "full (original) view") {
-			$("#viewMenuDropdown>span").text("Full original view");
-
-			$('.cardPreview>div>img').each(function() {
-				$(this).attr('src', $(this).attr('src').replace('/S/', '/L/').replace('_b', ''));
+		$('.cardPreview>img').each(function() {
+				$(this).attr('src', changes[viewType]['srcAction'](this));
+				$(this).attr('height', changes[viewType]['height']);
+				$(this).attr('width', changes[viewType]['width']);
 			});
-			$('.icon-container').removeClass('icon-container').addClass('full-img-container');
-			$('.img-max').removeClass('img-max').addClass('full-img');
 
-			$("#fullViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
-			$("#iconViewBtn>span, #fullBloomBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
-		} else if (changeViewTo === "icon view"){
-			$("#viewMenuDropdown>span").text("Icon view");
-
-			$('.cardPreview>div>img').each(function() {
-				$(this).attr('src', $(this).attr('src').replace('/L/', '/S/').replace('_b', ''));
-			});
-			$('.full-img-container').removeClass('full-img-container').addClass('icon-container');
-			$('.full-img').removeClass('full-img').addClass('img-max');
-
-			$("#iconViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
-			$("#fullViewBtn>span, #fullBloomBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
-		} else {
-			$("#viewMenuDropdown>span").text("Full bloomed view");
-
-			$('#demonSection>.cardPreview>div>img').each(function() {
-				$(this).attr('src', $(this).attr('src').replace('/S/', '/L/').replace('.jpg', '_b.jpg'));
-			});
-			$("#memorySection").attr("style", "display: none !important");
-			$('.icon-container').removeClass('icon-container').addClass('full-img-container');
-			$('.img-max').removeClass('img-max').addClass('full-img');
-
-			$("#fullBloomBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
-			$("#iconViewBtn>span, #fullViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
-		}
-
+		changes[viewType]['fullViewAction']($('.cardPreview'));
 		$('img').removeClass('loaded');
 
 		var cardHeight = $(cardsToDisplay[0]).height();
@@ -507,13 +519,13 @@ function switchViewOption(changeViewTo) {
 		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
 
 		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
-			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') }	;
-			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('.img-max, .full-img'), showCards);
+			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') };
+			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('img'), showCards);
 		}
 		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
 
-		fillRank("demonSection")
-		if (changeViewTo !== "full (bloomed) view") {
+		fillRank("demonSection");
+		if (changeViewTo !== "bloomed") {
 			fillRank("memorySection");
 			$("#memorySection").attr("style", "display: block;");
 			$("#memoryWrapper").find("p.placeholder").remove();
@@ -521,6 +533,4 @@ function switchViewOption(changeViewTo) {
 			$("#memoryWrapper").append("<p class=\"col-12 text-muted placeholder\">??? No cards? Memory cards don't have devil's flower, remember? ヽ(ﾟ▽ﾟ)ノ✿</p>")
 		}
 	});
-
-	currentView = changeViewTo;
 }

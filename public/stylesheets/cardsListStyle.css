@@ -1,18 +1,13 @@
-a.icon-container {
+.cardPreview {
   max-width: 110px;
   width:100%;
 }
-.img-max {
-  width: 110px;
-  height: 110px;
+.placeholder {
+  max-width: 110px;
+  width:100%;
 }
-a.full-img-container {
-  max-width: 180px;
-  width: 100%;
-}
-.full-img {
-  width: 180px;
-  height: 256px;
+.fullImageView {
+  max-width: 180px !important;
 }
 .sticky-offset {
   top: 70px;
@@ -47,14 +42,12 @@ a.full-img-container {
     background-color: rgba(255, 255, 255, 0) !important;
     box-shadow: none !important;
   }
-  .img-max {
-    max-width: 100px;
-    width:100%;
-    /*transition: all .5s ease;*/ /*Set by JQuery after the page loads to prvent resizing*/
-  }
   .cardPreview {
     max-width: 100px;
     width:100%;
+  }
+  .fullImageView {
+    max-width: 150px !important;
   }
   .placeholder {
     max-width: 100px;
@@ -176,12 +169,12 @@ a.full-img-container {
   padding-right: 0 !important;
   margin-right: 0 !important;
 }
-#demonCards>img, #memoryCards>img {
+#demonSection img, #memorySection img {
   opacity: 0;
   transition: opacity 300ms ease-in-out;
 }
 img.loaded{
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 #viewMenuDropdown {
