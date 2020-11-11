@@ -39,11 +39,10 @@ html(lang='en-US')
           if user
             li(class="nav-item")
               a(class="nav-link", href='/' + user.name + '/collection') My collection
-          li(class="nav-item dropdown d-none d-md-block")
+          li(class="nav-item dropdown")
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
             div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="toolsDropdown")
-              a(class="nav-link", href='/surprise_guest')
-                span.text-dark Surprise Guest
+              a(class="nav-link text-dark", href='/surprise_guest') Surprise Guest
           if user && user.isAdmin
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
@@ -53,11 +52,9 @@ html(lang='en-US')
                 a(class="nav-link dropdown-item", href='/hiddenCards')
                   span(class="text-dark") Hidden cards
             li(class="nav-item d-md-none")
-              a(class="nav-link", href='/card/new')
-                span Add new card
+              a(class="nav-link", href='/card/new') Add new card
             li(class="nav-item d-md-none")
-              a(class="nav-link", href='/hiddenCards')
-                span Hidden cards
+              a(class="nav-link", href='/hiddenCards') Hidden cards
         ul(class="navbar-nav ml-auto")
           li(class="nav-item d-none d-md-block")
             div(class="nav-link" style="position:relative;bottom:1px")
@@ -88,8 +85,7 @@ html(lang='en-US')
                 if !user.email
                   span(class="badge badge-warning") !
             li(class="nav-item d-md-none")
-              a(class="nav-link", href='/logout')
-                span Logout
+              a(class="nav-link", href='/logout') Logout
 
     div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
       div(class="toast-body")
@@ -114,32 +110,43 @@ html(lang='en-US')
             div.col-10.mt-1
               a(class="text-light" href="https://shallwedate.jp/obeyme/en/") Official Website
               |
-              span.text-secondary &nbsp;|&nbsp;
               |
-              span.text-light Download for&nbsp;
+              span.text-secondary |
               |
-              a(class="text-light" href="https://apps.apple.com/app/obey-me-shall-we-date/id1477167654") <u>iOS</u>&nbsp;
               |
-              span.text-light and&nbsp;
+              span.text-light Download for
               |
-              a(class="text-light" href="https://play.google.com/store/apps/details?id=com.nttsolmare.game.android.obeyme") <u>Android</u>&nbsp;
               |
-              span.text-secondary |&nbsp;
+              a(class="text-light" href="https://apps.apple.com/app/obey-me-shall-we-date/id1477167654") <u>iOS</u>
+              |
+              |
+              span.text-light and
+              |
+              |
+              a(class="text-light" href="https://play.google.com/store/apps/details?id=com.nttsolmare.game.android.obeyme") <u>Android</u>
+              |
+              |
+              span.text-secondary |
+              |
               |
               a(class="text-light" href="https://www.facebook.com/obeyme.solmare/") Obey Me! Official Facebook
             div.col-10.mt-1.mb-3
-              span
-              |
               a(class="text-light" href="/") Contact Us
               |
-              span.text-secondary &nbsp;|&nbsp;
+              |
+              span.text-secondary |
+              |
               |
               a(class="text-light" href="/policies") Privacy Policy
               |
-              span.text-secondary &nbsp;|&nbsp;
+              |
+              span.text-secondary |
+              |
               |
               a(class="text-light" href="https://obey-me.fandom.com/wiki/Obey_Me!_Wiki") Obey Me! Wiki
               |
-              span.text-secondary &nbsp;|&nbsp;
+              |
+              span.text-secondary |
+              |
               |
               a(class="text-light" href="https://www.reddit.com/r/obeyme/") Obey Me! Subreddit

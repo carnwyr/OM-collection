@@ -79,7 +79,7 @@ body {
   z-index: 9999;
 }
 
-.b2t {
+#b2t {
   display: inline-block;
   cursor: pointer;
   position: fixed;
