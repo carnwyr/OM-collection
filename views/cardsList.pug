@@ -169,21 +169,11 @@ block content
                   div(class="custom-control custom-radio mr-3 col-1")
                     input(type="radio" class="custom-control-input" id="checkRarityAll" name="All")
                     label(class="custom-control-label" for="checkRarityAll") All
-                  div(class="custom-control custom-checkbox mr-3 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkRarityN" name="N")
-                    label(class="custom-control-label" for="checkRarityN") N
-                  div(class="custom-control custom-checkbox mr-3 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkRarityR" name="R")
-                    label(class="custom-control-label" for="checkRarityR") R
-                  div(class="custom-control custom-checkbox mr-3 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkRaritySR" name="SR")
-                    label(class="custom-control-label" for="checkRaritySR") SR
-                  div(class="custom-control custom-checkbox mr-3 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkRaritySSR" name="SSR")
-                    label(class="custom-control-label" for="checkRaritySSR") SSR
-                  div(class="custom-control custom-checkbox mr-3 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkRarityUR" name="UR")
-                    label(class="custom-control-label" for="checkRarityUR") UR
+                  - var rarities = ["N", "R", "SR", "SSR", "UR"]
+                  each rarity in rarities
+                    div(class="custom-control custom-checkbox mr-3 col-1")
+                      input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name=rarity)
+                      label(class="custom-control-label" for="checkRarity"+rarity) #{rarity}
                   div(class="custom-control custom-checkbox col-1")
                     input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
                     label(class="custom-control-label" for="checkRarityUR+") UR+
@@ -196,24 +186,11 @@ block content
                   div(class="custom-control custom-radio mr-5 ml-1 col-1")
                     input(type="radio" class="custom-control-input" id="checkAttributeAll" name="All")
                     label(class="custom-control-label" for="checkAttributeAll") All
-                  div(class="custom-control custom-checkbox mr-5 ml-1 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkAttributePride" name="Pride")
-                    label(class="custom-control-label" for="checkAttributePride") Pride
-                  div(class="custom-control custom-checkbox mr-5 ml-1 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkAttributeGreed" name="Greed")
-                    label(class="custom-control-label" for="checkAttributeGreed") Greed
-                  div(class="custom-control custom-checkbox mr-5 ml-1 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkAttributeEnvy" name="Envy")
-                    label(class="custom-control-label" for="checkAttributeEnvy") Envy
-                  div(class="custom-control custom-checkbox mr-5 ml-1 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkAttributeWrath" name="Wrath")
-                    label(class="custom-control-label" for="checkAttributeWrath") Wrath
-                  div(class="custom-control custom-checkbox mr-5 ml-1 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkAttributeLust" name="Lust")
-                    label(class="custom-control-label" for="checkAttributeLust") Lust
-                  div(class="custom-control custom-checkbox mr-5 ml-1 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkAttributeGluttony" name="Gluttony")
-                    label(class="custom-control-label" for="checkAttributeGluttony") Gluttony
+                  - var attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony"]
+                  each attribute in attributes
+                    div(class="custom-control custom-checkbox mr-5 ml-1 col-1")
+                      input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name=attribute)
+                      label(class="custom-control-label" for="checkAttribute"+attribute) #{attribute}
                   div(class="custom-control custom-checkbox ml-1 col-1")
                     input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
                     label(class="custom-control-label" for="checkAttributeSloth") Sloth
@@ -227,42 +204,11 @@ block content
                   div(class="custom-control custom-radio mr-5 ml-3 col-2")
                     input(type="radio" class="custom-control-input" id="checkCharacterAll" name="All")
                     label(class="custom-control-label" for="checkCharacterAll") All
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterLucifer" name="Lucifer")
-                    label(class="custom-control-label" for="checkCharacterLucifer") Lucifer
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterMammon" name="Mammon")
-                    label(class="custom-control-label" for="checkCharacterMammon") Mammon
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterLeviathan" name="Leviathan")
-                    label(class="custom-control-label" for="checkCharacterLeviathan") Leviathan
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterSatan" name="Satan")
-                    label(class="custom-control-label" for="checkCharacterSatan") Satan
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterAsmodeus" name="Asmodeus")
-                    label(class="custom-control-label" for="checkCharacterAsmodeus") Asmodeus
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterBeelzebub" name="Beelzebub")
-                    label(class="custom-control-label" for="checkCharacterBeelzebub") Beelzebub
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterBelphegor" name="Belphegor")
-                    label(class="custom-control-label" for="checkCharacterBelphegor") Belphegor
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterDiavolo" name="Diavolo")
-                    label(class="custom-control-label" for="checkCharacterDiavolo") Diavolo
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterBarbatos" name="Barbatos")
-                    label(class="custom-control-label" for="checkCharacterBarbatos") Barbatos
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterSimeon" name="Simeon")
-                    label(class="custom-control-label" for="checkCharacterSimeon") Simeon
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterLuke" name="Luke")
-                    label(class="custom-control-label" for="checkCharacterLuke") Luke
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterSolomon" name="Solomon")
-                    label(class="custom-control-label" for="checkCharacterSolomon") Solomon
+                  - var characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon"]
+                  each character in characters
+                    div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
+                      input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name=character)
+                      label(class="custom-control-label" for="checkCharacter"+character) #{character}
                   div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLittleD" name="LittleD")
                     label(class="custom-control-label" for="checkCharacterLittleD" style="min-width: 75px;") Little D

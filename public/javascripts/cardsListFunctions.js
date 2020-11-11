@@ -525,12 +525,6 @@ function switchViewOption(changeViewTo) {
 		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
 
 		fillRank("demonSection");
-		if (changeViewTo !== "bloomed") {
-			fillRank("memorySection");
-			$("#memorySection").attr("style", "display: block;");
-			$("#memoryWrapper").find("p.placeholder").remove();
-		} else {
-			$("#memoryWrapper").append("<p class=\"col-12 text-muted placeholder\">??? No cards? Memory cards don't have devil's flower, remember? ヽ(ﾟ▽ﾟ)ノ✿</p>")
-		}
+		fillRank("memorySection");
 	});
 }
