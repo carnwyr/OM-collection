@@ -8,7 +8,7 @@ var miscController = require('../controllers/miscController');
 // Statis pages
 router.get('/', cardsController.index);
 router.get('/policies', miscController.privacyPolicy);
-router.get("/surprise_guest", miscController.surpriseGuest);
+// router.get("/surprise_guest", miscController.surpriseGuest);
 
 // Cards list
 router.get('/cards', cardsController.cardsList);

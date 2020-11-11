@@ -2,7 +2,7 @@ doctype html
 html(lang='en-US')
   head
     meta(charset='utf-8')
-    title= title+" | Karasu-OS.com"
+    title= title+" | Obey Me! Resources (fan-made) | Karasu-OS.com"
     meta(name='viewport', content='width=device-width, initial-scale=1')
     meta(name="description" content=description?description:title+" | Karasu-OS.com")
     meta(name="keywords" content="Obey Me, おべいみー, cards, tools")
@@ -39,10 +39,11 @@ html(lang='en-US')
           if user
             li(class="nav-item")
               a(class="nav-link", href='/' + user.name + '/collection') My collection
-          li(class="nav-item dropdown")
-            a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
-            div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="toolsDropdown")
-              a(class="nav-link text-dark", href='/surprise_guest') Surprise Guest
+          //-
+              li(class="nav-item dropdown")
+                a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
+                div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="toolsDropdown")
+                  a(class="nav-link text-dark", href='/surprise_guest') Surprise Guest
           if user && user.isAdmin
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
