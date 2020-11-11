@@ -72,16 +72,23 @@ body {
    outline: none !important;
 }
 
-#supportToast {
+#cookieToast {
   position: fixed;
-  top: 64px;
-  right: 16px;
+  bottom: calc(100% - (100% - 100px));
+  left: 18px;
   z-index: 9999;
 }
 
-#cookieToast {
+#b2t {
+  display: inline-block;
+  cursor: pointer;
   position: fixed;
   bottom: 32px;
-  left: 28px;
+  right: 18px;
   z-index: 9999;
+  border-radius: 50%;
+  background-color: white;
+  width: 64px;
+  height: 64px;
+  padding-top: 16px;
 }
