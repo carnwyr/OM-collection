@@ -367,9 +367,7 @@ function switchSelectionAll(select) {
 
 	var newHeight = $(document).height();
 	var demonSectionOffset = $('#demonSection').offset().top;
-	$('html, body').animate({
-		scrollTop: oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
-	}, 500);
+	window.scrollTo( 0, oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height()) );
 
 	addCardsToChangedList(cardsToSwitch, select)
 }
