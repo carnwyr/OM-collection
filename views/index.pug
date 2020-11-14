@@ -34,15 +34,14 @@ block content
           img(alt="pfp" src="/images/karasu.png")
       div.container
         div.row(style="margin-top:128px;")
-          div.col-12.mx-auto
-            div.card.bg-transparent
-              div.card-body.mx-auto
-                a(href="/cards" type="button" class="btn btn-primary m-1") Cards
-                if !user
-                  a(href="/signup" type="button" class="btn btn-primary m-1") Sign Up
-                  a(href="/login" type="button" class="btn btn-primary m-1") Login
-                else
-                  a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1") My collection
+          div.col-12.mb-3.text-center
+            a(href="/cards" type="button" class="btn btn-primary m-1") Cards
+            //- a(href="/surprise_guest" type="button" class="btn btn-primary m-1") Surprise Guest
+            if !user
+              a(href="/signup" type="button" class="btn btn-primary m-1") Sign Up
+              a(href="/login" type="button" class="btn btn-primary m-1") Login
+            else
+              a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1") My collection
         div.row
           div.col-12.col-md-6.mb-4
             div.card.shadow.rounded.h-100
@@ -82,8 +81,8 @@ block content
                 p.card-text Karasu OS is created and maintained with love and passion ;) Show your support, too! Learn more at
                   |
                   |
-                  a(href="https://www.patreon.com/karasu_os") https://www.patreon.com/karasu_os
-                <a href="https://www.patreon.com/bePatron?u=43929649" data-patreon-widget-type="become-patron-button">Become a Patron!</a><script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
+                  a(href="https://www.buymeacoffee.com/karasuos") https://www.buymeacoffee.com/karasuos
+                a(class="btn" id="supportBtn" style="background-color:#FFDD00;color:black;" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") &#x1F608 Buy Karasu a Whip of Love
     link(rel="stylesheet" href="/stylesheets/homepage.css")
 
 block footer

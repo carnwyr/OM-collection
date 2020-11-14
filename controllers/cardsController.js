@@ -11,14 +11,14 @@ const nodeHtmlToImage = require('node-html-to-image')
 var usersController = require('../controllers/usersController');
 
 exports.index = function(req, res, next) {
-	res.render('index', { title: 'Cards collection', user: req.user });
+	res.render('index', { title: 'Karasu OS', description: "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation.", user: req.user });
 };
 
 exports.cardsList = function(req, res, next) {
 	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
 		if (err) { return next(err); }
 		cardsList.sort(sortByRarityAndNumber);
-		res.render('cardsList', { title: 'Gallery', cardsList: cardsList, user: req.user, path: 'list' });
+		res.render('cardsList', { title: 'Card Gallery', description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.", cardsList: cardsList, user: req.user, path: 'list' });
 	});
 };
 
@@ -64,7 +64,7 @@ exports.cardDetail = function(req, res, next) {
 						var err = new Error('Card not found');
 						return next(err);
 					}
-					return res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: false, isHidden: true });
+					return res.render('cardDetail', { title: cardData.name, description: "View \"" + cardData.name + "\" on Karasu-OS.com", card: cardData, user: req.user, hasCard: false, isHidden: true });
 				});
 			} else {
 				var err = new Error('Card not found');
@@ -75,7 +75,7 @@ exports.cardDetail = function(req, res, next) {
 				var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
 				if (err) { return next(err); }
 			}
-			res.render('cardDetail', { title: cardData.name, card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
+			res.render('cardDetail', { title: cardData.name, description: "View \"" + cardData.name + "\" on Karasu-OS.com", card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
 		}
 	});
 };
@@ -172,7 +172,7 @@ exports.cardsCollection = async function(req, res, next) {
 				cardStats.rarity[card.rarity.replace('+', 'p')][1]++;
 				cardStats.cards[card.type][1]++;
 			});
-			res.render('cardsList', { title: title, cardsList: cardsList, cardStats: cardStats, user: req.user, path: 'collection' });
+			res.render('cardsList', { title: title, description: req.params.username + "'s Collection on Karasu-OS.com", cardsList: cardsList, cardStats: cardStats, user: req.user, path: 'collection' });
 		});
 	});
 };
