@@ -43,8 +43,6 @@ $(document).ready(function(){
 	$("#copyLink").on("click", copyCollectionLink);
 	$('#openLink').on('show.bs.modal', loadStatsImage);
 
-	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
-
 	$(".viewBtn").on('click', function() { switchViewOption($(this).data('viewmode')) });
 
 	$(window).scroll(switchBackToTopButton);
@@ -67,14 +65,6 @@ $(document).ready(function(){
 	    $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
 	});
 });
-
-function switchBackToTopButton() {
-	if ($(window).scrollTop() > 64) {
-		$("#b2t").fadeIn();
-	} else {
-		$("#b2t").fadeOut();
-	}
-}
 
 function fillRank(container) {
 	$('#'+container).find('.placeholder').remove();

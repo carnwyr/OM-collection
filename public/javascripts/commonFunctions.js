@@ -16,14 +16,9 @@ $(document).ready(function(){
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
 	});
 
-	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
-	$(window).scroll(() => {
-		if ($(window).scrollTop() > 64) {
-			$("#b2t").fadeIn();
-		} else {
-			$("#b2t").fadeOut();
-		}
-	});
+	$("#b2t").on('click', () => window.scrollTo( 0, 0 ));
+	$(window).scroll(switchBackToTopButton);
+	switchBackToTopButton();
 });
 
 var cookieExpiryDate = () => {
@@ -32,4 +27,12 @@ var cookieExpiryDate = () => {
 	d.setMonth(d.getMonth() + 3);
 
 	return d.toUTCString();
+}
+
+function switchBackToTopButton() {
+	if ($(window).scrollTop() > 64) {
+		$("#b2t").fadeIn();
+	} else {
+		$("#b2t").fadeOut();
+	}
 }
