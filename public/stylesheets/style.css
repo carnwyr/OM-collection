@@ -24,6 +24,9 @@ body {
 .alert {
   z-index: 9999 !important;
 }
+.navbar {
+  z-index: 6000 !important;
+}
 
 /* HEADER */
 .navbar-brand {

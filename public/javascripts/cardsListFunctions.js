@@ -12,6 +12,7 @@ var currentView = "icon";
 
 $(document).ready(function(){
 	$(".cardPreview>img").css("transition", "all .5s ease");
+	$('img').on('load', function(){ $(this).addClass('loaded'); });
 	resetFilters();
 	$("form :input").on('click', formChanged);
 	$("div#filters :input[type!=text]").on('change', filterApplied);
@@ -39,9 +40,7 @@ $(document).ready(function(){
 
 	$("#b2t").on('click', () => $("html, body").animate({ scrollTop: 0 }, 1024));
 
-	$("#iconViewBtn").click(() => switchViewOption("icon"));
-	$("#originalViewBtn").click(() => switchViewOption("original"));
-	$("#bloomedViewBtn").click(() => switchViewOption("bloomed"));
+	$(".viewBtn").on('click', function() { switchViewOption($(this).data('viewmode')) });
 
 	$(window).scroll(switchBackToTopButton);
 	switchBackToTopButton();
@@ -51,7 +50,17 @@ $(document).ready(function(){
 
 	$(window).on('beforeunload', () => {if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?");});
 
-	$('img').on('load', function(){ $(this).addClass('loaded'); console.log('a');});
+	$('#viewMenuDropdown-lg').hover(function() {
+		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+	}, function() {
+		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
+	});
+	$('#viewMenuDropdown-sm').parent().on('show.bs.dropdown', function() {
+	    $(this).find('.dropdown-menu').first().stop(true, true).slideDown();
+	});
+	$('#viewMenuDropdown-sm').parent().on('hide.bs.dropdown', function() {
+	    $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
+	});
 });
 
 function switchBackToTopButton() {
@@ -493,12 +502,12 @@ function switchViewOption(changeViewTo) {
 	var cardsToDisplay = $(".cardPreview:visible");
 	viewType = changeViewTo;
 
-	$("#viewMenuDropdown>span").text(changes[viewType]['dropdownText']);
+	$("#viewMenuDropdown-lg>span,#viewMenuDropdown-sm>span").text(changes[viewType]['dropdownText']);
 	for (var mode in changes) {
 	    if (mode == viewType) {
-	    	$("#" + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
+	    	$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
 	    } else {
-	    	$("#" + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
+	    	$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
 	    }
 	}
 
