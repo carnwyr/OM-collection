@@ -11,7 +11,12 @@ var viewType = "icon";
 var currentView = "icon";
 
 $(document).ready(function(){
-	$('img').on('load', function(){ $(this).addClass('loaded'); });
+	$('.cardPreview>img').on('load', function(){ $(this).addClass('loaded'); });
+	$('.cardPreview>img').each(function(){
+		if (this.complete && this.naturalHeight !== 0){
+			$(this).addClass('loaded'); 
+		}
+	});
 	$(".cardPreview>img").css("transition", "all .5s ease");
 	resetFilters();
 	$("form :input").on('click', formChanged);
@@ -53,7 +58,7 @@ $(document).ready(function(){
 	$('#viewMenuDropdown-lg').hover(function() {
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
 	}, function() {
-		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
+		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideUp()
 	});
 	$('#viewMenuDropdown-sm').parent().on('show.bs.dropdown', function() {
 	    $(this).find('.dropdown-menu').first().stop(true, true).slideDown();
