@@ -11,8 +11,8 @@ var viewType = "icon";
 var currentView = "icon";
 
 $(document).ready(function(){
-	$(".cardPreview>img").css("transition", "all .5s ease");
 	$('img').on('load', function(){ $(this).addClass('loaded'); });
+	$(".cardPreview>img").css("transition", "all .5s ease");
 	resetFilters();
 	$("form :input").on('click', formChanged);
 	$("div#filters :input[type!=text]").on('change', filterApplied);
@@ -92,7 +92,7 @@ function fillRank(container) {
 			$('#'+container).append(html);
 		}
 	} else {
-		var html = '<p class="col-12 text-muted placeholder">No matching cards</p>';
+		var html = '<p class="col-12 text-muted placeholder" style="max-width: none">No matching cards</p>';
 		$('#'+container).append(html);
 	}
 }
