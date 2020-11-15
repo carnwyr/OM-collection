@@ -45,9 +45,6 @@ $(document).ready(function(){
 
 	$(".viewBtn").on('click', function() { switchViewOption($(this).data('viewmode')) });
 
-	$(window).scroll(switchBackToTopButton);
-	switchBackToTopButton();
-
 	fillRank("demonSection");
 	fillRank("memorySection");
 
