@@ -1,4 +1,7 @@
 $(document).ready(function(){
+	$('head').append(`<meta property="twitter:url" content="${window.location.href}">`);
+	$('head').append(`<meta property="og:url" content="${window.location.href}">`);
+
 	$(".navbar .nav-item.active").removeClass('active');
 	$('.navbar .nav-item a[href="' + location.pathname + '"]').closest('li').addClass('active');
 

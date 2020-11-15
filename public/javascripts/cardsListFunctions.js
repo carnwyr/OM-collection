@@ -45,9 +45,6 @@ $(document).ready(function(){
 
 	$(".viewBtn").on('click', function() { switchViewOption($(this).data('viewmode')) });
 
-	$(window).scroll(switchBackToTopButton);
-	switchBackToTopButton();
-
 	fillRank("demonSection");
 	fillRank("memorySection");
 
@@ -225,7 +222,7 @@ function scrollToSection(e) {
 		var sectionHeaderOffset = 150;
 	$('html, body').animate({
 		scrollTop: $(divId).offset().top - sectionHeaderOffset
-	}, 200);
+	}, 500);
 }
 
 function switchSelectionMode() {
@@ -302,9 +299,10 @@ function switchCardsSelection(cardNames) {
 
 	var newHeight = $(document).height();
 	var demonSectionOffset = $('#demonSection').offset().top;
+	var newScrollTop = oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
 	$('html, body').animate({
-		scrollTop: oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
-	}, 500);
+		scrollTop: newScrollTop
+	}, 300);
 }
 
 $.fn.isInViewport = function () {
@@ -373,7 +371,10 @@ function switchSelectionAll(select) {
 
 	var newHeight = $(document).height();
 	var demonSectionOffset = $('#demonSection').offset().top;
-	window.scrollTo( 0, oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height()) );
+	var newScrollTop = oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height());
+	$('html, body').animate({
+		scrollTop: newScrollTop
+	}, 300);
 
 	addCardsToChangedList(cardsToSwitch, select)
 }
