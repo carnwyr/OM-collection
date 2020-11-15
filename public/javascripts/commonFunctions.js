@@ -16,7 +16,6 @@ $(document).ready(function(){
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
 	});
 
-	//$("#b2t").on('click', () => window.scrollTo( 0, 0 ));
 	$("#b2t").on('click', () => $('body,html').animate({ scrollTop: 0 }, 500));
 	$(window).scroll(switchBackToTopButton);
 	switchBackToTopButton();
