@@ -178,7 +178,7 @@ block content
             div(class="mx-auto text-center")
               span(class="mb-1 mb-md-0 d-flex d-sm-inline-flex")
                 button(id="expandFilters" class="btn btn-primary bg-secondary border-secondary text-white btn-sm rounded-pill mx-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 104px") Filters
-                button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill mx-2 mb-0" style="width: 104px") Reset filters
+                button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill ml-2 mb-0" style="width: 104px") Reset filters
 
     div(id="filters" class="row text-left collapse")
       div.col-12.col-md-6.pr-md-1.mb-2
@@ -238,6 +238,8 @@ block content
     div(class="row text-left" id="demonCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
+          |
+          |
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
     div(class='collapse show' id='demonWrapper')
       div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
@@ -251,6 +253,8 @@ block content
     div(class="row text-left" id="memoryCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
+          |
+          |
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
     div(class='collapse show' id='memoryWrapper')
       div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
@@ -260,10 +264,6 @@ block content
               a(class="text-center mb-2 mx-1 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
                 img(class="img-fluid w-100" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
                 p(class='figure-caption') #{card.name}
-
-    div(class="b2t shadow text-primary text-center" id="b2t" type="button" title="Go to Top" style="display:none;")
-      div
-        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
 
   script(src="/javascripts/cardsListFunctions.js")
   link(rel="stylesheet", href="/stylesheets/cardsListStyle.css")
