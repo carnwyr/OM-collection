@@ -13,13 +13,6 @@
 .sticky-offset {
   top: 70px;
 }
-.collapser>.chevron{
-  margin-left: 4px;
-  transition: all 300ms;
-}
-.collapser[aria-expanded="false"]>.chevron {
-  transform: scaleY(-1);
-}
 .notSelectedCard {
   width: 80% !important;
   height: auto;
@@ -90,21 +83,6 @@
   background-color: white;
   font-weight: bold;
   color: #8d6fe2;
-}
-
-/* b2t */
-.b2t {
-  display: inline-block;
-  cursor: pointer;
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  z-index: 99;
-  border-radius: 50%;
-  background-color: white;
-  width: 64px;
-  height: 64px;
-  padding-top: 16px;
 }
 
 /*stat progress bars*/

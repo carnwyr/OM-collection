@@ -95,3 +95,10 @@ body {
   height: 64px;
   padding-top: 16px;
 }
+
+.collapser>.chevron{
+  transition: all 300ms;
+}
+.collapser[aria-expanded="false"]>.chevron {
+  transform: scaleY(-1);
+}
