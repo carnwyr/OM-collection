@@ -43,8 +43,7 @@ block content
   div(class="container")
     //- Page Heading
     div(class="row mb-3" style="border-bottom: 2px solid; border-color: #8d6fe2;")
-      h1(class="text-primary col-12 text-left")
-        = title
+      h1(class="text-primary col-12 text-left")= title
 
     //- Collection Stats
     if path === "collection"
@@ -149,7 +148,7 @@ block content
         div(class="card shadow rounded")
           div(class="card-body d-flex flex-wrap justify-content-around p-3")
             div(class="dropdown text-center d-none d-md-block")
-              button(class="btn dropdown-toggle btn-outline-primary text-secondary disabled mb-0 viewMenuDropdown" type="button" id="viewMenuDropdown-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-bottom: 2px rgba(219, 158, 251, .75) solid !important;")
+              button(class="btn dropdown-toggle text-secondary disabled mb-0 viewMenuDropdown" type="button" id="viewMenuDropdown-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-bottom: 2px rgba(219, 158, 251, .75) solid !important;")
                 span Icon view
                 div(class="dropdown-menu dropdown-menu-left shadow border-0" aria-labelledby="viewMenuDropdown-lg")
                   a(id="iconViewBtn" class="dropdown-item viewBtn iconViewBtn" role='button' data-viewmode="icon")
