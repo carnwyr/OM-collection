@@ -19,7 +19,14 @@ $(document).ready(function(){
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
 	});
 
-	$("#b2t").on('click', () => $('body,html').animate({ scrollTop: 0 }, 500));
+	var os = getOS();
+	if (os == 'Mac OS' || os == 'Android') {
+		$("#b2t").on('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+	} else {
+		$("#b2t").on('click', () => $('html, body').animate({
+		    scrollTop: 0
+		}, 500));
+	}
 	$(window).scroll(switchBackToTopButton);
 	switchBackToTopButton();
 });
@@ -38,4 +45,27 @@ function switchBackToTopButton() {
 	} else {
 		$("#b2t").fadeOut();
 	}
+}
+
+function getOS() {
+  var userAgent = window.navigator.userAgent,
+      platform = window.navigator.platform,
+      macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K', 'Mac', 'darwin'],
+      windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+      iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+      os = null;
+
+  if (macosPlatforms.indexOf(platform) !== -1) {
+    os = 'Mac OS';
+  } else if (iosPlatforms.indexOf(platform) !== -1) {
+    os = 'iOS';
+  } else if (windowsPlatforms.indexOf(platform) !== -1) {
+    os = 'Windows';
+  } else if (/Android/.test(userAgent)) {
+    os = 'Android';
+  } else if (!os && /Linux/.test(platform)) {
+    os = 'Linux';
+  }
+
+  return os;
 }

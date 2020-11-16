@@ -220,9 +220,14 @@ function scrollToSection(e) {
 		var sectionHeaderOffset = 175;
 	else
 		var sectionHeaderOffset = 150;
-	$('html, body').animate({
-		scrollTop: $(divId).offset().top - sectionHeaderOffset
-	}, 500);
+	var os = getOS();
+	if (os == 'Mac OS' || os == 'Android') {
+		window.scrollTo({top: $(divId).offset().top - sectionHeaderOffset, behavior: 'smooth'});
+	} else {
+		$('html, body').animate({
+		    scrollTop: $(divId).offset().top - sectionHeaderOffset
+		}, 500);
+	}
 }
 
 function switchSelectionMode() {
