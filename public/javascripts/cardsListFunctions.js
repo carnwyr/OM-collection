@@ -14,7 +14,7 @@ $(document).ready(function(){
 	$('.cardPreview>img').on('load', function(){ $(this).addClass('loaded'); });
 	$('.cardPreview>img').each(function(){
 		if (this.complete && this.naturalHeight !== 0){
-			$(this).addClass('loaded'); 
+			$(this).addClass('loaded');
 		}
 	});
 	$(".cardPreview>img").css("transition", "all .5s ease");
@@ -50,22 +50,10 @@ $(document).ready(function(){
 
 	$(window).on('beforeunload', () => {if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?");});
 
-	$('#viewMenuDropdown-lg').hover(function() {
-		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+	$('#viewMenuDropdown, .dropdown-menu').hover(function() {
+		$(this).parent().find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
 	}, function() {
-		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideUp()
-	});
-	$('#viewMenuDropdown-sm').parent().on('show.bs.dropdown', function() {
-	    $(this).find('.dropdown-menu').first().stop(true, true).slideDown(300, function(){
-		  $(this).addClass('show');
-		});
-	});
-	$('#viewMenuDropdown-sm').parent().on('hide.bs.dropdown', function(e) {
-		e.preventDefault();
-	    $(this).find('.dropdown-menu').first().stop(true, true).slideUp(300, function(){
-		  $(this).removeClass('show');
-		  $(this).parent().parent().removeClass('show');
-		});
+		$(this).parent().find('.dropdown-menu').first().stop(true, true).delay(250).slideUp();
 	});
 });
 
@@ -507,7 +495,7 @@ function switchViewOption(changeViewTo) {
 	var cardsToDisplay = $(".cardPreview:visible");
 	viewType = changeViewTo;
 
-	$("#viewMenuDropdown-lg>span,#viewMenuDropdown-sm>span").text(changes[viewType]['dropdownText']);
+	$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);
 	for (var mode in changes) {
 	    if (mode == viewType) {
 	    	$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
