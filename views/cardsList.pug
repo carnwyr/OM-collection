@@ -251,7 +251,6 @@ block content
             if card.type == "Memory"
               a(class="text-center mb-2 mx-1 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
                 img(class="img-fluid w-100" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg" alt=card.uniqueName)
-                p(class='figure-caption') #{card.name})
                 p(class='figure-caption') #{card.name}
 
   script(src="/javascripts/cardsListFunctions.js")
