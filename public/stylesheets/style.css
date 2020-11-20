@@ -1,39 +1,3 @@
-body {
-  padding-top: 70px;
-  background: url("/images/background_sheep.png") fixed;
-}
-
-/* BOOTSTRAP OVERRIDES */
-.bg-primary {
-  background: rgb(219, 158, 251);
-  background: linear-gradient(
-    240deg,
-    rgba(219, 158, 251, 1) 0%,
-    rgba(141, 111, 226, 1) 100%
-  );
-}
-.card {
-  border: 0px;
-}
-.card-header {
-  border: 0px;
-}
-.alert {
-  z-index: 9999 !important;
-}
-.navbar {
-  z-index: 6000 !important;
-}
-
-/* HEADER */
-.navbar-brand {
-  padding-top: 0.15rem;
-}
-
-.dropdown-item:active {
-    background-color: #efd1ff;
-}
-
 /* FOOTER */
 .site-footer {
   padding: 18px 0 8px;
@@ -71,10 +35,6 @@ body {
 }
 
 /* MISC */
-.navbar-toggler {
-   outline: none !important;
-}
-
 #cookieToast {
   position: fixed;
   bottom: calc(100% - (100% - 100px));

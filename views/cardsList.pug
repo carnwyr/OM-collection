@@ -22,7 +22,7 @@ block content
   div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
 
   //- share collection
-  div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true" style="padding-top:128px;")
+  div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
     div(class="modal-dialog modal-lg" role="document")
       div(class="modal-content")
         div(class="modal-header")
@@ -135,8 +135,8 @@ block content
             span(class="d-sm-none") Memory
         div(class='d-lg-none' style='flex-basis: 100%; height: 0;')
         div(class="btn-group d-none mr-2" id="selectionButtons")
-          button(class="btn btn-secondary text-white mb-md-0" id="deselectAll") Deselect all
-          button(class="btn btn-secondary text-white mb-md-0" id="selectAll") Select all
+          button(class="btn btn-secondary mb-md-0" id="deselectAll") Deselect all
+          button(class="btn btn-secondary mb-md-0" id="selectAll") Select all
         div(class="btn-group d-none" id="manageButtons")
           button(class="btn btn-primary mb-md-0" id="cancelManaging") Cancel
           button(class="btn btn-primary mb-md-0" id="saveManaging") Save
@@ -150,7 +150,7 @@ block content
             div(class="dropdown text-center")
               button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
                 span Icon view
-              div(class="dropdown-menu shadow border-0" aria-labelledby="viewMenuDropdown")
+              div(class="dropdown-menu shadow" aria-labelledby="viewMenuDropdown")
                 a(id="iconViewBtn" class="dropdown-item viewBtn iconViewBtn" role='button' data-viewmode="icon")
                   span.font-weight-bold.text-primary Icon view
                 div(class="dropdown-divider")
@@ -165,7 +165,7 @@ block content
                 input(type="text" class="form-control text-primary bg-transparent pl-0" id="nameFilter" placeholder="Search for card name..." style = "border: 0px;")
             div(class="mx-auto text-center")
               span(class="mb-1 mb-md-0 d-flex d-sm-inline-flex")
-                button(id="expandFilters" class="btn btn-primary bg-secondary border-secondary text-white btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 104px") Filters
+                button(id="expandFilters" class="btn btn-secondary btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 104px") Filters
                 button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill mb-0" style="width: 104px") Reset filters
 
     div(id="filters" class="row text-left collapse")

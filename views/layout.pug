@@ -14,8 +14,8 @@ html(lang='en-US')
       meta(property="og:image" content="https://karasu-os.com/images/karasu.png")
     link(rel="icon" type="image/png" href="/images/favicon.png")
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/theme_1597782929390.css')
-    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Kanit')
+    link(rel='stylesheet', href='/stylesheets/theme.css')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Kanit|Nunito:wght@200;300;400;700')
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
     script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
@@ -49,12 +49,12 @@ html(lang='en-US')
           //-
               li(class="nav-item dropdown")
                 a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
-                div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="toolsDropdown")
+                div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
                   a(class="nav-link text-dark", href='/surprise_guest') Surprise Guest
           if user && user.isAdmin
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
-              div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="adminDropdownButton")
+              div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="adminDropdownButton")
                 a(class="nav-link dropdown-item", href='/card/new')
                   span(class="text-dark") Add new card
                 a(class="nav-link dropdown-item", href='/hiddenCards')
@@ -80,7 +80,7 @@ html(lang='en-US')
           if user
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link text-white" role='button' id='accountDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Account
-              div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="accountDropdownButton")
+              div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="accountDropdownButton")
                 a(class="nav-link dropdown-item", href='/user/'+user.name)
                   span(class="text-dark") Settings&nbsp;
                   if !user.email
