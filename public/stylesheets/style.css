@@ -37,7 +37,7 @@
 /* MISC */
 #cookieToast {
   position: fixed;
-  bottom: calc(100% - (100% - 100px));
+  bottom: 32px;
   left: 18px;
   z-index: 9999;
 }
@@ -61,4 +61,12 @@
 }
 .collapser[aria-expanded="false"]>.chevron {
   transform: scaleY(-1);
+}
+
+.supportBtn {
+  background-color: #FFDD00;
+  color: black;
+}
+.supportBtn:hover {
+  box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
 }

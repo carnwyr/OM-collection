@@ -22,8 +22,6 @@ html(lang='en-US')
     script(src='/javascripts/commonFunctions.js')
     <script data-ad-client="ca-pub-1710157662563352" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164556626-4"></script>
-    //- BMC seems flipped. Instead of showing message on hover, it's now showing the message every time page is loaded. Fix: temporarily replace with a shorter msg. "Thank you for visiting. Join the effort to keep Karasu OS alive! :D"
-    <script data-name="BMC-Widget" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="karasuos" data-description="Support Karasu OS on Buy me a coffee!" data-message="Thanks for visiting :)" data-color="#B3E5FC" data-position="left" data-x_margin="18" data-y_margin="32"></script>
     script.
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -109,10 +107,11 @@ html(lang='en-US')
         div(class="shadow text-primary text-center" id="b2t" type="button" title="Go to Top" style="display:none;")
           div
             <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
-      div.col-12.text-center.my-3
-        <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        script.
-          (adsbygoogle = window.adsbygoogle || []).push({});
+      div.container
+        div#ads.text-center.my-3
+          <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins>
+          script.
+            (adsbygoogle = window.adsbygoogle || []).push({});
 
     block footer
       footer(class="site-footer bg-primary navbar-dark mt-auto")
