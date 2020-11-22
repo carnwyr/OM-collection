@@ -172,8 +172,8 @@ function filterCardsToDisplay(cards, filters, search) {
 			cards = $(cards).filter(filters[key]);
 	});
 	if (search != "") {
-		cards =$(cards).filter(function() {
-			var cardName = $(this).find(".figure-caption").text();
+		cards = $(cards).filter(function() {
+			var cardName = $(this).find("figcaption").text();
 			return cardName.toLowerCase().includes(search.toLowerCase());
 		});
 	}

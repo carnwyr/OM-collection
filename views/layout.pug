@@ -108,12 +108,12 @@ html(lang='en-US')
           div
             <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
       div.container
-        div#ads.text-center.my-3
+        div.ad-container.text-center.my-3
           <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins>
           script.
             (adsbygoogle = window.adsbygoogle || []).push({});
             if (window.location.pathname !== "/" && adsbygoogle.length === 1) {
-              $("#ads").append(`<div class="card card-body"><p class="col-md-8 mx-auto my-5">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.<br><br><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></p></div>`);
+              $(".ad-container").append(`<div class="card card-body"><p class="col-md-8 mx-auto my-5">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.<br><br><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></p></div>`);
             }
 
     block footer
