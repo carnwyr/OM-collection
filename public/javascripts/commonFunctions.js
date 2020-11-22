@@ -30,9 +30,11 @@ $(document).ready(function(){
 	$(window).scroll(switchBackToTopButton);
 	switchBackToTopButton();
 
-	if (window.location.pathname !== "/" && $(".adsbygoogle").height() === 0) {
-  	$("#ads").append(`<div class="card card-body"><p class="col-md-8 mx-auto my-5">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.<br><br><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></p></div>`)
-  }
+	setTimeout(() => {
+		if (window.location.pathname !== "/" && $(".adsbygoogle").height() === 0) {
+  		$("#ads").append(`<div class="card card-body"><p class="col-md-8 mx-auto my-5">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.<br><br><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></p></div>`).hide().fadeIn();
+  	}
+	}, 1600);
 });
 
 var cookieExpiryDate = () => {
