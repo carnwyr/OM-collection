@@ -39,7 +39,7 @@
   position: fixed;
   bottom: 32px;
   left: 18px;
-  z-index: 9999;
+  z-index: 999;
 }
 
 #b2t {
