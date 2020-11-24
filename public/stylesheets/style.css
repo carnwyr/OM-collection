@@ -39,7 +39,8 @@
   position: fixed;
   bottom: 32px;
   left: 18px;
-  z-index: 999;
+  z-index: 1030;
+  transition: 0.3s;
 }
 
 #b2t {
@@ -48,7 +49,7 @@
   position: fixed;
   bottom: 32px;
   right: 18px;
-  z-index: 9999;
+  z-index: 1030;
   border-radius: 50%;
   background-color: white;
   width: 64px;

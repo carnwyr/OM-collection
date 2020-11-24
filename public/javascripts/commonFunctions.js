@@ -42,8 +42,10 @@ var cookieExpiryDate = () => {
 function switchBackToTopButton() {
 	if ($(window).scrollTop() > 64) {
 		$("#b2t").fadeIn();
+		$("#cookieToast").css("transform", "translate(0, -64px)");
 	} else {
 		$("#b2t").fadeOut();
+		$("#cookieToast").css("transform", "");
 	}
 }
 
