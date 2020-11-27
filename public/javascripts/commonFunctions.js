@@ -28,8 +28,15 @@ $(document).ready(function(){
 		}, 500));
 	}
 	$(window).scroll(switchBackToTopButton);
-	switchBackToTopButton();
+	switchBackToTopButton(); // is there a reason for this?
 });
+
+
+$(window).on("load", () => {
+	if (window.location.pathname !== "/" && JSON.stringify(adsbygoogle) !== `{"loaded":true}`) {
+		$(".ad-container").append(`<div class="card card-body"><p class="col-md-8 mx-auto my-5">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment. <br><br><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></p></div>`);
+	}
+}
 
 var cookieExpiryDate = () => {
 	var d = new Date();
