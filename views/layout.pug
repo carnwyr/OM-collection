@@ -117,6 +117,9 @@ html(lang='en-US')
           <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins>
           script.
             (adsbygoogle = window.adsbygoogle || []).push({});
+            if (window.location.pathname !== "/" && JSON.stringify(adsbygoogle) !== `{"loaded":true}`) {
+              $(".ad-container").append(`<div class="card card-body"><p class="col-md-8 mx-auto my-5">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment. <br><br><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></p></div>`);
+            }
 
     block footer
       footer(class="site-footer bg-primary navbar-dark mt-auto")
