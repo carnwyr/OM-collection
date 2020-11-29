@@ -55,6 +55,9 @@ body {
   z-index: 1030;
   transition: 0.3s;
 }
+#cookieToast button {
+  border-radius: 4px;
+}
 
 #b2t {
   display: inline-block;
