@@ -1,3 +1,16 @@
+body {
+  padding-top: 70px;
+  background: url("/images/background_sheep.png") fixed;
+}
+/* HEADER */
+.navbar-brand {
+  padding-top: 0.15rem;
+}
+
+.dropdown-item:active {
+    background-color: #efd1ff;
+}
+
 /* FOOTER */
 .site-footer {
   padding: 18px 0 8px;
