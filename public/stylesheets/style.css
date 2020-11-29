@@ -8,7 +8,7 @@ body {
 }
 
 .dropdown-item:active {
-    background-color: #efd1ff;
+  background-color: #efd1ff;
 }
 
 /* FOOTER */
@@ -60,7 +60,9 @@ body {
 }
 
 #b2t {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   position: fixed;
   bottom: 32px;
@@ -70,7 +72,7 @@ body {
   background-color: white;
   width: 64px;
   height: 64px;
-  padding-top: 16px;
+  -webkit-appearance: none;
 }
 
 .collapser>.chevron{
