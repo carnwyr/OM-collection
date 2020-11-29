@@ -6,10 +6,6 @@ html(lang='en-US')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     meta(name="description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
     meta(name="keywords" content="Obey Me, おべいみー, cards, tools")
-    meta(property="twitter:card" content="summary")
-    meta(property="twitter:site" content="https://karasu-os.com")
-    meta(property="twitter:title" content=title)
-    meta(property="twitter:description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
     meta(property="og:title" content=title)
     meta(property="og:description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
     if card
@@ -18,8 +14,8 @@ html(lang='en-US')
       meta(property="og:image" content="https://karasu-os.com/images/karasu.png")
     link(rel="icon" type="image/png" href="/images/favicon.png")
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/theme_1597782929390.css')
-    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Kanit')
+    link(rel='stylesheet', href='/stylesheets/theme.css')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Kanit|Nunito:wght@200;300;400;700')
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
     script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
@@ -27,7 +23,6 @@ html(lang='en-US')
     script(src='/javascripts/commonFunctions.js')
     <script data-ad-client="ca-pub-1710157662563352" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" onerror="document.dispatchEvent(new CustomEvent('adBlocked'));"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164556626-4"></script>
-    <script data-name="BMC-Widget" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="karasuos" data-description="Support Karasu OS on Buy me a coffee!" data-message="Thank you for visiting. Join the effort to keep Karasu OS alive! :D" data-color="#B3E5FC" data-position="left" data-x_margin="18" data-y_margin="32"></script>
     script.
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -52,12 +47,12 @@ html(lang='en-US')
           //-
               li(class="nav-item dropdown")
                 a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
-                div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="toolsDropdown")
+                div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
                   a(class="nav-link text-dark", href='/surprise_guest') Surprise Guest
           if user && user.isAdmin
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
-              div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="adminDropdownButton")
+              div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="adminDropdownButton")
                 a(class="nav-link dropdown-item", href='/card/new')
                   span(class="text-dark") Add new card
                 a(class="nav-link dropdown-item", href='/hiddenCards')
@@ -83,7 +78,7 @@ html(lang='en-US')
           if user
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link text-white" role='button' id='accountDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Account
-              div(class="dropdown-menu dropdown-menu-right shadow border-0 px-2" aria-labelledby="accountDropdownButton")
+              div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="accountDropdownButton")
                 a(class="nav-link dropdown-item", href='/user/'+user.name)
                   span(class="text-dark") Settings&nbsp;
                   if !user.email
@@ -117,7 +112,6 @@ html(lang='en-US')
           <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins>
           script.
             (adsbygoogle = window.adsbygoogle || []).push({});
-
     block footer
       footer(class="site-footer bg-primary navbar-dark mt-5")
         div.container

@@ -2,29 +2,6 @@ body {
   padding-top: 70px;
   background: url("/images/background_sheep.png") fixed;
 }
-
-/* BOOTSTRAP OVERRIDES */
-.bg-primary {
-  background: rgb(219, 158, 251);
-  background: linear-gradient(
-    240deg,
-    rgba(219, 158, 251, 1) 0%,
-    rgba(141, 111, 226, 1) 100%
-  );
-}
-.card {
-  border: 0px;
-}
-.card-header {
-  border: 0px;
-}
-.alert {
-  z-index: 9999 !important;
-}
-.navbar {
-  z-index: 6000 !important;
-}
-
 /* HEADER */
 .navbar-brand {
   padding-top: 0.15rem;
@@ -71,15 +48,12 @@ body {
 }
 
 /* MISC */
-.navbar-toggler {
-   outline: none !important;
-}
-
 #cookieToast {
   position: fixed;
-  bottom: calc(100% - (100% - 100px));
+  bottom: 32px;
   left: 18px;
-  z-index: 9999;
+  z-index: 1030;
+  transition: 0.3s;
 }
 
 #b2t {
@@ -88,7 +62,7 @@ body {
   position: fixed;
   bottom: 32px;
   right: 18px;
-  z-index: 9999;
+  z-index: 1030;
   border-radius: 50%;
   background-color: white;
   width: 64px;
@@ -101,4 +75,12 @@ body {
 }
 .collapser[aria-expanded="false"]>.chevron {
   transform: scaleY(-1);
+}
+
+.supportBtn {
+  background-color: #FFDD00;
+  color: black;
+}
+.supportBtn:hover {
+  box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
 }
