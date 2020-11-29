@@ -71,6 +71,7 @@ exports.cardDetail = function(req, res, next) {
 				return next(err);
 			}
 		} else {
+			hasCard = false;
 			if (req.user) {
 				var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
 				if (err) { return next(err); }
