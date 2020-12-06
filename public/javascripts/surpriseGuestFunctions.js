@@ -14,6 +14,11 @@ $(document).ready(function() {
 		$("#useItems").prop('checked', true);
 	}
 
+	$("#characterSelect").change(function() {
+		$('.tab-pane').removeClass('show active');
+		$('#'+this.value).tab('show');
+	});
+
 	$("#shortActions").click(() => enableOptions(false));
 	$("#allActions").click(() => enableOptions(true));
 	$("#useItems").click(() => enableItemOptions($("#useItems").is(":checked")));

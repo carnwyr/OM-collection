@@ -12,15 +12,17 @@ mixin getActions(step)
     - option = option.charAt(0).toUpperCase() + option.slice(1);
     - options += option;
     - i++;
-  td.align-middle !{options}
+  td.align-middle.py-1.py-sm-3.px-0.px-sm-3.d-none.d-sm-table-cell !{options}
+  td.align-middle.py-1.py-sm-3.px-0.px-sm-3.small.d-sm-none !{options}
 
 block content
   .container
     .row.mb-4
       .col-12
-        h1.text-primary.pb-2(style="border-bottom: 2px solid; border-color: #8d6fe2;") Surprise Guest Interactions
+        h1.text-primary.pb-2.d-none.d-sm-block(style="border-bottom: 2px solid; border-color: #8d6fe2;") Surprise Guest Interactions
+        h1.text-primary.pb-2.d-sm-none.text-center(style="border-bottom: 2px solid; border-color: #8d6fe2;") Surprise Guest
       .col-12.mt-2
-        .card.card-body.shadow.rounded
+        .card.card-body.shadow.rounded.pb-3
           .lineHeader.h5.text-primary Settings
           #settings.mx-auto.collapse.hide
             .custom-control.custom-radio.custom-control-inline.text-center
@@ -29,7 +31,7 @@ block content
             .custom-control.custom-radio.custom-control-inline.text-center
               input.custom-control-input(type="radio" id="allActions" name="optionsSwitch")
               label.custom-control-label(for="allActions") Show alternative options
-            .custom-control.custom-checkbox.mt-2.mb-1.text-center
+            .custom-control.custom-checkbox.mt-2.mb-1.text-md-center
               input.custom-control-input(type="checkbox" id="useItems")
               label.custom-control-label(for="useItems") Use items
           .text-center
@@ -42,14 +44,18 @@ block content
       .col-12.my-2
         .card.card-body.shadow.rounded
           .row
-            .col-3
+            .col-3.d-none.d-md-block
               .nav.flex-column.nav-pills.mb-2(role='tablist' aria-orientation="vertical")
                 each interaction, i in interactions
-                  a(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'Pill' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara aria-selected="true")
+                  a.px-1.px-sm-2.px-lg-3(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'Pill' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
                     span
                       img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='max-width: 30px; width:100%;')
                       | #{interaction.chara}
-            .col-9
+            .col-12.d-md-none
+              select.custom-select.mb-3#characterSelect
+                each interaction, i in interactions
+                  option(value=interaction.chara selected=i===0) #{interaction.chara}
+            .col-12.col-md-9
               .tab-content
                 each interaction, i in interactions
                   div(class="tab-pane fade"+(i===0?" show active":"") id=interaction.chara role='tabpanel' aria-labelledby=interaction.chara+'Pill')
@@ -57,40 +63,52 @@ block content
                       table.table
                         thead.text-primary
                           tr
-                            th.bg-secondary.text-white.border-secondary(colspan='4')
+                            th.bg-secondary.text-white.border-secondary.py-2.py-md-3(colspan='4')
                               .row.w-100.align-items-center.mx-0
-                                .col-10.text-left.px-0.h5.align-middle.mb-0
+                                .col-10.text-left.px-0.h5.align-middle.mb-0.d-none.d-md-block
                                   | #{meet.phrase}
-                                .col-2.text-right.px-0.h6.align-middle.mb-0
+                                .col-2.text-right.px-0.h6.align-middle.mb-0.d-none.d-md-block
+                                  | #{meet.condition}
+                                .col-12.text-center.px-0.h6.align-middle.mb-0.d-md-none
+                                  | #{meet.phrase}
+                                .col-12.text-center.px-0.small.align-middle.mb-0.d-md-none
                                   | #{meet.condition}
                         tbody
                           tr.text-primary.text-center
-                            th.h6(style='width: 30%') Action 1
-                            th.h6(style='width: 30%') Action 2
-                            th.h6(style='width: 30%') Action 3
-                            th.h6(style='width: 10%') Points
+                            th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: 30%') Action 1
+                            th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: 30%') Action 2
+                            th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: 30%') Action 3
+                            th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: 10%') Points
+                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%') Action 1
+                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%') Action 2
+                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%') Action 3
+                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 10%') Points
                           tr.text-dark.text-center.moves
                             +getActions(meet.allInteractions.first)
                             +getActions(meet.allInteractions.second)
                             +getActions(meet.allInteractions.third)
-                            td.align-middle +#{meet.allInteractions.points}
+                            td.align-middle.d-none.d-sm-table-cell +#{meet.allInteractions.points}
+                            td.align-middle.small.d-sm-none +#{meet.allInteractions.points}
                           tr.text-dark.text-center.movesShort
                             +getActions([meet.allInteractionsShort.first])
                             +getActions([meet.allInteractionsShort.second])
                             +getActions([meet.allInteractionsShort.third])
-                            td.align-middle +#{meet.allInteractionsShort.points}
+                            td.align-middle.d-none.d-sm-table-cell +#{meet.allInteractionsShort.points}
+                            td.align-middle.small.d-sm-none +#{meet.allInteractionsShort.points}
                           if meet.itemInteractions
                             tr.text-dark.text-center.items
                               +getActions(meet.itemInteractions.first)
                               +getActions(meet.itemInteractions.second)
                               +getActions(meet.itemInteractions.third)
-                              td.align-middle +#{meet.itemInteractions.points}
+                              td.align-middle.d-none.d-sm-table-cell +#{meet.itemInteractions.points}
+                              td.align-middle.small.d-sm-none +#{meet.itemInteractions.points}
                           if meet.itemInteractionsShort
                             tr.text-dark.text-center.itemsShort
                               +getActions([meet.itemInteractionsShort.first])
                               +getActions([meet.itemInteractionsShort.second])
                               +getActions([meet.itemInteractionsShort.third])
-                              td.align-middle +#{meet.itemInteractionsShort.points}
+                              td.align-middle.d-none.d-sm-table-cell +#{meet.itemInteractionsShort.points}
+                              td.align-middle.small.d-sm-none +#{meet.itemInteractionsShort.points}
 
   style.
     .nav-pills .nav-item.active:not(:last-child) {
@@ -102,5 +120,16 @@ block content
     }
     *[aria-expanded="false"]>.chevron {
       transform: scaleY(-1);
+    }
+    #characterSelect {
+      background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23ffffff' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px, var(--primary) !important;
+      color: white !important;
+      border: 0 !important;
+      text-align: center !important;
+      text-align-last: center !important;
+    }
+    #characterSelect option {
+      background: white;
+      color: var(--dark);
     }
   script(src="/javascripts/surpriseGuestFunctions.js")
