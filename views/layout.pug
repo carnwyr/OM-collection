@@ -44,19 +44,16 @@ html(lang='en-US')
           if user
             li(class="nav-item")
               a(class="nav-link", href='/' + user.name + '/collection') My collection
-          //-
-              li(class="nav-item dropdown")
-                a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
-                div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
-                  a(class="nav-link text-dark", href='/surprise_guest') Surprise Guest
+          li(class="nav-item dropdown")
+            a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
+            div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
+              a(class="nav-link text-dark dropdown-item", href='/surpriseGuest') Surprise Guest
           if user && user.isAdmin
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
               div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="adminDropdownButton")
-                a(class="nav-link dropdown-item", href='/card/new')
-                  span(class="text-dark") Add new card
-                a(class="nav-link dropdown-item", href='/hiddenCards')
-                  span(class="text-dark") Hidden cards
+                a(class="nav-link dropdown-item text-dark", href='/card/new') Add new card
+                a(class="nav-link dropdown-item text-dark", href='/hiddenCards') Hidden cards
             li(class="nav-item d-md-none")
               a(class="nav-link", href='/card/new') Add new card
             li(class="nav-item d-md-none")

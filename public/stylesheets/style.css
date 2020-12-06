@@ -89,3 +89,29 @@ body {
 .supportBtn:hover {
   box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
 }
+
+.lineHeader {
+  overflow: hidden;
+  text-align: center;
+}
+
+.lineHeader:before,
+.lineHeader:after {
+  background-color: var(--secondary);
+  content: "";
+  display: inline-block;
+  height: 2px;
+  position: relative;
+  vertical-align: middle;
+  width: 50%;
+}
+
+.lineHeader:before {
+  right: 0.6em;
+  margin-left: -50%;
+}
+
+.lineHeader:after {
+  left: 0.6em;
+  margin-right: -50%;
+}
