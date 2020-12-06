@@ -1,10 +1,14 @@
 $(document).ready(function() {
-	if (document.cookie.split('; ').find(row => row.startsWith("acceptedCookies"))) {
-		multipleOptions = document.cookie.split('; ').find(row => row.startsWith("sgpMultipleOptions"));
-		multipleOptions = multipleOptions ? multipleOptions.split("=")[1] === 'true' : false;
-		useItems = document.cookie.split('; ').find(row => row.startsWith("sgpUseItems"))
-		useItems = useItems ? useItems.split("=")[1] === 'true' : false;
+	multipleOptions = document.cookie.split('; ').find(row => row.startsWith("sgpMultipleOptions"));
+	if (multipleOptions) {
+		multipleOptions.split("=")[1] === 'true';
+	} else {
+		$('#settings').toggle();
+		multipleOptions = false;
 	}
+	useItems = document.cookie.split('; ').find(row => row.startsWith("sgpUseItems"))
+	useItems = useItems ? useItems.split("=")[1] === 'true' : false;
+
 	if (multipleOptions) {
 		$("#allActions").prop('checked', true);
 	} else {
@@ -13,11 +17,6 @@ $(document).ready(function() {
 	if (useItems) {
 		$("#useItems").prop('checked', true);
 	}
-
-	$("#characterSelect").change(function() {
-		$('.tab-pane').removeClass('show active');
-		$('#'+this.value).tab('show');
-	});
 
 	$("#shortActions").click(() => enableOptions(false));
 	$("#allActions").click(() => enableOptions(true));

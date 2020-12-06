@@ -22,8 +22,8 @@ block content
         h1.text-primary.pb-2.d-none.d-sm-block(style="border-bottom: 2px solid; border-color: #8d6fe2;") Surprise Guest Interactions
         h1.text-primary.pb-2.d-sm-none.text-center(style="border-bottom: 2px solid; border-color: #8d6fe2;") Surprise Guest
       .col-12.mt-2
-        .card.card-body.shadow.rounded.pb-3
-          .lineHeader.h5.text-primary Settings
+        .card.card-body.shadow.rounded.pb-2.pt-3
+          .lineHeader.h5.text-primary.mb-0 Settings
           #settings.mx-auto.collapse.hide
             .custom-control.custom-radio.custom-control-inline.text-center
               input.custom-control-input(type="radio" id="shortActions" name="optionsSwitch")
@@ -45,16 +45,18 @@ block content
         .card.card-body.shadow.rounded
           .row
             .col-3.d-none.d-md-block
-              .nav.flex-column.nav-pills.mb-2(role='tablist' aria-orientation="vertical")
+              .nav.flex-column.nav-pills.mb-2.big-nav(role='tablist' aria-orientation="vertical")
                 each interaction, i in interactions
                   a.px-1.px-sm-2.px-lg-3(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'Pill' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
                     span
                       img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='max-width: 30px; width:100%;')
                       | #{interaction.chara}
-            .col-12.d-md-none
-              select.custom-select.mb-3#characterSelect
+            .col-12.d-md-none.mb-3
+              .nav.nav-pills.justify-content-center(role='tablist')
                 each interaction, i in interactions
-                  option(value=interaction.chara selected=i===0) #{interaction.chara}
+                  a.p-1.mx-1(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'PillSmall' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
+                    span
+                      img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='max-width: 40px; width:100%;')
             .col-12.col-md-9
               .tab-content
                 each interaction, i in interactions
@@ -63,7 +65,7 @@ block content
                       table.table
                         thead.text-primary
                           tr
-                            th.bg-secondary.text-white.border-secondary.py-2.py-md-3(colspan='4')
+                            th.bg-secondary.text-white.border-secondary.py-2.py-md-3.rounded-sm(colspan='4')
                               .row.w-100.align-items-center.mx-0
                                 .col-10.text-left.px-0.h5.align-middle.mb-0.d-none.d-md-block
                                   | #{meet.phrase}
@@ -111,25 +113,17 @@ block content
                               td.align-middle.small.d-sm-none +#{meet.itemInteractionsShort.points}
 
   style.
-    .nav-pills .nav-item.active:not(:last-child) {
+    .big-nav .nav-item.active:not(:last-child) {
       border-bottom: 1px solid var(--primary);
     }
-    .nav-pills .nav-item:not(.active):not(:last-child) {
+    .big-nav .nav-item:not(.active):not(:last-child) {
       border-bottom: 1px solid #dee2e6;
       border-radius: 0;
     }
     *[aria-expanded="false"]>.chevron {
       transform: scaleY(-1);
     }
-    #characterSelect {
-      background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23ffffff' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px, var(--primary) !important;
-      color: white !important;
+    th {
       border: 0 !important;
-      text-align: center !important;
-      text-align-last: center !important;
-    }
-    #characterSelect option {
-      background: white;
-      color: var(--dark);
     }
   script(src="/javascripts/surpriseGuestFunctions.js")
