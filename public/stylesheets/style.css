@@ -7,10 +7,6 @@ body {
   padding-top: 0.15rem;
 }
 
-.dropdown-item:active {
-  background-color: #efd1ff;
-}
-
 /* FOOTER */
 .site-footer {
   padding: 18px 0 8px;
