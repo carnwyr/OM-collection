@@ -12,12 +12,11 @@ var currentView = "icon";
 
 $(document).ready(function(){
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
-
-	// $('.cardPreview>img').each(function(){
-	// 	if (this.complete && this.naturalHeight !== 0){
-	// 		$(this).removeClass('lazy');
-	// 	}
-	// });
+	$("img.lazy").each(function(){
+		if (this.complete && this.naturalHeight !== 0){
+			$(this).removeClass("lazy");
+		}
+	});
 
 	resetFilters();
 	$("form :input").on('click', formChanged);
@@ -207,7 +206,7 @@ function scrollToSection(e) {
 	else
 		var sectionHeaderOffset = 150;
 
-	window.scrollTo({top: $(divId).offset().top - sectionHeaderOffset});
+	$('html, body').animate({scrollTop:$(divId).offset().top - sectionHeaderOffset}, 500);
 }
 
 function switchSelectionMode() {
@@ -215,7 +214,7 @@ function switchSelectionMode() {
 		$.ajax({
 			type: 'get',
 			url: '/collection/getOwnedCards',
-      cache: false
+			cache: false
 		})
 		.done(function(cardNames){
 			selectionMode = true;
@@ -229,7 +228,7 @@ function switchSelectionMode() {
 				url: '/collection/updateOwnedCards',
 				contentType: 'application/json',
 				data: JSON.stringify({changedCards: changedCards}),
-        cache: false
+				cache: false
 			})
 			.done(function(result){
 				if (result === 'error') {
@@ -374,7 +373,7 @@ function loadStatsImage(e) {
 		type: 'post',
 		url: './getStatsImage',
 		data: {html: html},
-        cache: false
+		cache: false
 	})
 	.done(function(imageData){
 		spinner.hide();
