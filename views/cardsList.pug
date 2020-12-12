@@ -52,7 +52,7 @@ block content
     //- Collection Stats
     if path === "collection"
       - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
-      div.card.rounded.shadow.mb-3(id='statsCard')
+      div.card.shadow.mb-3(id='statsCard')
         div.card-body
           div.row
             div.col-12.col-lg-4.container.text-center(id='statsTotal')
@@ -127,7 +127,7 @@ block content
               div.small.text-muted.mt-3 Percentage is calculated based on the entire collection (both demon and memory cards).
 
     //- Card Navigation
-    div(class="card sticky-top sticky-offset mb-3 shadow rounded fixedStyle")
+    div(class="card sticky-top sticky-offset mb-3 shadow")
       div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
         div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
@@ -149,7 +149,7 @@ block content
 
     div(id="searchBar" class="row text-left mb-3")
       div(class="col-12")
-        div(class="card shadow rounded")
+        div(class="card shadow")
           div(class="card-body d-flex flex-wrap justify-content-around p-3")
             div(class="dropdown text-center")
               button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
@@ -174,7 +174,7 @@ block content
 
     div(id="filters" class="row text-left collapse")
       div.col-12.col-md-6.pr-md-1.mb-2
-        div(id="rarityFilter" class="card mb-2 shadow rounded" style="border-left: 4px solid #8B9AF0;")
+        div(id="rarityFilter" class="card mb-2 shadow" style="border-left: 4px solid #8B9AF0;")
           div(class="card-header pb-0") Rarity
           div(class="card-body")
             form(id="rarityForm")
@@ -191,7 +191,7 @@ block content
                   div(class="custom-control custom-checkbox col-1")
                     input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
                     label(class="custom-control-label" for="checkRarityUR+") UR+
-        div(id="attributeFilter" class="card shadow rounded" style="border-left: 4px solid #F06292;")
+        div(id="attributeFilter" class="card shadow" style="border-left: 4px solid #F06292;")
           div(class="card-header pb-0") Attribute
           div(class="card-body")
             form(id="attributeForm")
@@ -209,7 +209,7 @@ block content
                     input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
                     label(class="custom-control-label" for="checkAttributeSloth") Sloth
       div.col-12.col-md-6.pl-md-1.mb-2
-        div(id="characterFilter" class="card shadow rounded h-100" style="border-left: 4px solid #C297EC;")
+        div(id="characterFilter" class="card shadow h-100" style="border-left: 4px solid #C297EC;")
           div(class="card-header") Character
           div(class="card-body")
             form(id="characterForm")

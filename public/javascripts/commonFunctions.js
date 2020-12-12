@@ -29,7 +29,7 @@ $(document).on("adBlocked", () => { adBlock = true; });
 
 $(window).on("load", () => {
 	if (window.location.pathname !== "/" && adBlock === true) {
-		$(".ad-container").append(`<div class="card card-body"><p class="col-md-8 mx-auto my-5">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment. <br><br><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></p></div>`);
+		$(".ad-container").append(`<div class="card"><div class="card-body col-md-8 mx-auto my-4"><h5 class="card-title">Using an ad-blocker?</h5><p class="card-text">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.</p><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></div></div>`);
 	};
 })
 
