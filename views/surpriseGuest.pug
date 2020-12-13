@@ -35,7 +35,7 @@ block content
               input.custom-control-input(type="checkbox" id="useItems")
               label.custom-control-label(for="useItems") Use items
           .text-center
-            a(class="text-secondary" id="settingsCollapser" data-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings")
+            a(class="text-secondary collapser" id="settingsCollapser" data-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings")
               |
               |
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
@@ -65,7 +65,7 @@ block content
                       table.table
                         thead.text-primary
                           tr
-                            th.bg-secondary.text-white.border-secondary.py-2.py-md-3.rounded-sm(colspan='4')
+                            th.bg-secondary.text-white.py-2.py-md-3.rounded-sm(colspan='4')
                               .row.w-100.align-items-center.mx-0
                                 .col-10.text-left.px-0.h5.align-middle.mb-0.d-none.d-md-block
                                   | #{meet.phrase}
@@ -111,19 +111,5 @@ block content
                               +getActions([meet.itemInteractionsShort.third])
                               td.align-middle.d-none.d-sm-table-cell +#{meet.itemInteractionsShort.points}
                               td.align-middle.small.d-sm-none +#{meet.itemInteractionsShort.points}
-
-  style.
-    .big-nav .nav-item.active:not(:last-child) {
-      border-bottom: 1px solid var(--primary);
-    }
-    .big-nav .nav-item:not(.active):not(:last-child) {
-      border-bottom: 1px solid #dee2e6;
-      border-radius: 0;
-    }
-    *[aria-expanded="false"]>.chevron {
-      transform: scaleY(-1);
-    }
-    th {
-      border: 0 !important;
-    }
+  link(rel="stylesheet" href="/stylesheets/spg.css")
   script(src="/javascripts/surpriseGuestFunctions.js")

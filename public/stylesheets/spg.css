@@ -1,0 +1,88 @@
+.lineHeader {
+  overflow: hidden;
+  text-align: center;
+}
+
+.lineHeader:before,
+.lineHeader:after {
+  background-color: var(--secondary);
+  content: "";
+  display: inline-block;
+  height: 2px;
+  position: relative;
+  vertical-align: middle;
+  width: 50%;
+}
+
+.lineHeader:before {
+  right: 0.6em;
+  margin-left: -50%;
+}
+
+.lineHeader:after {
+  left: 0.6em;
+  margin-right: -50%;
+}
+
+th {
+  font-weight: normal;
+  border: 0;
+}
+
+.big-nav .nav-item.active:not(:last-child) {
+  border-bottom: 1px solid transparent;
+}
+.nav-item:not(.active):not(:last-child) {
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+}
+.big-nav .nav-item:not(.active):not(:last-child) {
+  border-bottom: 1px solid #dee2e6;
+}
+#LuciferPill.active, #LuciferPillSmall.active {
+  background-color: var(--lucifer);
+  border-bottom: 1px solid var(--lucifer);
+}
+#MammonPill.active, #MammonPillSmall.active {
+  background-color: var(--mammon);
+  border-bottom: 1px solid var(--mammon);
+}
+#LeviathanPill.active, #LeviathanPillSmall.active {
+  background-color: var(--leviathan);
+  border-bottom: 1px solid var(--leviathan);
+}
+#SatanPill.active, #SatanPillSmall.active {
+  background-color: var(--satan);
+  border-bottom: 1px solid var(--satan);
+}
+#AsmodeusPill.active, #AsmodeusPillSmall.active {
+  background-color: var(--asmodeus);
+  border-bottom: 1px solid var(--asmodeus);
+}
+#BeelzebubPill.active, #BeelzebubPillSmall.active {
+  background-color: var(--beelzebub);
+  border-bottom: 1px solid var(--beelzebub);
+}
+#BelphegorPill.active, #BelphegorPillSmall.active {
+  background-color: var(--belphegor);
+  border-bottom: 1px solid var(--belphegor);
+}
+#DiavoloPill.active, #DiavoloPillSmall.active {
+  background-color: var(--diavolo);
+  border-bottom: 1px solid var(--diavolo);
+}
+#BarbatosPill.active, #BarbatosPillSmall.active {
+  background-color: var(--barbatos);
+  border-bottom: 1px solid var(--barbatos);
+}
+#LukePill.active, #LukePillSmall.active {
+  background-color: var(--luke);
+  border-bottom: 1px solid var(--luke);
+}
+#SimeonPill.active, #SimeonPillSmall.active {
+  background-color: var(--simeon);
+  border-bottom: 1px solid var(--simeon);
+}
+#SolomonPill.active, #SolomonPillSmall.active {
+  background-color: var(--solomon);
+}
