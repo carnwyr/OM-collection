@@ -1,51 +1,47 @@
-.cardPreview {
-  max-width: 110px;
-  width:100%;
-  color: #717982 !important;
+img {
+  transition: all .5s ease;
+  -webkit-transition: all .5s ease;
 }
-.placeholder {
-  max-width: 110px;
-  width:100%;
+img.lazy {
+  opacity: 0;
 }
-.fullImageView {
-  max-width: 180px !important;
+.cardPreview, .cardPreview:hover {
+  text-align: center;
+  margin: .25rem;
+  color: #717982;
+  width: 100%;
+}
+.icon-container {
+  max-width: 110px;
+}
+.icon-container>img {
+  height: 110px;
+}
+.full-container {
+  max-width: 180px;
+}
+.full-container>img {
+  height: 243px;
 }
 .sticky-offset {
   top: 70px;
 }
 .notSelectedCard {
-  width: 80% !important;
-  height: auto;
+  padding: 8%;
   filter: opacity(50%);
 }
 @media screen and (max-width: 992px) {
-  .d-flex button {
-    margin-bottom: 10px;
-  }
-  .md-position-buttons {
-    position: absolute;
-    z-index: 1;
-    width: 15rem;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    top: 4rem;
-  }
-  .mobile-card {
-    background-color: rgba(255, 255, 255, 0) !important;
-    box-shadow: none !important;
-  }
-  .cardPreview {
+  .icon-container {
     max-width: 100px;
-    width:100%;
   }
-  .fullImageView {
-    max-width: 150px !important;
+  .icon-container>img {
+    height: 100px;
   }
-  .placeholder {
-    max-width: 100px;
-    width:100%;
+  .full-container {
+    max-width: 150px;
+  }
+  .full-container>img {
+    height: 202px;
   }
 }
 @media screen and (max-width: 768px) {
@@ -144,18 +140,6 @@
   }
 }
 
-.fixedStyle {
-  padding-right: 0 !important;
-  margin-right: 0 !important;
-}
-#demonSection img, #memorySection img {
-  opacity: 0;
-  transition: opacity 300ms ease-in-out;
-}
-img.loaded{
-  opacity: 1 !important;
-}
-
 #viewMenuDropdown {
   padding-top: 0;
   border-radius: 0;
@@ -168,7 +152,4 @@ img.loaded{
 #viewMenuDropdown:focus {
   outline: none;
   box-shadow: none;
-}
-.dropdown-item:active {
-  background-color: #efd1ff;
 }

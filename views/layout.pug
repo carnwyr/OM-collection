@@ -28,6 +28,7 @@ html(lang='en-US')
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'UA-164556626-4');
+    block scripts
 
   body(class="d-flex flex-column min-vh-100")
     nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white")
@@ -102,11 +103,11 @@ html(lang='en-US')
         button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
           span(aria-hidden="true") Got it &#x1F44D
 
-    div(class='container-fluid')
+    div(class='container-fluid mb-5')
       block content
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
-      if (!user || user.name !== "Amber")
+      if ((!user || user.name !== "Amber") && title !== "Privacy Policy")
         div.container.ad-container.text-center.my-3
           <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins>
           script.

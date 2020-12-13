@@ -17,6 +17,10 @@ mixin percentBar(owned, total, name)
       if name==='UR'
         div(id="barCover"+name.replace('+', 'p') style={width: (100 - percentage) + '%'})
 
+block scripts
+  link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
+  script(src="/javascripts/cardsListFunctions.js")
+
 block content
   div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Collection modified successfully
   div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
@@ -48,7 +52,7 @@ block content
     //- Collection Stats
     if path === "collection"
       - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
-      div.card.rounded.shadow.mb-3(id='statsCard')
+      div.card.shadow.mb-3(id='statsCard')
         div.card-body
           div.row
             div.col-12.col-lg-4.container.text-center(id='statsTotal')
@@ -123,7 +127,7 @@ block content
               div.small.text-muted.mt-3 Percentage is calculated based on the entire collection (both demon and memory cards).
 
     //- Card Navigation
-    div(class="card sticky-top sticky-offset mb-3 shadow rounded fixedStyle")
+    div(class="card sticky-top sticky-offset mb-3 shadow")
       div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
         div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
@@ -145,7 +149,7 @@ block content
 
     div(id="searchBar" class="row text-left mb-3")
       div(class="col-12")
-        div(class="card shadow rounded")
+        div(class="card shadow")
           div(class="card-body d-flex flex-wrap justify-content-around p-3")
             div(class="dropdown text-center")
               button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
@@ -170,7 +174,7 @@ block content
 
     div(id="filters" class="row text-left collapse")
       div.col-12.col-md-6.pr-md-1.mb-2
-        div(id="rarityFilter" class="card mb-2 shadow rounded" style="border-left: 4px solid #8B9AF0;")
+        div(id="rarityFilter" class="card mb-2 shadow" style="border-left: 4px solid #8B9AF0;")
           div(class="card-header pb-0") Rarity
           div(class="card-body")
             form(id="rarityForm")
@@ -187,7 +191,7 @@ block content
                   div(class="custom-control custom-checkbox col-1")
                     input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
                     label(class="custom-control-label" for="checkRarityUR+") UR+
-        div(id="attributeFilter" class="card shadow rounded" style="border-left: 4px solid #F06292;")
+        div(id="attributeFilter" class="card shadow" style="border-left: 4px solid #F06292;")
           div(class="card-header pb-0") Attribute
           div(class="card-body")
             form(id="attributeForm")
@@ -205,7 +209,7 @@ block content
                     input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
                     label(class="custom-control-label" for="checkAttributeSloth") Sloth
       div.col-12.col-md-6.pl-md-1.mb-2
-        div(id="characterFilter" class="card shadow rounded h-100" style="border-left: 4px solid #C297EC;")
+        div(id="characterFilter" class="card shadow h-100" style="border-left: 4px solid #C297EC;")
           div(class="card-header") Character
           div(class="card-body")
             form(id="characterForm")
@@ -223,7 +227,7 @@ block content
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLittleD" name="LittleD")
                     label(class="custom-control-label" for="checkCharacterLittleD" style="min-width: 75px;") Little D
 
-    div(class="row text-left" id="demonCards")
+    div(class="row" id="demonCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
           |
@@ -234,8 +238,8 @@ block content
         if cardsList.filter(card => card.type == "Demon").length != 0
           each card in cardsList
             if card.type == "Demon"
-              a(class="text-center mb-2 mx-1 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
-                img(class="img-fluid w-100" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
+              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
+                img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
                 figcaption #{card.name}
 
     if (!user || user.name !== "Amber")
@@ -244,7 +248,7 @@ block content
         script.
           (adsbygoogle = window.adsbygoogle || []).push({});
 
-    div(class="row text-left" id="memoryCards")
+    div(class="row" id="memoryCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
           |
@@ -255,9 +259,6 @@ block content
         if cardsList.filter(card => card.type == "Memory").length != 0
           each card in cardsList
             if card.type == "Memory"
-              a(class="text-center mb-2 mx-1 h-100 cardPreview "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
-                img(class="img-fluid w-100" loading="lazy" height='110px' width='110px' src="/images/cards/S/" + card.uniqueName + ".jpg")
+              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
+                img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
                 figcaption #{card.name}
-
-  script(src="/javascripts/cardsListFunctions.js")
-  link(rel="stylesheet", href="/stylesheets/cardsListStyle.css")

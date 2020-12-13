@@ -11,13 +11,13 @@ var viewType = "icon";
 var currentView = "icon";
 
 $(document).ready(function(){
-	$('.cardPreview>img').on('load', function(){ $(this).addClass('loaded'); });
-	$('.cardPreview>img').each(function(){
+	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
+	$("img.lazy").each(function(){
 		if (this.complete && this.naturalHeight !== 0){
-			$(this).addClass('loaded');
+			$(this).removeClass("lazy");
 		}
 	});
-	$(".cardPreview>img").css("transition", "all .5s ease");
+
 	resetFilters();
 	$("form :input").on('click', formChanged);
 	$("div#filters :input[type!=text]").on('change', filterApplied);
@@ -64,9 +64,9 @@ function fillRank(container) {
 
 	if (visibleCardsCount > 0) {
 		if (viewType == "icon") {
-			html = '<div class="invisible placeholder mb-2 mx-1 h-100">placeholder placeholder placeholder</div>';
+			html = '<div class="invisible placeholder icon-container w-100 m-1"></div>';
 		} else {
-			html = '<div class="invisible placeholder fullImageView mb-2 mx-1 h-100">placeholder placeholder placeholder</div>';
+			html = '<div class="invisible placeholder full-container w-100 m-1"></div>';
 		}
 
 		var currentCardsInRow = getRowCapacity();
@@ -78,7 +78,7 @@ function fillRank(container) {
 			$('#'+container).append(html);
 		}
 	} else {
-		var html = '<p class="col-12 text-muted placeholder" style="max-width: none">No matching cards</p>';
+		html = '<p class="col-12 text-muted placeholder">No matching cards</p>';
 		$('#'+container).append(html);
 	}
 }
@@ -125,7 +125,6 @@ function formChanged(e) {
 function filterApplied() {
 	var filters = getFiltersAsStrings();
 	var search = $('input#nameFilter').val();
-	var originalPosition = $(window).scrollTop();
 	if ($('.cardPreview:visible').length > 0)
 		var cardHeight = $($('.cardPreview:visible')[0]).height()
 	else
@@ -143,8 +142,6 @@ function filterApplied() {
 			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('img'), showCards);
 		}
 		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
-
-		$(window).scrollTop(originalPosition);
 
 		fillRank("demonSection");
 		fillRank("memorySection");
@@ -208,14 +205,8 @@ function scrollToSection(e) {
 		var sectionHeaderOffset = 175;
 	else
 		var sectionHeaderOffset = 150;
-	var os = getOS();
-	if (os == 'Mac OS' || os == 'Android') {
-		window.scrollTo({top: $(divId).offset().top - sectionHeaderOffset, behavior: 'smooth'});
-	} else {
-		$('html, body').animate({
-		    scrollTop: $(divId).offset().top - sectionHeaderOffset
-		}, 500);
-	}
+
+	$('html, body').animate({scrollTop:$(divId).offset().top - sectionHeaderOffset}, 500);
 }
 
 function switchSelectionMode() {
@@ -223,7 +214,7 @@ function switchSelectionMode() {
 		$.ajax({
 			type: 'get',
 			url: '/collection/getOwnedCards',
-        	cache: false
+			cache: false
 		})
 		.done(function(cardNames){
 			selectionMode = true;
@@ -237,7 +228,7 @@ function switchSelectionMode() {
 				url: '/collection/updateOwnedCards',
 				contentType: 'application/json',
 				data: JSON.stringify({changedCards: changedCards}),
-        		cache: false
+				cache: false
 			})
 			.done(function(result){
 				if (result === 'error') {
@@ -273,9 +264,6 @@ function switchManagementButtons() {
 }
 
 function switchCardsSelection(cardNames) {
-	var oldHeight = $(document).height();
-	var oldScrollTop = $(window).scrollTop();
-
 	var invisibleCards = $('.cardPreview').filter(function() {
 		return !$(this).isInViewport();
 	}).find('img');
@@ -289,13 +277,6 @@ function switchCardsSelection(cardNames) {
 		var removeNonSelectedEffect = function() { $('.cardPreview').find('img').removeClass('notSelectedCard'); }
 		applyEffectWithoutTransition(invisibleCards, removeNonSelectedEffect);
 	}
-
-	var newHeight = $(document).height();
-	var demonSectionOffset = $('#demonSection').offset().top;
-	var newScrollTop = oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height())
-	$('html, body').animate({
-		scrollTop: newScrollTop
-	}, 300);
 }
 
 $.fn.isInViewport = function () {
@@ -310,10 +291,10 @@ $.fn.isInViewport = function () {
 
 function showAlert(alert, message) {
 	$(alert).html(message);
-    $(alert).show().animate({top: 65}, 500);
-    setTimeout(function () {
-        $(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
-      }, 2000);
+  $(alert).show().animate({top: 65}, 500);
+  setTimeout(function () {
+  	$(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
+  }, 2000);
 }
 
 function cardClicked(e) {
@@ -347,9 +328,6 @@ function switchSelectionAll(select) {
 	if (cardsToSwitch.length == 0)
 		return;
 
-	var oldHeight = $(document).height();
-	var oldScrollTop = $(window).scrollTop();
-
 	var cardImages = $(cardsToSwitch).filter(function() {
 		return !$(this).isInViewport();
 	}).find('img');
@@ -361,14 +339,6 @@ function switchSelectionAll(select) {
 	}
 
 	applyEffectWithoutTransition(cardImages, changeSelection);
-
-	var newHeight = $(document).height();
-	var demonSectionOffset = $('#demonSection').offset().top;
-	var newScrollTop = oldScrollTop * (newHeight - demonSectionOffset - $(window).height()) / (oldHeight - demonSectionOffset - $(window).height());
-	$('html, body').animate({
-		scrollTop: newScrollTop
-	}, 300);
-
 	addCardsToChangedList(cardsToSwitch, select)
 }
 
@@ -403,7 +373,7 @@ function loadStatsImage(e) {
 		type: 'post',
 		url: './getStatsImage',
 		data: {html: html},
-        cache: false
+		cache: false
 	})
 	.done(function(imageData){
 		spinner.hide();
@@ -458,32 +428,26 @@ function prepareHtml() {
 function switchViewOption(changeViewTo) {
 	if (viewType === changeViewTo) return;
 
-	const removeFullImageClass = function(target) { $(target).removeClass('fullImageView'); }
-	const addFullImageClass = function(target) { $(target).addClass('fullImageView'); }
+	const removeFullImageClass = function(target) { $(target).removeClass('full-container').addClass("icon-container"); }
+	const addFullImageClass = function(target) { $(target).removeClass("icon-container").addClass('full-container'); }
 	const replaceSToL = function(target) { return target.replace('/S/', '/L/'); }
 	const replaceLToS = function(target) { return target.replace('/L/', '/S/'); }
-	const removeBloom = function(target) { return target.replace('_b', ''); }
+	const removeBloom = function(target) { return target.replace('_b.jpg', '.jpg'); }
 	const makeBloomed = function(target) { return target.replace('.jpg', '_b.jpg'); }
 
 	const changes = {
 		'icon': {
 			'dropdownText': 'Icon view',
-			'height': '110px',
-			'width': '110px',
 			'fullViewAction': removeFullImageClass,
 			'srcAction': function (target) { return removeBloom(replaceLToS($(target).attr('src'))); }
 		},
 		'original': {
 			'dropdownText': 'Full original view',
-			'height': '256px',
-			'width': '180px',
 			'fullViewAction': addFullImageClass,
 			'srcAction': function (target) { return removeBloom(replaceSToL($(target).attr('src'))); }
 		},
 		'bloomed': {
 			'dropdownText': 'Full bloomed view',
-			'height': '256px',
-			'width': '180px',
 			'fullViewAction': addFullImageClass,
 			'srcAction': function (target) {
 				if ($(target).parent().parent().attr('id') === 'demonSection') return makeBloomed(replaceSToL($(target).attr('src')));
@@ -506,13 +470,11 @@ function switchViewOption(changeViewTo) {
 
 	cardsToDisplay.fadeOut(400).promise().done(function() {
 		$('.cardPreview>img').each(function() {
-				$(this).attr('src', changes[viewType]['srcAction'](this));
-				$(this).attr('height', changes[viewType]['height']);
-				$(this).attr('width', changes[viewType]['width']);
-			});
+			$(this).attr('src', changes[viewType]['srcAction'](this));
+		});
 
 		changes[viewType]['fullViewAction']($('.cardPreview'));
-		$('img').removeClass('loaded');
+		$('.cardPreview>img').addClass("lazy");
 
 		var cardHeight = $(cardsToDisplay[0]).height();
 
