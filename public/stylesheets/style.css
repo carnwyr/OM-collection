@@ -7,10 +7,6 @@ body {
   padding-top: 0.15rem;
 }
 
-.dropdown-item:active {
-  background-color: #efd1ff;
-}
-
 /* FOOTER */
 .site-footer {
   padding: 18px 0 8px;
@@ -88,4 +84,8 @@ body {
 }
 .supportBtn:hover {
   box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
+}
+
+.dropdown-item:active {
+  background-color: #efd1ff;
 }

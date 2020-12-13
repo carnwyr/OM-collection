@@ -15,6 +15,10 @@ mixin getActions(step)
   td.align-middle.py-1.py-sm-3.px-0.px-sm-3.d-none.d-sm-table-cell !{options}
   td.align-middle.py-1.py-sm-3.px-0.px-sm-3.small.d-sm-none !{options}
 
+block scripts
+  link(rel="stylesheet" href="/stylesheets/spg.css")
+  script(src="/javascripts/surpriseGuestFunctions.js")
+
 block content
   .container
     .row.mb-4
@@ -111,5 +115,3 @@ block content
                               +getActions([meet.itemInteractionsShort.third])
                               td.align-middle.d-none.d-sm-table-cell +#{meet.itemInteractionsShort.points}
                               td.align-middle.small.d-sm-none +#{meet.itemInteractionsShort.points}
-  link(rel="stylesheet" href="/stylesheets/spg.css")
-  script(src="/javascripts/surpriseGuestFunctions.js")

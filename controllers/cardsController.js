@@ -64,7 +64,7 @@ exports.cardDetail = function(req, res, next) {
 						var err = new Error('Card not found');
 						return next(err);
 					}
-					return res.render('cardDetail', { title: cardData.name, description: "View \"" + cardData.name + "\" on Karasu-OS.com", card: cardData, user: req.user, hasCard: false, isHidden: true });
+					return res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, hasCard: false, isHidden: true });
 				});
 			} else {
 				var err = new Error('Card not found');
@@ -76,7 +76,7 @@ exports.cardDetail = function(req, res, next) {
 				var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
 				if (err) { return next(err); }
 			}
-			res.render('cardDetail', { title: cardData.name, description: "View \"" + cardData.name + "\" on Karasu-OS.com", card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
+			res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
 		}
 	});
 };
