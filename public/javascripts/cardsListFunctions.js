@@ -474,7 +474,7 @@ function switchViewOption(changeViewTo) {
 		});
 
 		changes[viewType]['fullViewAction']($('.cardPreview'));
-		$('img').addClass("lazy");
+		$('.cardPreview>img').addClass("lazy");
 
 		var cardHeight = $(cardsToDisplay[0]).height();
 
