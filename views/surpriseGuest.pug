@@ -28,7 +28,7 @@ block content
       .col-12.mt-2
         .card.card-body.shadow.rounded.pb-2.pt-3
           .lineHeader.h5.text-primary.mb-0 Settings
-          #settings.mx-auto.collapse.hide
+          #settings.mx-auto.collapse.hide.collapsed
             .custom-control.custom-radio.custom-control-inline.text-center
               input.custom-control-input(type="radio" id="shortActions" name="optionsSwitch")
               label.custom-control-label(for="shortActions") Show one option for each action
@@ -72,11 +72,13 @@ block content
                             th.bg-secondary.text-white.py-2.py-md-3.rounded-sm(colspan='4')
                               .row.w-100.align-items-center.mx-0
                                 .col-10.text-left.px-0.h5.align-middle.mb-0.d-none.d-md-block
-                                  | #{meet.phrase}
+                                  span.text-wrapper
+                                    | #{meet.phrase}
                                 .col-2.text-right.px-0.h6.align-middle.mb-0.d-none.d-md-block
                                   | #{meet.condition}
                                 .col-12.text-center.px-0.h6.align-middle.mb-0.d-md-none
-                                  | #{meet.phrase}
+                                  span.text-wrapper
+                                    | #{meet.phrase}
                                 .col-12.text-center.px-0.small.align-middle.mb-0.d-md-none
                                   | #{meet.condition}
                         tbody

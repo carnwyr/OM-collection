@@ -3,7 +3,7 @@ $(document).ready(function() {
 	if (multipleOptions) {
 		multipleOptions.split("=")[1] === 'true';
 	} else {
-		$('#settings').toggle();
+		$('#settings').collapse('show');
 		multipleOptions = false;
 	}
 	useItems = document.cookie.split('; ').find(row => row.startsWith("sgpUseItems"))

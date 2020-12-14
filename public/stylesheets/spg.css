@@ -24,9 +24,13 @@
   margin-right: -50%;
 }
 
-th {
+.table th {
+  border-top: 0;
   font-weight: normal;
-  border: 0;
+}
+
+.table thead th {
+    border-bottom: 0;
 }
 
 .big-nav .nav-item:not(:last-child) {
@@ -35,6 +39,13 @@ th {
 
 .big-nav .nav-item:not(.active):not(:last-child) {
   border-radius: 0;
+}
+
+.text-wrapper {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow:hidden
 }
 
 #LuciferPill.active, #LuciferPillSmall.active {
