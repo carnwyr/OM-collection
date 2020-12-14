@@ -16,4 +16,5 @@ router.post('/:name/changePassword', usersController.isSameUser(), usersControll
 // Account settings page
 router.get('/:name', usersController.isSameUser(), usersController.accountPage);
 
+
 module.exports = router;

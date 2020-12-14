@@ -1,0 +1,30 @@
+extends layout
+
+block scripts
+  script(src="/javascripts/userpage.js")
+
+block content
+  div.container
+    h1= title
+    div.card.card-body.shadow
+      div.d-md-none
+        p hey, go find a device with larger screen
+      div.d-none.d-md-block
+        p sortby: date (of registration), name, email
+        table(id="supportTable" class="table table-hover")
+          thead
+            tr
+              th(scope="col") Name
+              th(scope="col") Email
+              th(scope="col") Supporter Status
+          tbody
+            each apple in userList.users
+              tr
+                td #{apple.name}
+                td #{apple.email}
+                td #{apple.supportStatus}
+        nav(aria-label="Page navigation example")
+          ul(class="pagination justify-content-center")
+
+  script.
+    paginate(!{JSON.stringify(userList)});

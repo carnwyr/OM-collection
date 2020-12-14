@@ -176,7 +176,6 @@ exports.sendVerificationEmail = function(req, res, next) {
 								}
 							});
 						});
-
 					});
 				}
 			});
@@ -346,3 +345,45 @@ passport.deserializeUser(function(id, next) {
 	next(err, user);
   });
 });
+
+exports.userList = async function(req, res) {
+  const page = req.query.page?req.query.page:1;
+  const limit = 50;
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  var result = {};
+  var userList;
+  try {
+    if (req.query.sortby === "name") {
+      userList = await Users.find().sort( { name : 1 } ).limit(limit).skip(startIndex);
+    } else if (req.query.sortby === "email") {
+      userList = await Users.find().sort( { email : 1 } ).limit(limit).skip(startIndex);
+    } else {
+      userList = await Users.find().limit(limit).skip(startIndex);
+    }
+    var userNum = await Users.countDocuments({});
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+
+  const totalpage = Math.ceil(userNum/limit);
+
+  if (endIndex < userNum) {
+    result.nextpage = {
+      page: page + 1
+    };
+  }
+
+  if (startIndex > 0) {
+    result.previouspage = {
+      page: page - 1
+    };
+  }
+
+  result.totalusers = userNum;
+  result.totalpage = totalpage;
+  result.users = userList;
+  res.render('userpage', { title: 'User List', userList: result, user: req.user});
+}
