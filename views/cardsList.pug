@@ -45,9 +45,7 @@ block content
             div(id='statsMessage')
 
   div(class="container")
-    //- Page Heading
-    div(class="row mb-3" style="border-bottom: 2px solid; border-color: #8d6fe2;")
-      h1(class="text-primary col-12 text-left")= title
+    h1= title
 
     //- Collection Stats
     if path === "collection"
@@ -242,7 +240,7 @@ block content
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
                 figcaption #{card.name}
 
-    if (!user || user.name !== "Amber")
+    if (!user || !user.supportStatus.includes("adfree"))
       div.container.ad-container.text-center.my-3
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7371452932" data-ad-format="auto" data-full-width-responsive="true"></ins>
         script.

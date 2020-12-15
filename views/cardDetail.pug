@@ -12,9 +12,7 @@ block content
           a(role="button" href=card.uniqueName+"/delete" class="btn btn-danger text-light") Delete
           button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Cancel
   div.container
-    div.row.text-left.mb-3
-      div.col-12
-        h2.text-primary.pb-2(style='border-bottom: 2px solid; border-color: #8d6fe2;') #{card.name}
+    h2= card.name
     div.row
       //- Mobile/ Tablet Screen
       if user
