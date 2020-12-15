@@ -11,7 +11,7 @@ block content
         p hey, go find a device with larger screen
       div.d-none.d-md-block
         p sortby: date (of registration), name, email
-        table(id="supportTable" class="table table-hover")
+        table(class="table table-hover")
           thead
             tr
               th(scope="col") Name
@@ -24,7 +24,7 @@ block content
                 td #{usr.email}
                 td(id=usr.name)
                   input(class="form-control" type="text" value=usr.supportStatus)
-        nav(aria-label="Page navigation example")
+        nav(aria-label="user table navigation")
           ul(class="pagination justify-content-center")
 
   script.

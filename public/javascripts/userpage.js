@@ -18,11 +18,11 @@ function paginate(tableData) {
     }
     // add in-between
     for (let i = 1; i < totalpage + 1; i++) {
-      $("ul.pagination").append(`<li class="page-item"><a class="page-link" href="?page=${i}&sortby=${sortby}">${i}</a></li>`)
+      $("ul.pagination").append(`<li class="page-item${i==page?" active":""}"><a class="page-link" href="?page=${i}&sortby=${sortby}">${i}</a></li>`)
     }
     // add last
     if (tableData.nextpage) {
-      $("ul.pagination").append(`<li class="page-item"><a class="page-link" href="?page=${tableData.totalpage}&sortby=${sortby}">Last</a></li>`)
+      $("ul.pagination").append(`<li class="page-item"><a class="page-link" href="?page=${totalpage}&sortby=${sortby}">Last</a></li>`)
     } else {
       $("ul.pagination").append(`<li class="page-item disabled"><a class="page-link" href="#">Last</a></li>`)
     }
