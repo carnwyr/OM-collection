@@ -397,7 +397,7 @@ exports.updateSupport = function(req, res) {
       if (updated.nModified === 1) {
         resolve(user+"'s supporting status successfully updated :)");
       } else {
-        reject("Error :( try again? It's also possible that you didn't change anything.");
+        reject("Error "+reject+" :( try again? It's also possible that you didn't change anything.");
       }
     });
 
