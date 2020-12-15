@@ -15,6 +15,18 @@ mixin getActions(step)
   td.align-middle.py-1.py-sm-3.px-0.px-sm-3.d-none.d-sm-table-cell !{options}
   td.align-middle.py-1.py-sm-3.px-0.px-sm-3.small.d-sm-none !{options}
 
+mixin getConditionImage(condition)
+  if condition == 'Homescreen'
+    img.img-fluid(src='/images/blob.png' style='max-height:1.5em')
+  else if condition == '3 stars'
+    img.img-fluid(src='/images/battle_star.png' style='max-height:1.5em')
+    img.img-fluid.mx-1(src='/images/battle_star.png' style='max-height:1.5em')
+    img.img-fluid(src='/images/battle_star.png' style='max-height:1.5em')
+  else if condition == '1 or 2 stars'
+    img.img-fluid(src='/images/battle_star.png' style='max-height:1.5em')
+  else
+    | #{condition}
+
 block scripts
   link(rel="stylesheet" href="/stylesheets/spg.css")
   script(src="/javascripts/surpriseGuestFunctions.js")
@@ -74,13 +86,13 @@ block content
                                 .col-10.text-left.px-0.h5.align-middle.mb-0.d-none.d-md-block
                                   span.text-wrapper
                                     | #{meet.phrase}
-                                .col-2.text-right.px-0.h6.align-middle.mb-0.d-none.d-md-block
-                                  | #{meet.condition}
+                                .col-2.text-right.px-0.h6.align-middle.mb-0.d-none.d-md-inline-flex.justify-content-end
+                                  +getConditionImage(meet.condition)
                                 .col-12.text-center.px-0.h6.align-middle.mb-0.d-md-none
                                   span.text-wrapper
                                     | #{meet.phrase}
-                                .col-12.text-center.px-0.small.align-middle.mb-0.d-md-none
-                                  | #{meet.condition}
+                                .col-12.text-center.px-0.small.align-middle.mb-0.mt-1.d-inline-flex.d-md-none.justify-content-center
+                                  +getConditionImage(meet.condition)
                         tbody
                           tr.text-primary.text-center
                             th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: 30%') Action 1
