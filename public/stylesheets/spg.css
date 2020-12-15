@@ -33,12 +33,16 @@
     border-bottom: 0;
 }
 
-.big-nav .nav-item:not(:last-child) {
-  border-bottom: 1px solid #dee2e6;
+.big-nav .nav-item:not(:first-child) {
+  border-top: 1px solid #dee2e6;
 }
 
-.big-nav .nav-item:not(.active):not(:last-child) {
+.big-nav .nav-item:not(.active):not(:first-child) {
   border-radius: 0;
+}
+
+.big-nav .nav-item.active+.nav-item {
+  border-top-color: white;
 }
 
 .text-wrapper {

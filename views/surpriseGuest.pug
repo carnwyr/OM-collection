@@ -56,9 +56,9 @@ block content
                       img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='max-width: 30px; width:100%;')
                       | #{interaction.chara}
             .col-12.d-md-none.mb-3
-              .nav.nav-pills.justify-content-center(role='tablist')
+              .nav.nav-pills.justify-content-center.small-nav(role='tablist')
                 each interaction, i in interactions
-                  a.p-1.mx-1(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'PillSmall' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
+                  a.p-1.mx-1.small-pill(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'PillSmall' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
                     span
                       img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='max-width: 40px; width:100%;')
             .col-12.col-md-9
