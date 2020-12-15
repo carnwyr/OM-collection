@@ -1,3 +1,7 @@
+$(document).ready(function(){
+  $(".form-control").focusout(updateSupportStatus);
+});
+
 function paginate(tableData) {
   if ('URLSearchParams' in window) {
     const params = new URLSearchParams(document.location.search.substring(1));
@@ -8,7 +12,7 @@ function paginate(tableData) {
 
     // add first
     if (tableData.previouspage) {
-      $("ul.pagination").append(`<li class="page-item"><a class="page-link" href="?page=1&${sortby}">First</a></li>`)
+      $("ul.pagination").append(`<li class="page-item"><a class="page-link" href="?page=1&sortby=${sortby}">First</a></li>`)
     } else {
       $("ul.pagination").append(`<li class="page-item disabled"><a class="page-link" href="#">First</a></li>`)
     }
@@ -23,6 +27,27 @@ function paginate(tableData) {
       $("ul.pagination").append(`<li class="page-item disabled"><a class="page-link" href="#">Last</a></li>`)
     }
   } else {
-    console.log("Unsupported Browser");
+    console.error("Unsupported Browser for URLSearchParams");
   }
+}
+
+function updateSupportStatus() {
+  var supportstatus = new Object();
+  var str = $(this).val();
+  supportstatus.user = $(this).parent().attr("id");
+  supportstatus.newstatus = str.substring(2, str.length - 2).split('","');
+
+  $.ajax({
+    type: "post",
+    url: "/updateSupport",
+    contentType: "application/json",
+    data: JSON.stringify({ supportstatus: supportstatus })
+  }).done(function(result) {
+    if (result.err) {
+      console.error(result.message);
+      return;
+    } else {
+      console.log(result.message);
+    }
+  });
 }

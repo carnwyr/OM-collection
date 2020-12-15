@@ -18,11 +18,12 @@ block content
               th(scope="col") Email
               th(scope="col") Supporter Status
           tbody
-            each apple in userList.users
+            each usr in userList.users
               tr
-                td #{apple.name}
-                td #{apple.email}
-                td #{apple.supportStatus}
+                td #{usr.name}
+                td #{usr.email}
+                td(id=usr.name)
+                  input(class="form-control" type="text" value=usr.supportStatus)
         nav(aria-label="Page navigation example")
           ul(class="pagination justify-content-center")
 

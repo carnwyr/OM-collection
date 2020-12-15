@@ -29,6 +29,7 @@ router.get('/:username/collection', cardsController.cardsCollection);
 router.post('/:username/getStatsImage', cardsController.getStatsImage);
 
 // User Management
-router.get('/userpage', usersController.isAdmin(), usersController.userList);
+router.get("/userpage", usersController.isAdmin(), usersController.userList);
+router.post("/updateSupport", usersController.isAdmin(), usersController.updateSupport);
 
 module.exports = router;

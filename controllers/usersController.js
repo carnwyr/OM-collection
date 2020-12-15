@@ -368,8 +368,6 @@ exports.userList = async function(req, res) {
     res.status(500).json({ message: e.message });
   }
 
-  const totalpage = Math.ceil(userNum/limit);
-
   if (endIndex < userNum) {
     result.nextpage = {
       page: page + 1
@@ -383,7 +381,33 @@ exports.userList = async function(req, res) {
   }
 
   result.totalusers = userNum;
-  result.totalpage = totalpage;
+  result.totalpage = Math.ceil(userNum/limit);
   result.users = userList;
   res.render('userpage', { title: 'User List', userList: result, user: req.user});
+}
+
+exports.updateSupport = function(req, res) {
+  const user = req.body.supportstatus.user;
+  const newstatus = req.body.supportstatus.newstatus;
+
+  try {
+    const confirmUpdate = new Promise(async function(resolve, reject) {
+      var updated = await Users.updateOne({ name: user}, { supportStatus : newstatus });
+
+      if (updated.nModified === 1) {
+        resolve(user+"'s supporting status successfully updated :)");
+      } else {
+        reject("Error :( try again? It's also possible that you didn't change anything.");
+      }
+    });
+
+    confirmUpdate.then(function(result) {
+        res.json({ err: null, message: result });
+      }, function(error) {
+        res.json({ err: true, message: error });
+      }
+    );
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 }
