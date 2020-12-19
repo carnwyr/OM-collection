@@ -291,10 +291,10 @@ $.fn.isInViewport = function () {
 
 function showAlert(alert, message) {
 	$(alert).html(message);
-  $(alert).show().animate({top: 65}, 500);
-  setTimeout(function () {
-  	$(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
-  }, 2000);
+	$(alert).show().animate({top: 65}, 500);
+	setTimeout(function () {
+		$(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
+	}, 2000);
 }
 
 function cardClicked(e) {
