@@ -1,19 +1,33 @@
 extends layout
 
 mixin getActions(step)
-  - var i = 0;
-  - options = '';
-  while i < step.length
-    if i > 0
-      - options += '<br>'
-    - option = step[i].item ? step[i].item : (step[i].action + (step[i].part ? ' ' + step[i].part : ''));
-    if option instanceof Array
-      - option = option.join('<br>')
-    - option = option.charAt(0).toUpperCase() + option.slice(1);
-    - options += option;
-    - i++;
-  td.align-middle.py-1.py-sm-3.px-0.px-sm-3.d-none.d-sm-table-cell !{options}
-  td.align-middle.py-1.py-sm-3.px-0.px-sm-3.small.d-sm-none !{options}
+  if step[0].item
+    - const itemImages = {"Princess's Poison Apple": 'apple', 'Instant Noodles (Hell-Sauce Flavor)': 'noodles', 'Spicy Rainbow Pizza': 'pizza', 'RedxRed Apple Pie': 'pie', 'Wicked Cupcake': 'cupcake', 'Wicked Cupcake ': 'cupcake', 'Human World Cheeseburger': 'burger', 'Family Pack Sushi': 'sushi', 'Comfort Candy': 'candy', 'Black Coffee of Melancholy': 'coffee', 'Backstabbing Sandwich': 'sandwich', 'Bandage': 'bandage', 'First Aid Kit': 'kit', 'Medicine': 'medicine', 'Poison': 'poison', 'Flower': 'flower', 'Book': 'book', 'Manga': 'manga', 'Movie Ticket': 'ticket', 'Game': 'game', 'Perfume': 'perfume', 'Message Card': 'card', 'Pocket Tissue': 'tissue', 'Whip of Love': 'whip', "Barbatos's Tea": 'tea', "Madam Scream's Macarons": 'macarons', "Barbatos's Signature Cake": 'cake', 'Paradise Blue': 'paradise', 'Unidentified Matter': 'yummy'}
+    td.align-middle.p-0
+      .w-100.align-items-center
+        .align-middle.d-none.d-inline-flex.justify-content-center.flex-wrap.w-100
+          if step[0].item instanceof Array
+            - var items = step[0].item;
+          else
+            -var items = [step[0].item];
+          - var i = 0;
+          while i < items.length
+            - imgName = itemImages[items[i]];
+            img.img-fluid.d-none.d-lg-block(src='/images/items/'+imgName+'.png' style='width: calc(100% / 4)')
+            img.img-fluid.d-lg-none(src='/images/items/'+imgName+'.png' style='width: calc(100% / 3)')
+            - i++;
+  else
+    - var i = 0;
+    - options = '';
+    while i < step.length
+      if i > 0
+        - options += '<br>';
+      - option = step[i].action + (step[i].part ? ' ' + step[i].part : '');
+      - option = option.charAt(0).toUpperCase() + option.slice(1);
+      - options += option;
+      - i++;
+    td.align-middle.py-1.py-sm-3.px-0.px-sm-3.d-none.d-sm-table-cell !{options}
+    td.align-middle.py-1.py-sm-3.px-0.px-sm-3.small.d-sm-none !{options}
 
 mixin getConditionImage(condition)
   if condition == 'Homescreen'
@@ -88,44 +102,37 @@ block content
                                     | #{meet.phrase}
                                 .col-2.text-right.px-0.h6.align-middle.mb-0.d-none.d-md-inline-flex.justify-content-end
                                   +getConditionImage(meet.condition)
+                                .col-12.text-center.px-0.small.align-middle.mb-1.mt-0.d-inline-flex.d-md-none.justify-content-center
+                                  +getConditionImage(meet.condition)
                                 .col-12.text-center.px-0.h6.align-middle.mb-0.d-md-none
                                   span.text-wrapper
                                     | #{meet.phrase}
-                                .col-12.text-center.px-0.small.align-middle.mb-0.mt-1.d-inline-flex.d-md-none.justify-content-center
-                                  +getConditionImage(meet.condition)
                         tbody
                           tr.text-primary.text-center
-                            th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: 30%') Action 1
-                            th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: 30%') Action 2
-                            th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: 30%') Action 3
-                            th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: 10%') Points
-                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%') Action 1
-                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%') Action 2
-                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%') Action 3
+                            each val, key in {'Action 1': 30, 'Action 2': 30, 'Action 3': 30, 'Points': 10}
+                              th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: '+val+'%') #{key}
+                            each i in [1, 2, 3]
+                              th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%') Action #{i}
                             th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 10%') Points
                           tr.text-dark.text-center.moves
-                            +getActions(meet.allInteractions.first)
-                            +getActions(meet.allInteractions.second)
-                            +getActions(meet.allInteractions.third)
+                            each step in ['first', 'second', 'third']
+                              +getActions(meet.allInteractions[step])
                             td.align-middle.d-none.d-sm-table-cell +#{meet.allInteractions.points}
                             td.align-middle.small.d-sm-none +#{meet.allInteractions.points}
                           tr.text-dark.text-center.movesShort
-                            +getActions([meet.allInteractionsShort.first])
-                            +getActions([meet.allInteractionsShort.second])
-                            +getActions([meet.allInteractionsShort.third])
+                            each step in ['first', 'second', 'third']
+                              +getActions([meet.allInteractionsShort[step]])
                             td.align-middle.d-none.d-sm-table-cell +#{meet.allInteractionsShort.points}
                             td.align-middle.small.d-sm-none +#{meet.allInteractionsShort.points}
                           if meet.itemInteractions
                             tr.text-dark.text-center.items
-                              +getActions(meet.itemInteractions.first)
-                              +getActions(meet.itemInteractions.second)
-                              +getActions(meet.itemInteractions.third)
+                              each step in ['first', 'second', 'third']
+                                +getActions(meet.itemInteractions[step])
                               td.align-middle.d-none.d-sm-table-cell +#{meet.itemInteractions.points}
                               td.align-middle.small.d-sm-none +#{meet.itemInteractions.points}
                           if meet.itemInteractionsShort
                             tr.text-dark.text-center.itemsShort
-                              +getActions([meet.itemInteractionsShort.first])
-                              +getActions([meet.itemInteractionsShort.second])
-                              +getActions([meet.itemInteractionsShort.third])
+                              each step in ['first', 'second', 'third']
+                                +getActions([meet.itemInteractionsShort[step]])
                               td.align-middle.d-none.d-sm-table-cell +#{meet.itemInteractionsShort.points}
                               td.align-middle.small.d-sm-none +#{meet.itemInteractionsShort.points}
