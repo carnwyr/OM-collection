@@ -1,18 +1,16 @@
 const doneTypingInterval = 500;
-
 var typingTimer;
 var changedCards = {};
 var selectionMode = false;
-
-var fullStatImage;
-var totalStatImage;
-
 var viewType = "icon";
-
 var querystr = new URLSearchParams(document.location.search.substring(1));
 
 $(document).ready(function(){
-	applyQuery();
+	if ('URLSearchParams' in window) {
+		applyQuery();
+	} else {
+		resetFilters();
+	}
 
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
 	$("img.lazy").each(function(){
@@ -22,7 +20,7 @@ $(document).ready(function(){
 	});
 
 	$("form :input").on('click', formChanged);
-	$("div#filters :input[type!=text]").on('change', filterApplied);
+	$("div#filters :input[type!=text]").on('change', applyFilters);
 	$("input#nameFilter").on('input', inputChanged);
 	$("#searchForm input").on('keypress', function(e) {
 		if (e.which == '13') {
@@ -31,8 +29,13 @@ $(document).ready(function(){
 	});
 	$('#gotoDemon, #gotoMemory').on('click', scrollToSection);
 	$('button#resetFilters').on('click', function(e) {
+		for (param of querystr.keys()) {
+			if (param !== "view") {
+				querystr.delete(param);
+			}
+		}
 		resetFilters();
-		filterApplied();
+		applyFilters();
 	});
 	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
 	$('.cardPreview').on('click', cardClicked);
@@ -61,7 +64,7 @@ $(document).ready(function(){
 
 function fillRank(container) {
 	$('#'+container).find('.placeholder').remove();
-	var visibleCardsCount = $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
+	var visibleCardsCount = $(`#${container}>.cardPreview:visible`).length;
 	var html;
 
 	if (visibleCardsCount > 0) {
@@ -124,35 +127,16 @@ function formChanged(e) {
 	}
 }
 
-function filterApplied() {
+function applyFilters() {
 	var filters = getFiltersAsStrings();
 	var search = $('input#nameFilter').val();
-	if ($('.cardPreview:visible').length > 0)
-		var cardHeight = $($('.cardPreview:visible')[0]).height();
-	else
-		var cardHeight = 100;
 
 	if (search !== '') {
 		querystr.set("search", search);
 		updateQuery();
 	}
 
-	$(".cardPreview").fadeOut(400).promise().done(function() {
-		var cardsToDisplay = filterCardsToDisplay($(".cardPreview"), filters, search);
-
-		var currentCardsInRow = getRowCapacity();
-		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
-		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
-
-		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
-			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') }	;
-			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('img'), showCards);
-		}
-		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
-
-		fillRank("demonSection");
-		fillRank("memorySection");
-	});
+	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), filters, search));
 }
 
 function getFiltersAsStrings() {
@@ -189,6 +173,33 @@ var updateQuery = () => {
 	window.history.replaceState(null, null, `${window.location.pathname}${querystr.toString()===''?'':'?'+querystr.toString()}`);
 };
 
+function updateCardDisplay(cards, view) {
+	$(".cardPreview").fadeOut(400).promise().done(function() {
+		if (view) {
+			$('.cardPreview>img').each(function() {
+				$(this).attr('src', changes[view]['srcAction'](this));
+			});
+
+			changes[view]['fullViewAction']($('.cardPreview'));
+			$('.cardPreview>img').addClass("lazy");
+		}
+
+		var cardHeight = $(cards[0]).height();
+		var currentCardsInRow = getRowCapacity();
+		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
+		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
+
+		if(cards.slice(maxVisibleCards).length > 0) {
+			var showCards = function() { $(cards.slice(maxVisibleCards)).css('display', 'block') };
+			applyEffectWithoutTransition($(cards.slice(maxVisibleCards)).find('img'), showCards);
+		}
+		$(cards.slice(0, maxVisibleCards)).fadeIn(400);
+
+		fillRank("demonSection");
+		fillRank("memorySection");
+	});
+}
+
 function filterCardsToDisplay(cards, filters, search) {
 	Object.keys(filters).forEach(function(key) {
 		if (filters[key] != "")
@@ -218,17 +229,11 @@ function resetFilters() {
 	$("input[type=checkbox]").prop('checked', false);
 	$("input[type=radio]").prop('checked', true);
 	$("input[type=text]").val("");
-
-	for (param of querystr.keys()) {
-		if (param !== "view" || param !== "visible") {
-			querystr.delete(param);
-		}
-	}
 }
 
 function inputChanged(e) {
 	clearTimeout(typingTimer);
-	typingTimer = setTimeout(filterApplied, doneTypingInterval);
+	typingTimer = setTimeout(applyFilters, doneTypingInterval);
 }
 
 function scrollToSection(e) {
@@ -323,10 +328,10 @@ $.fn.isInViewport = function () {
 
 function showAlert(alert, message) {
 	$(alert).html(message);
-  $(alert).show().animate({top: 65}, 500);
-  setTimeout(function () {
-  	$(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
-  }, 2000);
+	$(alert).show().animate({top: 65}, 500);
+	setTimeout(function () {
+		$(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
+	}, 2000);
 }
 
 function cardClicked(e) {
@@ -457,7 +462,7 @@ function prepareHtml() {
 	return new XMLSerializer().serializeToString(newHTML);
 }
 
-/* */
+/***/
 const removeFullImageClass = function(target) { $(target).removeClass('full-container').addClass("icon-container"); }
 const addFullImageClass = function(target) { $(target).removeClass("icon-container").addClass('full-container'); }
 const replaceSToL = function(target) { return target.replace('/S/', '/L/'); }
@@ -485,7 +490,7 @@ const changes = {
 		}
 	}
 };
-/* */
+/***/
 
 function switchViewOption(changeViewTo) {
 	if (viewType === changeViewTo) return;
@@ -496,99 +501,57 @@ function switchViewOption(changeViewTo) {
 
 	$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);
 	for (var mode in changes) {
-	    if (mode == viewType) {
-	    	$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
-	    } else {
-	    	$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
-	    }
+		if (mode == viewType) {
+			$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
+		} else {
+			$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
+		}
 	}
 
-	cardsToDisplay.fadeOut(400).promise().done(function() {
-		$('.cardPreview>img').each(function() {
-			$(this).attr('src', changes[viewType]['srcAction'](this));
-		});
-
-		changes[viewType]['fullViewAction']($('.cardPreview'));
-		$('.cardPreview>img').addClass("lazy");
-
-		var cardHeight = $(cardsToDisplay[0]).height();
-
-		var currentCardsInRow = getRowCapacity();
-		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
-		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
-
-		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
-			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') };
-			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('img'), showCards);
-		}
-		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
-
-		fillRank("demonSection");
-		fillRank("memorySection");
-	});
-
+	updateCardDisplay($(".cardPreview:visible"), viewType);
 	updateQuery();
 }
 
 function applyQuery() {
+	if (querystr.toString() === '' || querystr.toString() === "view=icon") {
+		return;
+	}
+
 	history.scrollRestoration = 'manual';
+	resetFilters();
 
 	for (param of querystr.keys()) {
 		var filterList = querystr.get(param).split(" ");
 		var isFilter = ["character", "rarity", "attribute"].includes(param);
 
-		if (filterList.length !== 0) {
-			if (isFilter) {
-				$("input[type=radio]").prop('checked', false);
+		if (isFilter) {
+			if (filterList.length !== 0) {
+				$(`input#check${param.charAt(0).toUpperCase()+param.slice(1)}All`).prop('checked', false);
 				filterList.forEach(f => {
 					$(`input[name=${f}]`).prop("checked", true);
 				});
-			} else if (param === "search") {
-				$('input#nameFilter').val(querystr.get(param));
 			}
+		} else if (param === "search") {
+			$('input#nameFilter').val(querystr.get(param));
 		}
 	}
 
-	// applyFilter
-	{
-		viewType = querystr.get("view")?querystr.get("view"):"icon";
-
-		var filters = getFiltersAsStrings();
-		var search = $('input#nameFilter').val();
-
-		$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);
-		for (var mode in changes) {
-			if (mode == viewType) {
-				$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
-			} else {
-				$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
-			}
-		}
-
-		$(".cardPreview").fadeOut(400).promise().done(function() {
-			var cardsToDisplay = filterCardsToDisplay($(".cardPreview"), filters, search);
-
-			$('.cardPreview>img').each(function() {
-				$(this).attr('src', changes[viewType]['srcAction'](this));
-			});
-
-			changes[viewType]['fullViewAction']($('.cardPreview'));
-			$('.cardPreview>img').addClass("lazy");
-
-			var cardHeight = $(cardsToDisplay[0]).height();
-
-			var currentCardsInRow = getRowCapacity();
-			var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
-			var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
-
-			if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
-				var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') };
-				applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('img'), showCards);
-			}
-			$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
-
-			fillRank("demonSection");
-			fillRank("memorySection");
-		});
+	if (["bloomed", "original", "icon"].includes(querystr.get("view"))) {
+		viewType = querystr.get("view");
+	} else {
+		viewType = "icon";
+		querystr.set("view", "icon");
+		updateQuery();
 	}
+
+	$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);
+	for (var mode in changes) {
+		if (mode == viewType) {
+			$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
+		} else {
+			$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
+		}
+	}
+
+	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val()), viewType);
 }
