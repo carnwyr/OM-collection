@@ -8,9 +8,8 @@ var querystr = new URLSearchParams(document.location.search.substring(1));
 $(document).ready(function(){
 	if ('URLSearchParams' in window) {
 		applyQuery();
-	} else {
-		resetFilters();
 	}
+	resetFilters();
 
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
 	$("img.lazy").each(function(){
