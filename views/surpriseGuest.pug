@@ -3,19 +3,18 @@ extends layout
 mixin getActions(step)
   if step[0].item
     - const itemImages = {"Princess's Poison Apple": 'apple', 'Instant Noodles (Hell-Sauce Flavor)': 'noodles', 'Spicy Rainbow Pizza': 'pizza', 'RedxRed Apple Pie': 'pie', 'Wicked Cupcake': 'cupcake', 'Wicked Cupcake ': 'cupcake', 'Human World Cheeseburger': 'burger', 'Family Pack Sushi': 'sushi', 'Comfort Candy': 'candy', 'Black Coffee of Melancholy': 'coffee', 'Backstabbing Sandwich': 'sandwich', 'Bandage': 'bandage', 'First Aid Kit': 'kit', 'Medicine': 'medicine', 'Poison': 'poison', 'Flower': 'flower', 'Book': 'book', 'Manga': 'manga', 'Movie Ticket': 'ticket', 'Game': 'game', 'Perfume': 'perfume', 'Message Card': 'card', 'Pocket Tissue': 'tissue', 'Whip of Love': 'whip', "Barbatos's Tea": 'tea', "Madam Scream's Macarons": 'macarons', "Barbatos's Signature Cake": 'cake', 'Paradise Blue': 'paradise', 'Unidentified Matter': 'yummy'}
-    td.align-middle.p-0
-      .w-100.align-items-center
-        .align-middle.d-none.d-inline-flex.justify-content-center.flex-wrap.w-100
-          if step[0].item instanceof Array
-            - var items = step[0].item;
-          else
-            -var items = [step[0].item];
-          - var i = 0;
-          while i < items.length
-            - imgName = itemImages[items[i]];
-            img.img-fluid.d-none.d-lg-block(src='/images/items/'+imgName+'.png' style='width: calc(100% / 4)')
-            img.img-fluid.d-lg-none(src='/images/items/'+imgName+'.png' style='width: calc(100% / 3)')
-            - i++;
+    td
+      .row.justify-content-center
+        if step[0].item instanceof Array
+          - var items = step[0].item;
+        else
+          -var items = [step[0].item];
+        - var i = 0;
+        while i < items.length
+          - imgName = itemImages[items[i]];
+          img.gift.d-none.d-lg-block(src='/images/items/'+imgName+'.png')
+          img.small-gift.d-lg-none(src='/images/items/'+imgName+'.png')
+          - i++;
   else
     - var i = 0;
     - options = '';
@@ -26,8 +25,8 @@ mixin getActions(step)
       - option = option.charAt(0).toUpperCase() + option.slice(1);
       - options += option;
       - i++;
-    td.align-middle.py-1.py-sm-3.px-0.px-sm-3.d-none.d-sm-table-cell !{options}
-    td.align-middle.py-1.py-sm-3.px-0.px-sm-3.small.d-sm-none !{options}
+    td.py-1.p-sm-3.px-0.d-none.d-sm-table-cell !{options}
+    td.py-1.p-sm-3.px-0.small.d-sm-none !{options}
 
 mixin getConditionImage(condition)
   if condition == 'Homescreen'
@@ -47,90 +46,88 @@ block scripts
 
 block content
   .container
+    h1.d-none.d-sm-block Surprise Guest Interactions
+    h1.d-sm-none.text-center Surprise Guest
     .row.mb-4
+      //- settings
       .col-12
-        h1.text-primary.pb-2.d-none.d-sm-block(style="border-bottom: 2px solid; border-color: #8d6fe2;") Surprise Guest Interactions
-        h1.text-primary.pb-2.d-sm-none.text-center(style="border-bottom: 2px solid; border-color: #8d6fe2;") Surprise Guest
-      .col-12.mt-2
-        .card.card-body.shadow.rounded.pb-2.pt-3
+        .card.card-body.shadow.pb-2.pt-3
           .lineHeader.h5.text-primary.mb-0 Settings
           #settings.mx-auto.collapse.hide.collapsed
-            .custom-control.custom-radio.custom-control-inline.text-center
+            .custom-control.custom-radio.custom-control-inline
               input.custom-control-input(type="radio" id="shortActions" name="optionsSwitch")
               label.custom-control-label(for="shortActions") Show one option for each action
-            .custom-control.custom-radio.custom-control-inline.text-center
+            .custom-control.custom-radio.custom-control-inline
               input.custom-control-input(type="radio" id="allActions" name="optionsSwitch")
               label.custom-control-label(for="allActions") Show alternative options
             .custom-control.custom-checkbox.mt-2.mb-1.text-md-center
               input.custom-control-input(type="checkbox" id="useItems")
               label.custom-control-label(for="useItems") Use items
-          .text-center
-            a(class="text-secondary collapser" id="settingsCollapser" data-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings")
-              |
-              |
-              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+          a(class="text-center text-secondary collapser" id="settingsCollapser" data-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings")
+            |
+            |
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
       .col-12.my-2
-        .card.card-body.shadow.rounded
+        .card.card-body.shadow
           .row
             .col-3.d-none.d-md-block
               .nav.flex-column.nav-pills.mb-2.big-nav(role='tablist' aria-orientation="vertical")
                 each interaction, i in interactions
                   a.px-1.px-sm-2.px-lg-3(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'Pill' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
-                    span
-                      img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='max-width: 30px; width:100%;')
-                      | #{interaction.chara}
+                    img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='width:30px;')
+                    | #{interaction.chara}
             .col-12.d-md-none.mb-3
               .nav.nav-pills.justify-content-center.small-nav(role='tablist')
                 each interaction, i in interactions
                   a.p-1.mx-1.small-pill(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'PillSmall' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
-                    span
-                      img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='max-width: 40px; width:100%;')
+                    img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='width:40px;')
+            //- the actual table
             .col-12.col-md-9
               .tab-content
                 each interaction, i in interactions
                   div(class="tab-pane fade"+(i===0?" show active":"") id=interaction.chara role='tabpanel' aria-labelledby=interaction.chara+'Pill')
                     each meet in interaction.interactions
                       table.table
-                        thead.text-primary
+                        thead
                           tr
-                            th.bg-secondary.text-white.py-2.py-md-3.rounded-sm(colspan='4')
+                            th.bg-secondary.text-white.py-2.py-md-3.rounded(colspan='4')
                               .row.w-100.align-items-center.mx-0
-                                .col-10.text-left.px-0.h5.align-middle.mb-0.d-none.d-md-block
+                                h5.col-10.text-left.px-0.mb-0.d-none.d-md-block
                                   span.text-wrapper
                                     | #{meet.phrase}
-                                .col-2.text-right.px-0.h6.align-middle.mb-0.d-none.d-md-inline-flex.justify-content-end
+                                .col-2.px-0.mb-0.d-none.d-md-flex.justify-content-end
                                   +getConditionImage(meet.condition)
-                                .col-12.text-center.px-0.small.align-middle.mb-1.mt-0.d-inline-flex.d-md-none.justify-content-center
+                                .col-12.mb-1.mt-0.d-flex.justify-content-center.d-md-none
                                   +getConditionImage(meet.condition)
-                                .col-12.text-center.px-0.h6.align-middle.mb-0.d-md-none
+                                h6.col-12.text-center.px-0.mb-0.d-md-none
                                   span.text-wrapper
                                     | #{meet.phrase}
                         tbody
-                          tr.text-primary.text-center
+                          tr.text-primary
                             each val, key in {'Action 1': 30, 'Action 2': 30, 'Action 3': 30, 'Points': 10}
                               th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: '+val+'%') #{key}
                             each i in [1, 2, 3]
                               th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%') Action #{i}
                             th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 10%') Points
-                          tr.text-dark.text-center.moves
+                          tr.text-dark.moves
                             each step in ['first', 'second', 'third']
                               +getActions(meet.allInteractions[step])
-                            td.align-middle.d-none.d-sm-table-cell +#{meet.allInteractions.points}
-                            td.align-middle.small.d-sm-none +#{meet.allInteractions.points}
-                          tr.text-dark.text-center.movesShort
+                            td.d-none.d-sm-table-cell +#{meet.allInteractions.points}
+                            td.small.d-sm-none +#{meet.allInteractions.points}
+                          tr.text-dark.movesShort
                             each step in ['first', 'second', 'third']
                               +getActions([meet.allInteractionsShort[step]])
-                            td.align-middle.d-none.d-sm-table-cell +#{meet.allInteractionsShort.points}
-                            td.align-middle.small.d-sm-none +#{meet.allInteractionsShort.points}
+                            td.d-none.d-sm-table-cell +#{meet.allInteractionsShort.points}
+                            td.small.d-sm-none +#{meet.allInteractionsShort.points}
                           if meet.itemInteractions
-                            tr.text-dark.text-center.items
+                            tr.text-dark.items
                               each step in ['first', 'second', 'third']
                                 +getActions(meet.itemInteractions[step])
-                              td.align-middle.d-none.d-sm-table-cell +#{meet.itemInteractions.points}
-                              td.align-middle.small.d-sm-none +#{meet.itemInteractions.points}
+                              td.d-none.d-sm-table-cell +#{meet.itemInteractions.points}
+                              td.small.d-sm-none +#{meet.itemInteractions.points}
                           if meet.itemInteractionsShort
-                            tr.text-dark.text-center.itemsShort
+                            tr.text-dark.itemsShort
                               each step in ['first', 'second', 'third']
                                 +getActions([meet.itemInteractionsShort[step]])
-                              td.align-middle.d-none.d-sm-table-cell +#{meet.itemInteractionsShort.points}
-                              td.align-middle.small.d-sm-none +#{meet.itemInteractionsShort.points}
+                              td.d-none.d-sm-table-cell +#{meet.itemInteractionsShort.points}
+                              td.small.d-sm-none +#{meet.itemInteractionsShort.points}

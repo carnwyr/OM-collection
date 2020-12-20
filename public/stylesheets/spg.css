@@ -30,7 +30,12 @@
 }
 
 .table thead th {
-    border-bottom: 0;
+  border-bottom: 0;
+}
+
+.table tr, .table td {
+  text-align: center;
+  vertical-align: middle;
 }
 
 .big-nav .nav-item:not(:first-child) {
@@ -49,7 +54,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  overflow:hidden
+  overflow: hidden;
 }
 
 #LuciferPill.active, #LuciferPillSmall.active {
@@ -98,4 +103,19 @@
 }
 #SolomonPill.active, #SolomonPillSmall.active {
   background-color: var(--solomon);
+}
+.gift{
+    position: relative;
+    width:calc(100%/4);
+    height:calc(100%/4);
+}
+.small-gift{
+    position: relative;
+    width:calc(100%/3);
+    height:calc(100%/4);
+}
+.gift:before, .small-gift:before{
+    content: "";
+    display: block;
+    padding-top: 100%;
 }

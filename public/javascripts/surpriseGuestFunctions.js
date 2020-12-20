@@ -1,13 +1,13 @@
 $(document).ready(function() {
 	multipleOptions = document.cookie.split('; ').find(row => row.startsWith("sgpMultipleOptions"));
 	if (multipleOptions) {
-		multipleOptions.split("=")[1] === 'true';
+		multipleOptions = multipleOptions.split("=")[1] === 'true';
 	} else {
 		$('#settings').collapse('show');
-		multipleOptions = false;
+		multipleOptions = true;
 	}
 	useItems = document.cookie.split('; ').find(row => row.startsWith("sgpUseItems"))
-	useItems = useItems ? useItems.split("=")[1] === 'true' : false;
+	useItems = useItems ? useItems.split("=")[1] === 'true' : true;
 
 	if (multipleOptions) {
 		$("#allActions").prop('checked', true);
@@ -17,12 +17,17 @@ $(document).ready(function() {
 	if (useItems) {
 		$("#useItems").prop('checked', true);
 	}
+	const urlParams = new URLSearchParams(window.location.search);
+	const character = urlParams.get('character');
+	if (character) {
+		openCharacterTab(character);
+	}
 
 	$("#shortActions").click(() => enableOptions(false));
 	$("#allActions").click(() => enableOptions(true));
 	$("#useItems").click(() => enableItemOptions($("#useItems").is(":checked")));
 	enableOptions($("#allActions").is(":checked"));
-	$('.big-nav>.nav-link, .small-nav>.nav-link').click(function() {syncButtons($(this))});
+	$('.big-nav>.nav-link, .small-nav>.nav-link').click(function() {syncButtons($(this), urlParams)});
 });
 
 function enableOptions(enableAll) {
@@ -64,12 +69,18 @@ function enableItemOptions(allowItems) {
 	}
 }
 
-function syncButtons(button) {
+function syncButtons(button, urlParams) {
 	if (button.parent().hasClass('big-nav')) {
-		$('.small-nav>.nav-link.active').removeClass('active');
-		$('#'+button.attr('id')+'Small').addClass('active');
+		$('#'+button.attr('id')+'Small').tab('show');
+		urlParams.set('character', button.attr('id').replace('Pill', ''));
 	} else {
-		$('.big-nav>.nav-link.active').removeClass('active');
-		$('#'+button.attr('id').replace('Small', '')).addClass('active');
+		$('#'+button.attr('id').replace('Small', '')).tab('show');
+		urlParams.set('character', button.attr('id').replace('PillSmall', ''));
 	}
+	window.history.replaceState(null, null, `${window.location.pathname}${urlParams.toString()===''?'':'?'+urlParams.toString()}`);
+}
+
+function openCharacterTab(character) {
+	$('#'+character+'Pill').tab('show');
+	$('#'+character+'PillSmall').tab('show');
 }
