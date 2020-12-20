@@ -8,8 +8,9 @@ var querystr = new URLSearchParams(document.location.search.substring(1));
 $(document).ready(function(){
 	if ('URLSearchParams' in window) {
 		applyQuery();
+	} else {
+		resetFilters();
 	}
-	resetFilters();
 
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
 	$("img.lazy").each(function(){
@@ -18,8 +19,8 @@ $(document).ready(function(){
 		}
 	});
 
-	$("form :input").on('click', formChanged);
-	$("div#filters :input[type!=text]").on('change', applyFilters);
+	$("form input").on('click', formChanged);
+	$("div#filters input").on('change', applyFilters);
 	$("input#nameFilter").on('input', inputChanged);
 	$("#searchForm input").on('keypress', function(e) {
 		if (e.which == '13') {
@@ -111,8 +112,7 @@ function formChanged(e) {
 		var radio = $(form).find('input[type=radio]');
 		if (checkboxes.length == 0) {
 			$(radio).prop('checked', true);
-		}
-		else if ($(radio).prop('checked')) {
+		} else if ($(radio).prop('checked')) {
 			$(radio).prop('checked', false);
 		}
 	}
@@ -146,7 +146,7 @@ function getFiltersAsStrings() {
 		var entries = "";
 		filters[formId] = "";
 
-		$(this).find(":input[type=checkbox]:checked").each(function(index, obj) {
+		$(this).find("input[type=checkbox]:checked").each(function(index, obj) {
 			if (index != 0) {
 				filters[formId] += ", ";
 				entries += " ";
@@ -512,12 +512,13 @@ function switchViewOption(changeViewTo) {
 }
 
 function applyQuery() {
-	if (querystr.toString() === '' || querystr.toString() === "view=icon") {
-		return;
-	}
-
-	history.scrollRestoration = 'manual';
 	resetFilters();
+	if (querystr.toString() === '' || querystr.toString() === "view=icon") {
+		history.scrollRestoration = "auto";
+		return;
+	} else {
+		history.scrollRestoration = "manual";
+	}
 
 	for (param of querystr.keys()) {
 		var filterList = querystr.get(param).split(" ");
