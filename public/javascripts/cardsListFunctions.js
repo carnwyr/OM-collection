@@ -1,16 +1,17 @@
 const doneTypingInterval = 500;
-
 var typingTimer;
 var changedCards = {};
 var selectionMode = false;
-
-var fullStatImage;
-var totalStatImage;
-
 var viewType = "icon";
-var currentView = "icon";
+var querystr = new URLSearchParams(document.location.search.substring(1));
 
 $(document).ready(function(){
+	if ('URLSearchParams' in window) {
+		applyQuery();
+	} else {
+		resetFilters();
+	}
+
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
 	$("img.lazy").each(function(){
 		if (this.complete && this.naturalHeight !== 0){
@@ -18,9 +19,8 @@ $(document).ready(function(){
 		}
 	});
 
-	resetFilters();
-	$("form :input").on('click', formChanged);
-	$("div#filters :input[type!=text]").on('change', filterApplied);
+	$("form input").on('click', formChanged);
+	$("div#filters input").on('change', applyFilters);
 	$("input#nameFilter").on('input', inputChanged);
 	$("#searchForm input").on('keypress', function(e) {
 		if (e.which == '13') {
@@ -29,8 +29,13 @@ $(document).ready(function(){
 	});
 	$('#gotoDemon, #gotoMemory').on('click', scrollToSection);
 	$('button#resetFilters').on('click', function(e) {
+		for (param of querystr.keys()) {
+			if (param !== "view") {
+				querystr.delete(param);
+			}
+		}
 		resetFilters();
-		filterApplied();
+		applyFilters();
 	});
 	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
 	$('.cardPreview').on('click', cardClicked);
@@ -59,7 +64,7 @@ $(document).ready(function(){
 
 function fillRank(container) {
 	$('#'+container).find('.placeholder').remove();
-	var visibleCardsCount = $('#'+container).find('.cardPreview').filter(function() { return $(this).css('display') !== 'none'; }).length;
+	var visibleCardsCount = $(`#${container}>.cardPreview:visible`).length;
 	var html;
 
 	if (visibleCardsCount > 0) {
@@ -107,8 +112,7 @@ function formChanged(e) {
 		var radio = $(form).find('input[type=radio]');
 		if (checkboxes.length == 0) {
 			$(radio).prop('checked', true);
-		}
-		else if ($(radio).prop('checked')) {
+		} else if ($(radio).prop('checked')) {
 			$(radio).prop('checked', false);
 		}
 	}
@@ -122,45 +126,77 @@ function formChanged(e) {
 	}
 }
 
-function filterApplied() {
+function applyFilters() {
 	var filters = getFiltersAsStrings();
 	var search = $('input#nameFilter').val();
-	if ($('.cardPreview:visible').length > 0)
-		var cardHeight = $($('.cardPreview:visible')[0]).height()
-	else
-		var cardHeight = 100;
 
-	$(".cardPreview").fadeOut(400).promise().done(function() {
-		var cardsToDisplay = filterCardsToDisplay($(".cardPreview"), filters, search);
+	if (search !== '') {
+		querystr.set("search", search);
+		updateQuery();
+	}
 
-		var currentCardsInRow = getRowCapacity();
-		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
-		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
-
-		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
-			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') }	;
-			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('img'), showCards);
-		}
-		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
-
-		fillRank("demonSection");
-		fillRank("memorySection");
-	});
+	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), filters, search));
 }
 
 function getFiltersAsStrings() {
 	var filters = {};
 	$("form").each(function() {
 		var formId = $(this).attr("id");
+		var param = formId.slice(0, -4);
+		var entries = "";
 		filters[formId] = "";
-		$(this).find(":input[type=checkbox]:checked").each(function(index, obj) {
+
+		$(this).find("input[type=checkbox]:checked").each(function(index, obj) {
 			if (index != 0) {
 				filters[formId] += ", ";
+				entries += " ";
 			}
 			filters[formId] += "." + $(obj).attr("name");
+			entries += $(obj).attr("name");
 		});
+
+		if (entries !== '') {
+			querystr.set(param, entries);
+		} else if (param !== "search") {
+			querystr.delete(param);
+		} else if ($('input#nameFilter').val() === '') {
+			querystr.delete(param);
+		}
 	});
+
+	updateQuery();
 	return filters;
+}
+
+var updateQuery = () => {
+	window.history.replaceState(null, null, `${window.location.pathname}${querystr.toString()===''?'':'?'+querystr.toString()}`);
+};
+
+function updateCardDisplay(cards, view) {
+	$(".cardPreview").fadeOut(400).promise().done(function() {
+		if (view) {
+			$('.cardPreview>img').each(function() {
+				$(this).attr('src', changes[view]['srcAction'](this));
+			});
+
+			changes[view]['fullViewAction']($('.cardPreview'));
+			$('.cardPreview>img').addClass("lazy");
+		}
+
+		var cardHeight = $(cards[0]).height();
+		var currentCardsInRow = getRowCapacity();
+		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
+		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
+
+		if(cards.slice(maxVisibleCards).length > 0) {
+			var showCards = function() { $(cards.slice(maxVisibleCards)).css('display', 'block') };
+			applyEffectWithoutTransition($(cards.slice(maxVisibleCards)).find('img'), showCards);
+		}
+		$(cards.slice(0, maxVisibleCards)).fadeIn(400);
+
+		fillRank("demonSection");
+		fillRank("memorySection");
+	});
 }
 
 function filterCardsToDisplay(cards, filters, search) {
@@ -196,7 +232,7 @@ function resetFilters() {
 
 function inputChanged(e) {
 	clearTimeout(typingTimer);
-	typingTimer = setTimeout(filterApplied, doneTypingInterval);
+	typingTimer = setTimeout(applyFilters, doneTypingInterval);
 }
 
 function scrollToSection(e) {
@@ -425,70 +461,97 @@ function prepareHtml() {
 	return new XMLSerializer().serializeToString(newHTML);
 }
 
+/***/
+const removeFullImageClass = function(target) { $(target).removeClass('full-container').addClass("icon-container"); }
+const addFullImageClass = function(target) { $(target).removeClass("icon-container").addClass('full-container'); }
+const replaceSToL = function(target) { return target.replace('/S/', '/L/'); }
+const replaceLToS = function(target) { return target.replace('/L/', '/S/'); }
+const removeBloom = function(target) { return target.replace('_b.jpg', '.jpg'); }
+const makeBloomed = function(target) { return target.replace('.jpg', '_b.jpg'); }
+
+const changes = {
+	'icon': {
+		'dropdownText': 'Icon view',
+		'fullViewAction': removeFullImageClass,
+		'srcAction': function (target) { return removeBloom(replaceLToS($(target).attr('src'))); }
+	},
+	'original': {
+		'dropdownText': 'Full original view',
+		'fullViewAction': addFullImageClass,
+		'srcAction': function (target) { return removeBloom(replaceSToL($(target).attr('src'))); }
+	},
+	'bloomed': {
+		'dropdownText': 'Full bloomed view',
+		'fullViewAction': addFullImageClass,
+		'srcAction': function (target) {
+			if ($(target).parent().parent().attr('id') === 'demonSection') return makeBloomed(replaceSToL($(target).attr('src')));
+			else return replaceSToL($(target).attr('src'));
+		}
+	}
+};
+/***/
+
 function switchViewOption(changeViewTo) {
 	if (viewType === changeViewTo) return;
 
-	const removeFullImageClass = function(target) { $(target).removeClass('full-container').addClass("icon-container"); }
-	const addFullImageClass = function(target) { $(target).removeClass("icon-container").addClass('full-container'); }
-	const replaceSToL = function(target) { return target.replace('/S/', '/L/'); }
-	const replaceLToS = function(target) { return target.replace('/L/', '/S/'); }
-	const removeBloom = function(target) { return target.replace('_b.jpg', '.jpg'); }
-	const makeBloomed = function(target) { return target.replace('.jpg', '_b.jpg'); }
-
-	const changes = {
-		'icon': {
-			'dropdownText': 'Icon view',
-			'fullViewAction': removeFullImageClass,
-			'srcAction': function (target) { return removeBloom(replaceLToS($(target).attr('src'))); }
-		},
-		'original': {
-			'dropdownText': 'Full original view',
-			'fullViewAction': addFullImageClass,
-			'srcAction': function (target) { return removeBloom(replaceSToL($(target).attr('src'))); }
-		},
-		'bloomed': {
-			'dropdownText': 'Full bloomed view',
-			'fullViewAction': addFullImageClass,
-			'srcAction': function (target) {
-				if ($(target).parent().parent().attr('id') === 'demonSection') return makeBloomed(replaceSToL($(target).attr('src')));
-				else return replaceSToL($(target).attr('src'));
-			}
-		}
-	};
-
 	var cardsToDisplay = $(".cardPreview:visible");
 	viewType = changeViewTo;
+	querystr.set("view", viewType);
 
 	$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);
 	for (var mode in changes) {
-	    if (mode == viewType) {
-	    	$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
-	    } else {
-	    	$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
-	    }
+		if (mode == viewType) {
+			$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
+		} else {
+			$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
+		}
 	}
 
-	cardsToDisplay.fadeOut(400).promise().done(function() {
-		$('.cardPreview>img').each(function() {
-			$(this).attr('src', changes[viewType]['srcAction'](this));
-		});
+	updateCardDisplay($(".cardPreview:visible"), viewType);
+	updateQuery();
+}
 
-		changes[viewType]['fullViewAction']($('.cardPreview'));
-		$('.cardPreview>img').addClass("lazy");
+function applyQuery() {
+	resetFilters();
+	if (querystr.toString() === '' || querystr.toString() === "view=icon") {
+		history.scrollRestoration = "auto";
+		return;
+	} else {
+		history.scrollRestoration = "manual";
+	}
 
-		var cardHeight = $(cardsToDisplay[0]).height();
+	for (param of querystr.keys()) {
+		var filterList = querystr.get(param).split(" ");
+		var isFilter = ["character", "rarity", "attribute"].includes(param);
 
-		var currentCardsInRow = getRowCapacity();
-		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
-		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
-
-		if(cardsToDisplay.slice(maxVisibleCards).length > 0) {
-			var showCards = function() { $(cardsToDisplay.slice(maxVisibleCards)).css('display', 'block') };
-			applyEffectWithoutTransition($(cardsToDisplay.slice(maxVisibleCards)).find('img'), showCards);
+		if (isFilter) {
+			if (filterList.length !== 0) {
+				$(`input#check${param.charAt(0).toUpperCase()+param.slice(1)}All`).prop('checked', false);
+				filterList.forEach(f => {
+					$(`input[name=${f}]`).prop("checked", true);
+				});
+			}
+		} else if (param === "search") {
+			$('input#nameFilter').val(querystr.get(param));
 		}
-		$(cardsToDisplay.slice(0, maxVisibleCards)).fadeIn(400);
+	}
 
-		fillRank("demonSection");
-		fillRank("memorySection");
-	});
+	if (["bloomed", "original", "icon"].includes(querystr.get("view"))) {
+		viewType = querystr.get("view");
+	} else {
+		viewType = "icon";
+		querystr.set("view", "icon");
+		updateQuery();
+	}
+
+	$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);
+	for (var mode in changes) {
+		if (mode == viewType) {
+			$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
+		} else {
+			$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
+		}
+	}
+
+	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val()), viewType);
 }
