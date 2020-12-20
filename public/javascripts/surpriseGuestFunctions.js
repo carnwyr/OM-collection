@@ -71,21 +71,16 @@ function enableItemOptions(allowItems) {
 
 function syncButtons(button, urlParams) {
 	if (button.parent().hasClass('big-nav')) {
-		$('.small-nav>.nav-link.active').removeClass('active');
-		$('#'+button.attr('id')+'Small').addClass('active');
+		$('#'+button.attr('id')+'Small').tab('show');
 		urlParams.set('character', button.attr('id').replace('Pill', ''));
-		console.log(urlParams)
 	} else {
-		$('.big-nav>.nav-link.active').removeClass('active');
-		$('#'+button.attr('id').replace('Small', '')).addClass('active');
+		$('#'+button.attr('id').replace('Small', '')).tab('show');
 		urlParams.set('character', button.attr('id').replace('PillSmall', ''));
 	}
 	window.history.replaceState(null, null, `${window.location.pathname}${urlParams.toString()===''?'':'?'+urlParams.toString()}`);
 }
 
 function openCharacterTab(character) {
-	$('.big-nav>.nav-link.active').removeClass('active');
-	$('#'+character+'Pill').addClass('active');
-	$('.small-nav>.nav-link.active').removeClass('active');
-	$('#'+character+'PillSmall').addClass('active');
+	$('#'+character+'Pill').tab('show');
+	$('#'+character+'PillSmall').tab('show');
 }
