@@ -104,15 +104,18 @@
 #SolomonPill.active, #SolomonPillSmall.active {
   background-color: var(--solomon);
 }
-
-.gift-icon {
-  width: 64px;
-  height: 64px;
+.gift{
+    position: relative;
+    width:calc(100%/4);
+    height:calc(100%/4);
 }
-
-@media screen and (max-width: 720px) {
-  .gift-icon {
-    width: 32px;
-    height: 32px;
-  }
+.small-gift{
+    position: relative;
+    width:calc(100%/3);
+    height:calc(100%/4);
+}
+.gift:before, .small-gift:before{
+    content: "";
+    display: block;
+    padding-top: 100%;
 }
