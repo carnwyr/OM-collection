@@ -173,7 +173,7 @@ block content
     div(id="filters" class="row text-left collapse")
       div.col-12.col-md-6.pr-md-1.mb-2
         div(id="rarityFilter" class="card mb-2 shadow" style="border-left: 4px solid #8B9AF0;")
-          div(class="card-header pb-0") Rarity
+          div(class="card-header") Rarity
           div(class="card-body")
             form(id="rarityForm")
               div(class="container")
@@ -190,7 +190,7 @@ block content
                     input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
                     label(class="custom-control-label" for="checkRarityUR+") UR+
         div(id="attributeFilter" class="card shadow" style="border-left: 4px solid #F06292;")
-          div(class="card-header pb-0") Attribute
+          div(class="card-header") Attribute
           div(class="card-body")
             form(id="attributeForm")
               div(class="container")
@@ -224,6 +224,17 @@ block content
                   div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
                     input(type="checkbox" class="custom-control-input" id="checkCharacterLittleD" name="LittleD")
                     label(class="custom-control-label" for="checkCharacterLittleD" style="min-width: 75px;") Little D
+      .col-12.mb-2
+        .card.shadow.h-100#miscFilter(style="border-left: 4px solid #88d9e3")
+          .card-header Misc
+          .card-body.pt-1
+            .form-check-inline.flex.flex-wrap.w-100
+              .custom-control.custom-checkbox.mr-3(style='min-width: 10rem')
+                input.custom-control-input#notOwned(type="checkbox" name="notOwned")
+                label.custom-control-label(for="notOwned") Only show not owned cards
+              .custom-control.custom-checkbox(style='min-width: 10rem')
+                input.custom-control-input#unlockOutfit(type="checkbox" name="unlockOutfit" disabled)
+                label.custom-control-label(for="unlockOutfit") Only show cards with outfits
 
     div(class="row" id="demonCards")
       div(class="col-12")

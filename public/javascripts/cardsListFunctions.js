@@ -126,7 +126,7 @@ function formChanged(e) {
 	}
 }
 
-function applyFilters() {
+async function applyFilters() {
 	var filters = getFiltersAsStrings();
 	var search = $('input#nameFilter').val();
 
@@ -135,7 +135,15 @@ function applyFilters() {
 		updateQuery();
 	}
 
-	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), filters, search));
+	ownedCards = []
+	if ($('#notOwned').prop('checked')) {
+		ownedCards = await $.ajax({
+			type: 'get',
+			url: '/collection/getOwnedCards',
+			cache: false
+		});
+	}
+	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), filters, search, ownedCards));
 }
 
 function getFiltersAsStrings() {
@@ -199,17 +207,18 @@ function updateCardDisplay(cards, view) {
 	});
 }
 
-function filterCardsToDisplay(cards, filters, search) {
+function filterCardsToDisplay(cards, filters, search, excludedCards) {
 	Object.keys(filters).forEach(function(key) {
 		if (filters[key] != "")
 			cards = $(cards).filter(filters[key]);
 	});
-	if (search != "") {
-		cards = $(cards).filter(function() {
+	cards = $(cards).filter(function() {
 			var cardName = $(this).find("figcaption").text();
-			return cardName.toLowerCase().includes(search.toLowerCase());
+			var fitsSearch = search != "" ? cardName.toLowerCase().includes(search.toLowerCase()) : true;
+			var uniqueCardName = $(this).attr('href').replace('card/', '');
+			var fitsExcluded = !excludedCards.includes(uniqueCardName);
+			return fitsSearch && fitsExcluded;
 		});
-	}
 	return cards;
 }
 
@@ -553,5 +562,5 @@ function applyQuery() {
 		}
 	}
 
-	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val()), viewType);
+	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val()), viewType, []);
 }
