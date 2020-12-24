@@ -79,15 +79,12 @@ html(lang='en-US')
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link text-white" role='button' id='accountDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Account
               div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="accountDropdownButton")
-                a(class="nav-link dropdown-item" href='/user/'+user.name)
-                  span(class="text-dark") Settings&nbsp;
+                a(class="dropdown-item" href='/user/'+user.name) Settings&nbsp;
                   if !user.email
                     span(class="badge badge-warning") !
-                a(class="nav-link dropdown-item" href='/logout')
-                  span(class="text-dark") Logout
+                a(class="dropdown-item" href='/logout') Logout
             li(class="nav-item d-md-none")
-              a(class="nav-link" href='/user/'+user.name)
-                span Settings&nbsp;
+              a(class="nav-link" href='/user/'+user.name) Settings&nbsp;
                 if !user.email
                   span(class="badge badge-warning") !
             li(class="nav-item d-md-none")
