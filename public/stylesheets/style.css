@@ -49,6 +49,24 @@ h1, h2 {
   display: inline-block;
 }
 
+/* dropdown */
+.dropdown-item:active {
+  color: #16181b;
+  background-color: #f8f9fa;
+}
+@media screen and (max-width: 720px) {
+  .dropdown-menu {
+    border-radius: 0;
+    border-left: 2px solid var(--light);
+    box-shadow: none !important;
+    background-color: transparent;
+  }
+  .dropdown-item,.dropdown-item:active {
+    color: var(--light);
+    background-color: transparent;
+  }
+}
+
 /* MISC */
 #cookieToast {
   position: fixed;
@@ -90,8 +108,4 @@ h1, h2 {
 }
 .supportBtn:hover {
   box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
-}
-
-.dropdown-item:active {
-  background-color: #efd1ff;
 }

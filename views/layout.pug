@@ -43,18 +43,17 @@ html(lang='en-US')
           li(class="nav-item")
             a(class="nav-link" href='/cards') Gallery
           if user
-            li(class="nav-item")
-              a(class="nav-link" href='/' + user.name + '/collection') My collection
-            li(class="nav-item")
-              a(class="nav-link" href='/' + user.name + '/favourites') Favourites
+            li(class="nav-item dropdown")
+              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Collections
+              div(class="dropdown-menu shadow px-2" aria-labelledby="collectionDropdown")
+                a(class="dropdown-item" href='/' + user.name + '/collection') Cards
+                a(class="dropdown-item" href='/' + user.name + '/favourites') Favourites
           li(class="nav-item")
             a(class="nav-link" href='/rankings') Rankings
-          li(class="nav-item dropdown d-none d-md-block")
+          li(class="nav-item dropdown")
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
             div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
-              a(class="nav-link text-dark dropdown-item" href='/surpriseGuest') Surprise guest
-          li(class="nav-item d-md-none")
-            a(class="nav-link" href='/surpriseGuest') Surprise guest
+              a(class="dropdown-item" href='/SurpriseGuest') Surprise Guest
           if user && user.isAdmin
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab

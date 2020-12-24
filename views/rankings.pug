@@ -4,6 +4,14 @@ block content
   div(class="container")
     h1= title
     div.card.card-body.shadow
+      div.mx-auto.my-5.text-center
+        h5.card-title (ง •̀_•́)ง Gathering data...
+        if user
+          p.card-text Head over to your favourite cards' page and start filling your favourite collection!
+        else
+          p.card-text Register or login now to see your favourite cards on the same page!
+          a.btn.btn-primary.mr-2(href="/signup") Register
+          a.btn.btn-primary.ml-2(href="/login") Login
       if user && user.isAdmin
         table.table
           thead
@@ -22,6 +30,3 @@ block content
                 td
                   a(href="card/"+card.uniqueName)= card.name
                 td= card.numFaved
-      else
-        div.mx-auto.my-5.text-center
-          h5.card-title (ง •̀_•́)ง Gathering data... <br><br>Head over to your favourite cards' page and fill your favourite collection!
