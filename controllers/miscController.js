@@ -11,7 +11,7 @@ exports.surpriseGuest = function(req, res, next) {
 		{chara:'Leviathan', interactions:[]},
 		{chara:'Satan', interactions:[]},
 		{chara:'Asmodeus', interactions:[]},
-		{chara:'Beelzebub', interactions:[]}, 
+		{chara:'Beelzebub', interactions:[]},
 		{chara:'Belphegor', interactions:[]},
 		{chara:'Diavolo', interactions:[]},
 		{chara:'Barbatos', interactions:[]},
