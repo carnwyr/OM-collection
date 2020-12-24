@@ -15,7 +15,7 @@ figcaption,.figure-caption{font-size:90%;color:#6c757d;margin-bottom:1rem}
   );
 }
 .alert{z-index:9999!important}
-.dropdown-item {
+.nav-item.dropdown .dropdown-item {
   padding: .25rem .5rem;
   color: var(--dark);
 }

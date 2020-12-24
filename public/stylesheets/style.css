@@ -55,13 +55,13 @@ h1, h2 {
   background-color: #f8f9fa;
 }
 @media screen and (max-width: 720px) {
-  .dropdown-menu {
+  .nav-item.dropdown>.dropdown-menu {
     border-radius: 0;
-    border-left: 2px solid var(--light);
+    border-left: 2px solid rgba(255,255,255,.75);
     box-shadow: none !important;
     background-color: transparent;
   }
-  .dropdown-item,.dropdown-item:active {
+  .nav-item.dropdown .dropdown-item,.dropdown-item:active {
     color: var(--light);
     background-color: transparent;
   }
