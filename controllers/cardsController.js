@@ -2,6 +2,7 @@ const Cards = require('../models/cards');
 const CardsCollection = require('../models/cardsCollection');
 const Users = require('../models/users.js');
 const HiddenCards = require('../models/hiddenCards.js');
+const FavesCollection = require('../models/favourites');
 
 const async = require('async');
 const fs = require('fs');
@@ -76,38 +77,78 @@ exports.cardDetail = function(req, res, next) {
 				var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
 				if (err) { return next(err); }
 			}
-			res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
+			var totalUsers = await Users.countDocuments({});
+			res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, hasCard: hasCard, isHidden: false, totalUsers: totalUsers});
 		}
 	});
 };
 
 async function isCardInCollection(user, card) {
-	var collectionQuery = CardsCollection.findOne({user: user, card: card});
 	try {
-		var pair = await collectionQuery.exec();
+		var inCards = await CardsCollection.findOne({user: user, card: card});
+		var isFave = await FavesCollection.findOne({user: user, card: card});
 	} catch(err) {
 		return [err, null];
 	}
-	var hasCard = pair ? true : false;
+	var hasCard = [inCards, isFave];
 	return [null, hasCard];
 }
 
-exports.addToCollection = function(req, res) {
-	var pair = CardsCollection({
+exports.addToCollection = async function(req, res) {
+	var model = req.body.collection;
+
+	if (model === "cards") {
+		model = CardsCollection;
+	} else if (model === "favourites") {
+		model = FavesCollection;
+	} else {
+		return res.send('error');
+	}
+
+	var pair = model({
 		user: req.user.name,
 		card: req.params.id
 	});
-	pair.save(function (err) {
-		if (err) { res.send('error'); return; }
-		res.send('ok');
-	});
+
+	try {
+		pair.save();
+		var num = await model.countDocuments({card:req.params.id});
+		var totalUsers = await Users.countDocuments({});
+		if (model === CardsCollection) {
+			Cards.findOneAndUpdate({uniqueName:req.params.id},{"numOwned":num}).exec(); // or use $inc
+		} else {
+			Cards.findOneAndUpdate({uniqueName:req.params.id},{"numFaved":num}).exec();
+		}
+	} catch(e) {
+		return res.send({error: e});
+	}
+	res.send({error: null, updatedVal: (num/totalUsers).toFixed(2)});
 };
 
-exports.removeFromCollection = function(req, res) {
-	CardsCollection.deleteOne({user: req.user.name, card: req.params.id}, function(err, pair) {
-		if (err) { res.send('error'); return; }
-		res.send('ok');
-	});
+exports.removeFromCollection = async function(req, res) {
+	var model = req.body.collection;
+
+	if (model === "cards") {
+		model = CardsCollection;
+	} else if (model === "favourites") {
+		model = FavesCollection;
+	} else {
+		return res.send('error');
+	}
+
+	try {
+		model.deleteOne({user: req.user.name, card: req.params.id}).exec();
+		var num = await model.countDocuments({card:req.params.id});
+		var totalUsers = await Users.countDocuments({});
+		if (model === CardsCollection) {
+			Cards.findOneAndUpdate({uniqueName:req.params.id},{"numOwned":num}).exec();
+		} else {
+			Cards.findOneAndUpdate({uniqueName:req.params.id},{"numFaved":num}).exec();
+		}
+	} catch(e) {
+		return res.send({error: e});
+	}
+	res.send({error: null, updatedVal: (num/totalUsers).toFixed(2)});
 };
 
 exports.cardsCollection = async function(req, res, next) {
@@ -174,6 +215,33 @@ exports.cardsCollection = async function(req, res, next) {
 				cardStats.cards[card.type][1]++;
 			});
 			res.render('cardsList', { title: title, description: req.params.username + "'s Collection on Karasu-OS.com", cardsList: cardsList, cardStats: cardStats, user: req.user, path: 'collection' });
+		});
+	});
+};
+
+exports.getFavourites = async function(req, res, next) {
+	var [err, exists] = await usersController.userExists(req.params.username);
+	if (err) {
+		return next(err);
+	} else if (!exists) {
+		var err = new Error("User not found");
+		return next(err);
+	}
+
+	if (req.user && req.user.name === req.params.username) {
+		var title = 'My Favourites';
+	} else {
+		var title = req.params.username + "'s Favourites";
+	}
+
+	FavesCollection.find({user:req.params.username}, function (err, collection) {
+		if (err) { return next(err); }
+		var ownedCards = collection.map(pair => pair.card);
+		Cards.find({}, function(err, fullList) {
+			if (err) { return next(err); }
+			var cardsList = fullList.filter(card => ownedCards.includes(card.uniqueName));
+			cardsList.sort(sortByRarityAndNumber);
+			res.render('cardsList', { title: title, description: req.params.username + "'s favourite cards on Karasu-OS.com", cardsList: cardsList, user: req.user, path: "fav"});
 		});
 	});
 };
@@ -464,17 +532,17 @@ function removeCardDependencies(cardName, res, next) {
 }
 
 function deleteFile(file) {
-  	return new Promise(function(resolve, reject) {
-	    fs.access(file, fs.W_OK, function(err) {
-	      	if (!err) {
-		        fs.unlink(file, function(err) {
-		          	if (err) { return reject(err); }
-		          	resolve();
-		        });
-	      	} else {
-	        	resolve();
-	      	}
-	    });
+	return new Promise(function(resolve, reject) {
+		fs.access(file, fs.W_OK, function(err) {
+			if (!err) {
+				fs.unlink(file, function(err) {
+					if (err) { return reject(err); }
+					resolve();
+				});
+			} else {
+				resolve();
+			}
+		});
 	});
 };
 
@@ -491,4 +559,9 @@ exports.makeCardPublic = function(req, res, next) {
 			res.redirect("/card/"+doc.uniqueName);
 		});
 	});
+}
+
+exports.getRankings = async function(req, res) {
+	const ranking = await Cards.find({}, "name uniqueName numFaved").sort({numFaved:-1}).limit(10);
+	res.render('rankings', { title: 'Rankings', description: "Ranking of most liked obey me cards.", ranking: ranking, user: req.user});
 }

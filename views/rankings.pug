@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  div(class="container")
+    h1= title
+    div.card.card-body.shadow
+      if user && user.isAdmin
+        table.table
+          thead
+            tr
+              th.text-center Rank
+              th(colspan=2) Card
+              th Favourited by
+          tbody
+            - var count = 1;
+            each card in ranking
+              tr
+                td.text-center= count++
+                td
+                  a(href="card/"+card.uniqueName)
+                    img(style="width:96px;height:96px;" src="/images/cards/S/"+card.uniqueName+".jpg")
+                td
+                  a(href="card/"+card.uniqueName)= card.name
+                td= card.numFaved
+      else
+        div.mx-auto.my-5.text-center
+          h5.card-title (ง •̀_•́)ง Gathering data... <br><br>Head over to your favourite cards' page and fill your favourite collection!
