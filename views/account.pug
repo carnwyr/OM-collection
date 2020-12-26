@@ -50,9 +50,9 @@ block content
 
 	div(class="container")
 		div(class="row justify-content-center mb-3")
-			h2(class="col-lg-10 text-center py-2") #{user.name}'s Account Settings
+			h2(class="col-lg-10 text-center py-2") #{user.name}'s Settings
 			div(class="card shadow col-lg-10")
-				div(class="card-body col-lg-6 mx-auto")
+				div(class="card-body col-lg-6 mx-auto mb-3")
 
 					if user.email
 						- var emailStatus = user.email
@@ -63,14 +63,27 @@ block content
 						- var buttonText = "Link email"
 						- var emailMsg = "To enable password recovery, link your email address."
 
-					div(class="row mb-3")
-						label(for="staticEmail" class="col-12 col-form-label") Email
+					h5.card-title Account
+					div.col-12
+						p.card-text.mb-2 Email
 							if !user.email
 								span(class="badge badge-pill badge-warning ml-1") !
-						p.col-12.text-muted= emailMsg
-						div.col-lg-8.mb-2.mb-lg-0
-							input(type="text" readonly class="form-control" id="staticEmail" value=emailStatus)
-						button(class="btn btn-primary mx-3 mx-lg-0" id="setEmail" data-toggle="modal" data-target="#emailModal")= buttonText
-					div(class="row mb-3")
-						label(for="inputPassword" class="col-12 col-form-label") Password
-						button(class="btn btn-primary mx-3" id="setPassword" data-toggle="modal" data-target="#passwordModal") Change Password
+						p.card-text.text-muted= emailMsg
+						div.input-group.mb-3
+							input(type="text" readonly class="form-control rounded mr-2" id="staticEmail" value=emailStatus)
+							div(class="input-group-append")
+								button(class="btn btn-primary rounded-pill" id="setEmail" data-toggle="modal" data-target="#emailModal")= buttonText
+						p.card-text Password -
+							|
+							|
+							a(id="#setPassword" href="#" data-toggle="modal" data-target="#passwordModal") Change Password
+					br
+					h5.card-title Supporter Perks
+					div.col-12
+						div(class="form-check")
+							if user.supportStatus.includes("adfree")
+									input(class="form-check-input" type="checkbox" value="" id="adFreeStatus" checked disabled)
+									label(class="form-check-label" for="adFreeStatus" style="color:#00c853;") Ad-free Status
+							else
+									input(class="form-check-input" type="checkbox" value="" id="adFreeStatus" disabled)
+									label(class="form-check-label" for="adFreeStatus") Ad-free Status

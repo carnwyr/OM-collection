@@ -115,6 +115,21 @@ html(lang='en-US')
           <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins>
           script.
             (adsbygoogle = window.adsbygoogle || []).push({});
+          a(type="button" class="text-muted" data-toggle="modal" data-target="#removeAdsModal" style="display:none;") Remove Ads
+
+      //- modals
+      div(class="modal fade" id="removeAdsModal" tabindex="-1" aria-labelledby="removeAdsModalLabel" aria-hidden="true")
+        div(class="modal-dialog")
+          div(class="modal-content")
+            div(class="modal-header")
+              h5(class="modal-title" id="exampleModalLabel") Remove Ads
+              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                span(aria-hidden="true") &times;
+            div(class="modal-body") Karasu-OS.com is supported by advertisement and donations. Show your support and browse without distraction!
+            div(class="modal-footer")
+              button(type="button" class="btn btn-secondary" data-dismiss="modal") No thanks
+              a(type="button" class="btn btn-primary" href="https://www.buymeacoffee.com/karasuos" target="_blank") Support Now :D
+
     block footer
       footer(class="site-footer bg-primary navbar-dark mt-auto")
         div.container
