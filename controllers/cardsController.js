@@ -24,15 +24,14 @@ exports.cardsList = function(req, res, next) {
 
 function sortByRarityAndNumber(card1, card2) {
 	var rarityOrder = -1 * compareByRarity(card1.rarity, card2.rarity);
-		if (rarityOrder != 0)
-			return rarityOrder;
-		if (card1.number > card2.number) {
-			return -1;
-		}
-		if (card1.number < card2.number) {
-			return 1;
-		}
-		return 0;
+	if (rarityOrder != 0) return rarityOrder;
+	if (card1.number > card2.number) {
+		return -1;
+	}
+	if (card1.number < card2.number) {
+		return 1;
+	}
+	return 0;
 }
 
 function compareByRarity(rarity1, rarity2) {
@@ -76,7 +75,7 @@ exports.cardDetail = function(req, res, next) {
 				var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
 				if (err) { return next(err); }
 			}
-			res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
+			res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, hasCard: hasCard, isHidden: false });
 		}
 	});
 };
@@ -211,8 +210,8 @@ async function getBigStatsImage(ids, html) {
 
 function replaceImageNames(html) {
 	return html.replace(/\/images\/completion_star\.png/g, '{{star}}')
-			   .replace(/\/images\/demon_card\.png/g, '{{demon}}')
-			   .replace(/\/images\/memory_card\.png/g, '{{memory}}');
+		.replace(/\/images\/demon_card\.png/g, '{{demon}}')
+		.replace(/\/images\/memory_card\.png/g, '{{memory}}');
 }
 
 function getReplacedImages() {
@@ -222,13 +221,13 @@ function getReplacedImages() {
 					resolve(img);
 		});
 	});
-	const p2 =  new Promise((resolve, reject) => {
+	const p2 = new Promise((resolve, reject) => {
 		fs.readFile('./public/images/demon_card.png', (err,img) => {
 			if (err) reject(err);
 					resolve(img);
 		});
 	});
-	const p3 =  new Promise((resolve, reject) => {
+	const p3 = new Promise((resolve, reject) => {
 		fs.readFile('./public/images/memory_card.png', (err,img) => {
 			if (err) reject(err);
 					resolve(img);
@@ -388,17 +387,17 @@ function writeImage(name, baseImage, cardSize, isBoomed) {
 	if(!baseImage) return;
 
 	const ext = baseImage.substring(baseImage.indexOf("/")+1, baseImage.indexOf(";base64"));
-    const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
-    const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
-    const base64Data = baseImage.replace(regex, "");
-    const imageData = new Buffer.from(base64Data, 'base64');
-    const imagePath = './public/images/cards/' + cardSize + '/' + name + (isBoomed?'_b':'') + '.jpg';
+	const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
+	const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
+	const base64Data = baseImage.replace(regex, "");
+	const imageData = new Buffer.from(base64Data, 'base64');
+	const imagePath = './public/images/cards/' + cardSize + '/' + name + (isBoomed?'_b':'') + '.jpg';
 
-    return new Promise((resolve, reject) => {
-	    fs.writeFile(imagePath, imageData, err => {
-	    	if (err) reject(err);
-	    	resolve();
-	    });
+	return new Promise((resolve, reject) => {
+		fs.writeFile(imagePath, imageData, err => {
+			if (err) reject(err);
+			resolve();
+		});
 	});
 }
 
@@ -464,17 +463,17 @@ function removeCardDependencies(cardName, res, next) {
 }
 
 function deleteFile(file) {
-  	return new Promise(function(resolve, reject) {
-	    fs.access(file, fs.W_OK, function(err) {
-	      	if (!err) {
-		        fs.unlink(file, function(err) {
-		          	if (err) { return reject(err); }
-		          	resolve();
-		        });
-	      	} else {
-	        	resolve();
-	      	}
-	    });
+	return new Promise(function(resolve, reject) {
+		fs.access(file, fs.W_OK, function(err) {
+			if (!err) {
+				fs.unlink(file, function(err) {
+					if (err) { return reject(err); }
+					resolve();
+				});
+			} else {
+				resolve();
+			}
+		});
 	});
 };
 
