@@ -1,21 +1,21 @@
-const Users = require('../models/users.js')
-const Codes = require('../models/verificationCodes.js')
+const Users = require("../models/users.js");
+const Codes = require("../models/verificationCodes.js");
 
-const bcrypt = require('bcrypt')
-const cryptoRandomString = require('crypto-random-string');
-const passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy
-const { body, validationResult } = require('express-validator');
-const async = require('async');
-const nodemailer = require('nodemailer');
+const bcrypt = require("bcrypt");
+const cryptoRandomString = require("crypto-random-string");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const { body, validationResult } = require("express-validator");
+const async = require("async");
+const nodemailer = require("nodemailer");
 
-require('dotenv').config();
+require("dotenv").config();
 
 exports.loginGet = function(req, res, next) {
   res.render('login', { title: 'Login', message: req.flash('message'), user: req.user });
 };
 
-exports.loginPost = passport.authenticate('local',{
+exports.loginPost = passport.authenticate('local', {
 	successRedirect: '/',
 	failureRedirect: '/login',
 	failureFlash: true
@@ -49,7 +49,7 @@ exports.signupPost = [
 
 		let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection'];
 		if (blacklist.includes(req.body.username.toLowerCase())) {
-			req.flash('message', 'Username invalid')
+			req.flash('message', 'Username invalid');
 			res.render('signup', { title: 'Signup', user: req.user });
 			return;
 		}
@@ -57,31 +57,32 @@ exports.signupPost = [
 		var [err, exists] = await exports.userExists(req.body.username);
 		if (err) { return next(err); }
 
-		if (exists) {
-			req.flash('message', 'Username taken')
-			res.render('signup', { title: 'Signup', user: req.user });
-		}
-		else {
-			bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
-				if (err) { return next(err); }
-				bcrypt.hash(req.body.password, salt, function (err, hash) {
-					if (err) { return next(err); }
-					var user = new Users({
-						name: req.body.username,
-						password: hash,
-						isAdmin: false
-					});
-					user.save(function (err) {
-						if (err) {return next(err); }
-						req.login(user, function(err) {
-							if (err) { return next(err); }
-							res.redirect('/');
-						});
-					});
-				});
-			});
-		}
-	}
+    if (exists) {
+      req.flash("message", "Username taken");
+      res.render("signup", { title: "Signup", user: req.user });
+    } else {
+      bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+        if (err) return next(err);
+        bcrypt.hash(req.body.password, salt, function(err, hash) {
+          if (err) return next(err);
+          var user = new Users({
+            info: {
+              name: req.body.username,
+              password: hash,
+              isAdmin: false
+            }
+          });
+          user.save(function(err) {
+            if (err) return next(err);
+            req.login(user, function(err) {
+              if (err) return next(err);
+              res.redirect("/");
+            });
+          });
+        });
+      });
+    }
+  }
 ];
 
 exports.userExists = async function(username) {
@@ -320,17 +321,20 @@ exports.isSameUser = function () {
 
 passport.use(new LocalStrategy({ passReqToCallback : true },
 	function(req, username, password, next) {
-		Users.findOne({ 'name': { $regex : new RegExp('^' + username + '$', "i") }}, function (err, user) {
+		Users.findOne({ "info.name": { $regex : new RegExp('^' + username + '$', "i") }}, function (err, user) {
 			if (err) { return next(err) }
 			if (!user) {
 				return next(null, false, req.flash('message', 'No such user'))
 			}
-			bcrypt.compare(password, user.password, function (err, result) {
+			bcrypt.compare(password, user.info.password, function (err, result) {
 				if (err) { return next(err) }
-				if (!result)
-					return next(null, false, req.flash('message', 'Wrong password'))
-				else
-					return next(null, user)
+				if (!result) {
+          return next(null, false, req.flash('message', 'Wrong password'));
+        } else {
+          var userInfo = user.info;
+          userInfo.id = user.id;
+          return next(null, userInfo);
+        }
 			});
 		})
 	}
@@ -342,7 +346,9 @@ passport.serializeUser(function(user, next) {
 
 passport.deserializeUser(function(id, next) {
   Users.findById(id, function(err, user) {
-	next(err, user);
+    var userInfo = user.info;
+    userInfo.id = user.id;
+    next(err, userInfo);
   });
 });
 
