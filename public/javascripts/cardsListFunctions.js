@@ -6,10 +6,9 @@ var viewType = "icon";
 var querystr = new URLSearchParams(document.location.search.substring(1));
 
 $(document).ready(function(){
+	resetFilters();
 	if ('URLSearchParams' in window) {
 		applyQuery();
-	} else {
-		resetFilters();
 	}
 
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
@@ -512,7 +511,6 @@ function switchViewOption(changeViewTo) {
 }
 
 function applyQuery() {
-	resetFilters();
 	if (querystr.toString() === '' || querystr.toString() === "view=icon") {
 		history.scrollRestoration = "auto";
 		return;
@@ -541,7 +539,6 @@ function applyQuery() {
 	} else {
 		viewType = "icon";
 		querystr.set("view", "icon");
-		updateQuery();
 	}
 
 	$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);

@@ -9,6 +9,7 @@ var miscController = require('../controllers/miscController');
 router.get('/', cardsController.index);
 router.get('/policies', miscController.privacyPolicy);
 router.get("/surpriseGuest", miscController.surpriseGuest);
+router.get("/rankings", cardsController.getRankings);
 
 // Cards list
 router.get('/cards', cardsController.cardsList);
@@ -27,9 +28,11 @@ router.get('/collection/getOwnedCards', usersController.isLoggedIn(), cardsContr
 router.post('/collection/updateOwnedCards', usersController.isLoggedIn(), cardsController.updateOwnedCards);
 router.get('/:username/collection', cardsController.cardsCollection);
 router.post('/:username/getStatsImage', cardsController.getStatsImage);
+router.get('/:username/favourites', cardsController.getFavourites);
 
 // User Management
 router.get("/userpage", usersController.isAdmin(), usersController.userList);
 router.post("/updateSupport", usersController.isAdmin(), usersController.updateSupport);
+
 
 module.exports = router;

@@ -2,6 +2,7 @@ const Cards = require('../models/cards');
 const CardsCollection = require('../models/cardsCollection');
 const Users = require('../models/users.js');
 const HiddenCards = require('../models/hiddenCards.js');
+const FavesCollection = require('../models/favourites');
 
 const async = require('async');
 const fs = require('fs');
@@ -204,6 +205,33 @@ exports.cardsCollection = async function(req, res, next) {
 				cardStats.cards[card.type][1]++;
 			});
 			res.render('cardsList', { title: title, description: req.params.username + "'s Collection on Karasu-OS.com", cardsList: cardsList, cardStats: cardStats, user: req.user, path: 'collection' });
+		});
+	});
+};
+
+exports.getFavourites = async function(req, res, next) {
+	var [err, exists] = await usersController.userExists(req.params.username);
+	if (err) {
+		return next(err);
+	} else if (!exists) {
+		var err = new Error("User not found");
+		return next(err);
+	}
+
+	if (req.user && req.user.name === req.params.username) {
+		var title = 'My Favourites';
+	} else {
+		var title = req.params.username + "'s Favourites";
+	}
+
+	FavesCollection.find({user:req.params.username}, function (err, collection) {
+		if (err) { return next(err); }
+		var ownedCards = collection.map(pair => pair.card);
+		Cards.find({}, function(err, fullList) {
+			if (err) { return next(err); }
+			var cardsList = fullList.filter(card => ownedCards.includes(card.uniqueName));
+			cardsList.sort(sortByRarityAndNumber);
+			res.render('cardsList', { title: title, description: req.params.username + "'s favourite cards on Karasu-OS.com", cardsList: cardsList, user: req.user, path: "fav"});
 		});
 	});
 };
@@ -521,4 +549,9 @@ exports.makeCardPublic = function(req, res, next) {
 			res.redirect("/card/"+doc.uniqueName);
 		});
 	});
+}
+
+exports.getRankings = async function(req, res) {
+	const ranking = await Cards.find({}, "name uniqueName numFaved").sort({numFaved:-1}).limit(10);
+	res.render('rankings', { title: 'Rankings', description: "Ranking of most liked obey me cards.", ranking: ranking, user: req.user});
 }

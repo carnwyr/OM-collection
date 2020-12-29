@@ -42,8 +42,9 @@ block content
               a(href="/signup" type="button" class="btn btn-primary m-1") Sign Up
               a(href="/login" type="button" class="btn btn-primary m-1") Login
             else
-              a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1") My collection
-            a(href="/surpriseGuest" type="button" class="btn btn-primary m-1") Surprise Guest Guide
+              a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1") My Collection
+              a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1") My Favourites
+            a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1") Surprise Guest Guide
         div.row
           div.col-12.col-md-6.mb-4
             div.card.shadow.h-100

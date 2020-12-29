@@ -3,7 +3,7 @@ html(lang='en-US')
   head
     meta(charset='utf-8')
     title= title+" | Obey Me! Resources (fan-made) | Karasu-OS.com"
-    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
     meta(name="description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
     meta(name="keywords" content="Obey Me, おべいみー, cards, tools")
     meta(property="og:title" content=title)
@@ -13,10 +13,10 @@ html(lang='en-US')
     else
       meta(property="og:image" content="https://karasu-os.com/images/karasu.png")
     link(rel="icon" type="image/png" href="/images/favicon.png")
-    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/theme.css')
-    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Kanit|Nunito:wght@200;300;400;700')
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
+    link(rel='stylesheet' href='/stylesheets/theme.css')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Kanit|Nunito:wght@200;300;400;700')
+    link(rel='stylesheet' href='/stylesheets/style.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
     script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
     script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js')
@@ -32,39 +32,35 @@ html(lang='en-US')
 
   body(class="d-flex flex-column min-vh-100")
     nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white")
-      a(class="navbar-brand", href='/', style="font-family: 'Kanit'; font-size: 1.4rem") Karasu OS&nbsp;
+      a(class="navbar-brand" href='/' style="font-family: 'Kanit'; font-size: 1.4rem") Karasu OS&nbsp;
         span(style="font-family: 'Nunito'; font-size: 18px") Beta
       button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerMenu" aria-controls="navbarTogglerMenu" aria-expanded="false" aria-label="Toggle navigation")
         span(class="navbar-toggler-icon")
       div(class="collapse navbar-collapse" id="navbarTogglerMenu")
         ul(class="navbar-nav")
           li(class="nav-item")
-            a(class="nav-link", href='/') Home
+            a(class="nav-link" href='/') Home
           li(class="nav-item")
-            a(class="nav-link", href='/cards') Gallery
+            a(class="nav-link" href='/cards') Gallery
           if user
-            li(class="nav-item")
-              a(class="nav-link", href='/' + user.name + '/collection') My collection
-          li(class="nav-item dropdown d-none d-md-block")
+            li(class="nav-item dropdown")
+              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Collections
+              div(class="dropdown-menu shadow px-2" aria-labelledby="collectionDropdown")
+                a(class="dropdown-item" href='/' + user.name + '/collection') Cards
+                a(class="dropdown-item" href='/' + user.name + '/favourites') Favourites
+          li(class="nav-item")
+            a(class="nav-link" href='/rankings') Rankings
+          li(class="nav-item dropdown")
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
             div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
-              a(class="nav-link text-dark dropdown-item", href='/surpriseGuest') Surprise Guest
-          li(class="nav-item d-md-none")
-            a(class="nav-link", href='/surpriseGuest') Surprise Guest
+              a(class="dropdown-item" href='/SurpriseGuest') Surprise Guest
           if user && user.isAdmin
-            li(class="nav-item dropdown d-none d-md-block")
-              a(class="dropdown-toggle nav-link" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
-              div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="adminDropdownButton")
-                a(class="nav-link dropdown-item", href='/card/new')
-                  span(class="text-dark") Add new card
-                a(class="nav-link dropdown-item", href='/hiddenCards')
-                  span(class="text-dark") Hidden cards
-                a(class="nav-link dropdown-item", href='/userpage')
-                  span(class="text-dark") User List
-            li(class="nav-item d-md-none")
-              a(class="nav-link", href='/card/new') Add new card
-            li(class="nav-item d-md-none")
-              a(class="nav-link", href='/hiddenCards') Hidden cards
+            li(class="nav-item dropdown")
+              a(class="nav-link dropdown-toggle" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
+              div(class="dropdown-menu shadow px-2" aria-labelledby="adminDropdownButton")
+                a(class="dropdown-item" href='/card/new') Add new card
+                a(class="dropdown-item" href='/hiddenCards') Hidden cards
+                a(class="dropdown-item" href='/userpage') User List
         ul(class="navbar-nav ml-auto")
           li(class="nav-item d-none d-md-block")
             div(class="nav-link" style="position:relative;bottom:1px")
@@ -72,30 +68,27 @@ html(lang='en-US')
           div(class="dropdown-divider" style="opacity:32%;")
           if !user
             li(class="nav-item")
-              a(class="nav-link", href='/signup')
+              a(class="nav-link" href='/signup')
                 span(class="d-md-none") Sign Up
                 span(class="d-none d-md-block text-white") Sign Up
             li(class="nav-item")
-              a(class="nav-link", href='/login')
+              a(class="nav-link" href='/login')
                 span(class="d-md-none") Login
                 span(class="d-none d-md-block text-white") Login
           if user
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link text-white" role='button' id='accountDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Account
               div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="accountDropdownButton")
-                a(class="nav-link dropdown-item", href='/user/'+user.name)
-                  span(class="text-dark") Settings&nbsp;
+                a(class="dropdown-item" href='/user/'+user.name) Settings&nbsp;
                   if !user.email
                     span(class="badge badge-warning") !
-                a(class="nav-link dropdown-item", href='/logout')
-                  span(class="text-dark") Logout
+                a(class="dropdown-item" href='/logout') Logout
             li(class="nav-item d-md-none")
-              a(class="nav-link", href='/user/'+user.name)
-                span Settings&nbsp;
+              a(class="nav-link" href='/user/'+user.name) Settings&nbsp;
                 if !user.email
                   span(class="badge badge-warning") !
             li(class="nav-item d-md-none")
-              a(class="nav-link", href='/logout') Logout
+              a(class="nav-link" href='/logout') Logout
 
     div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
       div(class="toast-body")
