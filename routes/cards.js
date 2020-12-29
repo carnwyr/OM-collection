@@ -10,9 +10,8 @@ router.post('/updateCard', usersController.isAdmin(), cardsController.updateCard
 // Card creation page
 router.get('/new', usersController.isAdmin(), cardsController.editCard);
 
-// Personal collection management
-router.post('/:id/addToCollection', usersController.isLoggedIn(), cardsController.addToCollection);
-router.post('/:id/removeFromCollection', usersController.isLoggedIn(), cardsController.removeFromCollection);
+// Collection management from card detail page
+router.post('/:id/updateCollection', usersController.isLoggedIn(), cardsController.updateCollection);
 
 // Card edit page
 router.get('/:id/edit', usersController.isAdmin(), cardsController.editCard);

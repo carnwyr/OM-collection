@@ -55,7 +55,7 @@ function compareByRarity(rarity1, rarity2) {
 exports.cardDetail = function(req, res, next) {
 	Cards.findOne({uniqueName: req.params.id}, async function(err, cardData) {
 		if (err) { return next(err); }
-		if (!cardData) {
+		if (!cardData) { // if no data, then check for hidden cards
 			if (req.user && req.user.isAdmin) {
 				HiddenCards.findOne({uniqueName: req.params.id}, function(err, cardData) {
 					if (err) { return next(err); }
@@ -69,43 +69,74 @@ exports.cardDetail = function(req, res, next) {
 				var err = new Error('Card not found');
 				return next(err);
 			}
-		} else {
-			hasCard = false;
-			if (req.user) {
-				var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
-				if (err) { return next(err); }
+		} else { // we found the card
+			var stats = new Object();
+			if (req.user) { // check if user have card
+				try {
+					if (JSON.stringify(await Users.find({_id: req.user.id, "cards.owned": req.params.id})) === "[]") {
+						stats.ownsCard = false;
+					} else {
+						stats.ownsCard = true;
+					}
+				  if (JSON.stringify(await Users.find({ _id: req.user.id, "cards.faved": req.params.id })) === "[]") {
+				    stats.favesCard = false;
+				  } else {
+						stats.favesCard = true;
+					}
+				} catch(e) {
+					return next(e);
+				}
 			}
-			res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, hasCard: hasCard, isHidden: false });
+			var totalusers = await Users.countDocuments();
+			stats.ownedTotal = (await Users.countDocuments({"cards.owned": req.params.id})/totalusers).toFixed(2);
+			stats.favedTotal = (await Users.countDocuments({"cards.faved": req.params.id})/totalusers).toFixed(2);
+			res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, stats: stats, isHidden: false });
 		}
 	});
 };
 
-async function isCardInCollection(user, card) {
-	var collectionQuery = CardsCollection.findOne({user: user, card: card});
-	try {
-		var pair = await collectionQuery.exec();
-	} catch(err) {
-		return [err, null];
-	}
-	var hasCard = pair ? true : false;
-	return [null, hasCard];
-}
+exports.updateCollection = function(req, res) {
+	var collection = req.body.collection;
+	var modify = req.body.modify;
+	var change, updatedVal;
 
-exports.addToCollection = function(req, res) {
-	var pair = CardsCollection({
-		user: req.user.name,
-		card: req.params.id
-	});
-	pair.save(function (err) {
-		if (err) { res.send('error'); return; }
-		res.send('ok');
-	});
-};
+	return new Promise(async function(resolve, reject) {
+		if (modify === "add") {
+			if (collection === "owned") {
+				change = await Users.findOneAndUpdate({"info.name": req.user.name}, {$push: {"cards.owned": req.params.id}});
+			} else {
+				change = await Users.findOneAndUpdate({"info.name": req.user.name}, {$push: {"cards.faved": req.params.id}});
+			}
+		} else {
+			if (collection === "owned") {
+				change = await Users.findOneAndUpdate({"info.name": req.user.name}, {$pull: {"cards.owned": req.params.id}});
+			} else {
+				change = await Users.findOneAndUpdate({"info.name": req.user.name}, {$pull: {"cards.faved": req.params.id}});
+			}
+		}
 
-exports.removeFromCollection = function(req, res) {
-	CardsCollection.deleteOne({user: req.user.name, card: req.params.id}, function(err, pair) {
-		if (err) { res.send('error'); return; }
-		res.send('ok');
+		if (collection === "owned") {
+			updatedVal = await Users.countDocuments({"cards.owned": req.params.id});
+		} else {
+			updatedVal = await Users.countDocuments({"cards.faved": req.params.id});
+		}
+
+		var totalusers = await Users.countDocuments();
+
+		if (change !== null) {
+			resolve({msg: "Collection updated!", updatedVal: (updatedVal/totalusers).toFixed(2)});
+		} else {
+			reject("Something went wrong. Try refreshing the page?");
+		}
+	}).then(
+		function(result) {
+			res.json({ err: null, message: result.msg, updatedVal: result.updatedVal});
+		},
+		function(error) {
+			res.json({ err: true, message: error });
+		}
+	).catch(err => {
+		res.json({ err: true, message: err });
 	});
 };
 
@@ -237,24 +268,24 @@ function getReplacedImages() {
 	return Promise.all([p1, p2, p3]);
 }
 
-async function getUserId(currentUser, requestedUsername) {
-	var userQuery = Users.findOne({ 'name': requestedUsername });
-	if (currentUser && currentUser.name === requestedUsername) {
-		return [null, currentUser._id];
-	}
-	else {
-		try {
-			var user = await userQuery.exec();
-		} catch(err) {
-			return [err, null];
-		}
-		if (!user) {
-			var err = new Error('User not found');
-			return [err, null];
-		}
-		return [null, user._id];
-	}
-}
+// async function getUserId(currentUser, requestedUsername) {
+// 	var userQuery = Users.findOne({ "info.name": requestedUsername });
+// 	if (currentUser && currentUser.name === requestedUsername) {
+// 		return [null, currentUser._id];
+// 	}
+// 	else {
+// 		try {
+// 			var user = await userQuery.exec();
+// 		} catch(err) {
+// 			return [err, null];
+// 		}
+// 		if (!user) {
+// 			var err = new Error('User not found');
+// 			return [err, null];
+// 		}
+// 		return [null, user._id];
+// 	}
+// }
 
 exports.getOwnedCards = function(req, res) {
 	CardsCollection.find({user: req.user.name}, function (err, collection) {

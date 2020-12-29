@@ -8,24 +8,24 @@ block content
     h1= title
     div.card.card-body.shadow
       div.d-md-none
-        p hey, go find a device with larger screen
-      div.d-none.d-md-block
-        p sortby: date (of registration), name, email
-        table(class="table table-hover")
-          thead
+        h5.card-title try to find a device with larger screen, or one with console
+        hr
+      p.card-text ?sortby= date (of registration), name, email
+      table(class="table table-hover")
+        thead
+          tr
+            th(scope="col") Name
+            th(scope="col") Email
+            th(scope="col") Supporter Status
+        tbody
+          each usr in userList.users
             tr
-              th(scope="col") Name
-              th(scope="col") Email
-              th(scope="col") Supporter Status
-          tbody
-            each usr in userList.users
-              tr
-                td #{usr.name}
-                td #{usr.email}
-                td(id=usr.name)
-                  input(class="form-control" type="text" value=usr.supportStatus)
-        nav(aria-label="user table navigation")
-          ul(class="pagination justify-content-center")
+              td #{usr.info.name}
+              td #{usr.info.email}
+              td(id=usr.info.name)
+                input(class="form-control" type="text" value=usr.info.supportStatus)
+      nav(aria-label="user table navigation")
+        ul(class="pagination justify-content-center")
 
   script.
     paginate(!{JSON.stringify(userList)});

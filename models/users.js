@@ -23,7 +23,7 @@ var UsersSchema = new Schema(
     },
     cards: {
       owned: {type: Array},
-      faves: {type: Array}
+      faved: {type: Array}
     }
   }
 );

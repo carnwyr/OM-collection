@@ -86,7 +86,7 @@ exports.signupPost = [
 ];
 
 exports.userExists = async function(username) {
-	var userQuery = Users.findOne({ 'name': { $regex : new RegExp('^' + username + '$', "i") } });
+	var userQuery = Users.findOne({"info.name": { $regex : new RegExp('^' + username + '$', "i") } });
 	try {
 		var user = await userQuery.exec();
 	} catch(err) {
@@ -336,9 +336,9 @@ passport.use(new LocalStrategy({ passReqToCallback : true },
           return next(null, userInfo);
         }
 			});
-		})
+		});
 	}
-))
+));
 
 passport.serializeUser(function(user, next) {
   next(null, user.id);
@@ -360,21 +360,21 @@ exports.userList = async function(req, res) {
   const endIndex = page * limit;
 
   var result = {};
-  var userList;
+
   try {
     if (req.query.sortby === "name") {
-      userList = await Users.find().sort( { name : 1 } ).limit(limit).skip(startIndex);
+      result.users = await Users.find({},"info").sort( { "info.name" : 1 } ).limit(limit).skip(startIndex);
     } else if (req.query.sortby === "email") {
-      userList = await Users.find().sort( { email : 1 } ).limit(limit).skip(startIndex);
+      result.users = await Users.find({},"info").sort( { "info.email" : 1 } ).limit(limit).skip(startIndex);
     } else {
-      userList = await Users.find().limit(limit).skip(startIndex);
+      result.users = await Users.find({},"info").limit(limit).skip(startIndex);
     }
-    var userNum = await Users.countDocuments({});
-  } catch (e) {
+    var totalusers = await Users.countDocuments();
+  } catch(e) {
     res.status(500).json({ message: e.message });
   }
 
-  if (endIndex < userNum) {
+  if (endIndex < totalusers) {
     result.nextpage = {
       page: page + 1
     };
@@ -386,9 +386,8 @@ exports.userList = async function(req, res) {
     };
   }
 
-  result.totalusers = userNum;
-  result.totalpage = Math.ceil(userNum/limit);
-  result.users = userList;
+  result.totalpage = Math.ceil(totalusers/limit);
+  result.totalusers = totalusers;
   res.render('userpage', { title: 'User List', userList: result, user: req.user});
 }
 
@@ -396,24 +395,22 @@ exports.updateSupport = function(req, res) {
   const user = req.body.supportstatus.user;
   const newstatus = req.body.supportstatus.newstatus;
 
-  try {
-    const confirmUpdate = new Promise(async function(resolve, reject) {
-      var updated = await Users.updateOne({ name: user}, { supportStatus : newstatus });
+  return new Promise(async function(resolve, reject) {
+    var updated = await Users.updateOne({ "info.name": user }, { "info.supportStatus": newstatus });
 
-      if (updated.nModified === 1) {
-        resolve(user+"'s supporting status successfully updated :)");
-      } else {
-        reject("Error "+reject+" :( try again? It's also possible that you didn't change anything.");
-      }
-    });
-
-    confirmUpdate.then(function(result) {
-        res.json({ err: null, message: result });
-      }, function(error) {
-        res.json({ err: true, message: error });
-      }
-    );
-  } catch (err) {
+    if (updated.nModified === 1) {
+      resolve(user+"'s supporting status successfully updated :)");
+    } else {
+      reject("Error "+reject+" :( try again? It's also possible that you didn't change anything.");
+    }
+  }).then(
+    function(result) {
+      res.json({ err: null, message: result });
+    },
+    function(error) {
+      res.json({ err: true, message: error });
+    }
+  ).catch(err => {
     res.status(500).json({ message: err.message });
-  }
+  });
 }
