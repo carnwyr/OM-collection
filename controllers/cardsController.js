@@ -2,7 +2,6 @@ const Cards = require('../models/cards');
 const CardsCollection = require('../models/cardsCollection');
 const Users = require('../models/users.js');
 const HiddenCards = require('../models/hiddenCards.js');
-const FavesCollection = require('../models/favourites');
 
 const async = require('async');
 const fs = require('fs');
@@ -186,9 +185,10 @@ exports.cardsCollection = async function(req, res, next) {
 	} else {
 		var title = req.params.username + "'s Collection";
 	}
-	CardsCollection.find({user: req.params.username}, function (err, collection) {
-		if (err) { return next(err); }
-		var ownedCards = collection.map(pair => pair.card);
+
+	Users.find({"info.name": req.params.username}, "cards.owned", function(err, cards) {
+		if (err) return next(err);
+		var ownedCards = cards[0].cards.owned;
 		Cards.find({}, function(err, fullList) {
 			if (err) { return next(err); }
 			var cardsList = fullList.filter(card => ownedCards.includes(card.uniqueName));
@@ -224,14 +224,14 @@ exports.getFavourites = async function(req, res, next) {
 		var title = req.params.username + "'s Favourites";
 	}
 
-	FavesCollection.find({user:req.params.username}, function (err, collection) {
-		if (err) { return next(err); }
-		var ownedCards = collection.map(pair => pair.card);
+	Users.find({"info.name": req.params.username}, "cards.faved", function(err, cards) {
+		if (err) return next(err);
+		var ownedCards = cards[0].cards.faved;
 		Cards.find({}, function(err, fullList) {
-			if (err) { return next(err); }
+			if (err) return next(err);
 			var cardsList = fullList.filter(card => ownedCards.includes(card.uniqueName));
 			cardsList.sort(sortByRarityAndNumber);
-			res.render('cardsList', { title: title, description: req.params.username + "'s favourite cards on Karasu-OS.com", cardsList: cardsList, user: req.user, path: "fav"});
+			res.render('cardsList', { title: title, description: req.params.username + "'s favourite Obey Me cards on Karasu-OS.com", cardsList: cardsList, user: req.user, path: "fav"});
 		});
 	});
 };
@@ -552,6 +552,24 @@ exports.makeCardPublic = function(req, res, next) {
 }
 
 exports.getRankings = async function(req, res) {
-	const ranking = await Cards.find({}, "name uniqueName numFaved").sort({numFaved:-1}).limit(10);
-	res.render('rankings', { title: 'Rankings', description: "Ranking of most liked obey me cards.", ranking: ranking, user: req.user});
+	var ranking = await Users.aggregate([
+	  { $unwind: "$cards.faved" },
+	  { $group: { _id: "$cards.faved", total: { $sum: 1 } } },
+	  { $sort: { total: -1 } },
+	  { $limit: 10 }
+	]);
+
+	ranking.forEach(async (card, i) => {
+	  var temp = await Cards.find({ uniqueName: card._id });
+	  ranking[i].name = temp[0].name;
+
+	  if (i === ranking.length - 1) {
+	    res.render("rankings", {
+	      title: "Rankings",
+	      description: "Ranking of most liked obey me cards.",
+	      ranking: ranking,
+	      user: req.user
+	    });
+	  }
+	});
 }

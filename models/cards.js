@@ -10,9 +10,7 @@ var CardsSchema = new Schema(
     rarity: {type: String, required: true, enum: ['N', 'R', 'SR', 'SSR', 'UR', 'UR+']},
     attribute: {type: String, required: true, enum: ['Pride', 'Greed', 'Envy', 'Wrath', 'Lust', 'Gluttony', 'Sloth']},
     characters: {type: Array},
-    number: {type: Number, required: true},
-    numOwned: {type: Number},
-    numFaved: {type: Number}
+    number: {type: Number, required: true}
   }
 );
 

@@ -25,8 +25,8 @@ block content
               tr
                 td.text-center= count++
                 td
-                  a(href="card/"+card.uniqueName)
-                    img(style="width:96px;height:96px;" src="/images/cards/S/"+card.uniqueName+".jpg")
+                  a(href="card/"+card._id)
+                    img(style="width:96px;height:96px;" src="/images/cards/S/"+card._id+".jpg")
                 td
-                  a(href="card/"+card.uniqueName)= card.name
-                td= card.numFaved
+                  a(href="card/"+card._id)= card.name
+                td= card.total
