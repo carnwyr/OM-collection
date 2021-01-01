@@ -88,8 +88,10 @@ exports.cardDetail = function(req, res, next) {
 				}
 			}
 			var totalusers = await Users.countDocuments();
-			stats.ownedTotal = (await Users.countDocuments({"cards.owned": req.params.id})/totalusers).toFixed(2);
-			stats.favedTotal = (await Users.countDocuments({"cards.faved": req.params.id})/totalusers).toFixed(2);
+			var ownedTotal = await Users.countDocuments({"cards.owned": req.params.id});
+			var favedTotal = await Users.countDocuments({"cards.faved": req.params.id});
+			stats.ownedTotal = (ownedTotal/totalusers).toFixed(2);
+			stats.favedTotal = (favedTotal/totalusers).toFixed(2);
 			res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, stats: stats, isHidden: false });
 		}
 	});
@@ -224,16 +226,24 @@ exports.getFavourites = async function(req, res, next) {
 		var title = req.params.username + "'s Favourites";
 	}
 
-	Users.find({"info.name": req.params.username}, "cards.faved", function(err, cards) {
-		if (err) return next(err);
-		var ownedCards = cards[0].cards.faved;
-		Cards.find({}, function(err, fullList) {
+	Users.aggregate(
+		[
+			{ $match: { "info.name": req.params.username } },
+			{
+				$lookup: {
+					from: "cards",
+					localField: "cards.faved",
+					foreignField: "uniqueName",
+					as: "favedCards"
+				}
+			},
+			{ $project: { _id: 0, favedCards: 1 } }
+		], (err, cards) => {
 			if (err) return next(err);
-			var cardsList = fullList.filter(card => ownedCards.includes(card.uniqueName));
-			cardsList.sort(sortByRarityAndNumber);
-			res.render('cardsList', { title: title, description: req.params.username + "'s favourite Obey Me cards on Karasu-OS.com", cardsList: cardsList, user: req.user, path: "fav"});
-		});
-	});
+			var cardsList = cards[0].favedCards.sort(sortByRarityAndNumber);
+			res.render("cardsList", { title: title, description: req.params.username + "'s favourite Obey Me cards on Karasu-OS.com", cardsList: cardsList, user: req.user, path: "fav" });
+		}
+	);
 };
 
 exports.getStatsImage = async function(req, res) {
