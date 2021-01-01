@@ -6,18 +6,21 @@ var viewType = "icon";
 var querystr = new URLSearchParams(document.location.search.substring(1));
 
 $(document).ready(function(){
-	if ('URLSearchParams' in window) {
-		applyQuery();
-	} else {
-		resetFilters();
-	}
-
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
 	$("img.lazy").each(function(){
 		if (this.complete && this.naturalHeight !== 0){
 			$(this).removeClass("lazy");
 		}
 	});
+	if ('URLSearchParams' in window && Array.from(querystr).length === 0) {
+		$('.queried').removeClass('queried');
+	}
+
+	if ('URLSearchParams' in window) {
+		applyQuery();
+	} else {
+		resetFilters();
+	}
 
 	$("form input").on('click', formChanged);
 	$("div#filters input").on('change', applyFilters);
@@ -132,17 +135,20 @@ async function applyFilters() {
 
 	if (search !== '') {
 		querystr.set("search", search);
-		updateQuery();
 	}
 
 	ownedCards = []
 	if ($('#notOwned').prop('checked')) {
+		querystr.set("notOwned", true);
 		ownedCards = await $.ajax({
 			type: 'get',
 			url: '/collection/getOwnedCards',
 			cache: false
 		});
+	} else {
+		querystr.delete("notOwned");
 	}
+	updateQuery();
 	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), filters, search, ownedCards));
 }
 
@@ -182,6 +188,7 @@ var updateQuery = () => {
 
 function updateCardDisplay(cards, view) {
 	$(".cardPreview").fadeOut(400).promise().done(function() {
+		$('.queried').removeClass('queried');
 		if (view) {
 			$('.cardPreview>img').each(function() {
 				$(this).attr('src', changes[view]['srcAction'](this));
@@ -520,7 +527,7 @@ function switchViewOption(changeViewTo) {
 	updateQuery();
 }
 
-function applyQuery() {
+async function applyQuery() {
 	resetFilters();
 	if (querystr.toString() === '' || querystr.toString() === "view=icon") {
 		history.scrollRestoration = "auto";
@@ -528,6 +535,8 @@ function applyQuery() {
 	} else {
 		history.scrollRestoration = "manual";
 	}
+
+	excludedCards = []
 
 	for (param of querystr.keys()) {
 		var filterList = querystr.get(param).split(" ");
@@ -542,6 +551,13 @@ function applyQuery() {
 			}
 		} else if (param === "search") {
 			$('input#nameFilter').val(querystr.get(param));
+		} else if (param === "notOwned") {
+			$('#notOwned').prop('checked', true);
+			excludedCards = await $.ajax({
+				type: 'get',
+				url: '/collection/getOwnedCards',
+				cache: false
+			});
 		}
 	}
 
@@ -562,5 +578,5 @@ function applyQuery() {
 		}
 	}
 
-	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val()), viewType, []);
+	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val(), excludedCards), viewType);
 }

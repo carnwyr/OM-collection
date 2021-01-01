@@ -1,12 +1,14 @@
 .card-header {
   padding-bottom: 0
 }
-
 img {
   transition: all .5s ease;
   -webkit-transition: all .5s ease;
 }
 img.lazy {
+  opacity: 0;
+}
+.queried {
   opacity: 0;
 }
 .cardPreview, .cardPreview:hover {
