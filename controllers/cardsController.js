@@ -561,25 +561,25 @@ exports.makeCardPublic = function(req, res, next) {
 	});
 }
 
-exports.getRankings = async function(req, res) {
-	var ranking = await Users.aggregate([
-	  { $unwind: "$cards.faved" },
-	  { $group: { _id: "$cards.faved", total: { $sum: 1 } } },
-	  { $sort: { total: -1 } },
-	  { $limit: 10 }
-	]);
-
-	ranking.forEach(async (card, i) => {
-	  var temp = await Cards.find({ uniqueName: card._id });
-	  ranking[i].name = temp[0].name;
-
-	  if (i === ranking.length - 1) {
-	    res.render("rankings", {
-	      title: "Rankings",
-	      description: "Ranking of most liked obey me cards.",
-	      ranking: ranking,
-	      user: req.user
-	    });
-	  }
+exports.getRankings = function(req, res) {
+	Users.aggregate([
+		{ $unwind: "$cards.faved" },
+		{ $group: { _id: "$cards.faved", total: { $sum: 1 } } },
+		{ $sort: { total: -1 } },
+		{ $limit: 10 },
+		{
+			$lookup: {
+				from: "cards",
+				localField: "_id",
+				foreignField: "uniqueName",
+				as: "cardData"
+			}
+		},
+		{ $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
+		{ $set: { name: "$name.name" } },
+		{ $unset: ["cardData"] }
+	], (err, cards) => {
+		if (err) return next(err);
+		res.render("rankings", { title: "Rankings", description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
 	});
 }
