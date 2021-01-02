@@ -561,7 +561,7 @@ exports.makeCardPublic = function(req, res, next) {
 	});
 }
 
-exports.getRankings = function(req, res) {
+exports.getRankings = function(req, res, next) {
 	Users.aggregate([
 		{ $unwind: "$cards.faved" },
 		{ $group: { _id: "$cards.faved", total: { $sum: 1 } } },
