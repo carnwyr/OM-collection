@@ -8,9 +8,6 @@ img {
 img.lazy {
   opacity: 0;
 }
-.queried {
-  opacity: 0;
-}
 .cardPreview, .cardPreview:hover {
   text-align: center;
   margin: .25rem;

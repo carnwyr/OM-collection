@@ -6,21 +6,19 @@ var viewType = "icon";
 var querystr = new URLSearchParams(document.location.search.substring(1));
 
 $(document).ready(function(){
+	resetFilters();
+	if ('URLSearchParams' in window) {
+		applyQuery();
+	} else {
+		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
+	}
+
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
 	$("img.lazy").each(function(){
 		if (this.complete && this.naturalHeight !== 0){
 			$(this).removeClass("lazy");
 		}
 	});
-	if ('URLSearchParams' in window && Array.from(querystr).length === 0) {
-		$('.queried').removeClass('queried');
-	}
-
-	if ('URLSearchParams' in window) {
-		applyQuery();
-	} else {
-		resetFilters();
-	}
 
 	$("form input").on('click', formChanged);
 	$("div#filters input").on('change', applyFilters);
@@ -188,7 +186,6 @@ var updateQuery = () => {
 
 function updateCardDisplay(cards, view) {
 	$(".cardPreview").fadeOut(400).promise().done(function() {
-		$('.queried').removeClass('queried');
 		if (view) {
 			$('.cardPreview>img').each(function() {
 				$(this).attr('src', changes[view]['srcAction'](this));
@@ -211,6 +208,8 @@ function updateCardDisplay(cards, view) {
 
 		fillRank("demonSection");
 		fillRank("memorySection");
+
+		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
 	});
 }
 
@@ -531,6 +530,7 @@ async function applyQuery() {
 	resetFilters();
 	if (querystr.toString() === '' || querystr.toString() === "view=icon") {
 		history.scrollRestoration = "auto";
+		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
 		return;
 	} else {
 		history.scrollRestoration = "manual";
