@@ -260,14 +260,14 @@ function switchSelectionMode() {
 		if (Object.keys(changedCards).length > 0) {
 			$.ajax({
 				type: 'post',
-				url: '/collection/updateOwnedCards',
+				url: '/collection/modifyCollection',
 				contentType: 'application/json',
-				data: JSON.stringify({changedCards: changedCards}),
+				data: JSON.stringify({changedCards: changedCards, collection: "owned"}),
 				cache: false
 			})
 			.done(function(result){
-				if (result === 'error') {
-					showAlert("div#failAlert", "Something went wrong, please reload the page");
+				if (result.err) {
+					showAlert("div#failAlert", result.message);
 					return;
 				}
 				changedCards = {};

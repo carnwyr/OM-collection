@@ -9,29 +9,29 @@ var miscController = require('../controllers/miscController');
 router.get('/', cardsController.index);
 router.get('/policies', miscController.privacyPolicy);
 router.get("/surpriseGuest", miscController.surpriseGuest);
-router.get("/rankings", cardsController.getRankings);
+router.get("/rankings", usersController.getRankingsPage);
 
 // Cards list
-router.get('/cards', cardsController.cardsList);
-router.get('/hiddenCards', usersController.isAdmin(), cardsController.hiddenCardsList);
+router.get('/cards', cardsController.getCardsListPage);
+router.get('/hiddenCards', usersController.isAdmin(), cardsController.getHiddenCardsListPage);
 
 // Account management
-router.get('/login', usersController.loginGet);
-router.post('/login', usersController.loginPost);
+router.get('/login', usersController.getLoginPage);
+router.post('/login', usersController.login);
 router.get('/logout', usersController.isLoggedIn(), usersController.logout);
-router.get('/signup', usersController.signupGet);
-router.post('/signup', usersController.signupPost);
+router.get('/signup', usersController.getSignupPage);
+router.post('/signup', usersController.signup);
 router.post('/signup/checkUsername', usersController.signupCheckUsername);
 
 // User's personal collection
-router.get('/collection/getOwnedCards', usersController.isLoggedIn(), cardsController.getOwnedCards);
-router.post('/collection/updateOwnedCards', usersController.isLoggedIn(), cardsController.updateOwnedCards);
-router.get('/:username/collection', cardsController.cardsCollection);
+router.get('/collection/getOwnedCards', usersController.isLoggedIn(), usersController.getOwnedCards);
+router.post('/collection/modifyCollection', usersController.isLoggedIn(), usersController.modifyCollection);
+router.get('/:username/collection', cardsController.getCardsCollectionPage);
 router.post('/:username/getStatsImage', cardsController.getStatsImage);
-router.get('/:username/favourites', cardsController.getFavourites);
+router.get('/:username/favourites', cardsController.getFavouritesPage);
 
 // User Management
-router.get("/userpage", usersController.isAdmin(), usersController.userList);
+router.get("/userpage", usersController.isAdmin(), usersController.getUserListPage);
 router.post("/updateSupport", usersController.isAdmin(), usersController.updateSupport);
 
 

@@ -7,7 +7,7 @@ var UsersSchema = new Schema(
     info: {
       name: {type: String, required: true, unique: true},
       password: {type: String, required: true, unique: true},
-      isAdmin: {type: Boolean, required: true},
+      type: {type: String, required: true, enum: ['Admin', 'User']},
       email: {type: String},
       supportStatus: {type: Array}
     },
