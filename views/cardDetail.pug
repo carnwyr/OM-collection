@@ -1,17 +1,17 @@
 extends layout
 
 block content
-  if user && user.isAdmin
+  if user
     div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Card successfully added to your collection
     div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
-    div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
-      div(class="modal-dialog" role="document")
-        div(class="modal-content")
-          div(class="modal-body")
-            p Are you sure you want to delete this card?
-          div(class="modal-footer")
-            a(role="button" href=card.uniqueName+"/delete" class="btn btn-danger text-light") Delete
-            button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Cancel
+    if user.isAdmin
+      div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
+        div(class="modal-dialog" role="document")
+          div(class="modal-content")
+            div(class="modal-body") Are you sure you want to delete this card?
+            div(class="modal-footer")
+              a(role="button" href=card.uniqueName+"/delete" class="btn btn-danger text-light") Delete
+              button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Cancel
   div.container
     h2= card.name
     div.row
@@ -31,13 +31,13 @@ block content
                 li.nav-item
                   a(class="nav-link" id="bloomed-card-tab" data-toggle="tab" href="#bloomedCard" role="tab" aria-controls="bloomed" aria-selected="false") Bloomed
         div.tab-content.mb-3(id="cardToggle")
-            div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
-              a(href="/images/cards/L/" + card.uniqueName + ".jpg")
-                img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
-            if card.type == "Demon"
-              div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
-                a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
-                  img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
+          div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
+            a(href="/images/cards/L/" + card.uniqueName + ".jpg")
+              img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
+          if card.type == "Demon"
+            div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
+              a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
+                img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
       //- Desktop Screen
       div(class="d-none d-lg-block col-4")
         div.card.card-body.bg-transparent.pt-0

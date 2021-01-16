@@ -254,8 +254,8 @@ async function updateCountOnPage(res, card, collection) {
 	try {
 		var updatedVal = await exports.countCardInCollections(card, collection);
 		var totalusers = await exports.getNumberOfUsers();
-		
-		return res.json({ err: false, message: "Collection updated!", updatedVal: (updatedVal/totalusers).toFixed(2)});
+
+		return res.json({ err: false, message: "Collection updated!", updatedVal: (updatedVal/totalusers*100).toFixed(2) });
 	} catch (e) {
 		return res.json({ err: true, message: e });
 	}
@@ -283,9 +283,9 @@ exports.sendVerificationEmail = async function(req, res, next) {
 		if (!correctPassword) {
 			throw "Wrong password";
 		}
-		
-		await Codes.deleteMany({user: req.params.name});	
-				
+
+		await Codes.deleteMany({user: req.params.name});
+
 		var code = cryptoRandomString({length: 128, type: 'url-safe'});
 		var record = new Codes({
 			user: req.params.name,
@@ -294,7 +294,7 @@ exports.sendVerificationEmail = async function(req, res, next) {
 		});
 
 		await record.save();
-								
+
 		var transporter = nodemailer.createTransport({
 			host: 'smtp.gmail.com',
 			secure: true,
@@ -312,7 +312,7 @@ exports.sendVerificationEmail = async function(req, res, next) {
 		};
 
 		await transporter.sendMail(mailOptions);
-		
+
 		return res.json({ err: false });
 	} catch (e) {
 		return res.json({ err: true, message: e });

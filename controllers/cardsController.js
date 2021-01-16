@@ -1,27 +1,30 @@
-const Cards 	  = require('../models/cards');
-const HiddenCards = require('../models/hiddenCards.js');
+const Cards = require("../models/cards");
+const HiddenCards = require("../models/hiddenCards.js");
 
-const async 		  = require('async');
-const fs 			  = require('fs');
-const nodeHtmlToImage = require('node-html-to-image')
+const async = require("async");
+const fs = require("fs");
+const nodeHtmlToImage = require("node-html-to-image");
 
-var usersController	  = require('../controllers/usersController');
+var usersController = require("../controllers/usersController");
 
 // Functions to render pages
 exports.index = function(req, res, next) {
-	res.render('index', { 
-		title: 'Karasu OS', description: "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation.", 
-		user: req.user });
+	res.render("index", {
+		title: "Karasu OS",
+		description: "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation.",
+		user: req.user
+	});
 };
 
 exports.getCardsListPage = function(req, res, next) {
 	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
 		if (err) { return next(err); }
 		cardsList.sort(sortByRarityAndNumber);
-		res.render('cardsList', { 
-			title: 'Card Gallery', description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.", 
-			cardsList: cardsList, path: 'list', 
-			user: req.user });
+		res.render("cardsList", {
+			title: "Card Gallery", description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
+			cardsList: cardsList, path: "list",
+			user: req.user
+		});
 	});
 };
 
@@ -34,31 +37,31 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 
 		var cardStats = {
 			characters: {
-				Lucifer: 	{owned: 0, total: 0},
-				Mammon: 	{owned: 0, total: 0},
-				Leviathan:  {owned: 0, total: 0},
-				Satan: 		{owned: 0, total: 0},
-				Asmodeus: 	{owned: 0, total: 0},
-				Beelzebub:  {owned: 0, total: 0},
-				Belphegor:  {owned: 0, total: 0},
-				Diavolo: 	{owned: 0, total: 0},
-				Barbatos:  	{owned: 0, total: 0},
-				Luke: 		{owned: 0, total: 0},
-				Simeon: 	{owned: 0, total: 0},
-				Solomon: 	{owned: 0, total: 0},
-				"Little D": {owned: 0, total: 0}
+				Lucifer: { owned: 0, total: 0 },
+				Mammon: { owned: 0, total: 0 },
+				Leviathan: { owned: 0, total: 0 },
+				Satan: { owned: 0, total: 0 },
+				Asmodeus: { owned: 0, total: 0 },
+				Beelzebub: { owned: 0, total: 0 },
+				Belphegor: { owned: 0, total: 0 },
+				Diavolo: { owned: 0, total: 0 },
+				Barbatos: { owned: 0, total: 0 },
+				Luke: { owned: 0, total: 0 },
+				Simeon: { owned: 0, total: 0 },
+				Solomon: { owned: 0, total: 0 },
+				"Little D": { owned: 0, total: 0 }
 			},
 			rarity: {
-				N: 	 {owned: 0, total: 0},
-				R: 	 {owned: 0, total: 0},
-				SR:  {owned: 0, total: 0},
-				SSR: {owned: 0, total: 0},
-				UR:  {owned: 0, total: 0},
-				URp: {owned: 0, total: 0}
+				N: { owned: 0, total: 0 },
+				R: { owned: 0, total: 0 },
+				SR: { owned: 0, total: 0 },
+				SSR: { owned: 0, total: 0 },
+				UR: { owned: 0, total: 0 },
+				URp: { owned: 0, total: 0 }
 			},
 			cards: {
-				Demon:  {owned: 0, total: 0},
-				Memory: {owned: 0, total: 0}
+				Demon: { owned: 0, total: 0 },
+				Memory: { owned: 0, total: 0 }
 			}
 		};
 
@@ -75,8 +78,8 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 		countCardsForStats(ownedCards, cardStats, "owned");
 		countCardsForStats(allCards, cardStats, "total");
 
-		return res.render('cardsList', { 
-			title: title, description: `${req.params.username}'s Collection on Karasu-OS.com`, 
+		return res.render('cardsList', {
+			title: title, description: `${req.params.username}'s Collection on Karasu-OS.com`,
 			user: req.user, cardStats: cardStats,
 			cardsList: ownedCards, path: 'collection' });
 	} catch (e) {
@@ -92,17 +95,17 @@ exports.getCardDetailPage = async function(req, res, next) {
 			if (!cardData) {
 				throw "Card not found";
 			}
-			return res.render('cardDetail', { 
-				title: cardData.name, description: `View '${cardData.name}' and other Obey Me cards on Karasu-OS.com`,
+			return res.render('cardDetail', {
+				title: cardData.name, description: `View ''${cardData.name}' and other Obey Me cards on Karasu-OS.com`,
 				card: cardData, isHidden: true,
-				user: req.user, hasCard: false});
+				user: req.user, hasCard: false });
 		}
 
 		var stats = await getCardStats(req.user, req.params.card);
-		res.render('cardDetail', { 
-			title: cardData.name, description: `View '${cardData.name}' and other Obey Me cards on Karasu-OS.com`,
+		res.render('cardDetail', {
+			title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 			card: cardData, isHidden: false,
-			user: req.user, stats: stats});
+			user: req.user, stats: stats });
 	} catch (e) {
 		return next(e);
 	}
@@ -124,11 +127,11 @@ exports.getFavouritesPage = async function(req, res, next) {
 		var favedCards = await usersController.getCardCollection(req.params.username, "faved");
 		favedCards.sort(sortByRarityAndNumber);
 
-		res.render("cardsList", { 
-			title: title, description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`, 
-			user: req.user, 
-			cardsList: favedCards, path: "fav" });
-
+		res.render("cardsList", {
+			title: title, description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
+			user: req.user,
+			cardsList: favedCards, path: "fav"
+		});
 	} catch (e) {
 		return next(e);
 	}
@@ -196,7 +199,7 @@ function countCardsForStats(cards, cardStats, type) {
 };
 
 exports.getStatsImage = async function(req, res) {
-	try{
+	try {
 		const html = req.body.html;
 		var result = await getBigStatsImage(['#statsTotal', '#charNav', '#sideCharNav', '#rarityNav'], html);
 		res.send(result);
