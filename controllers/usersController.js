@@ -54,36 +54,38 @@ exports.signup = [
 			res.render('signup', { title: 'Signup', user: req.user });
 			return;
 		}
+		try {
+			var  exists = await exports.userExists(req.body.username);
+		} catch (e) {
+			return next(e);
+		}
 
-		var [err, exists] = await exports.userExists(req.body.username);
-		if (err) { return next(err); }
-
-    if (exists) {
-      req.flash("message", "Username taken");
-      res.render("signup", { title: "Signup", user: req.user });
-    } else {
-      bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
-        if (err) return next(err);
-        bcrypt.hash(req.body.password, salt, function(err, hash) {
-          if (err) return next(err);
-          var user = new Users({
-            info: {
-              name: req.body.username,
-              password: hash,
-              type: "User"
-            }
-          });
-          user.save(function(err) {
-            if (err) return next(err);
-            req.login(user, function(err) {
-              if (err) return next(err);
-              res.redirect("/");
-            });
-          });
-        });
-      });
-    }
-  }
+	    if (exists) {
+	      req.flash("message", "Username taken");
+	      res.render("signup", { title: "Signup", user: req.user });
+	    } else {
+	      bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+	        if (err) return next(err);
+	        bcrypt.hash(req.body.password, salt, function(err, hash) {
+	          if (err) return next(err);
+	          var user = new Users({
+	            info: {
+	              name: req.body.username,
+	              password: hash,
+	              type: "User"
+	            }
+	          });
+	          user.save(function(err) {
+	            if (err) return next(err);
+	            req.login(user, function(err) {
+	              if (err) return next(err);
+	              res.redirect("/");
+	            });
+	          });
+	        });
+	      });
+	    }
+	}
 ];
 
 exports.signupCheckUsername = async function(req, res) {
@@ -92,8 +94,13 @@ exports.signupCheckUsername = async function(req, res) {
 		res.send(true);
 		return;
 	}
-	var [err, exists] = await exports.userExists(req.body.username);
-	if (err) { res.send('error'); return; }
+	try {
+		var exists = await exports.userExists(req.body.username);
+	} catch (e) {
+		res.send('error');
+		return;
+	}
+
 	if (!exists) {
 		res.send(false);
 		return;

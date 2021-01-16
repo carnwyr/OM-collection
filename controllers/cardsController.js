@@ -264,8 +264,8 @@ async function getCardStats(user, card) {
 
 	var totalusers = await usersController.getNumberOfUsers();
 	var counts = await getCardCounts(card);
-	stats.ownedTotal = (counts.owned/totalusers).toFixed(2);
-	stats.favedTotal = (counts.faved/totalusers).toFixed(2);
+	stats.ownedTotal = (counts.owned/totalusers * 100).toFixed(2);
+	stats.favedTotal = (counts.faved/totalusers * 100).toFixed(2);
 
 	return stats;
 };
