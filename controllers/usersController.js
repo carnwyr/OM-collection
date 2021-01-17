@@ -543,10 +543,6 @@ exports.deleteCardInCollections = function(cardName) {
 	return promise;
 };
 
-exports.getUserBadges = async function(username) {
-  return await Users.findOne({ "info.name" : username }, "info.supportStatus");
-}
-
 
 // Authentication
 passport.use(new LocalStrategy({ passReqToCallback : true },
