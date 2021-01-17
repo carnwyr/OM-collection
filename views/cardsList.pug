@@ -1,22 +1,5 @@
 extends layout
 
-mixin percentBar(owned, total, name)
-  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "Little D":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", URp:"#ffe16b"};
-  - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
-  - var percentage = roundPercentage(owned / total * 100);
-  span= name
-  small(style='display:inline-flex;') &nbsp;- #{owned} of #{total} (#{percentage}%)
-    if percentage >= 100
-      | &nbsp;
-      img(src='/images/completion_star.png' style='height: 1.5em; width: auto;')
-  div.progress.mb-1
-    div(id="bar"+name.replace('+', 'p') class="progress-bar" role="progressbar" style={width: percentage + '%', background: colours[name.replace('+', 'p')]} aria-valuenow=percentage aria-valuemin="0" aria-valuemax="100")
-      if name==='UR+'
-        div(id='barAnimated')
-          div(id="barCover"+name.replace('+', 'p') style={width: (100 - percentage) + '%'})
-      if name==='UR'
-        div(id="barCover"+name.replace('+', 'p') style={width: (100 - percentage) + '%'})
-
 block scripts
   link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
   script(src="/javascripts/cardsListFunctions.js")
@@ -25,105 +8,11 @@ block content
   div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Collection modified successfully
   div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
 
-  //- share collection
-  if(path==="collection")
-    div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
-      div(class="modal-dialog modal-lg" role="document")
-        div(class="modal-content")
-          div(class="modal-header")
-            h5(class="modal-title text-primary" id="openShareLink") Share
-            button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-              span(aria-hidden="true") &times;
-          div(class="modal-body mb-2")
-            div.input-group
-              input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link")
-              div.input-group-append
-                button#copyLink.btn.btn-primary.rounded Copy
-            div.text-center.text-secondary.mt-2 Stats image to copy and share
-            div(class='d-flex justify-content-center align-items-center mt-3' id='statsImageContainer')
-              div(id='statsSpinner' class="spinner-border text-secondary" role="status" style='display: none')
-              img(id='statsImage' class='img-fluid')
-              div(id='statsMessage')
-
   div(class="container")
     h1= title
 
-    //- Collection Stats
     if path === "collection"
-      - function roundPercentage(percentage) {if (percentage >= 1 && percentage <= 99) { percentage = Math.round(percentage); } else { percentage = +percentage.toFixed(2); } return percentage;}
-      div.card.shadow.mb-3(id='statsCard')
-        div.card-body
-          div.row
-            div.col-12.col-lg-4.container.text-center(id='statsTotal')
-              div.row.px-4.h-100.align-items-center.d-flex
-                div.col-6.d-flex.flex-column.justify-content-center.h-100
-                  div.d-flex.align-items-center.justify-content-center.cardTextWrapper
-                    div.lead.text-primary.d-none.d-sm-block Demon cards
-                    div.text-primary.d-block.d-sm-none Demon cards
-                  - var demonPercentage = roundPercentage(cardStats.cards.Demon.owned / cardStats.cards.Demon.total * 100);
-                  div(style='position: relative')
-                    img.img-fluid.p-2.mx-auto(src='/images/demon_card.png' style='max-width: 120px; width:100%;')
-                    div.mt-2(style={position: 'absolute', top: '0%', left: '0%', height: 100 - demonPercentage + '%', width: '100%', background: 'white', 'mix-blend-mode': 'saturation'})
-                  div.d-none.d-sm-block #{cardStats.cards.Demon.owned} of #{cardStats.cards.Demon.total}
-                  small.d-block.d-sm-none #{cardStats.cards.Demon.owned} of #{cardStats.cards.Demon.total}
-                  small.text-muted #{demonPercentage}%
-                div.col-6.d-flex.flex-column.justify-content-center.h-100
-                  div.d-flex.align-items-center.justify-content-center.cardTextWrapper
-                    div.lead.text-primary.d-none.d-sm-block Memory cards
-                    div.text-primary.d-block.d-sm-none Memory cards
-                  - var memoryPercentage = roundPercentage(cardStats.cards.Memory.owned / cardStats.cards.Memory.total * 100);
-                  div(style='position: relative')
-                    img.img-fluid.p-2.mx-auto(src='/images/memory_card.png' style='max-width: 120px; width:100%;')
-                    div.mt-2(style={position: 'absolute', top: '0%', left: '0%', height: 100 - memoryPercentage + '%', width: '100%', background: 'white', 'mix-blend-mode': 'saturation'})
-                  div.d-none.d-sm-block #{cardStats.cards.Memory.owned} of #{cardStats.cards.Memory.total}
-                  small.d-block.d-sm-none #{cardStats.cards.Memory.owned} of #{cardStats.cards.Memory.total}
-                  small.text-muted #{memoryPercentage}%
-            div.col-12.col-lg-8.mt-3.mt-lg-0
-              nav
-                div.nav.nav-pills(id='statsNavTab' role='tablist')
-                  a.nav-item.nav-link.active(id='charNavTab' data-toggle='tab' href='#charNav' role='tab' aria-controls="charNav" aria-selected="true") Characters
-                  a.nav-item.nav-link(id='sideCharNavTab' data-toggle='tab' href='#sideCharNav' role='tab' aria-controls="sideCharNav" aria-selected="true") Side characters
-                  a.nav-item.nav-link(id='rarityNavTab' data-toggle='tab' href='#rarityNav' role='tab' aria-controls="rarityNav" aria-selected="true") Rarity
-                  if title === "My Collection"
-                    span.text-right.ml-auto.mr-auto.mr-md-0
-                      button(type="button" id="shareCollection" class="btn btn-primary" data-toggle="modal" data-target="#openLink")
-                        div(style='white-space: nowrap;')
-                          <svg width="1em" height="1.5em" viewBox="0 0 16 16" class="bi bi-share pb-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
-                          |
-                          | Share
-              div.tab-content.mt-1.mt-sm-2(id='statsNavContent')
-                div.container.tab-pane.fade.px-0.show.active(id='charNav' role='tabpanel' aria-labelledby='charNavTab')
-                  div.row
-                    div.col-md-6
-                      +percentBar(cardStats.characters.Lucifer.owned, cardStats.characters.Lucifer.total, "Lucifer")
-                      +percentBar(cardStats.characters.Mammon.owned, cardStats.characters.Mammon.total, "Mammon")
-                      +percentBar(cardStats.characters.Leviathan.owned, cardStats.characters.Leviathan.total, "Leviathan")
-                      +percentBar(cardStats.characters.Satan.owned, cardStats.characters.Satan.total, "Satan")
-                    div.col-md-6
-                      +percentBar(cardStats.characters.Asmodeus.owned, cardStats.characters.Asmodeus.total, "Asmodeus")
-                      +percentBar(cardStats.characters.Beelzebub.owned, cardStats.characters.Beelzebub.total, "Beelzebub")
-                      +percentBar(cardStats.characters.Belphegor.owned, cardStats.characters.Belphegor.total, "Belphegor")
-                div.container.tab-pane.fade.px-0(id='sideCharNav' role='tabpanel' aria-labelledby='sideCharNavTab')
-                  div.row
-                    div.col-md-6
-                      +percentBar(cardStats.characters.Diavolo.owned, cardStats.characters.Diavolo.total, "Diavolo")
-                      +percentBar(cardStats.characters.Barbatos.owned, cardStats.characters.Barbatos.total, "Barbatos")
-                      +percentBar(cardStats.characters.Luke.owned, cardStats.characters.Luke.total, "Luke")
-                      +percentBar(cardStats.characters.Simeon.owned, cardStats.characters.Simeon.total, "Simeon")
-                    div.col-md-6
-                      +percentBar(cardStats.characters.Solomon.owned, cardStats.characters.Solomon.total, "Solomon")
-                      +percentBar(cardStats.characters["Little D"].owned, cardStats.characters["Little D"].total, "Little D")
-                div.container.tab-pane.fade.px-0(id='rarityNav' role='tabpanel' aria-labelledby='rarityNavTab')
-                  div.row
-                    div.col-md-6
-                      +percentBar(cardStats.rarity.N.owned, cardStats.rarity.N.total, "N")
-                      +percentBar(cardStats.rarity.R.owned, cardStats.rarity.R.total, "R")
-                      +percentBar(cardStats.rarity.SR.owned, cardStats.rarity.SR.total, "SR")
-                      +percentBar(cardStats.rarity.SSR.owned, cardStats.rarity.SSR.total, "SSR")
-                    div.col-md-6
-                      +percentBar(cardStats.rarity.UR.owned, cardStats.rarity.UR.total, "UR")
-                      +percentBar(cardStats.rarity.URp.owned, cardStats.rarity.URp.total, "UR+")
-              div.small.text-muted.mt-3 Percentage is calculated based on the entire collection (both demon and memory cards).
+      include statsboard.pug
 
     //- Card Navigation
     div(class="card sticky-top sticky-offset mb-3 shadow")
@@ -144,7 +33,7 @@ block content
           button(class="btn btn-primary mb-md-0" id="cancelManaging") Cancel
           button(class="btn btn-primary mb-md-0" id="saveManaging") Save
         if user && path === "list"
-            button(class="btn btn-primary btn-md mb-0" id="manageCollection") Manage Collection
+          button(class="btn btn-primary btn-md mb-0" id="manageCollection") Manage Collection
 
     div(id="searchBar" class="row text-left mb-3")
       div(class="col-12")
@@ -257,7 +146,7 @@ block content
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7371452932" data-ad-format="auto" data-full-width-responsive="true"></ins>
         script.
           (adsbygoogle = window.adsbygoogle || []).push({});
-        a(type="button" class="btn text-muted" data-toggle="modal" data-target="#removeAdsModal" style="display:none;") Remove Ads
+        a(type="button" class="text-muted" data-toggle="modal" data-target="#removeAdsModal" style="display:none;") Remove Ads
 
     div(class="row" id="memoryCards")
       div(class="col-12")
