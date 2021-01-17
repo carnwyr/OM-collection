@@ -11,7 +11,7 @@ exports.surpriseGuest = function(req, res, next) {
 		{chara:'Leviathan', interactions:[]},
 		{chara:'Satan', interactions:[]},
 		{chara:'Asmodeus', interactions:[]},
-		{chara:'Beelzebub', interactions:[]}, 
+		{chara:'Beelzebub', interactions:[]},
 		{chara:'Belphegor', interactions:[]},
 		{chara:'Diavolo', interactions:[]},
 		{chara:'Barbatos', interactions:[]},
@@ -25,6 +25,6 @@ exports.surpriseGuest = function(req, res, next) {
 			obj.interactions = interactionList.filter(int => int.character === obj.chara);
 			obj.interactions.sort((a, b) => a.order - b.order);
 		});
-  		res.render('surpriseGuest', { title: 'Surprise Guest', description: "Obey Me! surprise guest information | Karasu-OS.com", user: req.user, interactions: interactions });
+    res.render('surpriseGuest', { title: 'Surprise Guest', description: "An all-in-one master guide for Obey Me surprise guest interactions, including the demon brothers and side characters.", user: req.user, interactions: interactions });
 	});
 };

@@ -1,31 +1,25 @@
 extends layout
 
 block content
-  div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Card successfully added to your collection
-  div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
-  div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
-    div(class="modal-dialog" role="document")
-      div(class="modal-content")
-        div(class="modal-body")
-          p Are you sure you want to delete this card?
-        div(class="modal-footer")
-          a(role="button" href=card.uniqueName+"/delete" class="btn btn-danger text-light") Delete
-          button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Cancel
+  if user
+    div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Card successfully added to your collection
+    div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
+    if user.isAdmin
+      div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
+        div(class="modal-dialog" role="document")
+          div(class="modal-content")
+            div(class="modal-body") Are you sure you want to delete this card?
+            div(class="modal-footer")
+              a(role="button" href=card.uniqueName+"/delete" class="btn btn-danger text-light") Delete
+              button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Cancel
   div.container
     h2= card.name
     div.row
       //- Mobile/ Tablet Screen
-      if user
-        div(class="d-flex justify-content-around mx-auto col-12 d-md-none" style="margin-bottom:10px;")
-          if !isHidden
-            button.btn.btn-primary.addCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Add to collection
-            button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
-          if !isHidden && user.isAdmin
-            a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/edit") Edit card
-          if isHidden && user.isAdmin
-            a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/makePublic") Make public
-          if user.isAdmin
-            button.btn.btn-primary.editCardButton(data-toggle='modal' data-target="#confirmDelete") Delete card
+      if user && !isHidden
+        div(class="col-12 d-flex justify-content-between d-md-none" style="margin-bottom:10px;")
+          button.btn.btn-primary.owned(type="button") collection
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill favourites" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
 
       div(class="d-block d-lg-none col-12 col-md-7")
         if card.type == "Demon"
@@ -37,55 +31,73 @@ block content
                 li.nav-item
                   a(class="nav-link" id="bloomed-card-tab" data-toggle="tab" href="#bloomedCard" role="tab" aria-controls="bloomed" aria-selected="false") Bloomed
         div.tab-content.mb-3(id="cardToggle")
-            div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
-              a(href="/images/cards/L/" + card.uniqueName + ".jpg")
-                img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
-            if card.type == "Demon"
-              div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
-                a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
-                  img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
-      //- Desktop Screen
-      div(class="d-none d-lg-block col-4")
-        div.card.bg-transparent
-          div.card-body.pt-0
+          div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
             a(href="/images/cards/L/" + card.uniqueName + ".jpg")
               img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
-      if card.type == "Demon"
-        div(class="d-none d-lg-block col-4")
-          div.card.bg-transparent
-            div.card-body.pt-0
+          if card.type == "Demon"
+            div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
               a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
                 img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
+      //- Desktop Screen
+      div(class="d-none d-lg-block col-4")
+        div.card.card-body.bg-transparent.pt-0
+          a(href="/images/cards/L/" + card.uniqueName + ".jpg")
+            img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
+      if card.type === "Demon"
+        div(class="d-none d-lg-block col-4")
+          div.card.card-body.bg-transparent.pt-0
+            a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
+              img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
       //- Info
       div(class="col-12 col-md-5 col-lg-4")
-        div(class="card shadow mb-3")
+        div(class="card shadow")
           div.card-body
             p #[strong Type:] #{card.type} card
-            p #[strong Rarity:] #{card.rarity}
-            p #[strong Attribute:] #{card.attribute}
-            p #[strong Characters: ]
-               each val, index in card.characters
-                |#{val}
+            p #[strong Rarity: ]
+              a(href="/cards?rarity="+card.rarity.replace('+', 'p'))= card.rarity
+            p #[strong Attribute: ]
+              a(href="/cards?attribute="+card.attribute)= card.attribute
+            p #[strong Character#{card.characters.length>1?'s':''}: ]
+              each val, index in card.characters
+                a(href="/cards?character="+(val==="Little D"?"LittleD":val))= val
                 if index < card.characters.length - 1
                   | ,
                   |
-        if user
-          div(class='d-none d-md-block' style="margin:10px 0;")
+            hr
             if !isHidden
-              button.btn.btn-primary.addCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Add to collection
-              button.btn.btn-primary.removeCardButton(type="button" data-toggle="button" autocomplete="off" aria-pressed="false" style= "display: none") Remove from collection
-            if (!isHidden && user.isAdmin)
-              div.mt-2
-                a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/edit") Edit card
-            if isHidden && user.isAdmin
-              div.mt-2
-                a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/makePublic") Make public
-            if user.isAdmin
-              div.mt-2
-                button.btn.btn-primary.editCardButton(data-toggle='modal' data-target="#confirmDelete") Delete card
+              p.ownedCount.card-text= "Collected by "+stats.ownedTotal+"% of users"
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#FFC300" class="bi bi-star-fill" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+              span.favedCount.ml-2= "by "+stats.favedTotal+"% of users"
+            if user
+              div(class='d-none d-md-block')
+                hr
+                if !isHidden
+                  div.d-flex.align-items-center.justify-content-between
+                    button.btn.btn-primary.owned(type="button") collection
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill favourites" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+              if user.isAdmin
+                if !isHidden
+                  div.mt-2
+                    a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/edit") Edit card
+                else
+                  div.mt-2
+                    a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/makePublic") Make public
+                div.mt-2
+                  button.btn.btn-primary.editCardButton(data-toggle='modal' data-target="#confirmDelete") Delete card
 
-
-  script(src="/javascripts/cardDetailFunctions.js")
-  script.
-    var cardName = !{JSON.stringify(card.uniqueName)};
-    var hasCard = !{JSON.stringify(hasCard)};
+  if user && !isHidden
+    style.
+      .owned.addCardButton:before {
+        content: "Add to ";
+      }
+      .owned.removeCardButton:before {
+        content: "Remove from ";
+      }
+      .favourites.removeCardButton {
+        stroke: #FFC300;
+        fill: #FFC300;
+      }
+    script(src="/javascripts/cardDetailFunctions.js")
+    script.
+      var cardName = !{JSON.stringify(card.uniqueName)};
+      var stats = !{JSON.stringify(stats)};

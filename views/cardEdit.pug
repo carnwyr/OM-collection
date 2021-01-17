@@ -1,7 +1,7 @@
 extends layout
 
 block content
-	link(rel="stylesheet", href="/stylesheets/editCard.css")
+	link(rel="stylesheet" href="/stylesheets/editCard.css")
 	script(src="/javascripts/editCardFunctions.js")
 	script.
 		var cardName = !{JSON.stringify(card ? card.uniqueName : '')};

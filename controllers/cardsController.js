@@ -1,39 +1,163 @@
-const Cards = require('../models/cards');
-const CardsCollection = require('../models/cardsCollection');
-const Users = require('../models/users.js');
-const HiddenCards = require('../models/hiddenCards.js');
+const Cards = require("../models/cards");
+const HiddenCards = require("../models/hiddenCards.js");
 
-const async = require('async');
-const fs = require('fs');
+const async = require("async");
+const fs = require("fs");
+const nodeHtmlToImage = require("node-html-to-image");
 
-const nodeHtmlToImage = require('node-html-to-image')
+var usersController = require("../controllers/usersController");
 
-var usersController = require('../controllers/usersController');
-
+// Functions to render pages
 exports.index = function(req, res, next) {
-	res.render('index', { title: 'Karasu OS', description: "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation.", user: req.user });
-};
-
-exports.cardsList = function(req, res, next) {
-	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
-		if (err) { return next(err); }
-		cardsList.sort(sortByRarityAndNumber);
-		res.render('cardsList', { title: 'Card Gallery', description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.", cardsList: cardsList, user: req.user, path: 'list' });
+	res.render("index", {
+		title: "Karasu OS",
+		description: "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation.",
+		user: req.user
 	});
 };
 
+exports.getCardsListPage = function(req, res, next) {
+	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
+		if (err) { return next(err); }
+		cardsList.sort(sortByRarityAndNumber);
+		res.render("cardsList", {
+			title: "Card Gallery", description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
+			cardsList: cardsList, path: "list",
+			user: req.user
+		});
+	});
+};
+
+exports.getCardsCollectionPage = async function(req, res, next) {
+	try {
+		var exists = await usersController.userExists(req.params.username);
+		if (!exists) {
+			throw "User not found";
+		}
+
+		var cardStats = {
+			characters: {
+				Lucifer: { owned: 0, total: 0 },
+				Mammon: { owned: 0, total: 0 },
+				Leviathan: { owned: 0, total: 0 },
+				Satan: { owned: 0, total: 0 },
+				Asmodeus: { owned: 0, total: 0 },
+				Beelzebub: { owned: 0, total: 0 },
+				Belphegor: { owned: 0, total: 0 },
+				Diavolo: { owned: 0, total: 0 },
+				Barbatos: { owned: 0, total: 0 },
+				Luke: { owned: 0, total: 0 },
+				Simeon: { owned: 0, total: 0 },
+				Solomon: { owned: 0, total: 0 },
+				"Little D": { owned: 0, total: 0 }
+			},
+			rarity: {
+				N: { owned: 0, total: 0 },
+				R: { owned: 0, total: 0 },
+				SR: { owned: 0, total: 0 },
+				SSR: { owned: 0, total: 0 },
+				UR: { owned: 0, total: 0 },
+				URp: { owned: 0, total: 0 }
+			},
+			cards: {
+				Demon: { owned: 0, total: 0 },
+				Memory: { owned: 0, total: 0 }
+			}
+		};
+
+		if (req.user && req.user.name === req.params.username) {
+			var title = 'My Collection';
+		} else {
+			var title = `${req.params.username}'s Collection`;
+		}
+
+		var ownedCards = await usersController.getCardCollection(req.params.username, "owned");
+		var allCards = await Cards.find({});
+		ownedCards.sort(sortByRarityAndNumber);
+
+		countCardsForStats(ownedCards, cardStats, "owned");
+		countCardsForStats(allCards, cardStats, "total");
+
+		return res.render('cardsList', {
+			title: title, description: `${req.params.username}'s Collection on Karasu-OS.com`,
+			user: req.user, cardStats: cardStats,
+			cardsList: ownedCards, path: 'collection' });
+	} catch (e) {
+		return next(e);
+	}
+};
+
+exports.getCardDetailPage = async function(req, res, next) {
+	try {
+		var cardData = await getCard(req.params.card);
+		if (!cardData) {
+			cardData = await getHiddenCard(req.params.card, req.user);
+			if (!cardData) {
+				throw "Card not found";
+			}
+			return res.render('cardDetail', {
+				title: cardData.name, description: `View ''${cardData.name}' and other Obey Me cards on Karasu-OS.com`,
+				card: cardData, isHidden: true,
+				user: req.user, hasCard: false });
+		}
+
+		var stats = await getCardStats(req.user, req.params.card);
+		res.render('cardDetail', {
+			title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
+			card: cardData, isHidden: false,
+			user: req.user, stats: stats });
+	} catch (e) {
+		return next(e);
+	}
+};
+
+exports.getFavouritesPage = async function(req, res, next) {
+	try {
+		var exists = await usersController.userExists(req.params.username);
+		if (!exists) {
+			throw "User notfound";
+		}
+
+		if (req.user && req.user.name === req.params.username) {
+			var title = 'My Favourites';
+		} else {
+			var title = req.params.username + "'s Favourites";
+		}
+
+		var favedCards = await usersController.getCardCollection(req.params.username, "faved");
+		favedCards.sort(sortByRarityAndNumber);
+
+		res.render("cardsList", {
+			title: title, description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
+			user: req.user,
+			cardsList: favedCards, path: "fav"
+		});
+	} catch (e) {
+		return next(e);
+	}
+};
+
+exports.getHiddenCardsListPage = function(req, res, next) {
+	HiddenCards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
+		if (err) { return next(err); }
+		cardsList.sort(sortByRarityAndNumber);
+		res.render('cardsList', { title: 'Hidden Cards', cardsList: cardsList, user: req.user, path: 'hidden' });
+	});
+};
+
+
+// Common functions
 function sortByRarityAndNumber(card1, card2) {
 	var rarityOrder = -1 * compareByRarity(card1.rarity, card2.rarity);
-		if (rarityOrder != 0)
-			return rarityOrder;
-		if (card1.number > card2.number) {
-			return -1;
-		}
-		if (card1.number < card2.number) {
-			return 1;
-		}
-		return 0;
-}
+	if (rarityOrder != 0) return rarityOrder;
+	if (card1.number > card2.number) {
+		return -1;
+	}
+	if (card1.number < card2.number) {
+		return 1;
+	}
+	return 0;
+};
 
 function compareByRarity(rarity1, rarity2) {
 	var rarities = {
@@ -51,143 +175,38 @@ function compareByRarity(rarity1, rarity2) {
 		return -1;
 	}
 	return 0;
-}
-
-exports.cardDetail = function(req, res, next) {
-	Cards.findOne({uniqueName: req.params.id}, async function(err, cardData) {
-		if (err) { return next(err); }
-		if (!cardData) {
-			if (req.user && req.user.isAdmin) {
-				HiddenCards.findOne({uniqueName: req.params.id}, function(err, cardData) {
-					if (err) { return next(err); }
-					if (!cardData) {
-						var err = new Error('Card not found');
-						return next(err);
-					}
-					return res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, hasCard: false, isHidden: true });
-				});
-			} else {
-				var err = new Error('Card not found');
-				return next(err);
-			}
-		} else {
-			hasCard = false;
-			if (req.user) {
-				var [err, hasCard] = await isCardInCollection(req.user.name, req.params.id);
-				if (err) { return next(err); }
-			}
-			res.render('cardDetail', { title: cardData.name, description: "View '" + cardData.name + "' and other Obey Me cards on Karasu-OS.com", card: cardData, user: req.user, hasCard: hasCard, isHidden: false  });
-		}
-	});
 };
 
-async function isCardInCollection(user, card) {
-	var collectionQuery = CardsCollection.findOne({user: user, card: card});
-	try {
-		var pair = await collectionQuery.exec();
-	} catch(err) {
-		return [err, null];
-	}
-	var hasCard = pair ? true : false;
-	return [null, hasCard];
-}
-
-exports.addToCollection = function(req, res) {
-	var pair = CardsCollection({
-		user: req.user.name,
-		card: req.params.id
-	});
-	pair.save(function (err) {
-		if (err) { res.send('error'); return; }
-		res.send('ok');
-	});
+function getCard(card) {
+	return Cards.findOne({uniqueName: card});
 };
 
-exports.removeFromCollection = function(req, res) {
-	CardsCollection.deleteOne({user: req.user.name, card: req.params.id}, function(err, pair) {
-		if (err) { res.send('error'); return; }
-		res.send('ok');
-	});
+function getHiddenCard(card, user) {
+	if (!user || !user.isAdmin) {
+		throw "Card not found";
+	}
+	return HiddenCards.findOne({uniqueName: card});
 };
 
-exports.cardsCollection = async function(req, res, next) {
-	var [err, exists] = await usersController.userExists(req.params.username);
-	if (err) {
-		return next(err);
-	} else if (!exists) {
-		var err = new Error("User not found");
-		return next(err);
-	}
 
-	// dict[key][0] is owned copies [1] is total db copies
-	var cardStats = {
-		characters: {
-			Lucifer: [0, 0],
-			Mammon: [0, 0],
-			Leviathan: [0, 0],
-			Satan: [0, 0],
-			Asmodeus: [0, 0],
-			Beelzebub: [0, 0],
-			Belphegor: [0, 0],
-			Diavolo: [0, 0],
-			Barbatos: [0, 0],
-			Luke: [0, 0],
-			Simeon: [0, 0],
-			Solomon: [0, 0],
-			"Little D": [0, 0]
-		},
-		rarity: {
-			N: [0, 0],
-			R: [0, 0],
-			SR: [0,0],
-			SSR: [0, 0],
-			UR: [0, 0],
-			URp: [0, 0]
-		},
-		cards: {
-			Demon: [0, 0],
-			Memory: [0, 0]
-		}
-	};
-
-	if (req.user && req.user.name === req.params.username) {
-		var title = 'My Collection';
-	} else {
-		var title = req.params.username + "'s Collection";
-	}
-	CardsCollection.find({user: req.params.username}, function (err, collection) {
-		if (err) { return next(err); }
-		var ownedCards = collection.map(pair => pair.card);
-		Cards.find({}, function(err, fullList) {
-			if (err) { return next(err); }
-			var cardsList = fullList.filter(card => ownedCards.includes(card.uniqueName));
-			cardsList.sort(sortByRarityAndNumber);
-
-			cardsList.forEach(card => {
-				card.characters.forEach(character => cardStats.characters[character][0]++);
-				cardStats.rarity[card.rarity.replace('+', 'p')][0]++;
-				cardStats.cards[card.type][0]++;
-			});
-			fullList.forEach(card => {
-				card.characters.forEach(character => cardStats.characters[character][1]++);
-				cardStats.rarity[card.rarity.replace('+', 'p')][1]++;
-				cardStats.cards[card.type][1]++;
-			});
-			res.render('cardsList', { title: title, description: req.params.username + "'s Collection on Karasu-OS.com", cardsList: cardsList, cardStats: cardStats, user: req.user, path: 'collection' });
-		});
+// Collection functions
+function countCardsForStats(cards, cardStats, type) {
+	cards.forEach(card => {
+		card.characters.forEach(character => cardStats.characters[character][type]++);
+		cardStats.rarity[card.rarity.replace('+', 'p')][type]++;
+		cardStats.cards[card.type][type]++;
 	});
 };
 
 exports.getStatsImage = async function(req, res) {
-	try{
+	try {
 		const html = req.body.html;
 		var result = await getBigStatsImage(['#statsTotal', '#charNav', '#sideCharNav', '#rarityNav'], html);
 		res.send(result);
 	} catch (err) {
-		console.error(err);
 		res.send(null);
 	}
-}
+};
 
 async function getBigStatsImage(ids, html) {
 	try {
@@ -204,16 +223,15 @@ async function getBigStatsImage(ids, html) {
 		image = 'data:image/png;base64,' + Buffer.from(image, 'binary').toString('base64');
 		return image;
 	} catch (err) {
-		console.error(err);
 		return null;
 	}
-}
+};
 
 function replaceImageNames(html) {
 	return html.replace(/\/images\/completion_star\.png/g, '{{star}}')
-			   .replace(/\/images\/demon_card\.png/g, '{{demon}}')
-			   .replace(/\/images\/memory_card\.png/g, '{{memory}}');
-}
+		.replace(/\/images\/demon_card\.png/g, '{{demon}}')
+		.replace(/\/images\/memory_card\.png/g, '{{memory}}');
+};
 
 function getReplacedImages() {
 	const p1 = new Promise((resolve, reject) => {
@@ -222,13 +240,13 @@ function getReplacedImages() {
 					resolve(img);
 		});
 	});
-	const p2 =  new Promise((resolve, reject) => {
+	const p2 = new Promise((resolve, reject) => {
 		fs.readFile('./public/images/demon_card.png', (err,img) => {
 			if (err) reject(err);
 					resolve(img);
 		});
 	});
-	const p3 =  new Promise((resolve, reject) => {
+	const p3 = new Promise((resolve, reject) => {
 		fs.readFile('./public/images/memory_card.png', (err,img) => {
 			if (err) reject(err);
 					resolve(img);
@@ -236,70 +254,70 @@ function getReplacedImages() {
 	});
 
 	return Promise.all([p1, p2, p3]);
-}
-
-async function getUserId(currentUser, requestedUsername) {
-	var userQuery = Users.findOne({ 'name': requestedUsername });
-	if (currentUser && currentUser.name === requestedUsername) {
-		return [null, currentUser._id];
-	}
-	else {
-		try {
-			var user = await userQuery.exec();
-		} catch(err) {
-			return [err, null];
-		}
-		if (!user) {
-			var err = new Error('User not found');
-			return [err, null];
-		}
-		return [null, user._id];
-	}
-}
-
-exports.getOwnedCards = function(req, res) {
-	CardsCollection.find({user: req.user.name}, function (err, collection) {
-		if (err) { return next(err); }
-		var cardNames = collection.map(pair => pair.card);
-		res.send(cardNames);
-	});
 };
 
-exports.updateOwnedCards = function(req, res) {
-	var addedCards = [];
-	var removedCards = [];
 
-	for (let key in req.body.changedCards) {
-		if (req.body.changedCards[key]) {
-			addedCards.push(new CardsCollection({user: req.user.name, card: key}));
-		} else {
-			removedCards.push(key);
-		}
+// Card detail functions
+async function getCardStats(user, card) {
+	var stats = {};
+	if (user) {
+		stats.ownsCard = await usersController.ownsCard(user.name, card);
+		stats.favesCard = await usersController.favesCard(user.name, card);
 	}
-	var addPromise = CardsCollection.insertMany(addedCards);
-	var removePromise = CardsCollection.deleteMany({user: req.user.name, card: removedCards}).exec();
 
-	Promise.all([addPromise, removePromise]).then(value => {
-		res.sendStatus(200);
-	}).catch(err => {
-		res.send('error');
-	});
+	var totalusers = await usersController.getNumberOfUsers();
+	var counts = await getCardCounts(card);
+	stats.ownedTotal = (counts.owned/totalusers * 100).toFixed(2);
+	stats.favedTotal = (counts.faved/totalusers * 100).toFixed(2);
+
+	return stats;
 };
 
-exports.hiddenCardsList = function(req, res, next) {
-	HiddenCards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
-		if (err) { return next(err); }
-		cardsList.sort(sortByRarityAndNumber);
-		res.render('cardsList', { title: 'Hidden Cards', cardsList: cardsList, user: req.user, path: 'hidden' });
-	});
-}
+// If no name received return all cards
+function getCardCounts(card) {
+	var pipeline = [
+		{ $lookup: {
+			from: "users",
+			let: {"uniqueName": "$uniqueName"},
+			pipeline: [
+		        { $project: {
+		            "uniqueName": "$$uniqueName",
+		            "owned": {
+		                $cond: [ { $in: [ "$$uniqueName", "$cards.owned"] }, 1, 0 ]
+		            },
+		            "faved" : {
+		                $cond: [ { $in: [ "$$uniqueName", "$cards.faved"] }, 1, 0 ]
+		            }
+		        }},
+			    { $group: {
+			    	"_id": "$uniqueName",
+			    	"owned": { $sum: "$owned" },
+			    	"faved": { $sum: "$faved" }
+			    }}
+			],
+			as: "count"
+		}},
+		{ $project: { "_id": 0, "uniqueName": 1, "owned": { $arrayElemAt: [ "$count.owned", 0 ]}, "faved": { $arrayElemAt: [ "$count.faved", 0 ]}}}
+	];
 
-exports.editCard = function(req, res, next) {
-	if (!req.params.id) {
+	if (card) {
+		var match = { $match: { "uniqueName": card}};
+		pipeline.splice(0, 0, match);
+	}
+
+	var promise = Cards.aggregate(pipeline).then(result => result[0]);
+
+	return promise;
+};
+
+
+// Admin card management
+exports.getEditCardPage = function(req, res, next) {
+	if (!req.params.card) {
 		return res.render('cardEdit', { title: 'Add Card', user: req.user });
 	}
 
-	Cards.findOne({uniqueName: req.params.id}, async function(err, cardData) {
+	Cards.findOne({uniqueName: req.params.card}, async function(err, cardData) {
 		if (err) { return next(err); }
 		if (!cardData) {
 			var err = new Error('Card not found');
@@ -319,7 +337,7 @@ exports.updateCard = async function(req, res, next) {
 		return;
 	}
 
-	if (originalUniqueName === '' || originalUniqueName !== newUniqueName) {
+	if (originalUniqueName !== newUniqueName) {
 		var [err, nameExists] = await isNameUnique(newUniqueName);
 		if (err) {
 			return res.json({ err: true, message: err.message });
@@ -330,14 +348,14 @@ exports.updateCard = async function(req, res, next) {
 	}
 
 	try {
-		var promiseCard = Cards.findOneAndUpdate({uniqueName: originalUniqueName}, req.body.cardData).exec();
-		var promiseCollection = CardsCollection.updateMany({ card: originalUniqueName }, { card: newUniqueName }).exec();
+		var promiseCard = Cards.findOneAndUpdate({uniqueName: originalUniqueName}, req.body.cardData);
+		var promiseCollections = usersController.renameCardInCollections(originalUniqueName, newUniqueName);
 
 		var promiseL = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.L, 'L', false);
 		var promiseLB = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.LB, 'L', true);
 		var promiseS = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.S, 'S', false);
 
-		Promise.all([promiseCard, promiseCollection, promiseL, promiseLB, promiseS])
+		Promise.all([promiseCard, promiseCollections, promiseL, promiseLB, promiseS])
 			.then(() => { res.json({ err: null, message: 'Success' }); })
 			.catch(reason => { res.json({ err: true, message: reason.message }); });
 
@@ -355,7 +373,7 @@ async function isNameUnique(unqiueName) {
 	}
 	var hasCard = card ? true : false;
 	return [null, hasCard];
-}
+};
 
 function saveImage(oldName, newName, baseImage, cardSize, isBoomed) {
 	if (oldName === newName) {
@@ -382,25 +400,25 @@ function saveImage(oldName, newName, baseImage, cardSize, isBoomed) {
 			});
 		}
 	}
-}
+};
 
 function writeImage(name, baseImage, cardSize, isBoomed) {
 	if(!baseImage) return;
 
 	const ext = baseImage.substring(baseImage.indexOf("/")+1, baseImage.indexOf(";base64"));
-    const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
-    const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
-    const base64Data = baseImage.replace(regex, "");
-    const imageData = new Buffer.from(base64Data, 'base64');
-    const imagePath = './public/images/cards/' + cardSize + '/' + name + (isBoomed?'_b':'') + '.jpg';
+	const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
+	const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
+	const base64Data = baseImage.replace(regex, "");
+	const imageData = new Buffer.from(base64Data, 'base64');
+	const imagePath = './public/images/cards/' + cardSize + '/' + name + (isBoomed?'_b':'') + '.jpg';
 
-    return new Promise((resolve, reject) => {
-	    fs.writeFile(imagePath, imageData, err => {
-	    	if (err) reject(err);
-	    	resolve();
-	    });
+	return new Promise((resolve, reject) => {
+		fs.writeFile(imagePath, imageData, err => {
+			if (err) reject(err);
+			resolve();
+		});
 	});
-}
+};
 
 async function addNewCard(cardData, res) {
 	try {
@@ -430,10 +448,10 @@ async function addNewCard(cardData, res) {
 	} catch (err) {
 		return res.json({ err: true, message: err.message });
 	}
-}
+};
 
 exports.deleteCard = function(req, res, next) {
-	var cardName = req.params.id;
+	var cardName = req.params.card;
 	Cards.findOneAndRemove({ uniqueName: cardName }, (err, card) => {
 		if (err) { return next(err); }
 		if (card) {
@@ -450,36 +468,36 @@ exports.deleteCard = function(req, res, next) {
 			});
 		}
 	});
-}
+};
 
 function removeCardDependencies(cardName, res, next) {
-	var promiseCollection = CardsCollection.deleteMany({card: cardName}).exec();
+	var promiseCollections = usersController.deleteCardInCollections(cardName);
 	var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
 	var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
 	var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');
 
-	Promise.all([promiseCollection, promiseL, promiseLB, promiseS ])
+	Promise.all([promiseCollections, promiseL, promiseLB, promiseS ])
 		.catch(reason => { return next(reason); })
 		.then(() => { return res.redirect('/cards'); });
-}
+};
 
 function deleteFile(file) {
-  	return new Promise(function(resolve, reject) {
-	    fs.access(file, fs.W_OK, function(err) {
-	      	if (!err) {
-		        fs.unlink(file, function(err) {
-		          	if (err) { return reject(err); }
-		          	resolve();
-		        });
-	      	} else {
-	        	resolve();
-	      	}
-	    });
+	return new Promise(function(resolve, reject) {
+		fs.access(file, fs.W_OK, function(err) {
+			if (!err) {
+				fs.unlink(file, function(err) {
+					if (err) { return reject(err); }
+					resolve();
+				});
+			} else {
+				resolve();
+			}
+		});
 	});
 };
 
 exports.makeCardPublic = function(req, res, next) {
-	HiddenCards.findOneAndRemove({ uniqueName: req.params.id }, (err, card) => {
+	HiddenCards.findOneAndRemove({ uniqueName: req.params.card }, (err, card) => {
 		if (err) { return next(err); }
 		if (!card) {
 			var err = new Error("No such card");
@@ -491,4 +509,4 @@ exports.makeCardPublic = function(req, res, next) {
 			res.redirect("/card/"+doc.uniqueName);
 		});
 	});
-}
+};

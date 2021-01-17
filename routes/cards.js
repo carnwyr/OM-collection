@@ -8,22 +8,21 @@ var usersController = require('../controllers/usersController');
 router.post('/updateCard', usersController.isAdmin(), cardsController.updateCard);
 
 // Card creation page
-router.get('/new', usersController.isAdmin(), cardsController.editCard);
+router.get('/new', usersController.isAdmin(), cardsController.getEditCardPage);
 
-// Personal collection management
-router.post('/:id/addToCollection', usersController.isLoggedIn(), cardsController.addToCollection);
-router.post('/:id/removeFromCollection', usersController.isLoggedIn(), cardsController.removeFromCollection);
+// Collection management from card detail page
+router.post('/:card/modifyCollectionFromDetails', usersController.isLoggedIn(), usersController.modifyCollectionFromDetails);
 
 // Card edit page
-router.get('/:id/edit', usersController.isAdmin(), cardsController.editCard);
+router.get('/:card/edit', usersController.isAdmin(), cardsController.getEditCardPage);
 
 // Make hidden card available to everyone
-router.get('/:id/makePublic', usersController.isAdmin(), cardsController.makeCardPublic);
+router.get('/:card/makePublic', usersController.isAdmin(), cardsController.makeCardPublic);
 
 // Delete card
-router.get('/:id/delete', usersController.isAdmin(), cardsController.deleteCard);
+router.get('/:card/delete', usersController.isAdmin(), cardsController.deleteCard);
 
 // Card detail page
-router.get('/:id', cardsController.cardDetail);
+router.get('/:card', cardsController.getCardDetailPage);
 
 module.exports = router;

@@ -14,7 +14,7 @@ router.get('/:name/confirmEmail/:code', usersController.isSameUser(), usersContr
 router.post('/:name/changePassword', usersController.isSameUser(), usersController.changePassword);
 
 // Account settings page
-router.get('/:name', usersController.isSameUser(), usersController.accountPage);
+router.get('/:name', usersController.isSameUser(), usersController.getAccountPage);
 
 
 module.exports = router;

@@ -26,23 +26,24 @@ block content
   div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
 
   //- share collection
-  div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
-    div(class="modal-dialog modal-lg" role="document")
-      div(class="modal-content")
-        div(class="modal-header")
-          h5(class="modal-title text-primary" id="openShareLink") Share
-          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-            span(aria-hidden="true") &times;
-        div(class="modal-body mb-2")
-          div.input-group
-            input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link")
-            div.input-group-append
-              button#copyLink.btn.btn-primary.rounded Copy
-          div.text-center.text-secondary.mt-2 Stats image to copy and share
-          div(class='d-flex justify-content-center align-items-center mt-3' id='statsImageContainer')
-            div(id='statsSpinner' class="spinner-border text-secondary" role="status" style='display: none')
-            img(id='statsImage' class='img-fluid')
-            div(id='statsMessage')
+  if(path==="collection")
+    div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
+      div(class="modal-dialog modal-lg" role="document")
+        div(class="modal-content")
+          div(class="modal-header")
+            h5(class="modal-title text-primary" id="openShareLink") Share
+            button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+              span(aria-hidden="true") &times;
+          div(class="modal-body mb-2")
+            div.input-group
+              input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link")
+              div.input-group-append
+                button#copyLink.btn.btn-primary.rounded Copy
+            div.text-center.text-secondary.mt-2 Stats image to copy and share
+            div(class='d-flex justify-content-center align-items-center mt-3' id='statsImageContainer')
+              div(id='statsSpinner' class="spinner-border text-secondary" role="status" style='display: none')
+              img(id='statsImage' class='img-fluid')
+              div(id='statsMessage')
 
   div(class="container")
     h1= title
@@ -59,23 +60,23 @@ block content
                   div.d-flex.align-items-center.justify-content-center.cardTextWrapper
                     div.lead.text-primary.d-none.d-sm-block Demon cards
                     div.text-primary.d-block.d-sm-none Demon cards
-                  - var demonPercentage = roundPercentage(cardStats.cards.Demon[0] / cardStats.cards.Demon[1] * 100);
+                  - var demonPercentage = roundPercentage(cardStats.cards.Demon.owned / cardStats.cards.Demon.total * 100);
                   div(style='position: relative')
                     img.img-fluid.p-2.mx-auto(src='/images/demon_card.png' style='max-width: 120px; width:100%;')
                     div.mt-2(style={position: 'absolute', top: '0%', left: '0%', height: 100 - demonPercentage + '%', width: '100%', background: 'white', 'mix-blend-mode': 'saturation'})
-                  div.d-none.d-sm-block #{cardStats.cards.Demon[0]} of #{cardStats.cards.Demon[1]}
-                  small.d-block.d-sm-none #{cardStats.cards.Demon[0]} of #{cardStats.cards.Demon[1]}
+                  div.d-none.d-sm-block #{cardStats.cards.Demon.owned} of #{cardStats.cards.Demon.total}
+                  small.d-block.d-sm-none #{cardStats.cards.Demon.owned} of #{cardStats.cards.Demon.total}
                   small.text-muted #{demonPercentage}%
                 div.col-6.d-flex.flex-column.justify-content-center.h-100
                   div.d-flex.align-items-center.justify-content-center.cardTextWrapper
                     div.lead.text-primary.d-none.d-sm-block Memory cards
                     div.text-primary.d-block.d-sm-none Memory cards
-                  - var memoryPercentage = roundPercentage(cardStats.cards.Memory[0] / cardStats.cards.Memory[1] * 100);
+                  - var memoryPercentage = roundPercentage(cardStats.cards.Memory.owned / cardStats.cards.Memory.total * 100);
                   div(style='position: relative')
                     img.img-fluid.p-2.mx-auto(src='/images/memory_card.png' style='max-width: 120px; width:100%;')
                     div.mt-2(style={position: 'absolute', top: '0%', left: '0%', height: 100 - memoryPercentage + '%', width: '100%', background: 'white', 'mix-blend-mode': 'saturation'})
-                  div.d-none.d-sm-block #{cardStats.cards.Memory[0]} of #{cardStats.cards.Memory[1]}
-                  small.d-block.d-sm-none #{cardStats.cards.Memory[0]} of #{cardStats.cards.Memory[1]}
+                  div.d-none.d-sm-block #{cardStats.cards.Memory.owned} of #{cardStats.cards.Memory.total}
+                  small.d-block.d-sm-none #{cardStats.cards.Memory.owned} of #{cardStats.cards.Memory.total}
                   small.text-muted #{memoryPercentage}%
             div.col-12.col-lg-8.mt-3.mt-lg-0
               nav
@@ -94,34 +95,34 @@ block content
                 div.container.tab-pane.fade.px-0.show.active(id='charNav' role='tabpanel' aria-labelledby='charNavTab')
                   div.row
                     div.col-md-6
-                      +percentBar(cardStats.characters.Lucifer[0], cardStats.characters.Lucifer[1], "Lucifer")
-                      +percentBar(cardStats.characters.Mammon[0], cardStats.characters.Mammon[1], "Mammon")
-                      +percentBar(cardStats.characters.Leviathan[0], cardStats.characters.Leviathan[1], "Leviathan")
-                      +percentBar(cardStats.characters.Satan[0], cardStats.characters.Satan[1], "Satan")
+                      +percentBar(cardStats.characters.Lucifer.owned, cardStats.characters.Lucifer.total, "Lucifer")
+                      +percentBar(cardStats.characters.Mammon.owned, cardStats.characters.Mammon.total, "Mammon")
+                      +percentBar(cardStats.characters.Leviathan.owned, cardStats.characters.Leviathan.total, "Leviathan")
+                      +percentBar(cardStats.characters.Satan.owned, cardStats.characters.Satan.total, "Satan")
                     div.col-md-6
-                      +percentBar(cardStats.characters.Asmodeus[0], cardStats.characters.Asmodeus[1], "Asmodeus")
-                      +percentBar(cardStats.characters.Beelzebub[0], cardStats.characters.Beelzebub[1], "Beelzebub")
-                      +percentBar(cardStats.characters.Belphegor[0], cardStats.characters.Belphegor[1], "Belphegor")
+                      +percentBar(cardStats.characters.Asmodeus.owned, cardStats.characters.Asmodeus.total, "Asmodeus")
+                      +percentBar(cardStats.characters.Beelzebub.owned, cardStats.characters.Beelzebub.total, "Beelzebub")
+                      +percentBar(cardStats.characters.Belphegor.owned, cardStats.characters.Belphegor.total, "Belphegor")
                 div.container.tab-pane.fade.px-0(id='sideCharNav' role='tabpanel' aria-labelledby='sideCharNavTab')
                   div.row
                     div.col-md-6
-                      +percentBar(cardStats.characters.Diavolo[0], cardStats.characters.Diavolo[1], "Diavolo")
-                      +percentBar(cardStats.characters.Barbatos[0], cardStats.characters.Barbatos[1], "Barbatos")
-                      +percentBar(cardStats.characters.Luke[0], cardStats.characters.Luke[1], "Luke")
-                      +percentBar(cardStats.characters.Simeon[0], cardStats.characters.Simeon[1], "Simeon")
+                      +percentBar(cardStats.characters.Diavolo.owned, cardStats.characters.Diavolo.total, "Diavolo")
+                      +percentBar(cardStats.characters.Barbatos.owned, cardStats.characters.Barbatos.total, "Barbatos")
+                      +percentBar(cardStats.characters.Luke.owned, cardStats.characters.Luke.total, "Luke")
+                      +percentBar(cardStats.characters.Simeon.owned, cardStats.characters.Simeon.total, "Simeon")
                     div.col-md-6
-                      +percentBar(cardStats.characters.Solomon[0], cardStats.characters.Solomon[1], "Solomon")
-                      +percentBar(cardStats.characters["Little D"][0], cardStats.characters["Little D"][1], "Little D")
+                      +percentBar(cardStats.characters.Solomon.owned, cardStats.characters.Solomon.total, "Solomon")
+                      +percentBar(cardStats.characters["Little D"].owned, cardStats.characters["Little D"].total, "Little D")
                 div.container.tab-pane.fade.px-0(id='rarityNav' role='tabpanel' aria-labelledby='rarityNavTab')
                   div.row
                     div.col-md-6
-                      +percentBar(cardStats.rarity.N[0], cardStats.rarity.N[1], "N")
-                      +percentBar(cardStats.rarity.R[0], cardStats.rarity.R[1], "R")
-                      +percentBar(cardStats.rarity.SR[0], cardStats.rarity.SR[1], "SR")
-                      +percentBar(cardStats.rarity.SSR[0], cardStats.rarity.SSR[1], "SSR")
+                      +percentBar(cardStats.rarity.N.owned, cardStats.rarity.N.total, "N")
+                      +percentBar(cardStats.rarity.R.owned, cardStats.rarity.R.total, "R")
+                      +percentBar(cardStats.rarity.SR.owned, cardStats.rarity.SR.total, "SR")
+                      +percentBar(cardStats.rarity.SSR.owned, cardStats.rarity.SSR.total, "SSR")
                     div.col-md-6
-                      +percentBar(cardStats.rarity.UR[0], cardStats.rarity.UR[1], "UR")
-                      +percentBar(cardStats.rarity.URp[0], cardStats.rarity.URp[1], "UR+")
+                      +percentBar(cardStats.rarity.UR.owned, cardStats.rarity.UR.total, "UR")
+                      +percentBar(cardStats.rarity.URp.owned, cardStats.rarity.URp.total, "UR+")
               div.small.text-muted.mt-3 Percentage is calculated based on the entire collection (both demon and memory cards).
 
     //- Card Navigation
@@ -247,7 +248,7 @@ block content
         if cardsList.filter(card => card.type == "Demon").length != 0
           each card in cardsList
             if card.type == "Demon"
-              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href= (path=="collection"?"../":"") + "card/"+card.uniqueName)
+              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+card.uniqueName)
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
                 figcaption #{card.name}
 
@@ -256,6 +257,7 @@ block content
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7371452932" data-ad-format="auto" data-full-width-responsive="true"></ins>
         script.
           (adsbygoogle = window.adsbygoogle || []).push({});
+        a(type="button" class="btn text-muted" data-toggle="modal" data-target="#removeAdsModal" style="display:none;") Remove Ads
 
     div(class="row" id="memoryCards")
       div(class="col-12")
@@ -268,6 +270,6 @@ block content
         if cardsList.filter(card => card.type == "Memory").length != 0
           each card in cardsList
             if card.type == "Memory"
-              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path=="collection"?"../":"") + "card/"+card.uniqueName)
+              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+card.uniqueName)
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
                 figcaption #{card.name}
