@@ -78,10 +78,12 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 		countCardsForStats(ownedCards, cardStats, "owned");
 		countCardsForStats(allCards, cardStats, "total");
 
+		var badges = await usersController.getUserBadges(req.params.username);
+
 		return res.render('cardsList', {
 			title: title, description: `${req.params.username}'s Collection on Karasu-OS.com`,
-			user: req.user, cardStats: cardStats,
-			cardsList: ownedCards, path: 'collection' });
+			user: req.user, badges: badges.info.supportStatus,
+			cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
 	} catch (e) {
 		return next(e);
 	}

@@ -134,11 +134,6 @@ img.lazy {
     0% {background-position: 89%}
     100% {background-position: 11%}
 }
-@media screen and (max-width: 450px) {
-  .cardTextWrapper {
-    height: 100%;
-  }
-}
 
 #viewMenuDropdown {
   padding-top: 0;
