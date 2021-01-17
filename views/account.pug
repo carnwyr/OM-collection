@@ -80,21 +80,21 @@ block content
 					br
 					h5.card-title Supporter Perks
 					div.col-12
-						if user.supportStatus.includes("adfree")
-							div(class="form-check")
-								input(class="form-check-input" type="checkbox" value="" id="adFreeStatus" checked disabled)
-								label(class="form-check-label" for="adFreeStatus" style="color:#00c853;") Ad-free Status
-						else
-							div(class="form-check")
-								input(class="form-check-input" type="checkbox" value="" id="adFreeStatus" disabled)
-								label(class="form-check-label" for="adFreeStatus") Ad-free Status
-							br
-							div.card.card-body.text-light.text-center(style="border-radius:8px;background-color:#8d6fe2;")
-								h5.card-title.mb-0 Become a Supporter
-								img(src="/images/karasu.png" alt="karasu icon" style="width:32px;height:32px;margin:10px auto;")
-								p.card-text Make a donation now to browser Karasu-OS.com ad-free and receive a special badge to display on your profile! <br>
-									a(id="donation" class="btn bg-light text-primary my-3" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") Become a Supporter
+						div(class="custom-control custom-switch")
+							input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+							label(class="custom-control-label" for="adFreeStatus") Ad-free Status
+						br
+					if !user.supportStatus.includes("adfree")
+						div.card.card-body.text-light.text-center(style="border-radius:8px;background-color:#8d6fe2;")
+							h5.card-title.mb-0 Become a Supporter
+							img(src="/images/karasu.png" alt="karasu icon" style="width:32px;height:32px;margin:10px auto;")
+							p.card-text Make a donation now to browser Karasu-OS.com ad-free and receive a special badge to display on your profile! <br>
+								a(id="donation" class="btn bg-light text-primary my-3" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") Become a Supporter
 	style.
 		#donation:hover {
 			background-color: white !important;
+		}
+		#adFreeStatus.custom-control-input:checked ~ .custom-control-label::before {
+			border-color: var(--success);
+			background-color: var(--success);
 		}
