@@ -1,6 +1,6 @@
-.card-header {
+/* .card-header {
   padding-bottom: 0
-}
+} */
 img {
   transition: all .5s ease;
   -webkit-transition: all .5s ease;
@@ -62,10 +62,13 @@ img.lazy {
   -o-transition: none !important;
   transition: none !important;
 }
-#nameFilter {
+/* #nameFilter {
   height: 30px;
   margin: 0px;
   background-color: #f0e1fc;
+} */
+#nameFilter, #expandFilters {
+  height: 32px;
 }
 #nameFilter::placeholder {
   color: var(--secondary);
@@ -78,11 +81,11 @@ img.lazy {
   outline: none;
   box-shadow: none;
 }
-#filters .card-header {
+/* #filters .card-header {
   background-color: white;
   font-weight: bold;
   color: #8d6fe2;
-}
+} */
 
 /*stat progress bars*/
 .progress {
@@ -150,4 +153,31 @@ img.lazy {
 #viewMenuDropdown:focus {
   outline: none;
   box-shadow: none;
+}
+
+#filters ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#filters li {
+  float: left;
+}
+
+#rarityForm li {
+  width: 4rem;
+}
+
+#attributeForm li {
+  width: 6rem;
+}
+
+#characterForm li {
+  width: 8rem;
+}
+
+#cardsfilter li {
+  margin-right: 3rem;
 }
