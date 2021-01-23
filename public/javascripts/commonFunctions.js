@@ -16,8 +16,10 @@ $(document).ready(function(){
 
 	$('.navbar .dropdown').hover(function() {
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+		$(this).delay(250).addClass('show');
 	}, function() {
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
+		$(this).delay(100).removeClass('show');
 	});
 
 	$("#b2t").on('click', () => { $('html, body').animate({scrollTop:0}, 500); });
