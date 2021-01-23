@@ -5,7 +5,7 @@ var selectionMode = false;
 var viewType = "icon";
 var querystr = new URLSearchParams(document.location.search.substring(1));
 
-$(document).ready(function(){
+$(document).ready(function() {
 	resetFilters();
 	if ('URLSearchParams' in window) {
 		applyQuery();
@@ -14,13 +14,14 @@ $(document).ready(function(){
 	}
 
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
-	$("img.lazy").each(function(){
+	$("img.lazy").each(function() {
 		if (this.complete && this.naturalHeight !== 0){
 			$(this).removeClass("lazy");
 		}
 	});
 
-	$("form input").on('click', formChanged);
+	// $("form input").on('click', updateFilters);
+	$("div#filters input").on('click', updateFilters);
 	$("div#filters input").on('change', applyFilters);
 	$("input#nameFilter").on('input', inputChanged);
 	$("#searchForm input").on('keypress', function(e) {
@@ -90,7 +91,7 @@ function fillRank(container) {
 }
 
 function getRowCapacity() {
-	// max number of cards for xs is 4, on smaller screens it's reduced by 1
+	// max number of cards for xs is 4, on smaller screens it's reduced by 1 (possibly outdated)
 	var cardsInRow;
 	if (viewType === "icon") {
 		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 6, 992: 6, 1200: 7, xl: 9};
@@ -105,22 +106,22 @@ function getRowCapacity() {
 	}
 }
 
-function formChanged(e) {
-	var form = $(this).closest('form');
+function updateFilters(e) {
+	var form = $(this).closest("form");
 	var type = $(this).attr("type");
-	if (type == 'checkbox') {
-		var checkboxes = $(form).find('input[type=checkbox]:checked');
-		var radio = $(form).find('input[type=radio]');
-		if (checkboxes.length == 0) {
+	if (type == 'checkbox') { // if there's a change in checkboxes
+		var checkboxes = $(form).find('input[type=checkbox]:checked'); // everything that's checked
+		var radio = $(form).find('input[type=radio]'); // get the "ALL" radio
+		if (checkboxes.length == 0) { // if no checkbox checked, then select "ALL"
 			$(radio).prop('checked', true);
-		} else if ($(radio).prop('checked')) {
+		} else if ($(radio).prop('checked')) { // if new checkboxes checked, remove "ALL" check
 			$(radio).prop('checked', false);
 		}
 	}
-	if (type == 'radio') {
+	if (type == 'radio') { // if the change is a radio
 		var checkboxes = $(form).find('input[type=checkbox]:checked');
-		if ($(this).prop('checked')) {
-			$(checkboxes).each(function() {
+		if ($(this).prop('checked')) { // if the change is "checking" the radio
+			$(checkboxes).each(function() { // since "ALL" is checked, remove all other checkboxes
 				$(this).prop('checked', false);
 			});
 		}

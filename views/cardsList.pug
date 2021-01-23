@@ -35,7 +35,7 @@ block content
         if user && path === "list"
           button(class="btn btn-primary btn-md mb-0" id="manageCollection") Manage Collection
 
-    div(id="searchBar" class="card shadow mb-3")
+    div(class="card shadow mb-3")
       div(class="card-body d-flex flex-wrap justify-content-around p-3")
         div(class="dropdown text-center")
           button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
@@ -59,15 +59,18 @@ block content
           | Filters
 
 
-    div(id="filters" class="card card-body shadow" style="border-left:4px solid #8b9af0;")
-      div.row
-        h5.card-title.col Filters
-        div.col.text-right
-          a#resetFilters.text-black-50(type="button") Reset filters
-      div.row
+    div(id="filters" class="card card-body shadow" style="border-left:4px solid var(--secondary);")
+      div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;") Filters
+      div.text-black-50.text-right(style="margin-top:-.75rem;") Reset filters
+      //-
+        div.row
+          h5.card-title.col Filters
+          div.col.text-right
+            a#resetFilters.text-black-50(type="button") Reset filters
+      div.row.mt-2
         div.col-md-1 Cards
-        div.col
-          ul#cardsfilter
+        form#cardsfilter.col
+          ul
             li(class="custom-control custom-radio")
               input(type="radio" class="custom-control-input" id="checkCardsAll" name="1")
               label(class="custom-control-label" for="checkCardsAll") All
@@ -80,37 +83,41 @@ block content
       hr
       div.row
         div.col-sm-12.col-md-6
-          div Rarity
-          ul#rarityForm
-            li(class="custom-control custom-radio")
-              input(type="radio" class="custom-control-input" id="checkRarityAll" name="checkRarityAll")
-              label(class="custom-control-label" for="checkRarityAll") All
-            - var rarities = ["N", "R", "SR", "SSR", "UR", "UR+"]
-            each rarity in rarities
-              li(class="custom-control custom-checkbox")
-                input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name=(rarity==="UR+"?"URp":rarity))
-                label(class="custom-control-label" for="checkRarity"+rarity)= rarity
+          p Rarity
+          form#rarityForm
+            ul
+              li(class="custom-control custom-radio")
+                input(type="radio" class="custom-control-input" id="checkRarityAll" name="checkRarityAll")
+                label(class="custom-control-label" for="checkRarityAll") All
+              - var rarities = ["N", "R", "SR", "SSR", "UR", "UR+"]
+              each rarity in rarities
+                li(class="custom-control custom-checkbox")
+                  input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name=(rarity==="UR+"?"URp":rarity))
+                  label(class="custom-control-label" for="checkRarity"+rarity)= rarity
           hr
-          div Attribute
-          ul#attributeForm
-            li(class="custom-control custom-radio")
-              input(type="radio" class="custom-control-input" id="checkAttributeAll" name="checkAttributeAll")
-              label(class="custom-control-label" for="checkAttributeAll") All
-            - var attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
-            each attribute in attributes
-              li(class="custom-control custom-checkbox")
-                input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name=attribute)
-                label(class="custom-control-label" for="checkAttribute"+attribute)= attribute
-        div.col(style="border-left:2px solid aliceblue;") Character
-          ul#characterForm
-            li(class="custom-control custom-radio")
-              input(type="radio" class="custom-control-input" id="checkCharacterAll" name="checkCharacterAll")
-              label(class="custom-control-label" for="checkCharacterAll") All
-            - var characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
-            each character in characters
-              li(class="custom-control custom-checkbox")
-                input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name=character)
-                label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?"Little D":character
+          p Attribute
+          form#attributeForm
+            ul
+              li(class="custom-control custom-radio")
+                input(type="radio" class="custom-control-input" id="checkAttributeAll" name="checkAttributeAll")
+                label(class="custom-control-label" for="checkAttributeAll") All
+              - var attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+              each attribute in attributes
+                li(class="custom-control custom-checkbox")
+                  input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name=attribute)
+                  label(class="custom-control-label" for="checkAttribute"+attribute)= attribute
+        div.col(style="border-left:1px solid rgba(0,0,0,.1);")
+          p Character
+          form#characterForm
+            ul
+              li(class="custom-control custom-radio")
+                input(type="radio" class="custom-control-input" id="checkCharacterAll" name="checkCharacterAll")
+                label(class="custom-control-label" for="checkCharacterAll") All
+              - var characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
+              each character in characters
+                li(class="custom-control custom-checkbox")
+                  input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name=character)
+                  label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?"Little D":character
 
         //-
           div.col-12.col-md-6.pr-md-1.mb-2
