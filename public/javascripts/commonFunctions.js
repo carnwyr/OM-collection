@@ -14,6 +14,16 @@ $(document).ready(function(){
 		$("#cookieToast").toast("hide");
 	});
 
+	/***/
+	if (!document.cookie.split('; ').find(row => row.startsWith("shareKarasu"))) {
+		$("#shareKarasu").removeClass("d-none").toast("show");
+	}
+	$("#shareKarasu .close, #shareKarasu a").on("click", () => {
+		document.cookie = "shareKarasu=true; expires=" + cookieExpiryDate() + ";";
+		$("#shareKarasu").toast("hide");
+	});
+	/***/
+
 	$('.navbar .dropdown').hover(function() {
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
 	}, function() {
