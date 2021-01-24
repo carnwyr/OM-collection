@@ -53,171 +53,109 @@ block content
             div(class="input-group-text border-0 bg-transparent text-primary" style="z-index: 3;")
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
             input(type="text" class="form-control border-0 text-primary bg-transparent pl-0" id="nameFilter" placeholder="Search for card name...")
-        button(id="expandFilters" class="btn btn-secondary btn-sm" data-toggle="collapse" aria-expanded="false" aria-controls="filters" style="width: 104px")
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-filter" style="margin-bottom:.1rem;" viewBox="0 0 16 16"><path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/></svg>
-          |
-          | Filters
+        button(id="filterBtn" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters" style="width:104px;") Filters
 
-
-    div(id="filters" class="card card-body shadow" style="border-left:4px solid var(--secondary);")
-      div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;") Filters
-      div.text-black-50.text-right(style="margin-top:-.75rem;") Reset filters
-      //-
-        div.row
-          h5.card-title.col Filters
-          div.col.text-right
-            a#resetFilters.text-black-50(type="button") Reset filters
-      div.row.mt-2
-        div.col-md-1 Cards
-        form#cardsfilter.col
-          ul
-            li(class="custom-control custom-radio")
-              input(type="radio" class="custom-control-input" id="checkCardsAll" name="1")
-              label(class="custom-control-label" for="checkCardsAll") All
-            li(class="custom-control custom-radio")
-              input(type="radio" class="custom-control-input" id="checkCardsOwned" name="1")
-              label(class="custom-control-label" for="checkCardsOwned") Collected
-            li(class="custom-control custom-radio")
-              input(type="radio" class="custom-control-input" id="checkCardsNotOwned" name="1")
-              label(class="custom-control-label" for="checkCardsNotOwned") Not collected
-      hr
-      div.row
-        div.col-sm-12.col-md-6
-          p Rarity
-          form#rarityForm
-            ul
-              li(class="custom-control custom-radio")
-                input(type="radio" class="custom-control-input" id="checkRarityAll" name="checkRarityAll")
-                label(class="custom-control-label" for="checkRarityAll") All
-              - var rarities = ["N", "R", "SR", "SSR", "UR", "UR+"]
-              each rarity in rarities
-                li(class="custom-control custom-checkbox")
-                  input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name=(rarity==="UR+"?"URp":rarity))
-                  label(class="custom-control-label" for="checkRarity"+rarity)= rarity
+    div(id="filters" class="collapse rounded shadow")
+      div(class="card card-body" style="border-left:4px solid var(--secondary);")
+        div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;") Filters
+        div#resetFilters.text-right.text-black-50.mb-2(style="margin-top:-1.25rem;")
+          a(type="button") Reset filters
+        if path === "list"
+          div.row.d-flex
+            p.col-md-1.mb-md-0 Cards
+            div.col
+              ul#cardsfilter
+                li(class="custom-control custom-radio")
+                  input(type="radio" class="custom-control-input" id="checkCardsAll" name="cards")
+                  label(class="custom-control-label" for="checkCardsAll") All
+                li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
+                  input(type="radio" class="custom-control-input" id="checkCardsOwned" name="cards" disabled=(user?false:true))
+                  label(class="custom-control-label" for="checkCardsOwned") Collected
+                li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
+                  input(type="radio" class="custom-control-input" id="checkCardsNotOwned" name="cards" disabled=(user?false:true))
+                  label(class="custom-control-label" for="checkCardsNotOwned") Not collected
+                if !user
+                  li
+                    a(href="/signup") Register
+                    |
+                    |
+                    span.text-dark /
+                    |
+                    |
+                    a(href="/login") Login
           hr
-          p Attribute
-          form#attributeForm
-            ul
-              li(class="custom-control custom-radio")
-                input(type="radio" class="custom-control-input" id="checkAttributeAll" name="checkAttributeAll")
-                label(class="custom-control-label" for="checkAttributeAll") All
-              - var attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
-              each attribute in attributes
-                li(class="custom-control custom-checkbox")
-                  input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name=attribute)
-                  label(class="custom-control-label" for="checkAttribute"+attribute)= attribute
-        div.col(style="border-left:1px solid rgba(0,0,0,.1);")
-          p Character
-          form#characterForm
-            ul
-              li(class="custom-control custom-radio")
-                input(type="radio" class="custom-control-input" id="checkCharacterAll" name="checkCharacterAll")
-                label(class="custom-control-label" for="checkCharacterAll") All
-              - var characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
-              each character in characters
-                li(class="custom-control custom-checkbox")
-                  input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name=character)
-                  label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?"Little D":character
+        div.row
+          div.col-sm-12.col-md-6
+            p Rarity
+            form#rarityForm
+              ul
+                li(class="custom-control custom-radio")
+                  input(type="radio" class="custom-control-input" id="checkRarityAll" name="rarity")
+                  label(class="custom-control-label" for="checkRarityAll") All
+                - var rarities = ["N", "R", "SR", "SSR", "UR", "URp"]
+                each rarity in rarities
+                  li(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name="rarity" value=rarity)
+                    label(class="custom-control-label" for="checkRarity"+rarity)= rarity==="URp"?"UR+":rarity
+            hr
+            p Attribute
+            form#attributeForm
+              ul
+                li(class="custom-control custom-radio")
+                  input(type="radio" class="custom-control-input" id="checkAttributeAll" name="attribute")
+                  label(class="custom-control-label" for="checkAttributeAll") All
+                - var attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+                each attribute in attributes
+                  li(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name="attribute" value=attribute)
+                    label(class="custom-control-label" for="checkAttribute"+attribute)= attribute
+            hr.d-md-none
+          div#characterFilters.col
+            p Character
+            form#characterForm
+              ul
+                li(class="custom-control custom-radio")
+                  input(type="radio" class="custom-control-input" id="checkCharacterAll" name="character")
+                  label(class="custom-control-label" for="checkCharacterAll") All
+                - var characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
+                each character in characters
+                  li(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name="character" value=character)
+                    label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?"Little D":character
 
-        //-
-          div.col-12.col-md-6.pr-md-1.mb-2
-            div(id="rarityFilter" class="card mb-2 shadow" style="border-left: 4px solid #8B9AF0;")
-              div(class="card-header") Rarity
-              div(class="card-body")
-                form(id="rarityForm")
-                  div(class="container")
-                    div(class="row")
-                      div(class="custom-control custom-radio mr-3 col-1")
-                        input(type="radio" class="custom-control-input" id="checkRarityAll" name="All")
-                        label(class="custom-control-label" for="checkRarityAll") All
-                      - var rarities = ["N", "R", "SR", "SSR", "UR"]
-                      each rarity in rarities
-                        div(class="custom-control custom-checkbox mr-3 col-1")
-                          input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name=rarity)
-                          label(class="custom-control-label" for="checkRarity"+rarity) #{rarity}
-                      div(class="custom-control custom-checkbox col-1")
-                        input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
-                        label(class="custom-control-label" for="checkRarityUR+") UR+
-            div(id="attributeFilter" class="card shadow" style="border-left: 4px solid #F06292;")
-              div(class="card-header") Attribute
-              div(class="card-body")
-                form(id="attributeForm")
-                  div(class="container")
-                    div(class="row")
-                      div(class="custom-control custom-radio mr-5 ml-1 col-1")
-                        input(type="radio" class="custom-control-input" id="checkAttributeAll" name="All")
-                        label(class="custom-control-label" for="checkAttributeAll") All
-                      - var attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony"]
-                      each attribute in attributes
-                        div(class="custom-control custom-checkbox mr-5 ml-1 col-1")
-                          input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name=attribute)
-                          label(class="custom-control-label" for="checkAttribute"+attribute) #{attribute}
-                      div(class="custom-control custom-checkbox ml-1 col-1")
-                        input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
-                        label(class="custom-control-label" for="checkAttributeSloth") Sloth
-          div.col-12.col-md-6.pl-md-1.mb-2
-            div(id="characterFilter" class="card shadow h-100" style="border-left: 4px solid #C297EC;")
-              div(class="card-header") Character
-              div(class="card-body")
-                form(id="characterForm")
-                  div(class="container pl-0")
-                    div(class="row")
-                      div(class="custom-control custom-radio mr-5 ml-3 col-2")
-                        input(type="radio" class="custom-control-input" id="checkCharacterAll" name="All")
-                        label(class="custom-control-label" for="checkCharacterAll") All
-                      - var characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon"]
-                      each character in characters
-                        div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                          input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name=character)
-                          label(class="custom-control-label" for="checkCharacter"+character) #{character}
-                      div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                        input(type="checkbox" class="custom-control-input" id="checkCharacterLittleD" name="LittleD")
-                        label(class="custom-control-label" for="checkCharacterLittleD" style="min-width: 75px;") Little D
-          .col-12.mb-2
-            .card.shadow.h-100#miscFilter(style="border-left: 4px solid #88d9e3")
-              .card-header Misc
-              .card-body.pt-1
-                .form-check-inline.flex.flex-wrap.w-100
-                  .custom-control.custom-checkbox.mr-3(style='min-width: 10rem')
-                    input.custom-control-input#notOwned(type="checkbox" name="notOwned")
-                    label.custom-control-label(for="notOwned") Only show not owned cards
-                  .custom-control.custom-checkbox(style='min-width: 10rem')
-                    input.custom-control-input#unlockOutfit(type="checkbox" name="unlockOutfit" disabled)
-                    label.custom-control-label(for="unlockOutfit") Only show cards with outfits
+    div(class="row mt-4" id="demonCards")
+      div(class="col-12")
+        h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
+          |
+          |
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+    div(class='collapse show invisible' id='demonWrapper')
+      div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
+        if cardsList.filter(card => card.type == "Demon").length != 0
+          each card in cardsList
+            if card.type == "Demon"
+              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+card.uniqueName)
+                img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
+                figcaption #{card.name}
 
-          div(class="row" id="demonCards")
-            div(class="col-12")
-              h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
-                |
-                |
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-          div(class='collapse show invisible' id='demonWrapper')
-            div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
-              if cardsList.filter(card => card.type == "Demon").length != 0
-                each card in cardsList
-                  if card.type == "Demon"
-                    a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+card.uniqueName)
-                      img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                      figcaption #{card.name}
+      if (!user || !user.supportStatus.includes("adfree"))
+        div.container.ad-container.text-center.my-3
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7371452932" data-ad-format="auto" data-full-width-responsive="true"></ins>
+          script.
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          a(type="button" class="text-muted" data-toggle="modal" data-target="#removeAdsModal" style="display:none;") Remove Ads
 
-          if (!user || !user.supportStatus.includes("adfree"))
-            div.container.ad-container.text-center.my-3
-              <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7371452932" data-ad-format="auto" data-full-width-responsive="true"></ins>
-              script.
-                (adsbygoogle = window.adsbygoogle || []).push({});
-              a(type="button" class="text-muted" data-toggle="modal" data-target="#removeAdsModal" style="display:none;") Remove Ads
-
-          div(class="row" id="memoryCards")
-            div(class="col-12")
-              h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
-                |
-                |
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-          div(class='collapse show invisible' id='memoryWrapper')
-            div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
-              if cardsList.filter(card => card.type == "Memory").length != 0
-                each card in cardsList
-                  if card.type == "Memory"
-                    a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+card.uniqueName)
-                      img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                      figcaption #{card.name}
+    div(class="row" id="memoryCards")
+      div(class="col-12")
+        h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
+          |
+          |
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+    div(class='collapse show invisible' id='memoryWrapper')
+      div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
+        if cardsList.filter(card => card.type == "Memory").length != 0
+          each card in cardsList
+            if card.type == "Memory"
+              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+card.uniqueName)
+                img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
+                figcaption #{card.name}
