@@ -110,19 +110,19 @@ function getRowCapacity() {
 function updateFilters(e) {
 	var form = $(this).closest("form");
 	var type = $(this).attr("type");
-	if (type == 'checkbox') { // if there's a change in checkboxes
-		var checkboxes = $(form).find('input[type=checkbox]:checked'); // everything that's checked
-		var radio = $(form).find('input[type=radio]'); // get the "ALL" radio
-		if (checkboxes.length == 0) { // if no checkbox checked, then select "ALL"
+	if (type == 'checkbox') {
+		var checkboxes = $(form).find('input[type=checkbox]:checked');
+		var radio = $(form).find('input[type=radio]');
+		if (checkboxes.length == 0) {
 			$(radio).prop('checked', true);
-		} else if ($(radio).prop('checked')) { // if new checkboxes checked, remove "ALL" check
+		} else if ($(radio).prop('checked')) {
 			$(radio).prop('checked', false);
 		}
 	}
-	if (type == 'radio') { // if the change is a radio
+	if (type == 'radio') {
 		var checkboxes = $(form).find('input[type=checkbox]:checked');
-		if ($(this).prop('checked')) { // if the change is "checking" the radio
-			$(checkboxes).each(function() { // since "ALL" is checked, remove all other checkboxes
+		if ($(this).prop('checked')) {
+			$(checkboxes).each(function() {
 				$(this).prop('checked', false);
 			});
 		}
