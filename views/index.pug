@@ -1,5 +1,8 @@
 extends layout
 
+block scripts
+  link(rel="stylesheet" href="/stylesheets/homepage.css")
+
 block content
   div(class="modal fade" id="contactLaele" tabindex="-1" role="dialog" aria-labelledby="contactLaeleLabel" aria-hidden="true")
     div(class="modal-dialog" role="document")
@@ -45,6 +48,19 @@ block content
               a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1") My Collection
               a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1") My Favourites
             a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1") Surprise Guest Guide
+        div.card.card-body.shadow.mb-3
+          h5.card-title Get this badge!
+          p Share to get this badge. What do you like about karasu-os.com? What are some updates you are looking forward to?
+          div.d-flex.align-items-center
+            img(src="/images/SharingBadge.png" alt="Sharing Badge" style="width:64px;height:64px;")
+            p.ml-md-2 Step 1: Share your thought about karasu-os.com on your favourite social media platform.
+              |
+              br
+              | Step 2: Send a screenshot and link of your post to our discord server
+              |
+              a(href="https://discord.gg/Y3KMW7U") Y3KMW7U
+              |
+              | no accounts needed.
         div.row
           div.col-12.col-md-6.mb-4
             div.card.shadow.h-100
@@ -86,7 +102,6 @@ block content
                   |
                   a(href="https://www.buymeacoffee.com/karasuos") https://www.buymeacoffee.com/karasuos
                 a(class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") &#x1F608 Buy Karasu a Whip of Love
-    link(rel="stylesheet" href="/stylesheets/homepage.css")
 
 block footer
   footer(class="site-footer bg-primary navbar-dark mt-auto")

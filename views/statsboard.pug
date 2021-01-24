@@ -45,28 +45,58 @@ div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby
 if badges.length !== 0
   if badges.includes("adfree")
     - var level = badges.find((el) => el.startsWith("Lv"));
-    div(id="supporterBadgeModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="supporterBadgeModelTitle" aria-hidden="true")
-      div(class="modal-dialog" role="document")
-        div(class="modal-content")
-          div(class="modal-header")
-            h5(class="modal-title text-primary" id="supporterBadgeModelTitle")= level + " Supporter Badge"
-            button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-              span(aria-hidden="true") &times;
-          div(class="modal-body") Proud supporter of Karasu-OS! Unlock by making a donation to keep Karasu alive.
-          div(class="modal-footer")
-            button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
-            a(type="button" class="btn btn-primary" href="https://www.buymeacoffee.com/karasuos" target="_blank") Unlock the Badge
+    style.
+      #supportBadge>div {
+        width: 100%;
+        color: white;
+        font-size: small;
+        text-align: center;
+        transform: translateY(-115%);
+      }
+  include badgeDescriptions.pug
+  each badge in badges
+    if badge === "adfree"
+      div(id="supporterBadgeModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="supporterBadgeModelTitle" aria-hidden="true")
+        div(class="modal-dialog" role="document")
+          div(class="modal-content")
+            div(class="modal-header")
+              h5(class="modal-title text-primary" id="supporterBadgeModelTitle")= level + " Supporter"
+              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                span(aria-hidden="true") &times;
+            div(class="modal-body") Proud supporter of Karasu-OS! Unlock by making a donation to keep Karasu alive.
+            div(class="modal-footer")
+              button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
+              a(type="button" class="btn btn-primary" href="https://www.buymeacoffee.com/karasuos" target="_blank") Unlock the Badge
+    else if (badge.startsWith("Lv") || badge === '')
+      //- do nothing
+    else
+      div(id=badge+"Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby=badge+"Title" aria-hidden="true")
+        div(class="modal-dialog" role="document")
+          div(class="modal-content")
+            div(class="modal-header")
+              h5(class="modal-title text-primary" id=badge+"Title")= list[badge].title
+              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                span(aria-hidden="true") &times;
+            div(class="modal-body") !{list[badge].description}
+            div(class="modal-footer")
+              button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
 
-div.card.card-body.shadow.mb-3(id='statsCard')
+div#statsCard.card.card-body.shadow.mb-3
   div.row.justify-content-between.mb-3.mb-lg-0
     div.col
       h5.mb-0.mr-2 Achievements
       if badges.length !== 0
-        div(style="position:absolute;z-index:1;")
-          if badges.includes("adfree")
-            div#supportBadge(type="button" data-toggle="modal" data-target="#supporterBadgeModel" style="width:auto;height:32px;")
-              img(src="/images/SupporterBadge.png" alt="supporter badge" style="width:auto;height:32px;")
-              div= level.substring(2)
+        div.container.row(style="position:absolute;z-index:1;")
+          each badge in badges
+            if badge === "adfree"
+              div#supportBadge.mx-1(type="button" data-toggle="modal" data-target="#supporterBadgeModel" style="width:auto;height:32px;")
+                img(src="/images/SupporterBadge.png" alt="supporter badge" style="width:auto;height:32px;")
+                div= level.substring(2)
+            else if (badge.startsWith("Lv") || badge === '')
+              //- do nothing
+            else
+              div.mx-1.my-auto(type="button" data-toggle="modal" data-target=`#${badge}Modal`)
+                img(src="/images/"+badge+".png" alt=badge style="width:auto;height:28px;")
     if title === "My Collection"
       div.col.text-right
         button(type="button" id="shareCollection" class="btn btn-primary" data-toggle="modal" data-target="#openLink")
@@ -137,13 +167,6 @@ div.card.card-body.shadow.mb-3(id='statsCard')
       div.small.text-muted.mt-3 Percentage is calculated based on the entire collection (both demon and memory cards).
 
 style.
-  #supportBadge>div {
-    width: 100%;
-    color: white;
-    font-size: small;
-    text-align: center;
-    transform: translateY(-115%);
-  }
   #demonblend, #memoryblend {
     position: absolute;
     top: calc(.5rem + 4px); /* adds padding to align with top of image */
