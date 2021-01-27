@@ -98,7 +98,7 @@ exports.getCardDetailPage = async function(req, res, next) {
 				throw "Card not found";
 			}
 			return res.render('cardDetail', {
-				title: cardData.name, description: `View ''${cardData.name}' and other Obey Me cards on Karasu-OS.com`,
+				title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 				card: cardData, isHidden: true,
 				user: req.user, hasCard: false });
 		}
