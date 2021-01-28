@@ -98,13 +98,13 @@ div#statsCard.card.card-body.shadow.mb-3
               div.mx-1.my-auto(type="button" data-toggle="modal" data-target=`#${badge}Modal`)
                 img(src="/images/"+badge+".png" alt=badge style="width:auto;height:28px;")
     if title === "My Collection"
-      div.col.text-right
+      div.col.text-right(style=(badges.length===0?"position:absolute;padding-right:1.5rem;":''))
         button(type="button" id="shareCollection" class="btn btn-primary" data-toggle="modal" data-target="#openLink")
           <svg class="bi bi-share mb-1" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
           |
           | Share
 
-  div.row
+  div(class="row"+(title!=="My Collection"&&badges.length!==0?" mt-4":''))
     //- first mx-auto is needed for current share stats image
     div#statsTotal.col-lg-4.d-flex.mx-auto.mb-3.mb-lg-0
       div.container.row.text-center.mx-auto.align-items-center
