@@ -43,6 +43,7 @@ div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby
           div(id='statsMessage')
 
 if badges.length !== 0
+  include badgeDescriptions.pug
   if badges.includes("adfree")
     - var level = badges.find((el) => el.startsWith("Lv"));
     style.
@@ -53,7 +54,6 @@ if badges.length !== 0
         text-align: center;
         transform: translateY(-115%);
       }
-  include badgeDescriptions.pug
   each badge in badges
     if badge === "adfree"
       div(id="supporterBadgeModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="supporterBadgeModelTitle" aria-hidden="true")
@@ -82,11 +82,11 @@ if badges.length !== 0
               button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
 
 div#statsCard.card.card-body.shadow.mb-3
-  div.row.justify-content-between.mb-3.mb-lg-0
+  div.row.justify-content-between.mb-lg-0(style="margin-bottom:32px;")
     div.col
-      h5.mb-0.mr-2 Achievements
       if badges.length !== 0
-        div.container.row(style="position:absolute;z-index:1;")
+        img(src="/images/ribbon.png" style="position:absolute;height:38px;margin-top:-3px;")
+        div(style="display:flex;position:absolute;z-index:1;")
           each badge in badges
             if badge === "adfree"
               div#supportBadge.mx-1(type="button" data-toggle="modal" data-target="#supporterBadgeModel" style="width:auto;height:32px;")
