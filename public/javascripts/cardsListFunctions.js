@@ -9,6 +9,8 @@ $(document).ready(function(){
 	resetFilters();
 	if ('URLSearchParams' in window) {
 		applyQuery();
+	} else {
+		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
 	}
 
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
@@ -195,6 +197,8 @@ function updateCardDisplay(cards, view) {
 
 		fillRank("demonSection");
 		fillRank("memorySection");
+
+		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
 	});
 }
 
@@ -513,6 +517,7 @@ function switchViewOption(changeViewTo) {
 function applyQuery() {
 	if (querystr.toString() === '' || querystr.toString() === "view=icon") {
 		history.scrollRestoration = "auto";
+		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
 		return;
 	} else {
 		history.scrollRestoration = "manual";
@@ -536,9 +541,6 @@ function applyQuery() {
 
 	if (["bloomed", "original", "icon"].includes(querystr.get("view"))) {
 		viewType = querystr.get("view");
-	} else {
-		viewType = "icon";
-		querystr.set("view", "icon");
 	}
 
 	$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);

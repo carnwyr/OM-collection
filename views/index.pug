@@ -1,5 +1,8 @@
 extends layout
 
+block scripts
+  link(rel="stylesheet" href="/stylesheets/homepage.css")
+
 block content
   div(class="modal fade" id="contactLaele" tabindex="-1" role="dialog" aria-labelledby="contactLaeleLabel" aria-hidden="true")
     div(class="modal-dialog" role="document")
@@ -45,6 +48,26 @@ block content
               a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1") My Collection
               a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1") My Favourites
             a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1") Surprise Guest Guide
+
+        //- Share Event
+        div#ShareEvent.card.shadow.mb-3(style="scroll-margin-top:64px;")
+          div.card-body.text-center
+            h5 Get this badge!
+            img.m-2(src="/images/ShareKarasu.png" alt="Badge for sharing karasu-os.com" style="width:64px;height:64px;")
+            p What do you like about karasu-os.com? What are some updates you are looking forward to?
+            div.d-lg-flex.justify-content-center
+              h5 Step 1:
+              p.ml-2 Share your thought about karasu-os.com on your social media.
+            div.d-lg-flex.justify-content-center
+              h5 Step 2:
+              p.ml-2 Send screenshot and link of your post to our discord server
+                |
+                |
+                a(href="https://discord.gg/Y3KMW7U") Y3KMW7U
+                |
+                | no accounts needed.
+        //- End of Event Notice
+
         div.row
           div.col-12.col-md-6.mb-4
             div.card.shadow.h-100
@@ -86,7 +109,6 @@ block content
                   |
                   a(href="https://www.buymeacoffee.com/karasuos") https://www.buymeacoffee.com/karasuos
                 a(class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") &#x1F608 Buy Karasu a Whip of Love
-    link(rel="stylesheet" href="/stylesheets/homepage.css")
 
 block footer
   footer(class="site-footer bg-primary navbar-dark mt-auto")

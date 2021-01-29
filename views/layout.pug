@@ -99,6 +99,18 @@ html(lang='en-US')
         button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
           span(aria-hidden="true") Got it &#x1F44D
 
+    //- temporary event
+    div#shareKarasu.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
+      div.toast-header
+        strong.mr-auto Special Badge
+        button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
+          span(aria-hidden="true") &times;
+      div.toast-body
+        div.d-flex
+          img.mr-2.my-auto(src="/images/ShareKarasu.png" style="width:32px;height:32px;")
+          p.mb-0 Share Karasu-OS.com and display this badge on your profile!
+        a.btn.btn-primary.btn-sm.btn-block.mt-3(type="button" href="/#ShareEvent") Learn More
+
     div(class='container-fluid mb-5')
       block content
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")

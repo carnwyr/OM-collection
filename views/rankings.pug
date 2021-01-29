@@ -7,11 +7,37 @@ block content
       div.mx-auto.my-5.text-center
         h5.card-title (ง •̀_•́)ง Gathering data...
         if user
-          p.card-text Head over to your favourite cards' page and start filling your favourite collection!
+          p Head over to your favourite cards' page and start filling your favourite collection!
+          p.text-muted It's
+            |
+            |
+            script.
+              document.write(new Intl.DateTimeFormat('en-US', {month: "long"}).format(new Date())+' '+new Date().getDate());
+            | , we still can't tell who's cards are winning ( ._.) They're all so good. Many of them have the same amount of &#x2B50;.
+            |
+            br
+            | Ask others to add to their favourite collections!
         else
-          p.card-text Register or login now to see your favourite cards on the same page!
+          p.card-text Create your favourite collection and participate in community voting of most favourited cards!
           a.btn.btn-primary.mr-2(href="/signup") Register
           a.btn.btn-primary.ml-2(href="/login") Login
+        br
+        br
+        p In the meanwhile...
+        h5 Get this badge!
+        img.m-2(src="/images/ShareKarasu.png" alt="Badge for sharing karasu-os.com" style="width:64px;height:64px;")
+        p What do you like about karasu-os.com? What are some updates you are looking forward to?
+        div.d-lg-flex.justify-content-center
+          h5 Step 1:
+          p.ml-2 Share your thought about karasu-os.com on your social media.
+        div.d-lg-flex.justify-content-center
+          h5 Step 2:
+          p.ml-2 Send screenshot and link of your post to our discord server
+            |
+            |
+            a(href="https://discord.gg/Y3KMW7U") Y3KMW7U
+            |
+            | no accounts needed.
       if user && user.isAdmin
         table.table.table-responsive-sm
           thead
