@@ -148,7 +148,7 @@ exports.getHiddenCardsListPage = function(req, res, next) {
 };
 
 exports.directImage = async function(req, res, next) {
-	var cardName = req.url.substring(1).replace('_b', '').replace('.jpg', '');
+	var cardName = req.url.substring(1).replace('_b.jpg', '').replace('.jpg', '');
 	var isHidden = await HiddenCards.findOne({uniqueName: cardName});
 	if (isHidden && (!req.user || !req.user.isAdmin)) {
 		return next(new Error('Not found'));
