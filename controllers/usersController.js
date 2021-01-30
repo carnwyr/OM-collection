@@ -525,6 +525,10 @@ exports.getRankingsPage = async function(req, res, next) {
 };
 
 exports.renameCardInCollections = function(oldName, newName) {
+	if (oldName === newName) {
+		return Promise.resolve(true);
+	}
+
 	var promiseFaved = Users.updateMany(
 		{ $or: [{ "cards.owned": oldName }, { "cards.faved": oldName }]},
 		{ $push: { "cards.owned": newName, "cards.faved": newName }});
