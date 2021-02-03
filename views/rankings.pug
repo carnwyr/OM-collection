@@ -1,58 +1,30 @@
 extends layout
 
+block scripts
+  link(rel="stylesheet" href="/stylesheets/ranking.css")
+  script(src="/javascripts/ranking.js")
+
 block content
   div(class="container")
     h1= title
     div.card.card-body.shadow
-      div.mx-auto.my-5.text-center
-        h5.card-title (ง •̀_•́)ง Gathering data...
-        if user
-          p Head over to your favourite cards' page and start filling your favourite collection!
-          p.text-muted It's
-            |
-            |
-            script.
-              document.write(new Intl.DateTimeFormat('en-US', {month: "long"}).format(new Date())+' '+new Date().getDate());
-            | , we still can't tell who's cards are winning ( ._.) They're all so good. Many of them have the same amount of &#x2B50;.
-            |
-            br
-            | Ask others to add to their favourite collections!
-        else
-          p.card-text Create your favourite collection and participate in community voting of most favourited cards!
-          a.btn.btn-primary.mr-2(href="/signup") Register
-          a.btn.btn-primary.ml-2(href="/login") Login
-        br
-        br
-        p In the meanwhile...
-        h5 Get this badge!
-        img.m-2(src="/images/ShareKarasu.png" alt="Badge for sharing karasu-os.com" style="width:64px;height:64px;")
-        p What do you like about karasu-os.com? What are some updates you are looking forward to?
-        div.d-lg-flex.justify-content-center
-          h5 Step 1:
-          p.ml-2 Share your thought about karasu-os.com on your social media.
-        div.d-lg-flex.justify-content-center
-          h5 Step 2:
-          p.ml-2 Send screenshot and link of your post to our discord server
-            |
-            |
-            a(href="https://discord.gg/Y3KMW7U") Y3KMW7U
-            |
-            | no accounts needed.
-      if user && user.isAdmin
-        table.table.table-responsive-sm
-          thead
-            tr
-              th.text-center Rank
-              th(colspan=2) Card
-              th Favourited by
-          tbody
-            - var count = 1;
-            each card in ranking
-              tr
-                td.text-center= count++
-                td
-                  a(href="card/"+card._id)
-                    img(style="width:96px;height:96px;" src="/images/cards/S/"+card._id+".jpg")
-                td
-                  a(href="card/"+card._id)= card.name
-                td= card.total
+      h5.text-center.text-primary Most Favourited Cards
+      div#podium.d-none.d-lg-flex
+        each i in [1, 0, 2]
+          div(id=`top${i+1}`)
+            img(src="/images/cards/S/"+ranking[i]._id+".jpg")
+            div
+              a(href="/card/"+ranking[i]._id)= ranking[i].name
+              p #{ranking[i].total} &#x2B50;
+              img(src=`/images/top${i+1}.png` style="margin:auto;width:48px;height:48px;")
+      table#ranking.table.table-responsive-sm.col-lg-10.mx-auto
+        tbody
+          each i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+            tr(class=(i<3?"d-lg-none":''))
+              td.text-center= i+1
+              td(style="width:80px;")
+                a(href="card/"+ranking[i]._id)
+                  img(style="width:64px;height:64px;" src="/images/cards/S/"+ranking[i]._id+".jpg")
+              td
+                a(href="card/"+ranking[i]._id)= ranking[i].name
+              td #{ranking[i].total} &#x2B50;
