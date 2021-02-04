@@ -78,12 +78,9 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 		countCardsForStats(ownedCards, cardStats, "owned");
 		countCardsForStats(allCards, cardStats, "total");
 
-		var badges = await usersController.getUserBadges(req.params.username);
-
 		return res.render('cardsList', {
 			title: title, description: `${req.params.username}'s Collection on Karasu-OS.com`,
-			user: req.user, badges: badges.info.supportStatus,
-			cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
+			user: req.user, cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
 	} catch (e) {
 		return next(e);
 	}
@@ -121,18 +118,21 @@ exports.getFavouritesPage = async function(req, res, next) {
 		}
 
 		if (req.user && req.user.name === req.params.username) {
-			var title = 'My Favourites';
+			var title = 'My Profile';
 		} else {
-			var title = req.params.username + "'s Favourites";
+			var title = req.params.username + "'s Profile";
 		}
 
 		var favedCards = await usersController.getCardCollection(req.params.username, "faved");
 		favedCards.sort(sortByRarityAndNumber);
 
+		var badges = await usersController.getUserBadges(req.params.username);
+
 		res.render("cardsList", {
-			title: title, description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
+			title: title, description: `See ${req.params.username}'s profile and favourite Obey Me cards on Karasu-OS.com`,
 			user: req.user,
-			cardsList: favedCards, path: "fav"
+			badges: badges.info.supportStatus,
+			cardsList: favedCards, path: "profile"
 		});
 	} catch (e) {
 		return next(e);

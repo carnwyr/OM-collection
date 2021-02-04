@@ -141,10 +141,14 @@ img.lazy {
 }
 @media screen and (min-width: 720px) {
   #viewMenuDropdown {
-    border-bottom: 2px rgba(219, 158, 251, .75) solid;
+    border-bottom: 2px solid rgba(219, 158, 251, .75);
   }
 }
 #viewMenuDropdown:focus {
   outline: none;
   box-shadow: none;
+}
+
+.nav-tabs .nav-link:not(.active):hover {
+  border-color: transparent;
 }
