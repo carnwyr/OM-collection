@@ -46,3 +46,48 @@
 #ranking tr td {
   vertical-align: middle;
 }
+
+tr:nth-child(1) {
+  background: rgb(255,233,82);
+background: linear-gradient(90deg, rgba(241,203,64,1) 0%, rgba(241,203,64,0.4) 100%);
+  border-radius: 5em !important;
+  border: 5px solid transparent !important;
+}
+
+tr:nth-child(2) {
+  background: rgb(145,159,255);
+background: linear-gradient(90deg, rgba(145,159,255,1) 0%, rgba(145,159,255,0.4) 100%);
+}
+
+tr:nth-child(3) {
+  background-color: rgb(238, 120, 148);
+}
+
+tr:nth-child(-n+3) {
+}
+
+tr:nth-child(-n+3) td {
+  border: none;
+  color: white;
+}
+
+tr:nth-child(-n+3) a {
+  color: white;
+  font-weight: bold;
+}
+
+#leaderboard div:nth-child(-n+3) #entry {
+  background: linear-gradient(
+    240deg,
+    rgba(219, 158, 251, 1) 0%,
+    rgba(141, 111, 226, 1) 100%
+  );
+}
+
+#leaderboard div:nth-child(n+4) #entry {
+  background: linear-gradient(
+    240deg,
+    rgba(219, 158, 251, .5) 0%,
+    rgba(141, 111, 226, .8) 100%
+  );
+}
