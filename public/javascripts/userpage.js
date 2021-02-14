@@ -44,10 +44,10 @@ function updateSupportStatus() {
     data: JSON.stringify({ supportstatus: supportstatus })
   }).done(function(result) {
     if (result.err) {
-      console.error(result.message);
+      // console.error(result.message);
       return;
     } else {
-      console.log(result.message);
+      // console.log(result.message);
     }
   });
 }

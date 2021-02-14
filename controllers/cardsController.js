@@ -1,3 +1,4 @@
+const createError = require("http-errors");
 const Cards = require("../models/cards");
 const HiddenCards = require("../models/hiddenCards.js");
 
@@ -32,7 +33,7 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 	try {
 		var exists = await usersController.userExists(req.params.username);
 		if (!exists) {
-			throw "User not found";
+			throw createError(404, "User not found");
 		}
 
 		var cardStats = {
@@ -95,7 +96,7 @@ exports.getCardDetailPage = async function(req, res, next) {
 		if (!cardData) {
 			cardData = await getHiddenCard(req.params.card, req.user);
 			if (!cardData) {
-				throw "Card not found";
+				throw createError(404, "Card not found");
 			}
 			return res.render('cardDetail', {
 				title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
@@ -117,7 +118,7 @@ exports.getFavouritesPage = async function(req, res, next) {
 	try {
 		var exists = await usersController.userExists(req.params.username);
 		if (!exists) {
-			throw "User notfound";
+			throw createError(404, "User not found");
 		}
 
 		if (req.user && req.user.name === req.params.username) {
@@ -193,7 +194,7 @@ function getCard(card) {
 
 function getHiddenCard(card, user) {
 	if (!user || !user.isAdmin) {
-		throw "Card not found";
+		throw createError(404, "Card not found");
 	}
 	return HiddenCards.findOne({uniqueName: card});
 };

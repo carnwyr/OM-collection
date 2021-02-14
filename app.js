@@ -69,7 +69,7 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   res.status(err.status || 500);
-  res.render("error", { user: req.user });
+  res.render("error", { title: "Page not found", user: req.user });
 });
 
 module.exports = app;
