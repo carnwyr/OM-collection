@@ -1,93 +1,65 @@
-#podium {
-  display: flex;
-  justify-content: center;
-  align-items: end;
-  margin-top: 52px;
+#leaderboard {
+  width: 75%;
 }
 
-#podium>#top1{
-  height: 240px;
-  border-color: rgb(244, 181, 74);
+.drop-shadow {
+  filter: drop-shadow( 3px 3px 3px rgba(0, 0, 0, .09))
 }
 
-#podium>#top2{
-  height: 220px;
-  border-color: rgb(202, 172, 249);
+.card-preview {
+  height: 130%;
+  overflow: hidden;
+  border-radius: 0.5em
 }
 
-#podium>#top3{
-  height: 210px;
-  border-color: rgb(238, 120, 148);
+@media screen and (max-width: 768px) {
+  .card-preview {
+    height: 80%;
+  }
 }
 
-#podium>div {
-  position: relative;
-  /* display: flex; */
-  /* justify-content: center; */
-  text-align: center;
-  border-radius: 8px;
-  border: 4px solid;
-  margin: 1.25rem .25rem;
-  width: 164px;
+.entry {
+  background: linear-gradient(120deg, #ff97bd 0%, #7d5fe6cf 100%);
+  border-radius:0.75em;
+  height:4.75em;
+  width: 100%;
+  transition: all .5s ease-out;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
 }
 
-#podium>div>div {
-  /* position: absolute;
-  bottom: 0; */
-  padding: 8px;
+.entry:hover, .entry:visited, .entry:link, .entry:active
+{
+    text-decoration: none;
 }
 
-#podium img:first-of-type {
-  margin-top: -52px;
-  width: 104px;
-  height: 104px;
+.entry:hover
+{
+    width: 110%;
+    height: 5em;
+    margin-left: -5%;
+    margin-bottom: 1.25em;
 }
 
-#ranking tr td {
-  vertical-align: middle;
+.entry .lead {
+  filter: drop-shadow( 2px 3px 3px rgba(0, 0, 0, .2));
+  width: 1.5rem
 }
 
-tr:nth-child(1) {
-  background: rgb(255,233,82);
-background: linear-gradient(90deg, rgba(241,203,64,1) 0%, rgba(241,203,64,0.4) 100%);
-  border-radius: 5em !important;
-  border: 5px solid transparent !important;
+.entry:nth-child(1) {
+  background: linear-gradient(120deg, #fff25f 0%, #ff813d 100%)
 }
 
-tr:nth-child(2) {
-  background: rgb(145,159,255);
-background: linear-gradient(90deg, rgba(145,159,255,1) 0%, rgba(145,159,255,0.4) 100%);
+.entry:nth-child(2) {
+  background: linear-gradient(120deg, #ffd67b 0%, #ee7861 100%)
 }
 
-tr:nth-child(3) {
-  background-color: rgb(238, 120, 148);
+.entry:nth-child(3) {
+  background: linear-gradient(120deg, #feb7a9 0%, #c367da 100%)
 }
 
-tr:nth-child(-n+3) {
-}
-
-tr:nth-child(-n+3) td {
-  border: none;
-  color: white;
-}
-
-tr:nth-child(-n+3) a {
-  color: white;
-  font-weight: bold;
-}
-
-#leaderboard div:nth-child(-n+3) #entry {
-  background: linear-gradient(
-    240deg,
-    rgba(219, 158, 251, 1) 0%,
-    rgba(141, 111, 226, 1) 100%
-  );
-}
-
-#leaderboard div:nth-child(n+4) #entry {
-  background: linear-gradient(
-    240deg,
-    rgba(219, 158, 251, .5) 0%,
-    rgba(141, 111, 226, .8) 100%
-  );
+.top {
+  width: 4.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
