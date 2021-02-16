@@ -11,7 +11,7 @@ block content
       .display-5.text-center.text-primary Most Favourited Cards
       #leaderboard.d-flex.flex-column.mx-auto.my-4
         each i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-          a.entry.text-light.d-flex.flex-wrap.justify-content-start.align-items-center(href="card/"+ranking[i]._id)
+          a.entry.text-light.d-flex.justify-content-start.align-items-center(href="card/"+ranking[i]._id)
             if i<3
               img.top(src="/images/top"+(i+1)+".png" style="width:4.5rem")
             else
