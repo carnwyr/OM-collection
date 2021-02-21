@@ -1,4 +1,4 @@
-h5::after {
+h5>span::after {
   content: "\a0";
   display: block;
   margin: -16px 4px;
@@ -11,7 +11,7 @@ h5::after {
   display: flex;
   justify-content: center;
   align-items: end;
-  margin-top: 5rem; /* for the card images */
+  margin-top: 5rem; /* for card images */
 }
 
 #podium>#top1{
