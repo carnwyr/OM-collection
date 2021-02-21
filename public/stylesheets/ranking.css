@@ -10,7 +10,7 @@ h5>span::after {
 #podium {
   display: flex;
   justify-content: center;
-  align-items: end;
+  align-items: flex-end;
   margin-top: 5rem; /* for card images */
 }
 
