@@ -501,28 +501,29 @@ exports.getUserListPage = async function(req, res) {
 };
 
 exports.getRankingsPage = async function(req, res, next) {
-	try {
-		var cards = await Users.aggregate([
-			{ $unwind: "$cards.faved" },
-			{ $group: { _id: "$cards.faved", total: { $sum: 1 } } },
-			{ $sort: { total: -1 } },
-			{ $limit: 10 },
-			{
-				$lookup: {
-					from: "cards",
-					localField: "_id",
-					foreignField: "uniqueName",
-					as: "cardData"
-				}
-			},
-			{ $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
-			{ $set: { name: "$name.name" } },
-			{ $unset: ["cardData"] }
-		]);
-		res.render("rankings", { title: "Rankings", description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
-	} catch (e) {
-		return next(e);
-	}
+  try {
+    var cards = await Users.aggregate([
+      { $unwind: "$cards.faved" },
+      { $group: { _id: "$cards.faved", total: { $sum: 1 } } },
+      { $sort: { _id: 1 } },
+      { $sort: { total: -1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: "cards",
+          localField: "_id",
+          foreignField: "uniqueName",
+          as: "cardData"
+        }
+      },
+      { $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
+      { $set: { name: "$name.name" } },
+      { $unset: ["cardData"] }
+    ]);
+    res.render("rankings", { title: "Rankings", description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
+  } catch (e) {
+    return next(e);
+  }
 };
 
 exports.renameCardInCollections = function(oldName, newName) {

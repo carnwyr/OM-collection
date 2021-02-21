@@ -105,14 +105,13 @@ html(lang='en-US')
     //- temporary event
     div#shareKarasu.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
       div.toast-header
-        strong.mr-auto Special Badge
+        img.mr-2(src="/images/twitter.png" width="20px")
+        strong.mr-auto Karasu-OS Joined Twitter!
         button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
           span(aria-hidden="true") &times;
       div.toast-body
-        div.d-flex
-          img.mr-2.my-auto(src="/images/ShareKarasu.png" style="width:32px;height:32px;")
-          p.mb-0 Share Karasu-OS.com and display this badge on your profile!
-        a.btn.btn-primary.btn-sm.btn-block.mt-3(type="button" href="/#ShareEvent") Learn More
+        | Follow us on Twitter to be the first to see our newest features!
+        a(href="https://twitter.com/karasu_os" class="btn btn-sm btn-block mt-3" style="background:#1DA1F2;color:white;" target="_blank") Follow @karasu_os
 
     div(class='container-fluid mb-5')
       block content
