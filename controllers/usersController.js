@@ -1,3 +1,5 @@
+const Sentry = require('@sentry/node');
+
 const createError = require("http-errors");
 const Users = require("../models/users.js");
 const Codes = require("../models/verificationCodes.js");
@@ -316,6 +318,7 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		return res.json({ err: false });
 	} catch (e) {
+    Sentry.captureException(e);
 		return res.json({ err: true, message: e });
 	}
 };
