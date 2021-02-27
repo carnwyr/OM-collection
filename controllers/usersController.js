@@ -279,7 +279,7 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		var user = await Users.findOne({ "info.name": req.params.name });
 		if (!user) {
-			throw "No such user";
+			throw "User not found";
 		}
 
 		var correctPassword = await bcrypt.compare(req.body.userData.password, user.password);
@@ -318,7 +318,9 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		return res.json({ err: false });
 	} catch (e) {
-    Sentry.captureException(e);
+    if (!["Email taken", "User not found", "Wrong password"].includes(e)) {
+      Sentry.captureException(e);
+    }
 		return res.json({ err: true, message: e });
 	}
 };
