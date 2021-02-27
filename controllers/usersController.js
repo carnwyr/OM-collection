@@ -164,7 +164,10 @@ exports.getOwnedCards = async function(req, res) {
 		res.send(ownedCards);
 	} catch (e) {
 		// TODO proper error handling
-		console.error(e);
+		// console.error(e);
+
+    Sentry.captureException(e);
+    return res.send([]);
 	}
 }
 

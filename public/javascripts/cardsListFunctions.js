@@ -65,20 +65,21 @@ $(document).ready(function(){
 
 function fillRank(container) {
 	$('#'+container).find('.placeholder').remove();
-	var visibleCardsCount = $(`#${container}>.cardPreview:visible`).length;
-	var html;
+	var visibleCardsCount = $(`#${container}>.cardPreview`).filter(function() {
+		return $(this).css("display") !== "none";
+	}).length;
 
+	var html;
 	if (visibleCardsCount > 0) {
+		var currentCardsInRow = getRowCapacity();
+		if (visibleCardsCount % currentCardsInRow === 0) return;
+		var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow;
+		
 		if (viewType == "icon") {
 			html = '<div class="invisible placeholder icon-container w-100 m-1"></div>';
 		} else {
 			html = '<div class="invisible placeholder full-container w-100 m-1"></div>';
 		}
-
-		var currentCardsInRow = getRowCapacity();
-
-		if (visibleCardsCount % currentCardsInRow === 0) { return; }
-		else { var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow; }
 
 		for (let i = 0; i < cardsToAdd; i++) {
 			$('#'+container).append(html);
@@ -169,9 +170,9 @@ function getFiltersAsStrings() {
 	return filters;
 }
 
-var updateQuery = () => {
+function updateQuery() {
 	window.history.replaceState(null, null, `${window.location.pathname}${querystr.toString()===''?'':'?'+querystr.toString()}`);
-};
+}
 
 function updateCardDisplay(cards, view) {
 	$(".cardPreview").fadeOut(400).promise().done(function() {
