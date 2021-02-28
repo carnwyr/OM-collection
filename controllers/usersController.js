@@ -324,7 +324,9 @@ exports.sendVerificationEmail = async function(req, res, next) {
     if (!["Email taken", "User not found", "Wrong password"].includes(e)) {
       Sentry.captureException(e);
     }
-		return res.json({ err: true, message: e });
+
+    // change this back when fixed
+    return res.json({ err: true, message: "An error occured. We're trying to solve this!" });
 	}
 };
 
