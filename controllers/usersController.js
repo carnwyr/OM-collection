@@ -1,3 +1,5 @@
+const Sentry = require('@sentry/node');
+
 const createError = require("http-errors");
 const Users = require("../models/users.js");
 const Codes = require("../models/verificationCodes.js");
@@ -162,7 +164,10 @@ exports.getOwnedCards = async function(req, res) {
 		res.send(ownedCards);
 	} catch (e) {
 		// TODO proper error handling
-		console.error(e);
+		// console.error(e);
+
+    Sentry.captureException(e);
+    return res.send([]);
 	}
 }
 
@@ -277,7 +282,7 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		var user = await Users.findOne({ "info.name": req.params.name });
 		if (!user) {
-			throw "No such user";
+			throw "User not found";
 		}
 
 		var correctPassword = await bcrypt.compare(req.body.userData.password, user.password);
@@ -316,7 +321,12 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		return res.json({ err: false });
 	} catch (e) {
-		return res.json({ err: true, message: e });
+    if (!["Email taken", "User not found", "Wrong password"].includes(e)) {
+      Sentry.captureException(e);
+    }
+
+    // change this back when fixed
+    return res.json({ err: true, message: "An error occured. We're trying to solve this!" });
 	}
 };
 
