@@ -11,6 +11,10 @@ const LocalStrategy = require("passport-local").Strategy;
 const { body, validationResult } = require("express-validator");
 const async = require("async");
 const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
+
+const OAuth2Client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
 
 require("dotenv").config();
 
@@ -285,7 +289,7 @@ exports.sendVerificationEmail = async function(req, res, next) {
 			throw "User not found";
 		}
 
-		var correctPassword = await bcrypt.compare(req.body.userData.password, user.password);
+		var correctPassword = await bcrypt.compare(req.body.userData.password, user.info.password);
 		if (!correctPassword) {
 			throw "Wrong password";
 		}
@@ -301,13 +305,20 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		await record.save();
 
+		OAuth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
+		var accessToken = OAuth2Client.getAccessToken();
+
 		var transporter = nodemailer.createTransport({
 			host: 'smtp.gmail.com',
 			secure: true,
 			port: 465,
 			auth: {
-				user: process.env.EMAIL,
-				pass: process.env.EMAIL_PASSWORD
+		        type: 'OAuth2',
+		        user: process.env.EMAIL,
+		        clientId: process.env.GMAIL_CLIENT_ID,
+		        clientSecret: process.env.GMAIL_CLIENT_SECRET,
+		        refreshToken: process.env.REFRESH_TOKEN,
+		        accessToken: accessToken
 			}
 		});
 		var mailOptions = {
@@ -339,7 +350,7 @@ exports.verifyEmail = function(req, res, next) {
 			var err = new Error('Invalid link');
 			return next(err);
 		}
-		var setEmail = Users.updateOne({"info.name": req.user.name}, {email: record.email}, (err) => {
+		var setEmail = Users.updateOne({"info.name": req.user.name}, {"info.email": record.email}, (err) => {
 			if (err) {
 				return next(err);
 			}
@@ -357,7 +368,7 @@ exports.changePassword = function(req, res, next) {
 			var err = new Error('No such user');
 			return res.json({ err: true, message: err.message });
 		}
-		bcrypt.compare(req.body.passwordData.old, user.password, function (err, result) {
+		bcrypt.compare(req.body.passwordData.old, user.info.password, function (err, result) {
 			if (err) {
 				return res.json({ err: true, message: err.message });
 			}
@@ -373,7 +384,7 @@ exports.changePassword = function(req, res, next) {
 					if (err) {
 						return res.json({ err: true, message: err.message });
 					}
-					var setPassword = Users.updateOne({"info.name": req.params.name}, {password: hash}, (err) => {
+					var setPassword = Users.updateOne({"info.name": req.params.name}, {"info.password": hash}, (err) => {
 						if (err) {
 							return res.json({ err: true, message: err.message });
 						}
@@ -386,7 +397,7 @@ exports.changePassword = function(req, res, next) {
 };
 
 exports.restorePassword = function(req, res, next) {
-	Users.findOne({ email: req.body.email }, function (err, user) {
+	Users.findOne({ "info.email": req.body.email }, function (err, user) {
 		if (err) {
 			return res.json({ err: true, message: err.message });
 		}
@@ -422,7 +433,7 @@ exports.restorePassword = function(req, res, next) {
 						if (err) {
 							return res.json({ err: true, message: err.message });
 						}
-						var setPassword = Users.updateOne({"info.name": user.name}, {password: hash}, (err) => {
+						var setPassword = Users.updateOne({"info.name": user.name}, {"info.password": hash}, (err) => {
 							if (err) {
 								return res.json({ err: true, message: err.message });
 							}
