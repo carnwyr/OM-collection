@@ -1,6 +1,5 @@
 const express = require("express");
 const Sentry = require("@sentry/node");
-const Tracing = require("@sentry/tracing");
 
 const createError = require("http-errors");
 const path = require("path");
@@ -21,14 +20,7 @@ var userRouter = require("./routes/user");
 
 const app = express();
 
-Sentry.init({
-  dsn: "https://b147d3a7c4e04bc88a15f8850a4bd610@o513655.ingest.sentry.io/5615947",
-  integrations: [
-    new Sentry.Integrations.Http({ tracing: true }),
-    new Tracing.Integrations.Express({ app })
-  ],
-  tracesSampleRate: 0.25
-});
+Sentry.init({ dsn: "https://b147d3a7c4e04bc88a15f8850a4bd610@o513655.ingest.sentry.io/5615947" });
 
 var mongoose = require("mongoose");
 var mongoDB = process.env.URI;
@@ -41,7 +33,6 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
 
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
