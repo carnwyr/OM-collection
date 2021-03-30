@@ -16,7 +16,22 @@ h1, h2 {
 }
 
 /* FOOTER */
-.site-footer {
+/* #media a {
+  margin: auto .5rem;
+} */
+footer a {
+  color: var(--light) !important;
+}
+
+footer a:hover {
+  opacity: .5;
+}
+
+footer a.h5:hover {
+  opacity: 1;
+  text-decoration: none;
+}
+/* .site-footer {
   padding: 18px 0 8px;
   font-size: medium;
   line-height: 21px;
@@ -49,7 +64,7 @@ h1, h2 {
 }
 .footer-links.inline li {
   display: inline-block;
-}
+} */
 
 /* dropdown */
 .dropdown-item:active {
