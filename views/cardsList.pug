@@ -126,7 +126,7 @@ block content
         if cardsList.filter(card => card.type == "Demon").length != 0
           each card in cardsList
             if card.type == "Demon"
-              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+card.uniqueName)
+              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
                 figcaption #{card.name}
 
@@ -148,6 +148,6 @@ block content
         if cardsList.filter(card => card.type == "Memory").length != 0
           each card in cardsList
             if card.type == "Memory"
-              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+card.uniqueName)
+              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
                 figcaption #{card.name}
