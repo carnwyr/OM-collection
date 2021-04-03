@@ -70,16 +70,7 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-app.use(
-  Sentry.Handlers.errorHandler({
-    shouldHandleError(error) {
-      if (error.status === 404 || error.status === 500) {
-        return true;
-      }
-      return false;
-    }
-  })
-);
+app.use(Sentry.Handlers.errorHandler());
 
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;

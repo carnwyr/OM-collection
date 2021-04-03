@@ -12,6 +12,7 @@ h1, h2 {
   border-bottom: 2px solid var(--primary);
 }
 
+/* header */
 .navbar-brand {
   padding-top: 0.15rem;
 }

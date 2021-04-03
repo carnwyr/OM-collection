@@ -15,12 +15,12 @@ $(document).ready(function(){
 	});
 
 	/***/
-	if (!document.cookie.split('; ').find(row => row.startsWith("shareKarasu"))) {
-		$("#shareKarasu").removeClass("d-none").toast("show");
+	if (!document.cookie.split('; ').find(row => row.startsWith("announcementToast"))) {
+		$("#announcementToast").removeClass("d-none").toast("show");
 	}
-	$("#shareKarasu .close, #shareKarasu a").on("click", () => {
-		document.cookie = "shareKarasu=true; expires=" + cookieExpiryDate() + ";";
-		$("#shareKarasu").toast("hide");
+	$("#announcementToast .close, #announcementToast a").on("click", () => {
+		document.cookie = "announcementToast=true; expires=" + cookieExpiryDate() + ";";
+		$("#announcementToast").toast("hide");
 	});
 	/***/
 
