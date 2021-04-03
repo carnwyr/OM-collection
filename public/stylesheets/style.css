@@ -4,34 +4,51 @@ body {
   padding-top: 70px;
   background: url("/images/background_sheep.png") fixed;
 }
-
 h1, h2 {
   color: var(--primary);
   padding-bottom: .5rem;
   margin-bottom: 1rem;
   border-bottom: 2px solid var(--primary);
 }
-
+/* HEADER */
 .navbar-brand {
   padding-top: 0.15rem;
 }
 
-footer a {
-  color: var(--light) !important;
+/* FOOTER */
+.site-footer {
+  padding: 18px 0 8px;
+  font-size: medium;
+  line-height: 21px;
 }
-
-footer a:hover {
-  opacity: .5;
+.site-footer hr {
+  border-top-color: #fff;
+  opacity: 0.5;
 }
-
-footer a.h5:hover {
-  opacity: 1;
-  text-decoration: none;
+.site-footer hr.small {
+  margin: 20px 0;
 }
-
-footer ul {
-  list-style: none;
+.site-footer h6 {
+  text-transform: uppercase;
+  margin-top: 5px;
+  letter-spacing: 2px;
+}
+.footer-links {
   padding-left: 0;
+  list-style: none;
+}
+.footer-links li {
+  display: block;
+}
+.site-footer a:active,
+.site-footer a:focus,
+.site-footer a:hover {
+  text-decoration: none !important;
+  color: #fff !important;
+  opacity: 0.5;
+}
+.footer-links.inline li {
+  display: inline-block;
 }
 
 /* dropdown */
