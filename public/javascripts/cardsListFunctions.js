@@ -20,8 +20,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$("form input").on('click', formChanged);
-	$("div#filters input").on('change', applyFilters);
+	$("div#filters input").on('change', formChanged);
 	$("input#nameFilter").on('input', inputChanged);
 	$("#searchForm input").on('keypress', function(e) {
 		if (e.which == '13') {
@@ -74,7 +73,7 @@ function fillRank(container) {
 		var currentCardsInRow = getRowCapacity();
 		if (visibleCardsCount % currentCardsInRow === 0) return;
 		var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow;
-		
+
 		if (viewType == "icon") {
 			html = '<div class="invisible placeholder icon-container w-100 m-1"></div>';
 		} else {
@@ -126,6 +125,7 @@ function formChanged(e) {
 			});
 		}
 	}
+	applyFilters();
 }
 
 function applyFilters() {
@@ -142,7 +142,7 @@ function applyFilters() {
 
 function getFiltersAsStrings() {
 	var filters = {};
-	$("form").each(function() {
+	$("#filters form").each(function() {
 		var formId = $(this).attr("id");
 		var param = formId.slice(0, -4);
 		var entries = "";
