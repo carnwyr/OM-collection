@@ -92,9 +92,10 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 
 exports.getCardDetailPage = async function(req, res, next) {
 	try {
-		var cardData = await getCard(req.params.card);
+		var card = await getUniqueName(req.params.card.replace(/_/g, ' '));
+		var cardData = await getCard(card);
 		if (!cardData) {
-			cardData = await getHiddenCard(req.params.card, req.user);
+			cardData = await getHiddenCard(card, req.user);
 			if (!cardData) {
 				throw createError(404, "Card not found");
 			}
@@ -104,7 +105,7 @@ exports.getCardDetailPage = async function(req, res, next) {
 				user: req.user, hasCard: false });
 		}
 
-		var stats = await getCardStats(req.user, req.params.card);
+		var stats = await getCardStats(req.user, card);
 		res.render('cardDetail', {
 			title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 			card: cardData, isHidden: false,
@@ -198,6 +199,14 @@ function getHiddenCard(card, user) {
 	}
 	return HiddenCards.findOne({uniqueName: card});
 };
+
+async function getUniqueName(name) {
+	try {
+		return (await Cards.findOne({ name: name }, "uniqueName")).uniqueName;
+	} catch(e) {
+		console.log(e);
+	}
+}
 
 
 // Collection functions

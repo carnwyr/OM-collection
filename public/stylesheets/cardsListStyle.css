@@ -148,3 +148,10 @@ img.lazy {
   outline: none;
   box-shadow: none;
 }
+
+a>figcaption {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
