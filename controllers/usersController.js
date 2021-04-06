@@ -336,7 +336,8 @@ exports.sendVerificationEmail = async function(req, res, next) {
       Sentry.captureException(e);
     }
 
-    return res.json({ err: true, message: e });
+    // return res.json({ err: true, message: e });
+    return res.json({ err: true, message: "An error occurred. We're trying to fix it!" });
 	}
 };
 
