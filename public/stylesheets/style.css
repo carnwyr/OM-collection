@@ -94,3 +94,9 @@ footer ul {
 .supportBtn:hover {
   box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
 }
+
+.ddd {
+  margin: 2rem auto;
+  text-align: center;
+  min-height: 256px;
+}
