@@ -67,31 +67,31 @@ exports.signup = [
 			return next(e);
 		}
 
-	    if (exists) {
-	      req.flash("message", "Username taken");
-	      res.render("signup", { title: "Signup", user: req.user });
-	    } else {
-	      bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
-	        if (err) return next(err);
-	        bcrypt.hash(req.body.password, salt, function(err, hash) {
-	          if (err) return next(err);
-	          var user = new Users({
-	            info: {
-	              name: req.body.username,
-	              password: hash,
-	              type: "User"
-	            }
-	          });
-	          user.save(function(err) {
-	            if (err) return next(err);
-	            req.login(user, function(err) {
-	              if (err) return next(err);
-	              res.redirect("/");
-	            });
-	          });
-	        });
-	      });
-	    }
+    if (exists) {
+      req.flash("message", "Username taken");
+      res.render("signup", { title: "Signup", user: req.user });
+    } else {
+      bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+        if (err) return next(err);
+        bcrypt.hash(req.body.password, salt, function(err, hash) {
+          if (err) return next(err);
+          var user = new Users({
+            info: {
+              name: req.body.username,
+              password: hash,
+              type: "User"
+            }
+          });
+          user.save(function(err) {
+            if (err) return next(err);
+            req.login(user, function(err) {
+              if (err) return next(err);
+              res.redirect("/");
+            });
+          });
+        });
+      });
+    }
 	}
 ];
 
@@ -119,7 +119,7 @@ exports.signupCheckUsername = async function(req, res) {
 // User checks
 exports.userExists = async function(username) {
 	var user = await Users.findOne({"info.name": { $regex : new RegExp('^' + username + '$', "i") } });
-	return user ? true : false;
+	return user ? user.info.name : false;
 };
 
 exports.isLoggedIn = function() {
@@ -177,7 +177,7 @@ exports.getOwnedCards = async function(req, res) {
 
 exports.getCardCollection = function(username, collection) {
 	return Users.aggregate([
-		{ $match: { "info.name": username }},
+		{ $match: { "info.name": username } },
 		{ $unwind: `$cards.${collection}` },
 		{ $lookup: {
 			from: "cards",
@@ -577,7 +577,7 @@ exports.getUserBadges = async function(username) {
 // Authentication
 passport.use(new LocalStrategy({ passReqToCallback : true },
 	function(req, username, password, next) {
-		Users.findOne({ "info.name": { $regex : new RegExp('^' + username + '$', "i") }}, function (err, user) {
+		Users.findOne({ "info.name": { $regex : new RegExp('^' + username + '$', "i") } }, function (err, user) {
 			if (err) { return next(err) }
 			if (!user) {
 				return next(null, false, req.flash('message', 'No such user'))
