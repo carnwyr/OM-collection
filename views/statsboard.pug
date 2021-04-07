@@ -9,7 +9,7 @@
   }
 
 mixin percentBar(owned, total, name)
-  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "Little D":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", URp:"#ffe16b"};
+  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "Little D":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", URp:"#ffe16b", Pride:"rgb(52,123,253)", Greed:"#ffbc11", Envy:"#ff7e00", Wrath:"#21c38c", Lust:"rgb(240,84,177)", Gluttony:"rgb(230,64,56)", Sloth:"rgb(181,65,230)"};
   - var percentage = roundPercentage(owned / total * 100);
   span= name
   small(style='display:inline-flex;') &nbsp;- #{owned} of #{total} (#{percentage}%)
@@ -132,6 +132,7 @@ div#statsCard.card.card-body.shadow.mb-3
         a.nav-item.nav-link.active(id='charNavTab' data-toggle='tab' href='#charNav' role='tab' aria-controls="charNav" aria-selected="true") Characters
         a.nav-item.nav-link(id='sideCharNavTab' data-toggle='tab' href='#sideCharNav' role='tab' aria-controls="sideCharNav" aria-selected="true") Side characters
         a.nav-item.nav-link(id='rarityNavTab' data-toggle='tab' href='#rarityNav' role='tab' aria-controls="rarityNav" aria-selected="true") Rarity
+        a.nav-item.nav-link(id='attrNavTab' data-toggle='tab' href='#attributeNav' role='tab' aria-controls="attributeNav" aria-selected="true") Attribute
       div#statsNavContent.tab-content
         div.container.tab-pane.fade.px-0.show.active(id='charNav' role='tabpanel' aria-labelledby='charNavTab')
           div.row
@@ -164,6 +165,17 @@ div#statsCard.card.card-body.shadow.mb-3
             div.col-md-6
               +percentBar(cardStats.rarity.UR.owned, cardStats.rarity.UR.total, "UR")
               +percentBar(cardStats.rarity.URp.owned, cardStats.rarity.URp.total, "UR+")
+        div.container.tab-pane.fade.px-0(id='attributeNav' role='tabpanel' aria-labelledby='attrNavTab')
+          div.row
+            div.col-md-6
+              +percentBar(cardStats.attribute.Pride.owned, cardStats.attribute.Pride.total, "Pride")
+              +percentBar(cardStats.attribute.Greed.owned, cardStats.attribute.Greed.total, "Greed")
+              +percentBar(cardStats.attribute.Envy.owned, cardStats.attribute.Envy.total, "Envy")
+              +percentBar(cardStats.attribute.Wrath.owned, cardStats.attribute.Wrath.total, "Wrath")
+            div.col-md-6
+              +percentBar(cardStats.attribute.Lust.owned, cardStats.attribute.Lust.total, "Lust")
+              +percentBar(cardStats.attribute.Gluttony.owned, cardStats.attribute.Gluttony.total, "Gluttony")
+              +percentBar(cardStats.attribute.Sloth.owned, cardStats.attribute.Sloth.total, "Sloth")
       div.small.text-muted.mt-3 Percentage is calculated based on the entire collection (both demon and memory cards).
 
 style.

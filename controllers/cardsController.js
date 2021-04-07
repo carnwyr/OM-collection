@@ -31,8 +31,8 @@ exports.getCardsListPage = function(req, res, next) {
 
 exports.getCardsCollectionPage = async function(req, res, next) {
 	try {
-		var exists = await usersController.userExists(req.params.username);
-		if (!exists) {
+		var username = await usersController.userExists(req.params.username);
+		if (!username) {
 			throw createError(404, "User not found");
 		}
 
@@ -60,29 +60,41 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 				UR: { owned: 0, total: 0 },
 				URp: { owned: 0, total: 0 }
 			},
+			attribute: {
+				Pride: { owned: 0, total: 0 },
+				Greed: { owned: 0, total: 0 },
+				Envy: { owned: 0, total: 0 },
+				Wrath: { owned: 0, total: 0 },
+				Lust: { owned: 0, total: 0 },
+				Gluttony: { owned: 0, total: 0 },
+				Sloth: { owned: 0, total: 0 }
+			},
 			cards: {
 				Demon: { owned: 0, total: 0 },
 				Memory: { owned: 0, total: 0 }
 			}
 		};
 
-		if (req.user && req.user.name === req.params.username) {
+		if (req.user && req.user.name === username) {
 			var title = 'My Collection';
 		} else {
-			var title = `${req.params.username}'s Collection`;
+			var title = `${username}'s Collection`;
 		}
 
-		var ownedCards = await usersController.getCardCollection(req.params.username, "owned");
+		var ownedCards = await usersController.getCardCollection(username, "owned");
 		var allCards = await Cards.find({});
 		ownedCards.sort(sortByRarityAndNumber);
 
 		countCardsForStats(ownedCards, cardStats, "owned");
 		countCardsForStats(allCards, cardStats, "total");
 
-		var badges = await usersController.getUserBadges(req.params.username);
+		var badges = await usersController.getUserBadges(username);
+
+
+		console.log(cardStats);
 
 		return res.render('cardsList', {
-			title: title, description: `${req.params.username}'s Collection on Karasu-OS.com`,
+			title: title, description: `${username}'s Collection on Karasu-OS.com`,
 			user: req.user, badges: badges.info.supportStatus,
 			cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
 	} catch (e) {
@@ -117,22 +129,22 @@ exports.getCardDetailPage = async function(req, res, next) {
 
 exports.getFavouritesPage = async function(req, res, next) {
 	try {
-		var exists = await usersController.userExists(req.params.username);
-		if (!exists) {
+		var username = await usersController.userExists(req.params.username);
+		if (!username) {
 			throw createError(404, "User not found");
 		}
 
-		if (req.user && req.user.name === req.params.username) {
+		if (req.user && req.user.name === username) {
 			var title = 'My Favourites';
 		} else {
-			var title = req.params.username + "'s Favourites";
+			var title = username + "'s Favourites";
 		}
 
-		var favedCards = await usersController.getCardCollection(req.params.username, "faved");
+		var favedCards = await usersController.getCardCollection(username, "faved");
 		favedCards.sort(sortByRarityAndNumber);
 
 		res.render("cardsList", {
-			title: title, description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
+			title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`,
 			user: req.user,
 			cardsList: favedCards, path: "fav"
 		});
@@ -214,6 +226,7 @@ function countCardsForStats(cards, cardStats, type) {
 	cards.forEach(card => {
 		card.characters.forEach(character => cardStats.characters[character][type]++);
 		cardStats.rarity[card.rarity.replace('+', 'p')][type]++;
+		cardStats.attribute[card.attribute][type]++;
 		cardStats.cards[card.type][type]++;
 	});
 };
