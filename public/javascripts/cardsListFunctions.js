@@ -5,7 +5,7 @@ var selectionMode = false;
 var viewType = "icon";
 var querystr = new URLSearchParams(document.location.search.substring(1));
 
-$(document).ready(function(){
+$(document).ready(function() {
 	resetFilters();
 	if ('URLSearchParams' in window) {
 		applyQuery();
@@ -14,8 +14,8 @@ $(document).ready(function(){
 	}
 
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
-	$("img.lazy").each(function(){
-		if (this.complete && this.naturalHeight !== 0){
+	$("img.lazy").each(function() {
+		if (this.complete && this.naturalHeight !== 0) {
 			$(this).removeClass("lazy");
 		}
 	});
@@ -256,10 +256,10 @@ function switchSelectionMode() {
 			url: '/collection/getOwnedCards',
 			cache: false
 		})
-		.done(function(cardNames){
+		.done(function(cardNames) {
 			selectionMode = true;
 			switchManagementButtons();
-			switchCardsSelection(cardNames)
+			switchCardsSelection(cardNames);
 		});
 	} else {
 		if (Object.keys(changedCards).length > 0) {
@@ -270,7 +270,7 @@ function switchSelectionMode() {
 				data: JSON.stringify({changedCards: changedCards, collection: "owned"}),
 				cache: false
 			})
-			.done(function(result){
+			.done(function(result) {
 				if (result.err) {
 					showAlert("div#failAlert", result.message);
 					return;
@@ -278,14 +278,14 @@ function switchSelectionMode() {
 				changedCards = {};
 				selectionMode = false;
 				switchManagementButtons();
-				switchCardsSelection()
-				showAlert("div#successAlert", "Collection modified successfully");
+				switchCardsSelection();
+				showAlert("div#successAlert", "Collection updated!");
 			});
 		} else {
 			changedCards = {};
 			selectionMode = false;
 			switchManagementButtons();
-			switchCardsSelection()
+			switchCardsSelection();
 		}
 	}
 }
@@ -295,8 +295,7 @@ function switchManagementButtons() {
 		$('button#manageCollection').addClass('d-none');
 		$('div#manageButtons').removeClass('d-none');
 		$('div#selectionButtons').removeClass('d-none');
-	}
-	else {
+	} else {
 		$('button#manageCollection').removeClass('d-none');
 		$('div#manageButtons').addClass('d-none');
 		$('div#selectionButtons').addClass('d-none');
@@ -309,9 +308,11 @@ function switchCardsSelection(cardNames) {
 	}).find('img');
 
 	if (selectionMode) {
-		var selectOwnedCards = function(cardNames) { $('.cardPreview').filter(function() {
-			return !cardNames.includes($(this).attr('href').replace('card/', ''));
-		}).find('img').addClass('notSelectedCard') };
+		var selectOwnedCards = function(cardNames) {
+			$('.cardPreview').filter(function() {
+				return !cardNames.includes($(this).attr('href').replace('card/', ''));
+			}).find('img').addClass('notSelectedCard');
+		};
 		applyEffectWithoutTransition(invisibleCards, selectOwnedCards, cardNames);
 	} else {
 		var removeNonSelectedEffect = function() { $('.cardPreview').find('img').removeClass('notSelectedCard'); }
@@ -338,10 +339,8 @@ function showAlert(alert, message) {
 }
 
 function cardClicked(e) {
-	if (!selectionMode)
-		return;
-	if (e)
-		e.preventDefault();
+	if (!selectionMode) return;
+	if (e) e.preventDefault();
 
 	var image = $(this).find('img');
 	var cardName = $(this).attr('href').replace('card/', '');
@@ -365,8 +364,7 @@ function cardClicked(e) {
 
 function switchSelectionAll(select) {
 	var cardsToSwitch = $('.cardPreview:visible').filter(function() { return select === $(this).find('img').hasClass('notSelectedCard'); });
-	if (cardsToSwitch.length == 0)
-		return;
+	if (cardsToSwitch.length == 0) return;
 
 	var cardImages = $(cardsToSwitch).filter(function() {
 		return !$(this).isInViewport();
@@ -379,7 +377,7 @@ function switchSelectionAll(select) {
 	}
 
 	applyEffectWithoutTransition(cardImages, changeSelection);
-	addCardsToChangedList(cardsToSwitch, select)
+	addCardsToChangedList(cardsToSwitch, select);
 }
 
 function addCardsToChangedList(cardsToSwitch, select) {
