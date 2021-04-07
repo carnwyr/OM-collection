@@ -14,7 +14,7 @@ const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 
-const OAuth2Client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET);
+const OAuth2Client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET, "https://developers.google.com/oauthplayground");
 
 require("dotenv").config();
 
@@ -306,7 +306,19 @@ exports.sendVerificationEmail = async function(req, res, next) {
 		await record.save();
 
 		OAuth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
-		var accessToken = OAuth2Client.getAccessToken();
+
+		try {
+			var accessToken = await new Promise((resolve, reject) => {
+	  			OAuth2Client.getAccessToken((err, token) => {
+	    			if (err) {
+	      				reject("Failed to create access token. Error " + err);
+	    			}
+	    			resolve(token);
+	  			});
+			});
+		} catch (err) {
+			console.error(err);
+		}
 
 		var transporter = nodemailer.createTransport({
 			host: 'smtp.gmail.com',
@@ -336,8 +348,8 @@ exports.sendVerificationEmail = async function(req, res, next) {
       Sentry.captureException(e);
     }
 
-    // return res.json({ err: true, message: e });
-    return res.json({ err: true, message: "An error occurred. We're trying to fix it!" });
+    return res.json({ err: true, message: e });
+    //return res.json({ err: true, message: "An error occurred. We're trying to fix it!" });
 	}
 };
 
@@ -397,7 +409,7 @@ exports.changePassword = function(req, res, next) {
 };
 
 exports.restorePassword = function(req, res, next) {
-	Users.findOne({ "info.email": req.body.email }, function (err, user) {
+	Users.findOne({ "info.email": req.body.email }, async function (err, user) {
 		if (err) {
 			return res.json({ err: true, message: err.message });
 		}
@@ -406,13 +418,33 @@ exports.restorePassword = function(req, res, next) {
 			return res.json({ err: true, message: err.message });
 		}
 		var newPassword = cryptoRandomString({length: 8, type: 'alphanumeric'});
+
+		OAuth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
+
+		try {
+			var accessToken = await new Promise((resolve, reject) => {
+	  			OAuth2Client.getAccessToken((err, token) => {
+	    			if (err) {
+	      				reject("Failed to create access token. Error " + err);
+	    			}
+	    			resolve(token);
+	  			});
+			});
+		} catch (err) {
+			console.error(err);
+		}
+
 		var transporter = nodemailer.createTransport({
 			host: 'smtp.gmail.com',
 			secure: true,
 			port: 465,
 			auth: {
-				user: process.env.EMAIL,
-				pass: process.env.EMAIL_PASSWORD
+		        type: 'OAuth2',
+		        user: process.env.EMAIL,
+		        clientId: process.env.GMAIL_CLIENT_ID,
+		        clientSecret: process.env.GMAIL_CLIENT_SECRET,
+		        refreshToken: process.env.REFRESH_TOKEN,
+		        accessToken: accessToken
 			}
 		});
 		var mailOptions = {
@@ -421,6 +453,7 @@ exports.restorePassword = function(req, res, next) {
 			subject: 'Restore password',
 			text: "Username: " + user.info.name + "\nNew password: " + newPassword
 		};
+
 		transporter.sendMail(mailOptions, function(err, info){
 			if (err) {
 				return res.json({ err: true, message: err.message });
@@ -433,7 +466,7 @@ exports.restorePassword = function(req, res, next) {
 						if (err) {
 							return res.json({ err: true, message: err.message });
 						}
-						var setPassword = Users.updateOne({"info.name": user.name}, {"info.password": hash}, (err) => {
+						var setPassword = Users.updateOne({"info.name": user.info.name}, {"info.password": hash}, (err) => {
 							if (err) {
 								return res.json({ err: true, message: err.message });
 							}
