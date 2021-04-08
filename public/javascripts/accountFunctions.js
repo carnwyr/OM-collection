@@ -1,31 +1,34 @@
-$(document).ready(function(){
-    $('#sendVerification').on('click', sendVerificationMessage);
-    $('#changePassword').on('click', changePassword);
+$(document).ready(function() {
+  $("#inputJoinOM").attr("max", new Date().toISOString().split("T")[0])
+
+  $('#sendVerification').on('click', sendVerificationMessage);
+  $('#changePassword').on('click', changePassword);
+  $("form#profile input[type=submit]").on("click", updateProfile);
 });
 
 function sendVerificationMessage() {
-	if (!validateFieldsEmail()) {
-		showAlert(false, "Invalid fields");
-		return;
-	}
-	var userData = {
-		email: $('#email').val(),
-		password: $('#password').val()
-	};
-	$.ajax({
-        type: 'post',
-        url: '/user/'+username+'/sendVerificationEmail',
-        contentType: 'application/json',
-        data: JSON.stringify({userData: userData}),
-        cache: false
-    })
-    .done(function(result){
-        if (result.err) {
-            showAlert(false, result.message);
-            return;
-        }
-        showAlert(true, 'Confirmation message has been sent to your email');
-    });
+  if (!validateFieldsEmail()) {
+    showAlert(false, "Invalid fields");
+    return;
+  }
+  var userData = {
+    email: $('#email').val(),
+    password: $('#password').val()
+  };
+  $.ajax({
+    type: 'post',
+    url: '/user/'+username+'/sendVerificationEmail',
+    contentType: 'application/json',
+    data: JSON.stringify({userData: userData}),
+    cache: false
+  })
+  .done(function(result){
+    if (result.err) {
+      showAlert(false, result.message);
+      return;
+    }
+    showAlert(true, 'Confirmation message has been sent to your email');
+  });
 }
 
 function validateFieldsEmail() {
@@ -39,36 +42,36 @@ function validateFieldsEmail() {
 }
 
 function showAlert(isSuccess, message) {
-    var alert = isSuccess ? '#successAlert' : '#failAlert';
-    $(alert).html(message);
-    $(alert).show().animate({top: 65}, 500);
-    setTimeout(function () {
-        $(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
-      }, 3500);
+  var alert = isSuccess ? '#successAlert' : '#failAlert';
+  $(alert).html(message);
+  $(alert).show().animate({top: 65}, 500);
+  setTimeout(function () {
+    $(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
+  }, 5000);
 }
 
 function changePassword() {
-	if (!validateFieldsPassword()) {
-		return;
-	}
-	var passwordData = {
-		new: $('#newPassword').val(),
-		old: $('#oldPassword').val()
-	};
-	$.ajax({
-        type: 'post',
-        url: '/user/'+username+'/changePassword',
-        contentType: 'application/json',
-        data: JSON.stringify({passwordData: passwordData}),
-        cache: false
-    })
-    .done(function(result){
-        if (result.err) {
-            showAlert(false, result.message);
-            return;
-        }
-        showAlert(true, 'Password changed');
-    });
+  if (!validateFieldsPassword()) {
+    return;
+  }
+  var passwordData = {
+    new: $('#newPassword').val(),
+    old: $('#oldPassword').val()
+  };
+  $.ajax({
+    type: 'post',
+    url: '/user/'+username+'/changePassword',
+    contentType: 'application/json',
+    data: JSON.stringify({passwordData: passwordData}),
+    cache: false
+  })
+  .done(function(result){
+    if (result.err) {
+      showAlert(false, result.message);
+      return;
+    }
+    showAlert(true, 'Password changed');
+  });
 }
 
 function validateFieldsPassword() {
@@ -91,4 +94,31 @@ function validateFieldsPassword() {
 		return false;
 	}
 	return true;
+}
+
+function updateProfile(e) {
+  e.preventDefault();
+  var formData = new FormData($("form#profile")[0]);
+
+  var updatedInfo = {};
+  for (var pair of formData.entries()) {
+  	updatedInfo[pair[0]] = pair[1];
+  }
+
+  console.log(updatedInfo);
+
+  $.ajax({
+  	type: 'post',
+  	url: '/user/' + username + '/updateUserProfile',
+  	contentType: 'application/json',
+  	data: JSON.stringify({ updatedInfo: updatedInfo }),
+  	cache: false
+  }).done(function(result) {
+    // check how this work
+  	if (result.err) {
+  		showAlert(false, result.message);
+  	} else {
+      showAlert(true, result.message);
+    }
+  });
 }

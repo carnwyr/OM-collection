@@ -44,10 +44,13 @@ html(lang='en-US')
             a(class="nav-link" href='/cards') Gallery
           if user
             li(class="nav-item dropdown")
-              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Collections
+              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Pages
               div(class="dropdown-menu shadow px-2" aria-labelledby="collectionDropdown")
+                span.text-muted(style="font-size:10px;letter-spacing:1.5px;padding-left:.5rem;") COLLECTIONS
                 a(class="dropdown-item" href='/' + user.name + '/collection') Cards
                 a(class="dropdown-item" href='/' + user.name + '/favourites') Favourites
+                div(class="dropdown-divider" style="opacity:32%;")
+                a(class="dropdown-item" href='/' + user.name + '/profile') Profile
           li(class="nav-item")
             a(class="nav-link" href='/rankings') Rankings
           li(class="nav-item dropdown")
@@ -133,7 +136,7 @@ html(lang='en-US')
             div(class="modal-body") Karasu-OS.com is supported by advertisement and donations. Show your support and browse without distraction!
             div(class="modal-footer")
               button(type="button" class="btn btn-secondary" data-dismiss="modal") No thanks
-              a(type="button" class="btn btn-primary" href="https://www.buymeacoffee.com/karasuos" target="_blank") Support Now
+              a(type="button" class="btn btn-primary" href="https://www.buymeacoffee.com/karasuos" target="_blank") Support now
 
     block footer
       footer(class="site-footer bg-primary navbar-dark mt-auto")

@@ -118,21 +118,17 @@ exports.getFavouritesPage = async function(req, res, next) {
 		}
 
 		if (req.user && req.user.name === req.params.username) {
-			var title = 'My Profile';
+			var title = 'My Favourites';
 		} else {
-			var title = req.params.username + "'s Profile";
+			var title = req.params.username + "'s Favourites";
 		}
 
 		var favedCards = await usersController.getCardCollection(req.params.username, "faved");
 		favedCards.sort(sortByRarityAndNumber);
 
-		var badges = await usersController.getUserBadges(req.params.username);
-
 		res.render("cardsList", {
-			title: title, description: `See ${req.params.username}'s profile and favourite Obey Me cards on Karasu-OS.com`,
-			user: req.user,
-			badges: badges.info.supportStatus,
-			cardsList: favedCards, path: "profile"
+			title: title, description: `See ${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
+			user: req.user, cardsList: favedCards, path: "fav"
 		});
 	} catch (e) {
 		return next(e);
@@ -145,6 +141,41 @@ exports.getHiddenCardsListPage = function(req, res, next) {
 		cardsList.sort(sortByRarityAndNumber);
 		res.render('cardsList', { title: 'Hidden Cards', cardsList: cardsList, user: req.user, path: 'hidden' });
 	});
+};
+
+exports.getProfilePage = async function(req, res, next) {
+	try {
+		var exists = await usersController.userExists(req.params.username);
+		if (!exists) {
+			throw "User notfound";
+		}
+
+		if (req.user && req.user.name === req.params.username) {
+			var title = 'My Profile';
+		} else {
+			var title = req.params.username + "'s Profile";
+		}
+
+		var cards = {
+		  owned: (await usersController.getCardCollection(req.params.username, "owned"))
+		    .sort(sortByRarityAndNumber)
+		    .slice(0, 10),
+		  faved: (await usersController.getCardCollection(req.params.username, "faved"))
+		    .sort(sortByRarityAndNumber)
+		    .slice(0, 10)
+		};
+
+		var profileInfo = await usersController.getProfileInfo(req.params.username);
+
+		res.render("profile", {
+			title: title, description: `See ${req.params.username}'s profile on Karasu-OS.com`,
+			user: req.user,
+			profileInfo: profileInfo,
+			cards: cards
+		});
+	} catch (e) {
+		return next(e);
+	}
 };
 
 exports.directImage = async function(req, res, next) {

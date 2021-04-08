@@ -16,5 +16,8 @@ router.post('/:name/changePassword', usersController.isSameUser(), usersControll
 // Account settings page
 router.get('/:name', usersController.isSameUser(), usersController.getAccountPage);
 
+// update profile
+router.post('/:name/updateUserProfile', usersController.isSameUser(), usersController.updateUserProfile);
+
 
 module.exports = router;

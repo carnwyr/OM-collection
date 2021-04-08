@@ -34,9 +34,9 @@ div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby
           span(aria-hidden="true") &times;
       div(class="modal-body mb-2")
         div.input-group
-          input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link")
+          input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link" disabled)
           div.input-group-append
-            button#copyLink.btn.btn-primary.rounded Copy
+            button#copyLink.btn.btn-primary(style="border-radius:0 4px 4px 0;") Copy
         div.text-center.text-secondary.mt-2 Stats image to copy and share
         div(class='d-flex justify-content-center align-items-center mt-3' id='statsImageContainer')
           div(id='statsSpinner' class="spinner-border text-secondary" role="status" style='display: none')
@@ -45,18 +45,11 @@ div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby
 
 div#statsCard.card.card-body.shadow.mb-3
   if title === "My Collection"
-    div(style="position:absolute;right:1rem;")
+    div(style="position:absolute;right:1.25rem;")
       button(type="button" id="shareCollection" class="btn btn-primary" data-toggle="modal" data-target="#openLink")
         <svg class="bi bi-share mb-1" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
         |
         | Share
-  ul.nav.nav-tabs.mb-2
-    li.nav-item
-      a.nav-link.active(href="#") Collection
-    li.nav-item
-      //- change link to profile
-      a.nav-link(href="favourites") Go to #{page_user==="Me"?"My Profile":page_user+"'s profile"} &rarr;
-
   div.row
     //- first mx-auto is needed for current share stats image
     div#statsTotal.col-lg-4.d-flex.mx-auto.mb-3.mb-lg-0

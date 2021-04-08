@@ -22,3 +22,8 @@ figcaption,.figure-caption{font-size:90%;color:#6c757d;margin-bottom:1rem}
 [type=button], .btn {
   -webkit-appearance: none;
 }
+
+
+.card-body {
+  border-radius: 8px;
+}

@@ -9,6 +9,8 @@ const { body, validationResult } = require("express-validator");
 const async = require("async");
 const nodemailer = require("nodemailer");
 
+const ObjectId = require("mongodb").ObjectID;
+
 require("dotenv").config();
 
 // Login and signup
@@ -48,7 +50,7 @@ exports.signup = [
 			return;
 		}
 
-		let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection'];
+		let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection', "image", "images", "character", "characters", "rankings", "surpriseguest"];
 		if (blacklist.includes(req.body.username.toLowerCase())) {
 			req.flash('message', 'Username invalid');
 			res.render('signup', { title: 'Signup', user: req.user });
@@ -264,7 +266,12 @@ async function updateCountOnPage(res, card, collection) {
 
 // Account management
 exports.getAccountPage = function(req, res, next) {
-	res.render('account', { title: 'Account settings', user: req.user });
+  Users.find({ "info.name": req.user.name }, function(err, result) {
+    if (err) { return next(err) }
+    var u = result[0].info;
+    u.profile = result[0].profile;
+    return res.render('account', { title: 'Account settings', user: u });
+  });
 };
 
 exports.sendVerificationEmail = async function(req, res, next) {
@@ -547,8 +554,44 @@ exports.deleteCardInCollections = function(cardName) {
 	return promise;
 };
 
-exports.getUserBadges = async function(username) {
-  return await Users.findOne({ "info.name" : username }, "info.supportStatus");
+exports.getProfileInfo = async function(username) {
+  var info = {};
+  try {
+    var user = await Users.findOne({ "info.name": username });
+    info = user.profile;
+
+    var month = new Intl.DateTimeFormat('en', { month: 'long'}).format(ObjectId(user._id).getTimestamp());
+    var year = ObjectId(user._id).getTimestamp().getFullYear();
+    info.joinKarasu = month + ' ' + year;
+
+    info.numDemonCards = user.cards.owned.length;
+    info.numMemoryCards = user.cards.faved.length;
+
+    console.log(info);
+
+    return info;
+  } catch(e) {
+    // add sentry.io
+    return info;
+  }
+}
+
+exports.updateUserProfile = function(req, res) {
+  Users.updateOne(
+    { "info.name": req.user.name },
+    { $set: { "profile" : req.body.updatedInfo } },
+    function(err, result) {
+      if (err) {
+        // add sentry
+        return res.json({ err: true, message: "Something went wrong :(" });
+      }
+      if (result.nModified === 1) {
+        return res.json({ err: null, message: "Profile updated!"})
+      } else {
+        return res.json({ err: true, message: "Something went wrong :(" });
+      }
+    }
+  );
 }
 
 

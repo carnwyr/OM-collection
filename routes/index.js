@@ -29,6 +29,7 @@ router.post('/collection/modifyCollection', usersController.isLoggedIn(), usersC
 router.get('/:username/collection', cardsController.getCardsCollectionPage);
 router.post('/:username/getStatsImage', cardsController.getStatsImage);
 router.get('/:username/favourites', cardsController.getFavouritesPage);
+router.get('/:username/profile', cardsController.getProfilePage);
 
 // User Management
 router.get("/userpage", usersController.isAdmin(), usersController.getUserListPage);
