@@ -4,6 +4,9 @@ $(document).ready(function() {
   $('#sendVerification').on('click', sendVerificationMessage);
   $('#changePassword').on('click', changePassword);
   $("form#profile input[type=submit]").on("click", updateProfile);
+
+  $("#sortable").sortable();
+  $("#sortable").disableSelection();
 });
 
 function sendVerificationMessage() {
@@ -101,9 +104,16 @@ function updateProfile(e) {
   var formData = new FormData($("form#profile")[0]);
 
   var updatedInfo = {};
+  var charaList = [];
   for (var pair of formData.entries()) {
-  	updatedInfo[pair[0]] = pair[1];
+    console.log(pair);
+  	if (pair[0] !== "characters") {
+      updatedInfo[pair[0]] = pair[1];
+    } else {
+      charaList.push(pair[1]);
+    }
   }
+  updatedInfo.characters = charaList;
 
   console.log(updatedInfo);
 
