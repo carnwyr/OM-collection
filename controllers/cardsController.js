@@ -154,7 +154,7 @@ exports.getFavouritesPage = async function(req, res, next) {
 };
 
 exports.getHiddenCardsListPage = function(req, res, next) {
-	HiddenCards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
+	HiddenCards.find({}, function (err, cardsList) {
 		if (err) { return next(err); }
 		cardsList.sort(sortByRarityAndNumber);
 		res.render('cardsList', { title: 'Hidden Cards', cardsList: cardsList, user: req.user, path: 'hidden' });
@@ -209,12 +209,19 @@ function getHiddenCard(card, user) {
 	if (!user || !user.isAdmin) {
 		throw createError(404, "Card not found");
 	}
-	return HiddenCards.findOne({uniqueName: card});
+	return HiddenCards.findOne({ uniqueName: card });
 };
 
 async function getUniqueName(name) {
 	try {
-		return (await Cards.findOne({ name: name }, "uniqueName")).uniqueName;
+		var uName;
+		try {
+			uName = (await Cards.findOne({ name: name }, "uniqueName")).uniqueName;
+		} catch(e) {
+			uName = (await HiddenCards.findOne({ name: name }, "uniqueName")).uniqueName;
+		} finally {
+			return uName;
+		}
 	} catch(e) {
 		console.log(e);
 	}
