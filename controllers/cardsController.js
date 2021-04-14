@@ -1,3 +1,4 @@
+const createError = require("http-errors");
 const Cards = require("../models/cards");
 const HiddenCards = require("../models/hiddenCards.js");
 
@@ -30,9 +31,9 @@ exports.getCardsListPage = function(req, res, next) {
 
 exports.getCardsCollectionPage = async function(req, res, next) {
 	try {
-		var exists = await usersController.userExists(req.params.username);
-		if (!exists) {
-			throw "User not found";
+		var username = await usersController.userExists(req.params.username);
+		if (!username) {
+			throw createError(404, "User not found");
 		}
 
 		var cardStats = {
@@ -59,19 +60,28 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 				UR: { owned: 0, total: 0 },
 				URp: { owned: 0, total: 0 }
 			},
+			attribute: {
+				Pride: { owned: 0, total: 0 },
+				Greed: { owned: 0, total: 0 },
+				Envy: { owned: 0, total: 0 },
+				Wrath: { owned: 0, total: 0 },
+				Lust: { owned: 0, total: 0 },
+				Gluttony: { owned: 0, total: 0 },
+				Sloth: { owned: 0, total: 0 }
+			},
 			cards: {
 				Demon: { owned: 0, total: 0 },
 				Memory: { owned: 0, total: 0 }
 			}
 		};
 
-		if (req.user && req.user.name === req.params.username) {
+		if (req.user && req.user.name === username) {
 			var title = 'My Collection';
 		} else {
-			var title = `${req.params.username}'s Collection`;
+			var title = `${username}'s Collection`;
 		}
 
-		var ownedCards = await usersController.getCardCollection(req.params.username, "owned");
+		var ownedCards = await usersController.getCardCollection(username, "owned");
 		var allCards = await Cards.find({});
 		ownedCards.sort(sortByRarityAndNumber);
 
@@ -88,11 +98,12 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 
 exports.getCardDetailPage = async function(req, res, next) {
 	try {
-		var cardData = await getCard(req.params.card);
+		var card = await getUniqueName(req.params.card.replace(/_/g, ' '));
+		var cardData = await getCard(card);
 		if (!cardData) {
-			cardData = await getHiddenCard(req.params.card, req.user);
+			cardData = await getHiddenCard(card, req.user);
 			if (!cardData) {
-				throw "Card not found";
+				throw createError(404, "Card not found");
 			}
 			return res.render('cardDetail', {
 				title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
@@ -100,7 +111,7 @@ exports.getCardDetailPage = async function(req, res, next) {
 				user: req.user, hasCard: false });
 		}
 
-		var stats = await getCardStats(req.user, req.params.card);
+		var stats = await getCardStats(req.user, card);
 		res.render('cardDetail', {
 			title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 			card: cardData, isHidden: false,
@@ -112,23 +123,24 @@ exports.getCardDetailPage = async function(req, res, next) {
 
 exports.getFavouritesPage = async function(req, res, next) {
 	try {
-		var exists = await usersController.userExists(req.params.username);
-		if (!exists) {
-			throw "User notfound";
+		var username = await usersController.userExists(req.params.username);
+		if (!username) {
+			throw createError(404, "User not found");
 		}
 
-		if (req.user && req.user.name === req.params.username) {
+		if (req.user && req.user.name === username) {
 			var title = 'My Favourites';
 		} else {
-			var title = req.params.username + "'s Favourites";
+			var title = username + "'s Favourites";
 		}
 
-		var favedCards = await usersController.getCardCollection(req.params.username, "faved");
+		var favedCards = await usersController.getCardCollection(username, "faved");
 		favedCards.sort(sortByRarityAndNumber);
 
 		res.render("cardsList", {
-			title: title, description: `See ${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
-			user: req.user, cardsList: favedCards, path: "fav"
+			title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`,
+			user: req.user,
+			cardsList: favedCards, path: "fav"
 		});
 	} catch (e) {
 		return next(e);
@@ -136,7 +148,7 @@ exports.getFavouritesPage = async function(req, res, next) {
 };
 
 exports.getHiddenCardsListPage = function(req, res, next) {
-	HiddenCards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
+	HiddenCards.find({}, function (err, cardsList) {
 		if (err) { return next(err); }
 		cardsList.sort(sortByRarityAndNumber);
 		res.render('cardsList', { title: 'Hidden Cards', cardsList: cardsList, user: req.user, path: 'hidden' });
@@ -226,10 +238,25 @@ function getCard(card) {
 
 function getHiddenCard(card, user) {
 	if (!user || !user.isAdmin) {
-		throw "Card not found";
+		throw createError(404, "Card not found");
 	}
-	return HiddenCards.findOne({uniqueName: card});
+	return HiddenCards.findOne({ uniqueName: card });
 };
+
+async function getUniqueName(name) {
+	try {
+		var uName;
+		try {
+			uName = (await Cards.findOne({ name: name }, "uniqueName")).uniqueName;
+		} catch(e) {
+			uName = (await HiddenCards.findOne({ name: name }, "uniqueName")).uniqueName;
+		} finally {
+			return uName;
+		}
+	} catch(e) {
+		console.log(e);
+	}
+}
 
 
 // Collection functions
@@ -237,6 +264,7 @@ function countCardsForStats(cards, cardStats, type) {
 	cards.forEach(card => {
 		card.characters.forEach(character => cardStats.characters[character][type]++);
 		cardStats.rarity[card.rarity.replace('+', 'p')][type]++;
+		cardStats.attribute[card.attribute][type]++;
 		cardStats.cards[card.type][type]++;
 	});
 };

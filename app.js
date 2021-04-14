@@ -1,5 +1,7 @@
-const createError = require("http-errors");
 const express = require("express");
+const Sentry = require("@sentry/node");
+
+const createError = require("http-errors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -16,7 +18,9 @@ var indexRouter = require("./routes/index");
 var cardsRouter = require("./routes/cards");
 var userRouter = require("./routes/user");
 
-var app = express();
+const app = express();
+
+// Sentry.init({ dsn: "https://b147d3a7c4e04bc88a15f8850a4bd610@o513655.ingest.sentry.io/5615947" });
 
 var mongoose = require("mongoose");
 var mongoDB = process.env.URI;
@@ -27,6 +31,8 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
+
+app.use(Sentry.Handlers.requestHandler());
 
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
@@ -64,12 +70,15 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
+app.use(Sentry.Handlers.errorHandler());
+
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   res.status(err.status || 500);
-  res.render("error", { user: req.user });
+  res.render("error", { title: "Page not found", user: req.user });
 });
+
 
 module.exports = app;

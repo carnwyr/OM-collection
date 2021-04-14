@@ -27,7 +27,6 @@ $(document).ready(function() {
       $(".list-group").slideUp();
     }
   });
-  $("#cardSearch a").on("click", saveDisplayCard);
 
   $("#sortable").sortable();
   $("#sortable").disableSelection();

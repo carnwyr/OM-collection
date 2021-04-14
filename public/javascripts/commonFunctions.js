@@ -15,12 +15,12 @@ $(document).ready(function(){
 	});
 
 	/***/
-	if (!document.cookie.split('; ').find(row => row.startsWith("shareKarasu"))) {
-		$("#shareKarasu").removeClass("d-none").toast("show");
+	if (!document.cookie.split('; ').find(row => row.startsWith("announcementToast"))) {
+		$("#announcementToast").removeClass("d-none").toast("show");
 	}
-	$("#shareKarasu .close, #shareKarasu a").on("click", () => {
-		document.cookie = "shareKarasu=true; expires=" + cookieExpiryDate() + ";";
-		$("#shareKarasu").toast("hide");
+	$("#announcementToast .close, #announcementToast a").on("click", () => {
+		document.cookie = "announcementToast=true; expires=" + cookieExpiryDate() + ";";
+		$("#announcementToast").toast("hide");
 	});
 	/***/
 
@@ -41,9 +41,8 @@ $(document).on("adBlocked", () => { adBlock = true; });
 
 $(window).on("load", () => {
 	if (adBlock === true) {
-		if (window.location.pathname !== "/") {
-			$(".ad-container").append(`<div class="card"><div class="card-body col-md-8 mx-auto my-4"><h5 class="card-title">Using an ad-blocker?</h5><p class="card-text">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.</p><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></div></div>`);
-		}
+		$(".ddd>.row").hide();
+		$(".ddd").append(`<div class="card"><div class="card-body col-md-8 mx-auto my-4"><h5 class="card-title">Using an ad-blocker?</h5><p class="card-text">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.</p><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></div></div>`);
 	} else {
 		$("[data-target='#removeAdsModal']").show();
 	}
