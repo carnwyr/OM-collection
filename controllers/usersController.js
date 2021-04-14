@@ -156,10 +156,14 @@ exports.favesCard = function(user, card) {
 
 
 // Card management
+// getOwnedCards() is redundant and can be modified
 exports.getOwnedCards = async function(req, res) {
 	try {
 		var ownedCards = await exports.getCardCollection(req.user.name, "owned");
 		ownedCards = ownedCards.map(card => card.uniqueName);
+
+    console.log(ownedCards);
+
 		res.send(ownedCards);
 	} catch (e) {
 		// TODO proper error handling
@@ -270,6 +274,7 @@ exports.getAccountPage = function(req, res, next) {
     if (err) { return next(err) }
     var u = result[0].info;
     u.profile = result[0].profile;
+
     return res.render('account', { title: 'Account settings', user: u });
   });
 };
@@ -567,7 +572,7 @@ exports.getProfileInfo = async function(username) {
     info.numDemonCards = user.cards.owned.length;
     info.numMemoryCards = user.cards.faved.length;
 
-    console.log(info);
+    info.badges = user.info.supportStatus;
 
     return info;
   } catch(e) {
@@ -585,6 +590,9 @@ exports.updateUserProfile = function(req, res) {
         // add sentry
         return res.json({ err: true, message: "Something went wrong :(" });
       }
+
+      console.log(result);  // https://docs.mongodb.com/manual/reference/command/update/#std-label-update-command-output
+
       if (result.nModified === 1) {
         return res.json({ err: null, message: "Profile updated!"})
       } else {

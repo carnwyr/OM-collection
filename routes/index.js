@@ -35,5 +35,7 @@ router.get('/:username/profile', cardsController.getProfilePage);
 router.get("/userpage", usersController.isAdmin(), usersController.getUserListPage);
 router.post("/updateSupport", usersController.isAdmin(), usersController.updateSupport);
 
+router.get('/getAllCards', cardsController.getAllCards);
+
 
 module.exports = router;

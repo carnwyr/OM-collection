@@ -108,3 +108,17 @@ h1, h2 {
 .supportBtn:hover {
   box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
 }
+
+#overline {
+  color: var(--light);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  padding-left: .5rem;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  #overline {
+    color: #6c757d;
+  }
+}

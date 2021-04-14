@@ -159,13 +159,15 @@ exports.getProfilePage = async function(req, res, next) {
 		var cards = {
 		  owned: (await usersController.getCardCollection(req.params.username, "owned"))
 		    .sort(sortByRarityAndNumber)
-		    .slice(0, 10),
+		    .slice(0, 15),
 		  faved: (await usersController.getCardCollection(req.params.username, "faved"))
 		    .sort(sortByRarityAndNumber)
-		    .slice(0, 10)
+		    .slice(0, 15)
 		};
 
 		var profileInfo = await usersController.getProfileInfo(req.params.username);
+
+		// console.log(profileInfo);
 
 		res.render("profile", {
 			title: title, description: `See ${req.params.username}'s profile on Karasu-OS.com`,
@@ -296,6 +298,16 @@ function getReplacedImages() {
 
 	return Promise.all([p1, p2, p3]);
 };
+
+exports.getAllCards = function(req, res, next) {
+	Cards.find({}, "name uniqueName", function(err, result) {
+		if (err) return next(err);
+
+		// console.log(result);
+
+		return res.send(result);
+	});
+}
 
 
 // Card detail functions

@@ -18,3 +18,8 @@
   background-color: rgb(233, 236, 239);
   border-radius: 8px;
 }
+
+.list-group-item:hover {
+  background: rgb(233, 236, 239);
+  cursor: pointer;
+}

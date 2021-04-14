@@ -6,6 +6,8 @@ block scripts
 	script(src="/javascripts/accountFunctions.js")
 	script.
 		var username = !{JSON.stringify(user.name)};
+		var cards = !{JSON.stringify(user.cards)};
+		var card = !{JSON.stringify(user.profile.display)};
 
 block content
 	div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Confirmation message has been sent to your email
@@ -52,93 +54,104 @@ block content
 					button(type="button" class="btn btn-secondary text-light" id="changePassword") Update password
 
 	div(class="container")
-		div(class="row justify-content-center mb-3")
-			h2(class="col-lg-10 text-center py-2") #{user.name}'s Settings
-			div(class="card shadow col-lg-10")
-				div(class="card-body col-lg-6 mx-auto mb-3")
-					h5.card-title Profile
-					form#profile.col-12
-						div.form-row
-							div.form-group.col-md-6
-								label(for="inputInGameName") In-game Name
-								input(type="text" class="form-control" id="inputInGameName" name="name" placeholder="???" value=user.profile.name maxlength="10")
-							div.form-group.col-md-6
-								label(for="inputFriendID") Friend ID
-								input(type="text" class="form-control" id="inputFriendID" name="id" placeholder="???" value=user.profile.id maxlength="20")
-							div.form-group.col-md-6
-								label(for="inputJoinOM") Started Playing Since
-								input(type="date" class="form-control" id="inputJoinOM" name="joined" min="2019-12-11")
-							div.col-md-6
-								span In-game Language
-								div.form-check
-									input(type="radio" class="form-check-input" id="english" name="language" value="en" checked)
-									label(for="english" class="form-check-label") English
-								div.form-check
-									input(type="radio" class="form-check-input" id="japanese" name="language" value="jp")
-									label(for="japanese" class="form-check-label") Japanese
-							div.col-12
-								label(for="inputFavouriteCharacters" class="form-label") Favourite Character(s)
-								-
-									var ch = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor",
-														"Diavolo", "Barbatos", "Luke", "Simeon", "Solomon", "Little D."]
-								ul#sortable.mb-2
-									for c in user.profile.characters
-										- ch.splice(ch.indexOf(c), 1);
-										li.row
-											div.form-check.col-10
-												input.form-check-input(id=c style="position:relative;" type="checkbox" value=c aria-label="Checkbox for "+c name="characters" checked)
-												label.form-check-label.ml-2(for=c)
-													img(src="/images/faces/"+ c + ".png" style="width:32px;height:32px;")
-													|
-													| #{c}
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/> </svg>
-									for c in ch
-										li.row
-											div.form-check.col-10
-												input.form-check-input(id=c style="position:relative;" type="checkbox" value=c aria-label="Checkbox for "+c name="characters")
-												label.form-check-label.ml-2(for=c)
-													img(src="/images/faces/"+ c + ".png" style="width:32px;height:32px;")
-													|
-													| #{c}
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/> </svg>
-								input.btn.btn-primary(type="submit" value="Update")
-					br
-
-					if user.email
-						- var emailStatus = user.email
-						- var buttonText = "Change email"
-						- var emailMsg = "This is the email that will receive instructions for password recovery."
-					else
-						- var emailStatus = "No emails linked"
-						- var buttonText = "Link email"
-						- var emailMsg = "To enable password recovery, link your email address."
-
-					h5.card-title Account
-					div.col-12
-						p.card-text.mb-2 Email
-							if !user.email
-								span(class="badge badge-pill badge-warning ml-1") !
-						p.card-text.text-muted= emailMsg
-						div.input-group.mb-3
-							input(type="text" readonly class="form-control rounded mr-2" id="staticEmail" value=emailStatus)
-							div(class="input-group-append")
-								button(class="btn btn-primary rounded-pill" id="setEmail" data-toggle="modal" data-target="#emailModal")= buttonText
-						p.card-text Password -
-							|
-							|
-							a(id="#setPassword" href="#" data-toggle="modal" data-target="#passwordModal") Change Password
-					br
-					h5.card-title Supporter Perks
-					div.col-12
-						div(class="custom-control custom-switch")
-							input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
-							label(class="custom-control-label" for="adFreeStatus") Ad-free Status
+		div(class="row")
+			h2(class="col-12 text-center py-2") #{user.name}'s Settings
+			div(class="card card-body shadow")
+				div.row.w-75.mx-auto
+					h5.col-12.card-title Profile
+					div.col-lg-7
+						form#profile
+							div.form-row
+								div.form-group.col-md-6
+									label(for="inputInGameName") In-game Name
+									input(type="text" class="form-control" id="inputInGameName" name="name" placeholder="???" value=user.profile.name maxlength="10")
+								div.form-group.col-md-6
+									label(for="inputFriendID") Friend ID
+									input(type="text" class="form-control" id="inputFriendID" name="id" placeholder="???" value=user.profile.id maxlength="20")
+								div.form-group.col-md-6
+									label(for="inputJoinOM") Started Playing Since
+									input(type="date" class="form-control" id="inputJoinOM" name="joined" value=user.profile.joined.toISOString().split("T")[0] min="2019-12-11")
+								div.col-md-6
+									span In-game Language
+									div.form-check
+										input(type="radio" class="form-check-input" id="english" name="language" value="en" checked)
+										label(for="english" class="form-check-label") English
+									div.form-check
+										input(type="radio" class="form-check-input" id="japanese" name="language" value="jp")
+										label(for="japanese" class="form-check-label") Japanese
+								div.col-12
+									p.my-2 Favourite Character(s)
+									p.text-muted Check your favourite characters and drag to put them in order!
+									-
+										var ch = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor",
+															"Diavolo", "Barbatos", "Luke", "Simeon", "Solomon", "Little D."]
+									ul#sortable.mb-2
+										for c in user.profile.characters
+											- ch.splice(ch.indexOf(c), 1);
+											li.row
+												div.form-check.col-10
+													input.form-check-input(id=c style="position:relative;" type="checkbox" value=c aria-label="Checkbox for "+c name="characters" checked)
+													label.form-check-label.ml-2(for=c)
+														img(src="/images/faces/"+ c + ".png" style="width:32px;height:32px;")
+														|
+														| #{c}
+												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/> </svg>
+										for c in ch
+											li.row
+												div.form-check.col-10
+													input.form-check-input(id=c style="position:relative;" type="checkbox" value=c aria-label="Checkbox for "+c name="characters")
+													label.form-check-label.ml-2(for=c)
+														img(src="/images/faces/"+ c + ".png" style="width:32px;height:32px;")
+														|
+														| #{c}
+												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/> </svg>
+									input.btn.btn-primary(type="submit" value="Update")
 						br
-					div.card.card-body.text-light.text-center(style="border-radius:8px;background-color:#8d6fe2;")
-						h5.card-title.mb-0 Support Karasu!
-						img(src="/images/karasu.png" alt="karasu icon" style="width:32px;height:32px;margin:10px auto;")
-						-
-							var donateMsg = ["Make a donation now to browser Karasu-OS.com ad-free. You will also receive a special badge to display on your profile :)",
-															 "Thank you for supporting Karasu-OS.com! We hope you have been enjoying your stay :)"]
-						p.card-text= user.supportStatus.includes("adfree") ? donateMsg[1] : donateMsg[0]
-							a(id="donation" class="btn bg-light text-primary my-3" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") Make a Donation
+
+						if user.email
+							- var emailStatus = user.email
+							- var buttonText = "Change email"
+							- var emailMsg = "This is the email that will receive instructions for password recovery."
+						else
+							- var emailStatus = "No emails linked"
+							- var buttonText = "Link email"
+							- var emailMsg = "To enable password recovery, link your email address."
+
+						h5.card-title Account
+						div.col-12
+							p.card-text.mb-2 Email
+								if !user.email
+									span(class="badge badge-pill badge-warning ml-1") !
+							p.card-text.text-muted= emailMsg
+							div.input-group.mb-3
+								input(type="text" readonly class="form-control rounded mr-2" id="staticEmail" value=emailStatus)
+								div(class="input-group-append")
+									button(class="btn btn-primary rounded-pill" id="setEmail" data-toggle="modal" data-target="#emailModal")= buttonText
+							p.card-text Password -
+								|
+								|
+								a(id="#setPassword" href="#" data-toggle="modal" data-target="#passwordModal") Change Password
+						br
+						h5.card-title Supporter Perks
+						div.col-12
+							div(class="custom-control custom-switch")
+								input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+								label(class="custom-control-label" for="adFreeStatus") Ad-free Status
+							br
+						div.card.card-body.text-light.text-center(style="border-radius:8px;background-color:#8d6fe2;")
+							h5.card-title.mb-0 Support Karasu!
+							img(src="/images/karasu.png" alt="karasu icon" style="width:32px;height:32px;margin:10px auto;")
+							-
+								var donateMsg = ["Make a donation now to browser Karasu-OS.com ad-free. You will also receive a special badge to display on your profile :)",
+																 "Thank you for supporting Karasu-OS.com! We hope you have been enjoying your stay :)"]
+							p.card-text= user.supportStatus.includes("adfree") ? donateMsg[1] : donateMsg[0]
+								br
+								a(id="donation" class="btn bg-light text-primary my-3" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") Make a Donation
+					div#cardSearch.col-lg-5
+						div.mb-2 Favourite Card Display
+						form.input-group.mb-3(style="width:90%;")
+							input.form-control(type="text" placeholder="Search for a card" aria-label="Search")
+							div.input-group-append
+								button(class="btn btn-outline-primary" style="border-radius:0 4px 4px 0;") Search
+						ul.list-group(style="position:absolute;width:100%;padding:inherit;left:0;")
+						img(src="/images/cards/L/" + (user.profile.display?user.profile.display:"The_Mammon_Way") + ".jpg" style="width:80%;")

@@ -1,9 +1,33 @@
+var lst = [], nameDict = {};
 $(document).ready(function() {
   $("#inputJoinOM").attr("max", new Date().toISOString().split("T")[0])
 
   $('#sendVerification').on('click', sendVerificationMessage);
   $('#changePassword').on('click', changePassword);
   $("form#profile input[type=submit]").on("click", updateProfile);
+
+  $("#cardSearch input").on("focus", function() {
+    if (lst.length == 0) {
+      $.ajax({
+        type: 'get',
+        url: '/getAllCards'
+      }).done(function(result) {
+        lst = result;
+      });
+    }
+  });
+  $("#cardSearch button").on("click", searchCard);
+  $(".list-group").on("click", "li", updateDisplayCard);
+  $(document).on("click", function(e) {
+    var $dropdown = $(".list-group");
+    if (!$dropdown.is(e.target) &&  // target isn't .list-group
+        !$("#cardSearch button").is(e.target) &&  // target isn't the search button
+        $dropdown.has(e.target).length === 0) // target isn't .list-group-item
+    {
+      $(".list-group").slideUp();
+    }
+  });
+  $("#cardSearch a").on("click", saveDisplayCard);
 
   $("#sortable").sortable();
   $("#sortable").disableSelection();
@@ -115,7 +139,7 @@ function updateProfile(e) {
   }
   updatedInfo.characters = charaList;
 
-  console.log(updatedInfo);
+  updatedInfo.display = card;
 
   $.ajax({
   	type: 'post',
@@ -124,11 +148,35 @@ function updateProfile(e) {
   	data: JSON.stringify({ updatedInfo: updatedInfo }),
   	cache: false
   }).done(function(result) {
-    // check how this work
   	if (result.err) {
   		showAlert(false, result.message);
   	} else {
       showAlert(true, result.message);
     }
   });
+}
+
+function searchCard(e) {
+  e.preventDefault();
+
+  var search = $("#cardSearch input").val().replace(/[.*+?^${}()|[\]\\]/g, '');
+  var resultList = lst.filter(el => {
+    var name = el.name.replace(/[.*+?^${}()|[\]\\]/g, '');
+    var reg = new RegExp(search, 'i');
+    return reg.test(name);
+  }).slice(0, 10);
+
+  $(".list-group").slideUp().empty();
+  for (let i = 0; i < resultList.length; i++) {
+    nameDict[resultList[i].name] = resultList[i].uniqueName;  // temp solution
+    $(".list-group").append(`<li class="list-group-item">${resultList[i].name}</li>`);
+  }
+  $(".list-group").slideDown();
+}
+
+function updateDisplayCard() {
+  card = nameDict[$(this).text()];
+  $("#cardSearch input").val($(this).text());
+  $("#cardSearch img").attr("src",`/images/cards/L/${card}.jpg`);
+  $(".list-group").slideUp();
 }
