@@ -12,7 +12,9 @@ block content
     h1= title
 
     if path === "collection"
-      include statsboard.pug
+      include collectionStats.pug
+    else if path === "fav"
+      include favouriteStats.pug
 
     //- Card Navigation
     div(class="card sticky-top sticky-offset mb-3 shadow")
