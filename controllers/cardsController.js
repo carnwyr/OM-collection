@@ -157,32 +157,32 @@ exports.getHiddenCardsListPage = function(req, res, next) {
 
 exports.getProfilePage = async function(req, res, next) {
 	try {
-		var exists = await usersController.userExists(req.params.username);
-		if (!exists) {
+		var username = await usersController.userExists(req.params.username);
+		if (!username) {
 			throw "User notfound";
 		}
 
-		if (req.user && req.user.name === req.params.username) {
+		if (req.user && req.user.name === username) {
 			var title = 'My Profile';
 		} else {
-			var title = req.params.username + "'s Profile";
+			var title = username + "'s Profile";
 		}
 
 		var cards = {
-		  owned: (await usersController.getCardCollection(req.params.username, "owned"))
+		  owned: (await usersController.getCardCollection(username, "owned"))
 		    .sort(sortByRarityAndNumber)
 		    .slice(0, 15),
-		  faved: (await usersController.getCardCollection(req.params.username, "faved"))
+		  faved: (await usersController.getCardCollection(username, "faved"))
 		    .sort(sortByRarityAndNumber)
 		    .slice(0, 15)
 		};
 
-		var profileInfo = await usersController.getProfileInfo(req.params.username);
+		var profileInfo = await usersController.getProfileInfo(username);
 
 		// console.log(profileInfo);
 
 		res.render("profile", {
-			title: title, description: `See ${req.params.username}'s profile on Karasu-OS.com`,
+			title: title, description: `See ${username}'s profile on Karasu-OS.com`,
 			user: req.user,
 			profileInfo: profileInfo,
 			cards: cards
