@@ -310,7 +310,7 @@ function switchCardsSelection(cardNames) {
 	if (selectionMode) {
 		var selectOwnedCards = function(cardNames) {
 			$('.cardPreview').filter(function() {
-				return !cardNames.includes($(this).attr('href').replace('card/', ''));
+				return !cardNames.includes($("img", this).attr('src').slice(16, -4));
 			}).find('img').addClass('notSelectedCard');
 		};
 		applyEffectWithoutTransition(invisibleCards, selectOwnedCards, cardNames);
@@ -343,7 +343,7 @@ function cardClicked(e) {
 	if (e) e.preventDefault();
 
 	var image = $(this).find('img');
-	var cardName = $(this).attr('href').replace('card/', '');
+	var cardName = $("img", this).attr('src').slice(16, -4);
 
 	if ($(image).hasClass('notSelectedCard')) {
 		$(image).removeClass('notSelectedCard');
@@ -382,7 +382,7 @@ function switchSelectionAll(select) {
 
 function addCardsToChangedList(cardsToSwitch, select) {
 	var cardNames = [];
-	for (var i=0; typeof(cardsToSwitch[i])!='undefined'; cardNames.push(cardsToSwitch[i++].getAttribute('href').replace('card/', '')));
+	for (var i=0; typeof(cardsToSwitch[i])!='undefined'; cardNames.push(cardsToSwitch[i++].childNodes[0].getAttribute('src').slice(16, -4)));
 	for (const [key, value] of Object.entries(changedCards)) {
 		if (cardNames.includes(key)) {
 			delete changedCards[key];
