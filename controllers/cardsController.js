@@ -17,16 +17,17 @@ exports.index = function(req, res, next) {
 	});
 };
 
-exports.getCardsListPage = function(req, res, next) {
-	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
-		if (err) { return next(err); }
-		cardsList.sort(sortByRarityAndNumber);
-		res.render("cardsList", {
+exports.getCardsListPage = async function(req, res, next) {
+	try {
+		var cards = await Cards.find().sort({ number: -1 });
+		return res.render("cardsList", {
 			title: "Card Gallery", description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
-			cardsList: cardsList, path: "list",
+			cardsList: cards, path: "list",
 			user: req.user
 		});
-	});
+	} catch(e) {
+		return next(err);
+	}
 };
 
 exports.getCardsCollectionPage = async function(req, res, next) {
@@ -82,16 +83,13 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 		}
 
 		var ownedCards = await usersController.getCardCollection(username, "owned");
-		var allCards = await Cards.find({});
-		ownedCards.sort(sortByRarityAndNumber);
 
 		countCardsForStats(ownedCards, cardStats, "owned");
-		countCardsForStats(allCards, cardStats, "total");
+		countCardsForStats(await Cards.find(), cardStats, "total");
 
 		var badges = await usersController.getUserBadges(username);
 
-
-		console.log(cardStats);
+		// console.log(cardStats);
 
 		return res.render('cardsList', {
 			title: title, description: `${username}'s Collection on Karasu-OS.com`,
@@ -141,7 +139,6 @@ exports.getFavouritesPage = async function(req, res, next) {
 		}
 
 		var favedCards = await usersController.getCardCollection(username, "faved");
-		favedCards.sort(sortByRarityAndNumber);
 
 		res.render("cardsList", {
 			title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`,
@@ -153,12 +150,13 @@ exports.getFavouritesPage = async function(req, res, next) {
 	}
 };
 
-exports.getHiddenCardsListPage = function(req, res, next) {
-	HiddenCards.find({}, function (err, cardsList) {
-		if (err) { return next(err); }
-		cardsList.sort(sortByRarityAndNumber);
-		res.render('cardsList', { title: 'Hidden Cards', cardsList: cardsList, user: req.user, path: 'hidden' });
-	});
+exports.getHiddenCardsListPage = async function(req, res, next) {
+	try {
+		var cards = await HiddenCards.find().sort({ number: -1 });
+		return res.render('cardsList', { title: 'Hidden Cards', cardsList: cards, user: req.user, path: 'hidden' });
+	} catch(e) {
+		return next(err);
+	}
 };
 
 exports.directImage = async function(req, res, next) {
@@ -171,46 +169,16 @@ exports.directImage = async function(req, res, next) {
 }
 
 // Common functions
-function sortByRarityAndNumber(card1, card2) {
-	var rarityOrder = -1 * compareByRarity(card1.rarity, card2.rarity);
-	if (rarityOrder != 0) return rarityOrder;
-	if (card1.number > card2.number) {
-		return -1;
-	}
-	if (card1.number < card2.number) {
-		return 1;
-	}
-	return 0;
-};
-
-function compareByRarity(rarity1, rarity2) {
-	var rarities = {
-		"N": 1,
-		"R": 2,
-		"SR": 3,
-		"SSR": 4,
-		"UR": 5,
-		"UR+": 5
-	};
-	if (rarities[rarity1] > rarities[rarity2]) {
-		return 1;
-	}
-	if (rarities[rarity1] < rarities[rarity2]) {
-		return -1;
-	}
-	return 0;
-};
-
 function getCard(card) {
 	return Cards.findOne({uniqueName: card});
-};
+}
 
 function getHiddenCard(card, user) {
 	if (!user || !user.isAdmin) {
 		throw createError(404, "Card not found");
 	}
 	return HiddenCards.findOne({ uniqueName: card });
-};
+}
 
 async function getUniqueName(name) {
 	try {
@@ -224,6 +192,19 @@ async function getUniqueName(name) {
 		}
 	} catch(e) {
 		console.log(e);
+	}
+}
+
+async function getLatestCardNum(rarity) {
+	try {
+		var last = await Cards.find({ rarity: rarity }).sort({ number: -1 }).limit(1);
+		var lastHidden = await HiddenCards.find({ rarity: rarity }).sort({ number: -1 }).limit(1);
+		if (lastHidden.length > 0) {
+			return Math.max(last[0].number, lastHidden[0].number) + 1;
+		}
+		return last[0].number + 1;
+	} catch(e) {
+		return 99999;  // reserved error number
 	}
 }
 
@@ -357,11 +338,10 @@ exports.getEditCardPage = function(req, res, next) {
 		return res.render('cardEdit', { title: 'Add Card', user: req.user });
 	}
 
-	Cards.findOne({uniqueName: req.params.card}, async function(err, cardData) {
+	Cards.findOne({ uniqueName: req.params.card }, async function(err, cardData) {
 		if (err) { return next(err); }
 		if (!cardData) {
-			var err = new Error('Card not found');
-			return next(err);
+			return next(new Error('Card not found'));
 		}
 
 		return res.render('cardEdit', { title: 'Edit Card', card: cardData, user: req.user });
@@ -369,11 +349,16 @@ exports.getEditCardPage = function(req, res, next) {
 };
 
 exports.updateCard = async function(req, res, next) {
-	var originalUniqueName = req.body.cardData.originalUniqueName;
-	var newUniqueName = req.body.cardData.uniqueName;
+	var data = req.body.cardData;
+	var originalUniqueName = data.originalUniqueName;
+	var newUniqueName = data.uniqueName;
+
+	if (data.number === '') {
+		data.number = await getLatestCardNum(data.rarity);
+	}
 
 	if (originalUniqueName === '') {
-		await addNewCard(req.body.cardData, res);
+		await addNewCard(data, res);
 		return;
 	}
 
@@ -388,12 +373,12 @@ exports.updateCard = async function(req, res, next) {
 	}
 
 	try {
-		var promiseCard = Cards.findOneAndUpdate({uniqueName: originalUniqueName}, req.body.cardData);
+		var promiseCard = Cards.findOneAndUpdate({uniqueName: originalUniqueName}, data);
 		var promiseCollections = usersController.renameCardInCollections(originalUniqueName, newUniqueName);
 
-		var promiseL = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.L, 'L', false);
-		var promiseLB = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.LB, 'L', true);
-		var promiseS = saveImage(originalUniqueName, newUniqueName, req.body.cardData.images.S, 'S', false);
+		var promiseL = saveImage(originalUniqueName, newUniqueName, data.images.L, 'L', false);
+		var promiseLB = saveImage(originalUniqueName, newUniqueName, data.images.LB, 'L', true);
+		var promiseS = saveImage(originalUniqueName, newUniqueName, data.images.S, 'S', false);
 
 		Promise.all([promiseCard, promiseCollections, promiseL, promiseLB, promiseS])
 			.then(() => { res.json({ err: null, message: 'Success' }); })
