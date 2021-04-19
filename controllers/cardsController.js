@@ -26,7 +26,7 @@ exports.getCardsListPage = async function(req, res, next) {
 			user: req.user
 		});
 	} catch(e) {
-		return next(err);
+		return next(e);
 	}
 };
 
@@ -88,8 +88,6 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 		countCardsForStats(await Cards.find(), cardStats, "total");
 
 		var badges = await usersController.getUserBadges(username);
-
-		// console.log(cardStats);
 
 		return res.render('cardsList', {
 			title: title, description: `${username}'s Collection on Karasu-OS.com`,
@@ -155,7 +153,7 @@ exports.getHiddenCardsListPage = async function(req, res, next) {
 		var cards = await HiddenCards.find().sort({ number: -1 });
 		return res.render('cardsList', { title: 'Hidden Cards', cardsList: cards, user: req.user, path: 'hidden' });
 	} catch(e) {
-		return next(err);
+		return next(e);
 	}
 };
 
@@ -191,17 +189,13 @@ async function getUniqueName(name) {
 			return uName;
 		}
 	} catch(e) {
-		console.log(e);
+		console.error(e);
 	}
 }
 
 async function getLatestCardNum(rarity) {
 	try {
 		var last = await Cards.find({ rarity: rarity }).sort({ number: -1 }).limit(1);
-		var lastHidden = await HiddenCards.find({ rarity: rarity }).sort({ number: -1 }).limit(1);
-		if (lastHidden.length > 0) {
-			return Math.max(last[0].number, lastHidden[0].number) + 1;
-		}
 		return last[0].number + 1;
 	} catch(e) {
 		return 99999;  // reserved error number
@@ -353,10 +347,6 @@ exports.updateCard = async function(req, res, next) {
 	var originalUniqueName = data.originalUniqueName;
 	var newUniqueName = data.uniqueName;
 
-	if (data.number === '') {
-		data.number = await getLatestCardNum(data.rarity);
-	}
-
 	if (originalUniqueName === '') {
 		await addNewCard(data, res);
 		return;
@@ -449,12 +439,18 @@ async function addNewCard(cardData, res) {
 	try {
 		var {originalUniqueName, images, isHidden, ...cardProperties} = cardData;
 		if (isHidden) {
+			if (cardData.number === '') {
+				cardData.number = await HiddenCards.estimatedDocumentCount() + 1;
+			}
 			await HiddenCards.create(cardData, (err, doc) => {
 				if(err) {
 					return res.json({ err: true, message: err.message });
 				}
 			});
 		} else {
+			if (cardData.number === '') {
+				cardData.number = await getLatestCardNum(cardData.rarity);
+			}
 			await Cards.create(cardData, (err, doc) => {
 				if(err) {
 					return res.json({ err: true, message: err.message });
@@ -522,16 +518,17 @@ function deleteFile(file) {
 };
 
 exports.makeCardPublic = function(req, res, next) {
-	HiddenCards.findOneAndRemove({ uniqueName: req.params.card }, (err, card) => {
+	HiddenCards.findOneAndRemove({ uniqueName: req.params.card }, async (err, card) => {
 		if (err) { return next(err); }
 		if (!card) {
 			var err = new Error("No such card");
 			return next(err);
 		}
 		var newCard = new Cards(card.toObject());
+		newCard.number = await getLatestCardNum(newCard.rarity);
 		newCard.save((err, doc) => {
 			if (err) { return next(err); }
-			res.redirect("/card/"+doc.uniqueName);
+			res.redirect("/card/"+doc.name);
 		});
 	});
 };

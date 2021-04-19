@@ -144,7 +144,6 @@ function sendCardData(images) {
       showAlert(false, result.message);
       return;
     }
-    showAlert(true, 'Card successfully updated! Reload in 3 seconds.');
-    setTimeout(function() { location.reload(); }, 3000);
+    showAlert(true, 'Card successfully updated!');
   });
 }
