@@ -43,13 +43,43 @@ li.placeholder {
   margin-bottom: .5rem;
 }
 
-#profile span {
-  color: #714ED2;
+#profile div span:first-child {
+  /* color: #714ED2; */
   font-size: small;
-  letter-spacing: 1.25px;
-  font-weight: bold;
-  text-transform: uppercase;
+  /* letter-spacing: 1.25px; */
+  /* font-weight: bold; */
+  /* text-transform: uppercase; */
   margin-right: .5em;
+
+  /* TEMP:  */
+  color: white;
+  padding: .175rem 1rem;
+  background: linear-gradient(to right, rgb(184,121,252), rgb(223,130,246));
+  border-radius: 16px;
+
+}
+
+#profile div.col-md-6 {
+  display: flex;
+  margin-bottom: .5rem;
+}
+
+/* {
+  border: 2px solid var(--secondary);
+  border-radius: 8px;
+  left: 1rem;
+  position: relative;
+  padding: 0 2px;
+  width: 46%;
+} */
+
+#profile div.col-md-6 span:last-child {
+  /* width: 100%; */
+  border-bottom: 2px dotted;
+  /* margin-bottom: .5rem; */
+  /* display: inline-block; */
+  flex-grow: 1;
+  text-align: center;
 }
 
 hr.style-eight {

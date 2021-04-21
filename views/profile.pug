@@ -95,34 +95,30 @@ block content
                 else
                   div.mr-2.my-auto(type="button" data-toggle="modal" data-target=`#${badge}Modal`)
                     img(src="/images/"+badge+".png" alt=badge style="width:auto;height:28px;")
-          hr.style-eight
+          //- hr.style-eight
+          br
           div#profile.row
             div.col.col-md-6
               span In-game Name
-              |
-              | #{profileInfo.name?profileInfo.name:"???"}
+              span= profileInfo.name?profileInfo.name:"???"
             div.col.col-md-6
               span Friend ID
-              |
-              | #{profileInfo.id?profileInfo.id:"???"}
+              span #{profileInfo.id?profileInfo.id:"???"}
             div.w-100.d-md-none.mb-0
             div.col.col-md-6
               span Entered RAD on
-              |
-              | #{profileInfo.joined?profileInfo.joined.toDateString().slice(4):"???"}
+              span #{profileInfo.joined?profileInfo.joined.toDateString().slice(4):"???"}
             - var lang = {"en": "English", "jp": "Japanese"}
             div.col-12.col-md-6
               span Language
-              |
-              | #{profileInfo.language?lang[profileInfo.language]:"???"}
+              span #{profileInfo.language?lang[profileInfo.language]:"???"}
             div.col-12
               span Favourite character(s)
-              |
-              |
-              if profileInfo.characters.length == 0
-                | ???
-              for character in profileInfo.characters
-                img(src="/images/faces/"+ character + ".png" style="width:32px;height:32px;")
+              div(style="border-radius:8px;border:2px solid var(--secondary);margin-top:.25rem;padding:.5rem;width:50%;")
+                if profileInfo.characters.length == 0
+                  | ???
+                for character in profileInfo.characters
+                  img(src="/images/faces/"+ character + ".png" style="width:32px;height:32px;")
     div#display.row
       div.col-12.col-md
         div.card.shadow.mb-3
