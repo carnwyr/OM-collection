@@ -100,3 +100,9 @@ footer ul {
   text-align: center;
   min-height: 256px;
 }
+
+@media (min-width: 768px) {
+  .navbar-nav.ml-auto>li>a {
+    color: var(--light) !important;
+  }
+}

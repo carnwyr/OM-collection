@@ -9,7 +9,7 @@ block content
   div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
 
   div(class="container")
-    h1= title
+    h1= t("cards."+title)
 
     if path === "collection"
       include statsboard.pug
@@ -19,12 +19,12 @@ block content
       div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
         div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
-            span(class="d-none d-sm-block") Go to Demon Cards
-            span(class="d-sm-none") Demon
+            span(class="d-none d-sm-block")= t("cards.demon_jump_L")
+            span(class="d-sm-none")= t("cards.demon_jump")
           div(style="border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem")
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoMemory" href="#memoryCards")
-            span(class="d-none d-sm-block") Go to Memory Cards
-            span(class="d-sm-none") Memory
+            span(class="d-none d-sm-block")= t("cards.memory_jump_L")
+            span(class="d-sm-none")= t("cards.memory_jump")
         div(class='d-lg-none' style='flex-basis: 100%; height: 0;')
         div(class="btn-group d-none mr-2" id="selectionButtons")
           button(class="btn btn-secondary mb-md-0" id="deselectAll") Deselect all
@@ -33,7 +33,10 @@ block content
           button(class="btn btn-primary mb-md-0" id="cancelManaging") Cancel
           button(class="btn btn-primary mb-md-0" id="saveManaging") Save
         if user && path === "list"
-          button(class="btn btn-primary btn-md mb-0" id="manageCollection") Manage Collection
+          button(class="btn btn-primary btn-md mb-0" id="manageCollection")
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square mb-1" viewBox="0 0 16 16">   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/> </svg>
+            |
+            | #{t("cards.manage_collection")}
 
     div(id="searchBar" class="row text-left mb-3")
       div(class="col-12")
@@ -117,7 +120,7 @@ block content
 
     div(class="row" id="demonCards")
       div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
+        h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper")= t("cards.demon_cards")
           |
           |
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
@@ -139,7 +142,7 @@ block content
 
     div(class="row" id="memoryCards")
       div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
+        h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper")= t("cards.memory_cards")
           |
           |
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>

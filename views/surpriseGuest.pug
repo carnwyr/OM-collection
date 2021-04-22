@@ -17,12 +17,12 @@ mixin getActions(step)
           - i++;
   else
     - var i = 0;
-    - options = '';
+    - var options = '';
     while i < step.length
       if i > 0
-        - options += '<br>';
+        - options += "<br>";
       - option = step[i].action + (step[i].part ? ' ' + step[i].part : '');
-      - option = option.charAt(0).toUpperCase() + option.slice(1);
+      - option = t(option.charAt(0).toUpperCase() + option.slice(1));
       - options += option;
       - i++;
     td.py-1.p-sm-3.px-0.d-none.d-sm-table-cell !{options}
@@ -46,13 +46,12 @@ block scripts
 
 block content
   .container
-    h1.d-none.d-sm-block Surprise Guest Interactions
-    h1.d-sm-none.text-center Surprise Guest
+    h1= t("spg")
     .row.mb-4
       //- settings
       .col-12
         .card.card-body.shadow.pb-2.pt-3
-          .lineHeader.h5.text-primary.mb-0 Settings
+          .lineHeader.h5.text-primary.mb-0= t("common.settings")
           #settings.mx-auto.collapse.hide.collapsed
             .custom-control.custom-radio.custom-control-inline
               input.custom-control-input(type="radio" id="shortActions" name="optionsSwitch")
@@ -75,7 +74,7 @@ block content
                 each interaction, i in interactions
                   a.px-1.px-sm-2.px-lg-3(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'Pill' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
                     img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='width:30px;')
-                    | #{interaction.chara}
+                    | #{t(interaction.chara)}
             .col-12.d-md-none.mb-3
               .nav.nav-pills.justify-content-center.small-nav(role='tablist')
                 each interaction, i in interactions
@@ -87,28 +86,25 @@ block content
                 each interaction, i in interactions
                   div(class="tab-pane fade"+(i===0?" show active":"") id=interaction.chara role='tabpanel' aria-labelledby=interaction.chara+'Pill')
                     each meet in interaction.interactions
+                      - if (t("lang") === "en") { var dialogue = meet.phrase; } else { var dialogue = meet.ja_phrase; }
                       table.table
                         thead
                           tr
                             th.bg-secondary.text-white.py-2.py-md-3.rounded(colspan='4')
                               .row.w-100.align-items-center.mx-0
-                                h5.col-10.text-left.px-0.mb-0.d-none.d-md-block
-                                  span.text-wrapper
-                                    | #{meet.phrase}
+                                h5.col-10.text-left.px-0.mb-0.d-none.d-md-block= dialogue
                                 .col-2.px-0.mb-0.d-none.d-md-flex.justify-content-end
                                   +getConditionImage(meet.condition)
                                 .col-12.mb-1.mt-0.d-flex.justify-content-center.d-md-none
                                   +getConditionImage(meet.condition)
-                                h6.col-12.text-center.px-0.mb-0.d-md-none
-                                  span.text-wrapper
-                                    | #{meet.phrase}
+                                h6.col-12.text-center.px-0.mb-0.d-md-none= dialogue
                         tbody
                           tr.text-primary
-                            each val, key in {'Action 1': 30, 'Action 2': 30, 'Action 3': 30, 'Points': 10}
-                              th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width: '+val+'%') #{key}
+                            each val, key in {'Action 1': 28, 'Action 2': 28, 'Action 3': 28, 'Points': 16}
+                              th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width:'+val+'%')= t(key)
                             each i in [1, 2, 3]
-                              th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%') Action #{i}
-                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 10%') Points
+                              th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%')= t("Action "+i)
+                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 10%')= t("Points")
                           tr.text-dark.moves
                             each step in ['first', 'second', 'third']
                               +getActions(meet.allInteractions[step])

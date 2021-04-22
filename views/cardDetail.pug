@@ -55,14 +55,14 @@ block content
       div(class="col-12 col-md-5 col-lg-4")
         div(class="card shadow")
           div.card-body
-            p #[strong Type:] #{card.type} card
-            p #[strong Rarity: ]
+            p #[strong #{t("cards.type")}:] #{t("cards."+card.type+" card")}
+            p #[strong #{t("cards.rarity")}: ]
               a(href="/cards?rarity="+card.rarity.replace('+', 'p'))= card.rarity
-            p #[strong Attribute: ]
-              a(href="/cards?attribute="+card.attribute)= card.attribute
-            p #[strong Character#{card.characters.length>1?'s':''}: ]
+            p #[strong #{t("cards.attribute")}: ]
+              a(href="/cards?attribute="+card.attribute)= t(card.attribute)
+            p #[strong #{card.characters.length>1?t("cards.characters"):t("cards.character")}: ]
               each val, index in card.characters
-                a(href="/cards?character="+(val==="Little D"?"LittleD":val))= val
+                a(href="/cards?character="+(val==="Little D"?"LittleD":val))= t(val)
                 if index < card.characters.length - 1
                   | ,
                   |

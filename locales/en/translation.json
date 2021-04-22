@@ -1,0 +1,37 @@
+{
+  "lang": "en",
+  "spg": "Surprise Guest",
+  "common": {
+    "home": "Home",
+    "gallery": "Gallery",
+    "my pages": "My Pages",
+    "cards": "Cards",
+    "favourites": "Favourites",
+    "profile": "Profile",
+    "rankings": "Rankings",
+    "tools": "Tools",
+    "spg": "Surprise Guest",
+    "register": "Sign up",
+    "login": "Login",
+    "logout": "Logout",
+    "settings": "Settings",
+    "account": "Account"
+  },
+  "cards": {
+    "Card Gallery": "Card Gallery",
+    "type": "Type",
+    "rarity": "Rarity",
+    "attribute": "Attribute",
+    "character": "Character",
+    "characters": "Characters",
+    "Demon card": "Demon card",
+    "demon_cards": "Demon Cards",
+    "Memory card": "Memory card",
+    "memory_cards": "Memory Cards",
+    "demon_jump_L": "Go to Demon Cards",
+    "memory_jump_L": "Go to Memory Cards",
+    "demon_jump": "Demon",
+    "memory_jump": "Memory",
+    "manage_collection": "Manage Collection"
+  }
+}
