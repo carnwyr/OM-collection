@@ -18,7 +18,7 @@
     "account": "Account"
   },
   "cards": {
-    "Card Gallery": "Card Gallery",
+    "title": "Card Gallery",
     "type": "Type",
     "rarity": "Rarity",
     "attribute": "Attribute",
@@ -32,6 +32,8 @@
     "memory_jump_L": "Go to Memory Cards",
     "demon_jump": "Demon",
     "memory_jump": "Memory",
-    "manage_collection": "Manage Collection"
+    "manage_collection": "Manage Collection",
+    "collected_count": "Collected by {{percentage}}% of users",
+    "favourite_count": "by {{percentage}}% of users"
   }
 }

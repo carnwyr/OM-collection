@@ -17,7 +17,7 @@
     "account": "アカウント"
   },
   "cards": {
-    "Card Gallery": "カード一覧",
+    "title": "カード一覧",
     "type": "種類",
     "rarity": "レアリティ",
     "attribute": "属性",

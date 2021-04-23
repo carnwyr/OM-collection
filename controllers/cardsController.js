@@ -5,12 +5,13 @@ const HiddenCards = require("../models/hiddenCards.js");
 const async = require("async");
 const fs = require("fs");
 const nodeHtmlToImage = require("node-html-to-image");
+const i18next = require("i18next");
 
 var usersController = require("../controllers/usersController");
 
 // Functions to render pages
 exports.index = function(req, res, next) {
-	res.render("index", {
+	return res.render("index", {
 		title: "Karasu OS",
 		description: "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation.",
 		user: req.user
@@ -21,8 +22,8 @@ exports.getCardsListPage = function(req, res, next) {
 	Cards.find({}, 'name uniqueName type rarity number attribute characters', function (err, cardsList) {
 		if (err) { return next(err); }
 		cardsList.sort(sortByRarityAndNumber);
-		res.render("cardsList", {
-			title: "Card Gallery", description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
+		return res.render("cardsList", {
+			title: i18next.t("cards.title"), description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
 			cardsList: cardsList, path: "list",
 			user: req.user
 		});

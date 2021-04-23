@@ -34,6 +34,9 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "pug");
+
 app.use(Sentry.Handlers.requestHandler());
 
 i18next
@@ -60,8 +63,17 @@ i18next
 
 app.use(i18nextMiddleware.handle(i18next));
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "pug");
+app.use(function (req, res, next) {
+	if (req.language !== i18next.t("lang")) {
+		i18next.changeLanguage(req.language, (err, t) => {
+	  	if (err) {
+				Sentry.captureException(e);
+				return console.error("Failed to switch i18n language", err);
+			}
+		});
+	}
+  next();
+});
 
 app.use(compression());
 app.use(logger("dev"));

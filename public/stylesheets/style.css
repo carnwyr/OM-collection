@@ -80,7 +80,7 @@ footer ul {
   height: 64px;
 }
 
-.collapser>.chevron{
+.collapser>.chevron {
   transition: all 300ms;
 }
 .collapser[aria-expanded="false"]>.chevron {
