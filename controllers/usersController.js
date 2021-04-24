@@ -186,7 +186,8 @@ exports.getCardCollection = function(username, collection) {
 			as: "cardData"
 		}},
 		{ $unwind: "$cardData" },
-		{ $replaceWith: "$cardData"}
+		{ $replaceWith: "$cardData"},
+    { $sort: { number : -1 } }
 	]);
 };
 
