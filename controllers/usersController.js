@@ -10,13 +10,13 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const { body, validationResult } = require("express-validator");
 const async = require("async");
-const nodemailer = require("nodemailer");
-const { google } = require("googleapis");
-const OAuth2 = google.auth.OAuth2;
-
-const OAuth2Client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET, "https://developers.google.com/oauthplayground");
 
 require("dotenv").config();
+
+const formData = require('form-data');
+const Mailgun = require('mailgun.js');
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({username: 'api', key: process.env.API_KEY});
 
 // Login and signup
 exports.getLoginPage = function(req, res, next) {
@@ -306,42 +306,12 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		await record.save();
 
-		OAuth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
-
-		try {
-			var accessToken = await new Promise((resolve, reject) => {
-	  			OAuth2Client.getAccessToken((err, token) => {
-	    			if (err) {
-	      				reject("Failed to create access token. Error " + err);
-	    			}
-	    			resolve(token);
-	  			});
-			});
-		} catch (err) {
-			console.error(err);
-		}
-
-		var transporter = nodemailer.createTransport({
-			host: 'smtp.gmail.com',
-			secure: true,
-			port: 465,
-			auth: {
-		        type: 'OAuth2',
-		        user: process.env.EMAIL,
-		        clientId: process.env.GMAIL_CLIENT_ID,
-		        clientSecret: process.env.GMAIL_CLIENT_SECRET,
-		        refreshToken: process.env.REFRESH_TOKEN,
-		        accessToken: accessToken
-			}
-		});
-		var mailOptions = {
-			from: process.env.EMAIL,
-			to: req.body.userData.email,
-			subject: 'Email confirmation',
+		await mg.messages.create('karasu-os.com', {
+		    from: "Karasu-OS <support@karasu-os.com>",
+		    to: [req.body.userData.email],
+		    subject: "Email confirmation",
 			text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
-		};
-
-		await transporter.sendMail(mailOptions);
+		});
 
 		return res.json({ err: false });
 	} catch (e) {
@@ -420,63 +390,31 @@ exports.restorePassword = function(req, res, next) {
 		}
 		var newPassword = cryptoRandomString({length: 8, type: 'alphanumeric'});
 
-		OAuth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
-
-		try {
-			var accessToken = await new Promise((resolve, reject) => {
-	  			OAuth2Client.getAccessToken((err, token) => {
-	    			if (err) {
-	      				reject("Failed to create access token. Error " + err);
-	    			}
-	    			resolve(token);
-	  			});
-			});
-		} catch (err) {
-			console.error(err);
-		}
-
-		var transporter = nodemailer.createTransport({
-			host: 'smtp.gmail.com',
-			secure: true,
-			port: 465,
-			auth: {
-		        type: 'OAuth2',
-		        user: process.env.EMAIL,
-		        clientId: process.env.GMAIL_CLIENT_ID,
-		        clientSecret: process.env.GMAIL_CLIENT_SECRET,
-		        refreshToken: process.env.REFRESH_TOKEN,
-		        accessToken: accessToken
-			}
-		});
-		var mailOptions = {
-			from: process.env.EMAIL,
-			to: req.body.email,
-			subject: 'Restore password',
+		mg.messages.create('karasu-os.com', {
+		    from: "Karasu-OS <support@karasu-os.com>",
+		    to: [req.body.email],
+		    subject: "Restore password",
 			text: "Username: " + user.info.name + "\nNew password: " + newPassword
-		};
-
-		transporter.sendMail(mailOptions, function(err, info){
-			if (err) {
-				return res.json({ err: true, message: err.message });
-			} else {
-				bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+		})
+		.then(result => {
+			bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+				if (err) {
+					return res.json({ err: true, message: err.message });
+				}
+				bcrypt.hash(newPassword, salt, function (err, hash) {
 					if (err) {
 						return res.json({ err: true, message: err.message });
 					}
-					bcrypt.hash(newPassword, salt, function (err, hash) {
+					var setPassword = Users.updateOne({"info.name": user.info.name}, {"info.password": hash}, (err) => {
 						if (err) {
 							return res.json({ err: true, message: err.message });
 						}
-						var setPassword = Users.updateOne({"info.name": user.info.name}, {"info.password": hash}, (err) => {
-							if (err) {
-								return res.json({ err: true, message: err.message });
-							}
-							return res.json({ err: false });
-						});
+						return res.json({ err: false });
 					});
 				});
-			}
-		});
+			});
+		})
+		.catch(err => { return res.json({ err: true, message: err.message });});
 	});
 };
 
