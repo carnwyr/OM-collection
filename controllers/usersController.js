@@ -16,11 +16,13 @@ const OAuth2 = google.auth.OAuth2;
 
 const OAuth2Client = new OAuth2(process.env.GMAIL_CLIENT_ID, process.env.GMAIL_CLIENT_SECRET, "https://developers.google.com/oauthplayground");
 
+const i18next = require("i18next");
+
 require("dotenv").config();
 
 // Login and signup
 exports.getLoginPage = function(req, res, next) {
-  res.render('login', { title: 'Login', message: req.flash('message'), user: req.user });
+  res.render('login', { title: i18next.t("common.login"), message: req.flash('message'), user: req.user });
 };
 
 exports.login = passport.authenticate('local', {
@@ -36,7 +38,7 @@ exports.logout = function(req, res) {
 };
 
 exports.getSignupPage = function(req, res, next) {
-  res.render('signup', { title: 'Signup', user: req.user });
+  res.render('signup', { title: i18next.t("common.signup"), user: req.user });
 };
 
 exports.signup = [

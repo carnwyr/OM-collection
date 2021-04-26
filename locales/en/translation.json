@@ -1,6 +1,5 @@
 {
   "lang": "en",
-  "spg": "Surprise Guest",
   "common": {
     "home": "Home",
     "gallery": "Gallery",
@@ -11,14 +10,13 @@
     "rankings": "Rankings",
     "tools": "Tools",
     "spg": "Surprise Guest",
-    "register": "Sign up",
+    "signup": "Sign up",
     "login": "Login",
     "logout": "Logout",
     "settings": "Settings",
     "account": "Account"
   },
   "cards": {
-    "title": "Card Gallery",
     "type": "Type",
     "rarity": "Rarity",
     "attribute": "Attribute",
@@ -33,7 +31,21 @@
     "demon_jump": "Demon",
     "memory_jump": "Memory",
     "manage_collection": "Manage Collection",
+    "select_all": "Select all",
+    "deselect_all": "Deselect all",
+    "cancel": "Cancel",
+    "save": "Save",
     "collected_count": "Collected by {{percentage}}% of users",
     "favourite_count": "by {{percentage}}% of users"
+  },
+  "title": {
+    "cards": "Card Gallery"
+  },
+  "user": {
+    "username": "Username",
+    "password": "Password",
+    "forgot_pass": "Forgot?",
+    "show_pass": "Show password",
+    "confirm_pass": "Confirm password"
   }
 }

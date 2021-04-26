@@ -23,7 +23,7 @@ exports.getCardsListPage = function(req, res, next) {
 		if (err) { return next(err); }
 		cardsList.sort(sortByRarityAndNumber);
 		return res.render("cardsList", {
-			title: i18next.t("cards.title"), description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
+			title: i18next.t("title.cards"), description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
 			cardsList: cardsList, path: "list",
 			user: req.user
 		});
@@ -77,9 +77,9 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 		};
 
 		if (req.user && req.user.name === username) {
-			var title = 'My Collection';
+			var title = i18next.t("title.my_collection");
 		} else {
-			var title = `${username}'s Collection`;
+			var title = i18next.t("title.user_collection", { username: username });
 		}
 
 		var ownedCards = await usersController.getCardCollection(username, "owned");
@@ -136,9 +136,9 @@ exports.getFavouritesPage = async function(req, res, next) {
 		}
 
 		if (req.user && req.user.name === username) {
-			var title = 'My Favourites';
+			var title = i18next.t("title.my_favourites");
 		} else {
-			var title = username + "'s Favourites";
+			var title = i18next.t("title.user_favourites");
 		}
 
 		var favedCards = await usersController.getCardCollection(username, "faved");

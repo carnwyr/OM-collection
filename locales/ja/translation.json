@@ -8,18 +8,17 @@
     "favourites": "お気に入り",
     "profile": "プロフィール",
     "rankings": "ランキング",
-    "tools": "Tools",
-    "spg": "反省会",
-    "register": "アカウントの登録",
+    "tools": "ツール",
+    "spg": "反省会攻略",
+    "signup": "アカウントの登録",
     "login": "ログイン",
     "logout": "ログアウト",
     "settings": "設定",
     "account": "アカウント"
   },
   "cards": {
-    "title": "カード一覧",
     "type": "種類",
-    "rarity": "レアリティ",
+    "rarity": "レア",
     "attribute": "属性",
     "character": "キャラ",
     "characters": "キャラ",
@@ -31,10 +30,30 @@
     "memory_jump_L": "メモリー",
     "demon_jump": "アクマ",
     "memory_jump": "メモリー",
-    "manage_collection": "アドレス帳を編集"
+    "manage_collection": "アドレス帳を編集",
+    "select_all": "一括選択",
+    "deselect_all": "選択クリア",
+    "cancel": "キャンセル",
+    "save": "保存する"
+  },
+  "title": {
+    "cards": "カード一覧",
+    "my_collection": "My Collection",
+    "user_collection": "{{username}}のアドレス帳",
+    "my_favourites": "Need",
+    "user_favourites": "{{username}} uh, missing"
+  },
+  "user": {
+    "username": "Karasu ID",
+    "password": "パスワード",
+    "forgot_pass": "アカウントを忘れた場合",
+    "show_pass": "パスワードを表示します",
+    "confirm_pass": "パスワードを認証する"
+  },
+  "error": {
+    "invalid_char": "Karasu IDに使用できるのは半角英数小文字と ._- のみです"
   },
 
-  "spg": "反省会攻略",
   "Action 1": "1回目",
   "Action 2": "2回目",
   "Action 3": "3回目",

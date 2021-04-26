@@ -55,7 +55,7 @@ html(lang="en")
           li(class="nav-item")
             a(class="nav-link" href='/rankings')= t("common.rankings")
           li(class="nav-item dropdown")
-            a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Tools
+            a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.tools")
             div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
               a(class="dropdown-item" href='/SurpriseGuest')= t("common.spg")
           if user && user.isAdmin
@@ -71,7 +71,7 @@ html(lang="en")
           div(class="dropdown-divider" style="opacity:32%;")
           if !user
             li(class="nav-item")
-              a(class="nav-link" href='/signup')= t("common.register")
+              a(class="nav-link" href='/signup')= t("common.signup")
             li(class="nav-item")
               a(class="nav-link" href='/login')= t("common.login")
           if user

@@ -65,11 +65,8 @@ app.use(i18nextMiddleware.handle(i18next));
 
 app.use(function (req, res, next) {
 	if (req.language !== i18next.t("lang")) {
-		i18next.changeLanguage(req.language, (err, t) => {
-	  	if (err) {
-				Sentry.captureException(e);
-				return console.error("Failed to switch i18n language", err);
-			}
+		i18next.changeLanguage(req.language, (e, t) => {
+	  	if (e) Sentry.captureException(e);
 		});
 	}
   next();

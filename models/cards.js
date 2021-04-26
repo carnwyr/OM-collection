@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 var CardsSchema = new Schema(
   {
     name: {type: String, required: true},
+    ja_name: { type: String },
     uniqueName: {type: String, required: true, unique: true},
     type: {type: String, required: true, enum: ['Demon', 'Memory']},
     rarity: {type: String, required: true, enum: ['N', 'R', 'SR', 'SSR', 'UR', 'UR+']},
