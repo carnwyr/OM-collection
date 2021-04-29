@@ -92,12 +92,12 @@ block content
                           tr
                             th.bg-secondary.text-white.py-2.py-md-3.rounded(colspan='4')
                               .row.w-100.align-items-center.mx-0
-                                h5.col-10.text-left.px-0.mb-0.d-none.d-md-block= dialogue
+                                h5.col-10.text-left.px-0.mb-0.d-none.d-md-block !{dialogue}
                                 .col-2.px-0.mb-0.d-none.d-md-flex.justify-content-end
                                   +getConditionImage(meet.condition)
                                 .col-12.mb-1.mt-0.d-flex.justify-content-center.d-md-none
                                   +getConditionImage(meet.condition)
-                                h6.col-12.text-center.px-0.mb-0.d-md-none= dialogue
+                                h6.col-12.text-center.px-0.mb-0.d-md-none !{dialogue}
                         tbody
                           tr.text-primary
                             each val, key in {'Action 1': 28, 'Action 2': 28, 'Action 3': 28, 'Points': 16}
