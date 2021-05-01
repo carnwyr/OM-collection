@@ -67,20 +67,21 @@ $(document).ready(function() {
 
 function fillRank(container) {
 	$('#'+container).find('.placeholder').remove();
-	var visibleCardsCount = $(`#${container}>.cardPreview:visible`).length;
-	var html;
+	var visibleCardsCount = $(`#${container}>.cardPreview`).filter(function() {
+		return $(this).css("display") !== "none";
+	}).length;
 
+	var html;
 	if (visibleCardsCount > 0) {
+		var currentCardsInRow = getRowCapacity();
+		if (visibleCardsCount % currentCardsInRow === 0) return;
+		var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow;
+
 		if (viewType == "icon") {
 			html = '<div class="invisible placeholder icon-container w-100 m-1"></div>';
 		} else {
 			html = '<div class="invisible placeholder full-container w-100 m-1"></div>';
 		}
-
-		var currentCardsInRow = getRowCapacity();
-
-		if (visibleCardsCount % currentCardsInRow === 0) { return; }
-		else { var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow; }
 
 		for (let i = 0; i < cardsToAdd; i++) {
 			$('#'+container).append(html);
@@ -127,6 +128,7 @@ function updateFilters(e) {
 			});
 		}
 	}
+	applyFilters();
 }
 
 async function applyFilters() {
@@ -161,7 +163,7 @@ async function applyFilters() {
 
 function getFiltersAsStrings() {
 	var filters = {};
-	$("form").each(function() {
+	$("#filters form").each(function() {
 		var formId = $(this).attr("id");
 		var param = formId.slice(0, -4);
 		var entries = "";
@@ -189,9 +191,9 @@ function getFiltersAsStrings() {
 	return filters;
 }
 
-var updateQuery = () => {
+function updateQuery() {
 	window.history.replaceState(null, null, `${window.location.pathname}${querystr.toString()===''?'':'?'+querystr.toString()}`);
-};
+}
 
 function updateCardDisplay(cards, view) {
 	$(".cardPreview").fadeOut(400).promise().done(function() {
@@ -282,10 +284,10 @@ function switchSelectionMode() {
 			url: '/collection/getOwnedCards',
 			cache: false
 		})
-		.done(function(cardNames){
+		.done(function(cardNames) {
 			selectionMode = true;
 			switchManagementButtons();
-			switchCardsSelection(cardNames)
+			switchCardsSelection(cardNames);
 		});
 	} else {
 		if (Object.keys(changedCards).length > 0) {
@@ -296,7 +298,7 @@ function switchSelectionMode() {
 				data: JSON.stringify({changedCards: changedCards, collection: "owned"}),
 				cache: false
 			})
-			.done(function(result){
+			.done(function(result) {
 				if (result.err) {
 					showAlert("div#failAlert", result.message);
 					return;
@@ -304,14 +306,14 @@ function switchSelectionMode() {
 				changedCards = {};
 				selectionMode = false;
 				switchManagementButtons();
-				switchCardsSelection()
-				showAlert("div#successAlert", "Collection modified successfully");
+				switchCardsSelection();
+				showAlert("div#successAlert", "Collection updated!");
 			});
 		} else {
 			changedCards = {};
 			selectionMode = false;
 			switchManagementButtons();
-			switchCardsSelection()
+			switchCardsSelection();
 		}
 	}
 }
@@ -321,8 +323,7 @@ function switchManagementButtons() {
 		$('button#manageCollection').addClass('d-none');
 		$('div#manageButtons').removeClass('d-none');
 		$('div#selectionButtons').removeClass('d-none');
-	}
-	else {
+	} else {
 		$('button#manageCollection').removeClass('d-none');
 		$('div#manageButtons').addClass('d-none');
 		$('div#selectionButtons').addClass('d-none');
@@ -336,9 +337,9 @@ function switchCardsSelection(cardNames) {
 
 	if (selectionMode) {
 		var selectOwnedCards = function(cardNames) {
-			$(".cardPreview").filter(function() {
-				return !cardNames.includes($(this).attr("href").replace("card/", ""));
-			}).find("img").addClass("notSelectedCard");
+			$('.cardPreview').filter(function() {
+				return !cardNames.includes($("img", this).attr('src').slice(16, -4));
+			}).find('img').addClass('notSelectedCard');
 		};
 		applyEffectWithoutTransition(invisibleCards, selectOwnedCards, cardNames);
 	} else {
@@ -366,13 +367,11 @@ function showAlert(alert, message) {
 }
 
 function cardClicked(e) {
-	if (!selectionMode)
-		return;
-	if (e)
-		e.preventDefault();
+	if (!selectionMode) return;
+	if (e) e.preventDefault();
 
 	var image = $(this).find('img');
-	var cardName = $(this).attr('href').replace('card/', '');
+	var cardName = $("img", this).attr('src').slice(16, -4);
 
 	if ($(image).hasClass('notSelectedCard')) {
 		$(image).removeClass('notSelectedCard');
@@ -393,8 +392,7 @@ function cardClicked(e) {
 
 function switchSelectionAll(select) {
 	var cardsToSwitch = $('.cardPreview:visible').filter(function() { return select === $(this).find('img').hasClass('notSelectedCard'); });
-	if (cardsToSwitch.length == 0)
-		return;
+	if (cardsToSwitch.length == 0) return;
 
 	var cardImages = $(cardsToSwitch).filter(function() {
 		return !$(this).isInViewport();
@@ -407,12 +405,12 @@ function switchSelectionAll(select) {
 	}
 
 	applyEffectWithoutTransition(cardImages, changeSelection);
-	addCardsToChangedList(cardsToSwitch, select)
+	addCardsToChangedList(cardsToSwitch, select);
 }
 
 function addCardsToChangedList(cardsToSwitch, select) {
 	var cardNames = [];
-	for (var i=0; typeof(cardsToSwitch[i])!='undefined'; cardNames.push(cardsToSwitch[i++].getAttribute('href').replace('card/', '')));
+	for (var i=0; typeof(cardsToSwitch[i])!='undefined'; cardNames.push(cardsToSwitch[i++].childNodes[0].getAttribute('src').slice(16, -4)));
 	for (const [key, value] of Object.entries(changedCards)) {
 		if (cardNames.includes(key)) {
 			delete changedCards[key];

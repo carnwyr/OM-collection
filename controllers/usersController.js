@@ -1,3 +1,6 @@
+const Sentry = require('@sentry/node');
+
+const createError = require("http-errors");
 const Users = require("../models/users.js");
 const Codes = require("../models/verificationCodes.js");
 
@@ -7,9 +10,13 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const { body, validationResult } = require("express-validator");
 const async = require("async");
-const nodemailer = require("nodemailer");
 
 require("dotenv").config();
+
+const formData = require('form-data');
+const Mailgun = require('mailgun.js');
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({username: 'api', key: process.env.API_KEY});
 
 // Login and signup
 exports.getLoginPage = function(req, res, next) {
@@ -60,31 +67,31 @@ exports.signup = [
 			return next(e);
 		}
 
-	    if (exists) {
-	      req.flash("message", "Username taken");
-	      res.render("signup", { title: "Signup", user: req.user });
-	    } else {
-	      bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
-	        if (err) return next(err);
-	        bcrypt.hash(req.body.password, salt, function(err, hash) {
-	          if (err) return next(err);
-	          var user = new Users({
-	            info: {
-	              name: req.body.username,
-	              password: hash,
-	              type: "User"
-	            }
-	          });
-	          user.save(function(err) {
-	            if (err) return next(err);
-	            req.login(user, function(err) {
-	              if (err) return next(err);
-	              res.redirect("/");
-	            });
-	          });
-	        });
-	      });
-	    }
+    if (exists) {
+      req.flash("message", "Username taken");
+      res.render("signup", { title: "Signup", user: req.user });
+    } else {
+      bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+        if (err) return next(err);
+        bcrypt.hash(req.body.password, salt, function(err, hash) {
+          if (err) return next(err);
+          var user = new Users({
+            info: {
+              name: req.body.username,
+              password: hash,
+              type: "User"
+            }
+          });
+          user.save(function(err) {
+            if (err) return next(err);
+            req.login(user, function(err) {
+              if (err) return next(err);
+              res.redirect("/");
+            });
+          });
+        });
+      });
+    }
 	}
 ];
 
@@ -112,7 +119,7 @@ exports.signupCheckUsername = async function(req, res) {
 // User checks
 exports.userExists = async function(username) {
 	var user = await Users.findOne({"info.name": { $regex : new RegExp('^' + username + '$', "i") } });
-	return user ? true : false;
+	return user ? user.info.name : false;
 };
 
 exports.isLoggedIn = function() {
@@ -161,13 +168,16 @@ exports.getOwnedCards = async function(req, res) {
 		res.send(ownedCards);
 	} catch (e) {
 		// TODO proper error handling
-		console.error(e);
+		// console.error(e);
+
+    Sentry.captureException(e);
+    return res.send([]);
 	}
 }
 
 exports.getCardCollection = function(username, collection) {
 	return Users.aggregate([
-		{ $match: { "info.name": username }},
+		{ $match: { "info.name": username } },
 		{ $unwind: `$cards.${collection}` },
 		{ $lookup: {
 			from: "cards",
@@ -176,7 +186,8 @@ exports.getCardCollection = function(username, collection) {
 			as: "cardData"
 		}},
 		{ $unwind: "$cardData" },
-		{ $replaceWith: "$cardData"}
+		{ $replaceWith: "$cardData"},
+    { $sort: { number : -1 } }
 	]);
 };
 
@@ -276,10 +287,10 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		var user = await Users.findOne({ "info.name": req.params.name });
 		if (!user) {
-			throw "No such user";
+			throw "User not found";
 		}
 
-		var correctPassword = await bcrypt.compare(req.body.userData.password, user.password);
+		var correctPassword = await bcrypt.compare(req.body.userData.password, user.info.password);
 		if (!correctPassword) {
 			throw "Wrong password";
 		}
@@ -295,27 +306,21 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		await record.save();
 
-		var transporter = nodemailer.createTransport({
-			host: 'smtp.gmail.com',
-			secure: true,
-			port: 465,
-			auth: {
-				user: process.env.EMAIL,
-				pass: process.env.EMAIL_PASSWORD
-			}
-		});
-		var mailOptions = {
-			from: process.env.EMAIL,
-			to: req.body.userData.email,
-			subject: 'Email confirmation',
+		await mg.messages.create('karasu-os.com', {
+		    from: "Karasu-OS <support@karasu-os.com>",
+		    to: [req.body.userData.email],
+		    subject: "Email confirmation",
 			text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
-		};
-
-		await transporter.sendMail(mailOptions);
+		});
 
 		return res.json({ err: false });
 	} catch (e) {
-		return res.json({ err: true, message: e });
+    if (!["Email taken", "User not found", "Wrong password"].includes(e)) {
+      Sentry.captureException(e);
+    }
+
+    // return res.json({ err: true, message: e });
+    return res.json({ err: true, message: "An error occurred. We're trying to fix it!" });
 	}
 };
 
@@ -328,7 +333,7 @@ exports.verifyEmail = function(req, res, next) {
 			var err = new Error('Invalid link');
 			return next(err);
 		}
-		var setEmail = Users.updateOne({"info.name": req.user.name}, {email: record.email}, (err) => {
+		var setEmail = Users.updateOne({"info.name": req.user.name}, {"info.email": record.email}, (err) => {
 			if (err) {
 				return next(err);
 			}
@@ -346,7 +351,7 @@ exports.changePassword = function(req, res, next) {
 			var err = new Error('No such user');
 			return res.json({ err: true, message: err.message });
 		}
-		bcrypt.compare(req.body.passwordData.old, user.password, function (err, result) {
+		bcrypt.compare(req.body.passwordData.old, user.info.password, function (err, result) {
 			if (err) {
 				return res.json({ err: true, message: err.message });
 			}
@@ -362,7 +367,7 @@ exports.changePassword = function(req, res, next) {
 					if (err) {
 						return res.json({ err: true, message: err.message });
 					}
-					var setPassword = Users.updateOne({"info.name": req.params.name}, {password: hash}, (err) => {
+					var setPassword = Users.updateOne({"info.name": req.params.name}, {"info.password": hash}, (err) => {
 						if (err) {
 							return res.json({ err: true, message: err.message });
 						}
@@ -375,7 +380,7 @@ exports.changePassword = function(req, res, next) {
 };
 
 exports.restorePassword = function(req, res, next) {
-	Users.findOne({ email: req.body.email }, function (err, user) {
+	Users.findOne({ "info.email": req.body.email }, async function (err, user) {
 		if (err) {
 			return res.json({ err: true, message: err.message });
 		}
@@ -384,43 +389,32 @@ exports.restorePassword = function(req, res, next) {
 			return res.json({ err: true, message: err.message });
 		}
 		var newPassword = cryptoRandomString({length: 8, type: 'alphanumeric'});
-		var transporter = nodemailer.createTransport({
-			host: 'smtp.gmail.com',
-			secure: true,
-			port: 465,
-			auth: {
-				user: process.env.EMAIL,
-				pass: process.env.EMAIL_PASSWORD
-			}
-		});
-		var mailOptions = {
-			from: process.env.EMAIL,
-			to: req.body.email,
-			subject: 'Restore password',
+
+		mg.messages.create('karasu-os.com', {
+		    from: "Karasu-OS <support@karasu-os.com>",
+		    to: [req.body.email],
+		    subject: "Restore password",
 			text: "Username: " + user.info.name + "\nNew password: " + newPassword
-		};
-		transporter.sendMail(mailOptions, function(err, info){
-			if (err) {
-				return res.json({ err: true, message: err.message });
-			} else {
-				bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+		})
+		.then(result => {
+			bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+				if (err) {
+					return res.json({ err: true, message: err.message });
+				}
+				bcrypt.hash(newPassword, salt, function (err, hash) {
 					if (err) {
 						return res.json({ err: true, message: err.message });
 					}
-					bcrypt.hash(newPassword, salt, function (err, hash) {
+					var setPassword = Users.updateOne({"info.name": user.info.name}, {"info.password": hash}, (err) => {
 						if (err) {
 							return res.json({ err: true, message: err.message });
 						}
-						var setPassword = Users.updateOne({"info.name": user.name}, {password: hash}, (err) => {
-							if (err) {
-								return res.json({ err: true, message: err.message });
-							}
-							return res.json({ err: false });
-						});
+						return res.json({ err: false });
 					});
 				});
-			}
-		});
+			});
+		})
+		.catch(err => { return res.json({ err: true, message: err.message });});
 	});
 };
 
@@ -500,31 +494,35 @@ exports.getUserListPage = async function(req, res) {
 };
 
 exports.getRankingsPage = async function(req, res, next) {
-	try {
-		var cards = await Users.aggregate([
-			{ $unwind: "$cards.faved" },
-			{ $group: { _id: "$cards.faved", total: { $sum: 1 } } },
-			{ $sort: { total: -1 } },
-			{ $limit: 10 },
-			{
-				$lookup: {
-					from: "cards",
-					localField: "_id",
-					foreignField: "uniqueName",
-					as: "cardData"
-				}
-			},
-			{ $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
-			{ $set: { name: "$name.name" } },
-			{ $unset: ["cardData"] }
-		]);
-		res.render("rankings", { title: "Rankings", description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
-	} catch (e) {
-		return next(e);
-	}
+  try {
+    var cards = await Users.aggregate([
+      { $unwind: "$cards.faved" },
+      { $group: { _id: "$cards.faved", total: { $sum: 1 } } },
+      { $sort: { total: -1, _id: 1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: "cards",
+          localField: "_id",
+          foreignField: "uniqueName",
+          as: "cardData"
+        }
+      },
+      { $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
+      { $set: { name: "$name.name" } },
+      { $unset: ["cardData"] }
+    ]);
+    res.render("rankings", { title: "Rankings", description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
+  } catch (e) {
+    return next(e);
+  }
 };
 
 exports.renameCardInCollections = function(oldName, newName) {
+	if (oldName === newName) {
+		return Promise.resolve(true);
+	}
+
 	var promiseFaved = Users.updateMany(
 		{ $or: [{ "cards.owned": oldName }, { "cards.faved": oldName }]},
 		{ $push: { "cards.owned": newName, "cards.faved": newName }});
@@ -551,7 +549,7 @@ exports.getUserBadges = async function(username) {
 // Authentication
 passport.use(new LocalStrategy({ passReqToCallback : true },
 	function(req, username, password, next) {
-		Users.findOne({ "info.name": { $regex : new RegExp('^' + username + '$', "i") }}, function (err, user) {
+		Users.findOne({ "info.name": { $regex : new RegExp('^' + username + '$', "i") } }, function (err, user) {
 			if (err) { return next(err) }
 			if (!user) {
 				return next(null, false, req.flash('message', 'No such user'))

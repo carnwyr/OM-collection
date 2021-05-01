@@ -14,10 +14,22 @@ $(document).ready(function(){
 		$("#cookieToast").toast("hide");
 	});
 
+	/***/
+	if (!document.cookie.split('; ').find(row => row.startsWith("announcementToast"))) {
+		$("#announcementToast").removeClass("d-none").toast("show");
+	}
+	$("#announcementToast .close, #announcementToast a").on("click", () => {
+		document.cookie = "announcementToast=true; expires=" + cookieExpiryDate() + ";";
+		$("#announcementToast").toast("hide");
+	});
+	/***/
+
 	$('.navbar .dropdown').hover(function() {
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+		$(this).delay(250).addClass('show');
 	}, function() {
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
+		$(this).delay(100).removeClass('show');
 	});
 
 	$("#b2t").on('click', () => { $('html, body').animate({scrollTop:0}, 500); });
@@ -29,9 +41,8 @@ $(document).on("adBlocked", () => { adBlock = true; });
 
 $(window).on("load", () => {
 	if (adBlock === true) {
-		if (window.location.pathname !== "/") {
-			$(".ad-container").append(`<div class="card"><div class="card-body col-md-8 mx-auto my-4"><h5 class="card-title">Using an ad-blocker?</h5><p class="card-text">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.</p><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></div></div>`);
-		}
+		$(".ddd>.row").hide();
+		$(".ddd").append(`<div class="card"><div class="card-body col-md-8 mx-auto my-4"><h5 class="card-title">Using an ad-blocker?</h5><p class="card-text">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.</p><a class="btn supportBtn" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank">&#x1F608 Donate now</a></div></div>`);
 	} else {
 		$("[data-target='#removeAdsModal']").show();
 	}
