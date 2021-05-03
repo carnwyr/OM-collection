@@ -23,7 +23,8 @@ exports.surpriseGuest = function(req, res, next) {
 		if (err) { return next(err); }
 		interactions.forEach(function(obj) {
 			obj.interactions = interactionList.filter(int => int.character === obj.chara);
-			obj.interactions.sort((a, b) => a.order - b.order);
+      // TODO: 
+      // obj.interactions.sort((a, b) => a.order - b.order);
 		});
     res.render('surpriseGuest', { title: 'Surprise Guest', description: "An all-in-one master guide for Obey Me surprise guest interactions, including the demon brothers and side characters.", user: req.user, interactions: interactions });
 	});

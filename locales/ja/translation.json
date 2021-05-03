@@ -34,14 +34,19 @@
     "select_all": "一括選択",
     "deselect_all": "選択クリア",
     "cancel": "キャンセル",
-    "save": "保存する"
+    "save": "保存する",
+    "reset": "リセット",
+    "filters": "表示条件",
+    "owned": "所持",
+    "not_owned": "未所持",
+    "search": "カードを検索"
   },
   "title": {
     "cards": "カード一覧",
-    "my_collection": "My Collection",
+    "my_collection": "アドレス帳",
     "user_collection": "{{username}}のアドレス帳",
-    "my_favourites": "Need",
-    "user_favourites": "{{username}} uh, missing"
+    "my_favourites": "お気に入り",
+    "user_favourites": "{{username}}のお気に入り"
   },
   "user": {
     "username": "Karasu ID",
@@ -50,8 +55,16 @@
     "show_pass": "パスワードを表示します",
     "confirm_pass": "パスワードを認証する"
   },
+  "spg": {
+    "shortActions": "アクションを１つだけ表示",
+    "allActions": "全アクションを表示",
+    "use_item": "アイテムを使う"
+  },
   "error": {
     "invalid_char": "Karasu IDに使用できるのは半角英数小文字と ._- のみです"
+  },
+  "temp": {
+    "cards": "カード"
   },
 
   "Action 1": "1回目",

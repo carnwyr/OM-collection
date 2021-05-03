@@ -123,6 +123,7 @@ function sendCardData(images) {
   var cardData = {
     name: $('#name').val(),
     uniqueName: $('#uniqueName').val(),
+    ja_name: $("#ja_name").val(),
     type: $('#type').val(),
     rarity: $('#rarity').val(),
     attribute: $('#attribute').val(),

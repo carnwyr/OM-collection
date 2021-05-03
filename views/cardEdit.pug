@@ -22,6 +22,9 @@ block content
 					input(class='form-control' type="text" id="uniqueName" name="uniqueName" value=card?card.uniqueName:'')
 					small(class='form-text text-muted') Must use underscore instead of spaces, can't use \/:*?"<>|
 				div(class='form-group')
+					label(for="ja_name") Japanese Name
+					input(class='form-control' type="text" id="ja_name" name="ja_name" value=card?card.ja_name:'???')
+				div(class='form-group')
 					label(for="type") Type
 					select(class='custom-select' id="type" name="type")
 						option(value='Demon' selected=(card?card.type==='Demon':true)) Demon

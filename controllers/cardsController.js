@@ -134,7 +134,7 @@ exports.getFavouritesPage = async function(req, res, next) {
 		if (req.user && req.user.name === username) {
 			var title = i18next.t("title.my_favourites");
 		} else {
-			var title = i18next.t("title.user_favourites");
+			var title = i18next.t("title.user_favourites", { username: username });
 		}
 
 		var favedCards = await usersController.getCardCollection(username, "faved");

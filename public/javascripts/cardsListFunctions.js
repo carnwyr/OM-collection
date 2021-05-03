@@ -45,7 +45,6 @@ $(document).ready(function() {
 	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
-	$('#filterBtn').on('click', function() { $(this).text($(this).text() === "Filters" ? "Hide filters" : "Filters"); })
 
 	$("#shareCollection").on("click", () => { $("#userLink").val(window.location.href); });
 	$("#copyLink").on("click", copyCollectionLink);

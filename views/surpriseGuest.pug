@@ -55,13 +55,13 @@ block content
           #settings.mx-auto.collapse.hide.collapsed
             .custom-control.custom-radio.custom-control-inline
               input.custom-control-input(type="radio" id="shortActions" name="optionsSwitch")
-              label.custom-control-label(for="shortActions") Show one option for each action
+              label.custom-control-label(for="shortActions")= t("spg.shortActions")
             .custom-control.custom-radio.custom-control-inline
               input.custom-control-input(type="radio" id="allActions" name="optionsSwitch")
-              label.custom-control-label(for="allActions") Show alternative options
+              label.custom-control-label(for="allActions")= t("spg.allActions")
             .custom-control.custom-checkbox.mt-2.mb-1.text-md-center
               input.custom-control-input(type="checkbox" id="useItems")
-              label.custom-control-label(for="useItems") Use items
+              label.custom-control-label(for="useItems")= t("spg.use_item")
           a(class="text-center text-secondary collapser" id="settingsCollapser" data-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings")
             |
             |

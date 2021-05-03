@@ -36,10 +36,19 @@
     "cancel": "Cancel",
     "save": "Save",
     "collected_count": "Collected by {{percentage}}% of users",
-    "favourite_count": "by {{percentage}}% of users"
+    "favourite_count": "by {{percentage}}% of users",
+    "reset": "Reset filters",
+    "filters": "Filters",
+    "owned": "Owned",
+    "not_owned": "Not owned",
+    "search": "Search for card name..."
   },
   "title": {
-    "cards": "Card Gallery"
+    "cards": "Card Gallery",
+    "my_collection": "My Collection",
+    "user_collection": "{{username}}'s Collection",
+    "my_favourites": "My Favourites",
+    "user_favourites": "{{username}}'s Favourites"
   },
   "user": {
     "username": "Username",
@@ -47,5 +56,34 @@
     "forgot_pass": "Forgot?",
     "show_pass": "Show password",
     "confirm_pass": "Confirm password"
-  }
+  },
+  "spg": {
+    "shortActions": "Show one option for each action",
+    "allActions": "Show alternative options",
+    "use_item": "Use items"
+  },
+  "temp": {
+    "cards": "Cards"
+  },
+
+  "Pride": "Pride",
+  "Greed": "Greed",
+  "Envy": "Envy",
+  "Wrath": "Wrath",
+  "Lust": "Lust",
+  "Gluttony": "Gluttony",
+  "Sloth": "Sloth",
+  "Lucifer": "Lucifer",
+  "Mammon": "Mammon",
+  "Leviathan": "Leviathan",
+  "Satan": "Satan",
+  "Asmodeus": "Asmodeus",
+  "Beelzebub": "Beelzebub",
+  "Belphegor": "Belphegor",
+  "Diavolo": "Diavolo",
+  "Barbatos": "Barbatos",
+  "Simeon": "Simeon",
+  "Luke": "Luke",
+  "Solomon": "Solomon",
+  "Little D": "Little D"
 }

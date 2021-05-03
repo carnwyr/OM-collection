@@ -27,11 +27,11 @@ block content
             span(class="d-sm-none")= t("cards.memory_jump")
         div(class='d-lg-none' style='flex-basis: 100%; height: 0;')
         div(class="btn-group d-none mr-2" id="selectionButtons")
-          button(class="btn btn-secondary mb-md-0" id="deselectAll") Deselect all
-          button(class="btn btn-secondary mb-md-0" id="selectAll") Select all
+          button(class="btn btn-secondary mb-md-0" id="deselectAll")= t("cards.deselect_all")
+          button(class="btn btn-secondary mb-md-0" id="selectAll")= t("cards.select_all")
         div(class="btn-group d-none" id="manageButtons")
-          button(class="btn btn-primary mb-md-0" id="cancelManaging") Cancel
-          button(class="btn btn-primary mb-md-0" id="saveManaging") Save
+          button(class="btn btn-primary mb-md-0" id="cancelManaging")= t("cards.cancel")
+          button(class="btn btn-primary mb-md-0" id="saveManaging")= t("cards.save")
         if user && path === "list"
           button(class="btn btn-primary btn-md mb-0" id="manageCollection")
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square mb-1" viewBox="0 0 16 16">   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/> </svg>
@@ -53,19 +53,22 @@ block content
               span.font-weight-normal Full bloomed view
         form(id="searchForm" class="col-md-auto flex-grow-1 px-2 mb-3 mb-md-0")
           div(class="input-group rounded-pill" style="background-color:rgba(219,158,251,0.2)")
-            div(class="input-group-text border-0 bg-transparent text-primary" style="z-index: 3;")
+            div(class="input-group-text border-0 bg-transparent text-primary" style="z-index:3;")
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
-            input(type="text" class="form-control border-0 text-primary bg-transparent pl-0" id="nameFilter" placeholder="Search for card name...")
-        button(id="filterBtn" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters" style="width:104px;") Filters
+            input(type="text" class="form-control border-0 text-primary bg-transparent pl-0" id="nameFilter" placeholder=t("cards.search"))
+        button(id="filterBtn" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters" style="padding:0 1.25rem")
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16" style="margin-bottom:.125rem">   <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/> </svg>
+          |
+          | #{t("cards.filters")}
 
     div(id="filters" class="collapse rounded shadow")
       div(class="card card-body" style="border-left:4px solid var(--secondary);")
-        div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;") Filters
-        div#resetFilters.text-right.text-black-50.mb-2(style="margin-top:-1.25rem;")
-          a(type="button") Reset filters
+        div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;")= t("cards.filters")
+        div#resetFilters.text-right.text-black-50.mb-2(style="margin-top:-.8rem;")
+          a(type="button")= t("cards.reset")
         if path === "list"
-          div.row.d-flex
-            p.col-md-1.mb-md-0 Cards
+          div.row
+            p.col-12.col-lg-1.mb-lg-0= t("temp.cards")
             div.col
               ul#cardsfilter
                 li(class="custom-control custom-radio")
@@ -73,58 +76,55 @@ block content
                   label(class="custom-control-label" for="checkCardsAll") All
                 li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
                   input(type="radio" class="custom-control-input" id="checkCardsOwned" name="cards" disabled=(user?false:true))
-                  label(class="custom-control-label" for="checkCardsOwned") Owned
+                  label(class="custom-control-label" for="checkCardsOwned")= t("cards.owned")
                 li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
                   input(type="radio" class="custom-control-input" id="checkCardsNotOwned" name="cards" disabled=(user?false:true))
-                  label(class="custom-control-label" for="checkCardsNotOwned") Not Owned
+                  label(class="custom-control-label" for="checkCardsNotOwned")= t("cards.not_owned")
                 if !user
                   li
-                    a(href="/signup") Register
+                    a(href="/signup")= t("common.signup")
                     |
                     |
                     span.text-dark /
                     |
                     |
-                    a(href="/login") Login
+                    a(href="/login")= t("common.login")
           hr
         div.row
           div.col-sm-12.col-md-6
-            p Rarity
+            p= t("cards.rarity")
             form#rarityForm
               ul
                 li(class="custom-control custom-radio")
                   input(type="radio" class="custom-control-input" id="checkRarityAll" name="rarity")
                   label(class="custom-control-label" for="checkRarityAll") All
-                - var rarities = ["N", "R", "SR", "SSR", "UR", "URp"]
-                each rarity in rarities
+                each rarity in ["N", "R", "SR", "SSR", "UR", "URp"]
                   li(class="custom-control custom-checkbox")
                     input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name="rarity" value=rarity)
                     label(class="custom-control-label" for="checkRarity"+rarity)= rarity==="URp"?"UR+":rarity
             hr
-            p Attribute
+            p= t("cards.attribute")
             form#attributeForm
               ul
                 li(class="custom-control custom-radio")
                   input(type="radio" class="custom-control-input" id="checkAttributeAll" name="attribute")
                   label(class="custom-control-label" for="checkAttributeAll") All
-                - var attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
-                each attribute in attributes
+                each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
                   li(class="custom-control custom-checkbox")
                     input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name="attribute" value=attribute)
-                    label(class="custom-control-label" for="checkAttribute"+attribute)= attribute
+                    label(class="custom-control-label" for="checkAttribute"+attribute)= t(attribute)
             hr.d-md-none
           div#characterFilters.col
-            p Character
+            p= t("cards.character")
             form#characterForm
               ul
                 li(class="custom-control custom-radio")
                   input(type="radio" class="custom-control-input" id="checkCharacterAll" name="character")
                   label(class="custom-control-label" for="checkCharacterAll") All
-                - var characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
-                each character in characters
+                each character in ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
                   li(class="custom-control custom-checkbox")
                     input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name="character" value=character)
-                    label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?"Little D":character
+                    label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?t("Little D"):t(character)
 
     div(class="row mt-4" id="demonCards")
       div(class="col-12")
@@ -139,7 +139,7 @@ block content
             if card.type == "Demon"
               a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                figcaption #{card.name}
+                figcaption= getDisplayName(card)
 
     if (!user || !user.supportStatus.includes("adfree"))
       div.container.ddd
@@ -161,4 +161,13 @@ block content
             if card.type == "Memory"
               a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                figcaption #{card.name}
+                figcaption= getDisplayName(card)
+
+  -
+    function getDisplayName(card) {
+      if (t("lang") === "en") {
+        return card.name;
+      } else {
+        return card.ja_name;
+      }
+    }
