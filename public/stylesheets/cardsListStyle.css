@@ -45,11 +45,8 @@ img.lazy {
   }
 }
 @media screen and (max-width: 768px) {
-  #actionButtons .btn-lg {
-    font-size: 1rem !important;
-    /*height: 20px !important;*/
-  }
-  #actionButtons .btn-primary, .btn-secondary {
+  #actionButtons .btn-primary,
+  #actionButtons .btn-secondary {
     font-size:80%;
   }
 }
@@ -59,26 +56,16 @@ img.lazy {
   -o-transition: none !important;
   transition: none !important;
 }
-#nameFilter {
-  height: 30px;
-  margin: 0px;
-  background-color: #f0e1fc;
+#nameFilter, #filterBtn {
+  height: 32px;
 }
 #nameFilter::placeholder {
   color: var(--secondary);
 }
-#nameFilter:focus {
-  outline: none;
-  box-shadow: none;
-}
+#nameFilter:focus,
 #gotoDemon:focus, #gotoMemory:focus {
   outline: none;
   box-shadow: none;
-}
-#filters .card-header {
-  background-color: white;
-  font-weight: bold;
-  color: #8d6fe2;
 }
 
 /*stat progress bars*/
@@ -141,12 +128,49 @@ img.lazy {
 }
 @media screen and (min-width: 720px) {
   #viewMenuDropdown {
-    border-bottom: 2px rgba(219, 158, 251, .75) solid;
+    border-bottom: 2px solid rgba(219, 158, 251, .75);
   }
 }
 #viewMenuDropdown:focus {
   outline: none;
   box-shadow: none;
+}
+
+#filters ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#filters li {
+  float: left;
+}
+
+#rarityForm li {
+  width: 4rem;
+}
+
+#attributeForm li {
+  width: 6rem;
+}
+
+#characterForm li {
+  width: 8rem;
+}
+
+#cardsfilter li {
+  margin-right: 2rem;
+}
+
+@media screen and (min-width: 768px) {
+  #characterFilters {
+    border-left: 1px solid rgba(0,0,0,.1);
+  }
+
+  #resetFilters {
+    margin-top: -.75rem !important;
+  }
 }
 
 a>figcaption {
