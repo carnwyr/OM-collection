@@ -39,19 +39,9 @@ function updateCollection() {
       } else {
         $(".favedCount").text("by "+data.updatedVal+"% of users");
       }
-      $("div#successAlert").html(data.message);
-      showAlert("div#successAlert");
+      showAlert("success", data.message);
     } else {
-      showAlert("div#failAlert");
+      showAlert("warning", "Something went wrong :(");
     }
   });
-}
-
-function showAlert(alert) {
-  $(alert).show().animate({ top: 65 }, 500);
-  setTimeout(function() {
-    $(alert).animate({ top: -100 }, 500).promise().done(function() {
-      $(alert).hide();
-    });
-  }, 3600);
 }

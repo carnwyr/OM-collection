@@ -308,12 +308,12 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		await record.save();
 
-		await mg.messages.create('karasu-os.com', {
-		    from: "Karasu-OS <support@karasu-os.com>",
-		    to: [req.body.userData.email],
-		    subject: "Email confirmation",
-			text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
-		});
+    await mg.messages.create('karasu-os.com', {
+      from: "Karasu-OS <support@karasu-os.com>",
+      to: [req.body.userData.email],
+      subject: "Email Confirmation",
+      text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
+    });
 
 		return res.json({ err: false });
 	} catch (e) {
@@ -321,8 +321,8 @@ exports.sendVerificationEmail = async function(req, res, next) {
       Sentry.captureException(e);
     }
 
-    // return res.json({ err: true, message: e });
-    return res.json({ err: true, message: "An error occurred. We're trying to fix it!" });
+    return res.json({ err: true, message: e });
+    // return res.json({ err: true, message: "An error occurred. We're trying to fix it!" });
 	}
 };
 

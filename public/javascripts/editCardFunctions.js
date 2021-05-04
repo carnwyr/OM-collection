@@ -54,11 +54,11 @@ function saveChanges(e) {
 function validateFields() {
   var uniqueName = $('#uniqueName').val();
   if (/[\\/:*?"<>| ]/.test(uniqueName)) {
-    showAlert(false, 'Invalid unique name');
+    showAlert("warning", 'Invalid unique name');
     return false;
   }
   if (!$('#name').val() || !uniqueName) {
-    showAlert(false, 'Name and unique name must be filled');
+    showAlert("warning", 'Name and unique name must be filled');
     return false;
   }
   var images = $('.upload');
@@ -68,21 +68,12 @@ function validateFields() {
       let parts = fileName.split('.');
       let extension = parts[parts.length - 1];
       if (extension !== 'jpg') {
-        showAlert(false, 'All uploaded images must be jpg');
+        showAlert("warning", 'All uploaded images must be jpg');
         return false;
       }
     }
   }
   return true;
-}
-
-function showAlert(isSuccess, message) {
-  var alert = isSuccess ? '#successAlert' : '#failAlert';
-  $(alert).html(message);
-  $(alert).show().animate({top: 65}, 500);
-  setTimeout(function () {
-    $(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
-  }, 5000);
 }
 
 function updateCard() {
@@ -97,7 +88,7 @@ function updateCard() {
     if (values[2]) images.S = values[2];
     sendCardData(images);
   }, reason => {
-    showAlert(false, "Can't load images\n" + reason.message);
+    showAlert("warning", "Can't load images\n" + reason.message);
   });
 }
 
@@ -142,9 +133,9 @@ function sendCardData(images) {
   })
   .done(function(result) {
     if (result.err) {
-      showAlert(false, result.message);
+      showAlert("warning", result.message);
       return;
     }
-    showAlert(true, 'Card successfully updated!');
+    showAlert("success", 'Card successfully updated!');
   });
 }
