@@ -59,14 +59,15 @@ block content
           |
           | #{t("cards.filters")}
 
-    div(id="filters" class="collapse rounded shadow")
+    div(id="filters" class="collapse shadow")
       div(class="card card-body" style="border-left:4px solid var(--secondary);")
         div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;")= t("cards.filters")
         div#resetFilters.text-right.text-black-50.mb-2(style="margin-top:-.8rem;")
           a(type="button")= t("cards.reset")
         if path === "list"
           div.row
-            p.col-12.col-lg-1.mb-lg-0= t("temp.cards")
+            // add margin to align with rest of filters
+            p.col-12.col-lg-1.mb-lg-0(style="margin-left:5px")= t("temp.cards")
             div.col
               ul#cardsfilter
                 li(class="custom-control custom-radio")
@@ -88,7 +89,7 @@ block content
                     |
                     a(href="/login")= t("common.login")
           hr
-        div.row
+        div#general.row
           div.col-sm-12.col-md-6
             p= t("cards.rarity")
             form#rarityForm
@@ -124,7 +125,7 @@ block content
                     input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name="character" value=character)
                     label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?t("Little D"):t(character)
 
-    div(class="row mt-4" id="demonCards")
+    div(class="row pt-3" id="demonCards")
       div(class="col-12")
         h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper")= t("cards.demon_cards")
           |

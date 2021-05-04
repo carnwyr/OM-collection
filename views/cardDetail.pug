@@ -54,7 +54,7 @@ block content
       div(class="col-12 col-md-5 col-lg-4")
         div(class="card shadow")
           div.card-body
-            p #[strong #{t("cards.type")}:] #{t("cards."+card.type+" card")}
+            p #[strong #{t("cards.type")}:] #{t("cards."+card.type)}
             p #[strong #{t("cards.rarity")}: ]
               a(href="/cards?rarity="+card.rarity.replace('+', 'p'))= card.rarity
             p #[strong #{t("cards.attribute")}: ]

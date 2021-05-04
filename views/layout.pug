@@ -48,7 +48,7 @@ html(lang="en")
             a(class="nav-link" href='/cards')= t("common.gallery")
           if user
             li(class="nav-item dropdown")
-              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Collections
+              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")= t("temp.my_collection")
               div(class="dropdown-menu shadow px-2" aria-labelledby="collectionDropdown")
                 a(class="dropdown-item" href='/' + user.name + '/collection')= t("common.cards")
                 a(class="dropdown-item" href='/' + user.name + '/favourites')= t("common.favourites")

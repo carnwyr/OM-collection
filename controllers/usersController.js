@@ -511,10 +511,10 @@ exports.getRankingsPage = async function(req, res, next) {
         }
       },
       { $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
-      { $set: { name: "$name.name" } },
+      { $set: { name: "$name.name", ja_name: "$name.ja_name" } },
       { $unset: ["cardData"] }
     ]);
-    res.render("rankings", { title: "Rankings", description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
+    res.render("rankings", { title: i18next.t("common.rankings"), description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
   } catch (e) {
     return next(e);
   }

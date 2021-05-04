@@ -22,9 +22,9 @@
     "attribute": "属性",
     "character": "キャラ",
     "characters": "キャラ",
-    "Demon card": "アクマ",
+    "Demon": "アクマ",
     "demon_cards": "アクマカード",
-    "Memory card": "メモリー",
+    "Memory": "メモリー",
     "memory_cards": "メモリーカード",
     "demon_jump_L": "アクマ",
     "memory_jump_L": "メモリー",
@@ -64,7 +64,8 @@
     "invalid_char": "Karasu IDに使用できるのは半角英数小文字と ._- のみです"
   },
   "temp": {
-    "cards": "カード"
+    "cards": "カード",
+    "my_collection": "My Karasu"
   },
 
   "Action 1": "1回目",

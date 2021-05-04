@@ -11,7 +11,7 @@
 mixin percentBar(owned, total, name)
   - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "Little D":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", URp:"#ffe16b", Pride:"rgb(52,123,253)", Greed:"#ffbc11", Envy:"#ff7e00", Wrath:"#21c38c", Lust:"rgb(240,84,177)", Gluttony:"rgb(230,64,56)", Sloth:"rgb(181,65,230)"};
   - var percentage = roundPercentage(owned / total * 100);
-  span= name
+  span= t(name)
   small(style='display:inline-flex;') &nbsp;- #{owned} of #{total} (#{percentage}%)
     if percentage >= 100
       | &nbsp;
@@ -109,7 +109,7 @@ div#statsCard.card.card-body.shadow.mb-3
     div#statsTotal.col-lg-4.d-flex.mx-auto.mb-3.mb-lg-0
       div.container.row.text-center.mx-auto.align-items-center
         div.col-6
-          h5.text-primary.mb-0 Demon
+          h5.text-primary.mb-0= t("cards.Demon")
           - var demonPercentage = roundPercentage(cardStats.cards.Demon.owned / cardStats.cards.Demon.total * 100);
           div(style="position:relative;")
             img.img-fluid.p-2(src="/images/demon_card.png" style="max-width:120px;width:100%;")
@@ -118,7 +118,7 @@ div#statsCard.card.card-body.shadow.mb-3
           small.d-block.d-sm-none #{cardStats.cards.Demon.owned} of #{cardStats.cards.Demon.total}
           small.text-muted #{demonPercentage}%
         div.col-6
-          h5.text-primary.mb-0 Memory
+          h5.text-primary.mb-0= t("cards.Memory")
           - var memoryPercentage = roundPercentage(cardStats.cards.Memory.owned / cardStats.cards.Memory.total * 100);
           div(style="position:relative;")
             img.img-fluid.p-2(src="/images/memory_card.png" style="max-width:120px;width:100%;")

@@ -183,6 +183,10 @@ a>figcaption {
   overflow: hidden;
 }
 
+#filters #general p, #filters #general ul {
+  padding-left: 5px;  /* fix outline being cut off by previous padding: 0 */
+}
+
 #filters li {
   float: left;
 }
