@@ -5,7 +5,7 @@ $(document).ready(function(){
 
 function sendVerificationMessage() {
   if (!validateFieldsEmail()) {
-    showAlert("warning", "Invalid fields");
+    showAlert("danger", "Invalid fields");
     return;
   }
   var userData = {
@@ -21,10 +21,22 @@ function sendVerificationMessage() {
   })
   .done(function(result){
     if (result.err) {
-      showAlert("warning", result.message);
+      showAlert("danger", result.message);
       return;
     }
+    $("#sendVerification").attr("disabled", "disabled");
     showAlert("success", 'Confirmation sent. Please allow a few minutes for the email to arrive!');
+    var cooldown = 120;
+    var cooldownTimer = setInterval(function() {
+      if(cooldown <= 0) {
+        clearInterval(cooldownTimer);
+        $("#cooldown").text('');
+        $("#sendVerification").removeAttr("disabled");
+      } else {
+        $("#cooldown").text(cooldown + "s left to try again");
+      }
+      cooldown--;
+    }, 1000);
   });
 }
 
@@ -55,7 +67,7 @@ function changePassword() {
   })
   .done(function(result){
     if (result.err) {
-      showAlert("warning", result.message);
+      showAlert("danger", result.message);
       return;
     }
     showAlert("success", 'Password changed');
@@ -66,19 +78,19 @@ function validateFieldsPassword() {
   var newPassword = $('#newPassword').val();
   var newPasswordConfirm = $('#newPasswordConfirm').val();
   if (!/^[0-9a-zA-Z!@#$%^]+$/.test(newPassword)) {
-    showAlert("warning", "Password can only contain alphabets, numbers, and !@#$%^");
+    showAlert("danger", "Password can only contain alphabets, numbers, and !@#$%^");
     return false;
   }
   if (newPassword.length < 8) {
-    showAlert("warning", "Password must be at least 8 characters long");
+    showAlert("danger", "Password must be at least 8 characters long");
     return false;
   }
   if (newPassword == '') {
-    showAlert("warning", "Password can't be empty");
+    showAlert("danger", "Password can't be empty");
     return false;
   }
   if (newPassword != newPasswordConfirm) {
-    showAlert("warning", "Confirmation password doesn't match");
+    showAlert("danger", "Confirmation password doesn't match");
     return false;
   }
   return true;

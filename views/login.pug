@@ -73,7 +73,7 @@ block content
         data: JSON.stringify({ email: $("input#email").val() })
       }).done(function(result) {
         if (result.err) {
-          showAlert("warning", result.message);
+          showAlert("danger", result.message);
           return;
         }
         showAlert("success", "New password sent");

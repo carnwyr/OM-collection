@@ -54,11 +54,11 @@ function saveChanges(e) {
 function validateFields() {
   var uniqueName = $('#uniqueName').val();
   if (/[\\/:*?"<>| ]/.test(uniqueName)) {
-    showAlert("warning", 'Invalid unique name');
+    showAlert("danger", 'Invalid unique name');
     return false;
   }
   if (!$('#name').val() || !uniqueName) {
-    showAlert("warning", 'Name and unique name must be filled');
+    showAlert("danger", 'Name and unique name must be filled');
     return false;
   }
   var images = $('.upload');
@@ -68,7 +68,7 @@ function validateFields() {
       let parts = fileName.split('.');
       let extension = parts[parts.length - 1];
       if (extension !== 'jpg') {
-        showAlert("warning", 'All uploaded images must be jpg');
+        showAlert("danger", 'All uploaded images must be jpg');
         return false;
       }
     }
@@ -88,7 +88,7 @@ function updateCard() {
     if (values[2]) images.S = values[2];
     sendCardData(images);
   }, reason => {
-    showAlert("warning", "Can't load images\n" + reason.message);
+    showAlert("danger", "Can't load images\n" + reason.message);
   });
 }
 
@@ -133,7 +133,7 @@ function sendCardData(images) {
   })
   .done(function(result) {
     if (result.err) {
-      showAlert("warning", result.message);
+      showAlert("danger", result.message);
       return;
     }
     showAlert("success", 'Card successfully updated!');

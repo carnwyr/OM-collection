@@ -299,7 +299,7 @@ function switchSelectionMode() {
 			})
 			.done(function(result) {
 				if (result.err) {
-					showAlert("warning", result.message);
+					showAlert("danger", result.message);
 					return;
 				}
 				changedCards = {};
