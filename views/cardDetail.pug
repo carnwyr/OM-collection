@@ -29,9 +29,9 @@ block content
             div.card-header
               ul(class="nav nav-pills card-header-pills nav-justified")
                 li.nav-item
-                  a(class="nav-link active" id="original-card-tab" data-toggle="tab" href="#originalCard" role="tab" aria-controls="original" aria-selected="true") Original
+                  a(class="nav-link active" id="original-card-tab" data-toggle="tab" href="#originalCard" role="tab" aria-controls="original" aria-selected="true")= t("cards.original")
                 li.nav-item
-                  a(class="nav-link" id="bloomed-card-tab" data-toggle="tab" href="#bloomedCard" role="tab" aria-controls="bloomed" aria-selected="false") Bloomed
+                  a(class="nav-link" id="bloomed-card-tab" data-toggle="tab" href="#bloomedCard" role="tab" aria-controls="bloomed" aria-selected="false")= t("cards.bloomed")
         div.tab-content.mb-3(id="cardToggle")
           div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
             a(href="/images/cards/L/" + card.uniqueName + ".jpg")

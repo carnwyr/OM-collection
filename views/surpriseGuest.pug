@@ -8,7 +8,7 @@ mixin getActions(step)
         if step[0].item instanceof Array
           - var items = step[0].item;
         else
-          -var items = [step[0].item];
+          - var items = [step[0].item];
         - var i = 0;
         while i < items.length
           - imgName = itemImages[items[i]];
@@ -22,8 +22,7 @@ mixin getActions(step)
       if i > 0
         - options += "<br>";
       - option = step[i].action + (step[i].part ? ' ' + step[i].part : '');
-      - option = t(option.charAt(0).toUpperCase() + option.slice(1));
-      - options += option;
+      - options += t(option);
       - i++;
     td.py-1.p-sm-3.px-0.d-none.d-sm-table-cell !{options}
     td.py-1.p-sm-3.px-0.small.d-sm-none !{options}

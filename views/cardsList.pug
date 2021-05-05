@@ -138,7 +138,7 @@ block content
             if card.type == "Demon"
               a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                figcaption= getDisplayName(card)
+                figcaption= t("lang")==="en"?card.name:card.ja_name
 
     if (!user || !user.supportStatus.includes("adfree"))
       div.container.ddd
@@ -160,13 +160,4 @@ block content
             if card.type == "Memory"
               a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                figcaption= getDisplayName(card)
-
-  -
-    function getDisplayName(card) {
-      if (t("lang") === "en") {
-        return card.name;
-      } else {
-        return card.ja_name;
-      }
-    }
+                figcaption= t("lang")==="en"?card.name:card.ja_name
