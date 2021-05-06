@@ -230,7 +230,7 @@ function filterCardsToDisplay(cards, filters, search, excludedCards) {
 	cards = $(cards).filter(function() {
 		var cardName = $(this).find("figcaption").text();
 		var isSearched = search !== "" ? cardName.toLowerCase().includes(search.toLowerCase()) : true;
-		var uniqueCardName = $(this).attr('href').replace('card/', '');
+		var uniqueCardName = $("img", this).attr('src').slice(16, -4);
 		if (showCards === "Owned") {
 			var toShow = excludedCards.includes(uniqueCardName);
 		} else if (showCards === "NotOwned") {
