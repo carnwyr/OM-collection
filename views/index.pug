@@ -38,16 +38,16 @@ block content
         div.avatar
           img(alt="pfp" src="/images/karasu.png")
       div.container
-        div.row(style="margin-top:128px;")
+        div.row(style="margin-top:140px;")
           div.col-12.mb-3.text-center
-            a(href="/cards" type="button" class="btn btn-primary m-1") Cards
+            a(href="/cards" type="button" class="btn btn-primary m-1")= t("temp.cards")
             if !user
-              a(href="/signup" type="button" class="btn btn-primary m-1") Sign Up
-              a(href="/login" type="button" class="btn btn-primary m-1") Login
+              a(href="/signup" type="button" class="btn btn-primary m-1")= t("common.signup")
+              a(href="/login" type="button" class="btn btn-primary m-1")= t("common.login")
             else
-              a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1") My Collection
-              a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1") My Favourites
-            a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1") Surprise Guest Guide
+              a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1")= t("title.my_collection")
+              a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1")= t("title.my_favourites")
+            a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
 
         //- Share Event
         div#ShareEvent.card.shadow.mb-3

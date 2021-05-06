@@ -45,7 +45,6 @@ $(document).ready(function() {
 	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
-	$('#filterBtn').on('click', function() { $(this).text($(this).text() === "Filters" ? "Hide filters" : "Filters"); })
 
 	$("#shareCollection").on("click", () => { $("#userLink").val(window.location.href); });
 	$("#copyLink").on("click", copyCollectionLink);
@@ -300,14 +299,14 @@ function switchSelectionMode() {
 			})
 			.done(function(result) {
 				if (result.err) {
-					showAlert("div#failAlert", result.message);
+					showAlert("danger", result.message);
 					return;
 				}
 				changedCards = {};
 				selectionMode = false;
 				switchManagementButtons();
 				switchCardsSelection();
-				showAlert("div#successAlert", "Collection updated!");
+				showAlert("success", "Collection updated!");
 			});
 		} else {
 			changedCards = {};
@@ -356,14 +355,6 @@ $.fn.isInViewport = function () {
 	let viewportBottom = viewportTop + $(window).height();
 
 	return elementBottom > viewportTop && elementTop < viewportBottom;
-}
-
-function showAlert(alert, message) {
-	$(alert).html(message);
-	$(alert).show().animate({top: 65}, 500);
-	setTimeout(function () {
-		$(alert).animate({top: -100}, 500).promise().done(function() {$(alert).hide()})
-	}, 2000);
 }
 
 function cardClicked(e) {
@@ -427,7 +418,7 @@ function copyCollectionLink() {
 	copyText.select();
 	copyText.setSelectionRange(0, 9999);
 	document.execCommand("copy");
-	showAlert("div#successAlert", "Link successfully copied!");
+	showAlert("success", "Link successfully copied!");
 }
 
 function loadStatsImage(e) {

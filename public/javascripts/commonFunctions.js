@@ -2,6 +2,14 @@ var adBlock;
 
 $(document).ready(function(){
 	$('head').append(`<meta property="og:url" content="${window.location.href}">`);
+	var lang = document.cookie.split('; ').find(row => row.startsWith("lang")).substring(5);
+	if (lang === "ja") {
+		document.documentElement.lang = lang;
+		$("select#language>option[value='ja']").attr("selected", "selected");
+	}
+	$("select#language").on("change", function() {
+		window.location.href = window.location.href.split('?')[0] + "?lang=" + $("select#language").val();
+	});
 
 	$(".navbar .nav-item.active").removeClass('active');
 	$('.navbar .nav-item a[href="' + location.pathname + '"]').closest('li').addClass('active');
@@ -15,13 +23,13 @@ $(document).ready(function(){
 	});
 
 	/***/
-	if (!document.cookie.split('; ').find(row => row.startsWith("announcementToast"))) {
-		$("#announcementToast").removeClass("d-none").toast("show");
-	}
-	$("#announcementToast .close, #announcementToast a").on("click", () => {
-		document.cookie = "announcementToast=true; expires=" + cookieExpiryDate() + ";";
-		$("#announcementToast").toast("hide");
-	});
+	// if (!document.cookie.split('; ').find(row => row.startsWith("announcementToast"))) {
+	// 	$("#announcementToast").removeClass("d-none").toast("show");
+	// }
+	// $("#announcementToast .close, #announcementToast a").on("click", () => {
+	// 	document.cookie = "announcementToast=true; expires=" + cookieExpiryDate() + ";";
+	// 	$("#announcementToast").toast("hide");
+	// });
 	/***/
 
 	$('.navbar .dropdown').hover(function() {
@@ -64,4 +72,13 @@ function switchBackToTopButton() {
 		$("#b2t").fadeOut();
 		$("#cookieToast").css("transform", "");
 	}
+}
+
+function showAlert(type, message) {
+	$("#alert").removeClass().addClass("alert").addClass("alert-"+type);
+	$("#alert").html(message);
+	$("#alert").show().animate({top: 65}, 500);
+	setTimeout(function () {
+		$("#alert").animate({top: -100}, 500).promise().done(function() {$("#alert").hide()})
+	}, 5000);
 }

@@ -50,13 +50,6 @@
   border-top-color: white;
 }
 
-.text-wrapper {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 #LuciferPill.active, #LuciferPillSmall.active {
   background-color: var(--lucifer);
   border-color: var(--lucifer);
