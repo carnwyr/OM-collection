@@ -13,7 +13,7 @@ block content
       include statsboard.pug
 
     //- Card Navigation
-    div(class="card sticky-top sticky-offset mb-3 shadow")
+    div(class="card sticky-top sticky-offset mb-3")
       div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
         div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
@@ -36,7 +36,7 @@ block content
             |
             | #{t("cards.manage_collection")}
 
-    div(class="card shadow mb-3")
+    div(class="card mb-3")
       div(class="card-body d-flex flex-wrap justify-content-around p-3")
         div(class="dropdown text-center")
           button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")

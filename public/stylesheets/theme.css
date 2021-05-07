@@ -8,8 +8,7 @@
 .modal {
   padding-top: 64px;
 }
-figcaption,
-.figure-caption {
+figcaption, .figure-caption {
   font-size: 90%;
   color: #6c757d;
   margin-bottom: 1rem;
@@ -30,4 +29,7 @@ figcaption,
 }
 [type="button"], .btn {
   -webkit-appearance: none;
+}
+.card {
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
 }
