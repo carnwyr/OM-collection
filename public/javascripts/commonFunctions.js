@@ -2,11 +2,6 @@ var adBlock;
 
 $(document).ready(function(){
 	$('head').append(`<meta property="og:url" content="${window.location.href}">`);
-	var lang = document.cookie.split('; ').find(row => row.startsWith("lang")).substring(5);
-	if (lang === "ja") {
-		document.documentElement.lang = lang;
-		$("select#language>option[value='ja']").attr("selected", "selected");
-	}
 	$("select#language").on("change", function() {
 		window.location.href = window.location.href.split('?')[0] + "?lang=" + $("select#language").val();
 	});
