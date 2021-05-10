@@ -4,12 +4,14 @@ var router = express.Router();
 var cardsController = require('../controllers/cardsController');
 var usersController = require('../controllers/usersController');
 var miscController = require('../controllers/miscController');
+var eventsController = require('../controllers/eventsController');
 
 // Statis pages
 router.get('/', cardsController.index);
 router.get('/policies', miscController.privacyPolicy);
 router.get("/surpriseGuest", miscController.surpriseGuest);
 router.get("/rankings", usersController.getRankingsPage);
+router.get('/events', eventsController.getEventsPage);
 
 // Cards list
 router.get('/cards', cardsController.getCardsListPage);

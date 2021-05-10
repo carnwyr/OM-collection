@@ -14,7 +14,8 @@
     "login": "Login",
     "logout": "Logout",
     "settings": "Settings",
-    "account": "Account"
+    "account": "Account",
+    "events": "Events"
   },
   "cards": {
     "type": "Type",
@@ -70,6 +71,11 @@
   "temp": {
     "cards": "Cards",
     "my_collection": "My Collections"
+  },
+  "events": {
+    "cards": "Cards",
+    "costs": "Rewards Cost",
+    "calculator": "Event Calculator"
   },
 
   "Pride": "Pride",

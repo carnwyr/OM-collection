@@ -1,0 +1,35 @@
+extends layout
+
+block scripts
+	script(src="/javascripts/eventPageFunctions.js")
+	script.
+		var eventName = !{JSON.stringify(event.name)};
+
+block content
+	.container
+		h1= t("lang")==="en"?event.name:event.ja_name
+		if event.cards && event.cards.length
+			h4= t("events.cards")
+			.row
+				for card in event.cards
+					.col
+						a(href="../card/"+encodeURIComponent(card.replace(/ /g, '_')))= t("lang")==="en"?card:card
+		if event.type==="Pop Quiz"
+			h4= t("events.costs")
+			table.table
+				tbody
+					each reward in event.costs
+						tr
+							td= reward.type
+							td= reward.points
+			if event.status==="Running" || event.status==="Returned"
+				h4= t("events.calculator")
+				.form-group.row
+					label.col-form-label(for="totalPoints") Total points
+					input.form-control#totalPoints(type="number" aria-label="Total Points")
+				.form-group.row
+					label.col-form-label(for="totalPoints") Points Per Battle
+					input.form-control#pointsPerBattle(type="number" aria-label="Points Per Battle")
+				button.btn.btn-primary#calculate Calculate
+				.d-none#calculationResult
+					p Calculation result

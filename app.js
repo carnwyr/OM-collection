@@ -18,6 +18,7 @@ var cardsController = require("./controllers/cardsController");
 var indexRouter = require("./routes/index");
 var cardsRouter = require("./routes/cards");
 var userRouter = require("./routes/user");
+var eventsRouter = require("./routes/events");
 
 const app = express();
 
@@ -100,6 +101,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/card", cardsRouter);
 app.use("/user", userRouter);
+app.use("/event", eventsRouter);
 
 app.use(function(req, res, next) { next(createError(404)); });
 
