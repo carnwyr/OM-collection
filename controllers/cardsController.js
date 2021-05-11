@@ -116,7 +116,8 @@ exports.getCardDetailPage = async function(req, res, next) {
 
 		var stats = await getCardStats(req.user, card);
 		res.render('cardDetail', {
-			title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
+			title: i18next.t("lang")==="en"?cardData.name:cardData.ja_name,
+			description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 			card: cardData, isHidden: false,
 			user: req.user, stats: stats });
 	} catch (e) {
