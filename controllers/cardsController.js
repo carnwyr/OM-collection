@@ -22,7 +22,7 @@ exports.getCardsListPage = async function(req, res, next) {
 	try {
 		var cards = await Cards.find().sort({ number: -1 });
 		return res.render("cardsList", {
-			title: i18next.t("title.cards"), description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
+			title: i18next.t("title.cards"), description: "Obey Me! Cards Database. This is also the place to manage your card collection.",
 			cardsList: cards, path: "list",
 			user: req.user
 		});
