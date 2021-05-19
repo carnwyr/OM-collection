@@ -1,5 +1,5 @@
 div.card.card-body.shadow.mb-3
-  ul.nav.nav-tabs.mb-3
+  ul.nav.nav-tabs.mb-4
     li.nav-item
       a.nav-link.text-muted(href="profile") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person mb-1" viewBox="0 0 16 16">   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/> </svg>
         |
@@ -15,5 +15,23 @@ div.card.card-body.shadow.mb-3
         |
         |
         span.d-none.d-lg-inline Favourites
-  div.row
-    div.col.text-center Need something to fill this space &#129300;
+  if JSON.stringify(stats) === "{}"
+    div.text-center.text-muted.my-5 An empty collection (o_o)
+  else
+    script(src="/javascripts/favouriteStats.js")
+    script(src="/javascripts/matter.min.js")
+    script.
+      var stats = !{JSON.stringify(stats)};
+      console.log(stats["lst"]);
+    div.row.w-100.mx-auto
+      h1.col-12.col-lg-5.text-center.text-lg-right.my-auto.text-dark(style="border:0;") A cool quote about your favourite collection!
+      div.col-12.col-md-6.col-lg-4.text-center(style="background-image:url('/images/jar.png');background-repeat:no-repeat;background-size:90% 100%;background-position:center;")
+        canvas(width="300" height="375")
+      div.col
+        h5.text-center Loveee
+        div(style="display:flex;flex-wrap:wrap;text-align:center")
+          for ch in Object.keys(stats)
+            if ch !== "lst"
+              p.card-text.w-50
+                img#a.img-fluid.mr-2(src="/images/faces/"+ ch +".png" style="width:32px;height:auto;")
+                | #{stats[ch]}%

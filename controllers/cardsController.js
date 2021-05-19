@@ -37,6 +37,14 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
+		if (req.user && req.user.name === username) {
+			var title = 'My Collection';
+		} else {
+			var title = `${username}'s Collection`;
+		}
+
+		var ownedCards = await usersController.getCardCollection(username, "owned");
+
 		var cardStats = {
 			characters: {
 				Lucifer: { owned: 0, total: 0 },
@@ -75,15 +83,6 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 				Memory: { owned: 0, total: 0 }
 			}
 		};
-
-		if (req.user && req.user.name === username) {
-			var title = 'My Collection';
-		} else {
-			var title = `${username}'s Collection`;
-		}
-
-		var ownedCards = await usersController.getCardCollection(username, "owned");
-
 		countCardsForStats(ownedCards, cardStats, "owned");
 		countCardsForStats(await Cards.find(), cardStats, "total");
 
@@ -134,16 +133,65 @@ exports.getFavouritesPage = async function(req, res, next) {
 		}
 
 		var favedCards = await usersController.getCardCollection(username, "faved");
+		var stats = {};
+		if (favedCards.length > 0) {
+			stats = await getFavouriteStats(favedCards);
+		}
 
-		res.render("cardsList", {
+		return res.render("cardsList", {
 			title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`,
-			user: req.user,
+			user: req.user, stats: stats,
 			cardsList: favedCards, path: "fav"
 		});
 	} catch (e) {
 		return next(e);
 	}
 };
+
+function getFavouriteStats(cards) {
+	// NOTE: 42 is the quantity of items in the jar
+	var lst = [], stats = {}, total = 0, qty = 42;
+	// get base stats
+	for (const card of cards) {
+		for (const ch of card.characters) {
+			total += 1;
+			if (ch in stats) {
+				stats[ch] += 1;
+			} else {
+				stats[ch] = 1;
+			}
+		}
+	}
+
+	// console.log("stats", stats);
+
+	var temp;
+	for (const i in stats) {
+		temp = Math.round(stats[i] / total * qty);
+		while (temp-- > 0) {
+			lst.push(i);
+		}
+		stats[i] = Math.round(stats[i] / total * 100);
+	}
+
+	// add stars to fill blanks, if any
+	while (lst.length < qty) {
+		lst.push("star");
+	}
+
+	// randomize list
+	var randomized_list = [], random_int, random_item;
+	while (randomized_list.length < qty) {
+		random_int = Math.floor(Math.random() * lst.length);
+		random_item = lst.splice(random_int, 1);
+		randomized_list.push(random_item[0]);
+	}
+
+	// console.log("lst", randomized_list);
+	stats["lst"] = randomized_list;
+
+	return stats;
+}
 
 exports.getHiddenCardsListPage = async function(req, res, next) {
 	try {
@@ -168,12 +216,8 @@ exports.getProfilePage = async function(req, res, next) {
 		}
 
 		var cards = {
-		  owned: (await usersController.getCardCollection(username, "owned"))
-		    .sort(sortByRarityAndNumber)
-		    .slice(0, 15),
-		  faved: (await usersController.getCardCollection(username, "faved"))
-		    .sort(sortByRarityAndNumber)
-		    .slice(0, 15)
+		  owned: (await usersController.getCardCollection(username, "owned")).slice(0, 15),
+		  faved: (await usersController.getCardCollection(username, "faved")).slice(0, 15)
 		};
 
 		var profileInfo = await usersController.getProfileInfo(username);
