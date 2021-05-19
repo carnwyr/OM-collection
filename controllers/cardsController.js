@@ -5,12 +5,13 @@ const HiddenCards = require("../models/hiddenCards.js");
 const async = require("async");
 const fs = require("fs");
 const nodeHtmlToImage = require("node-html-to-image");
+const i18next = require("i18next");
 
 var usersController = require("../controllers/usersController");
 
 // Functions to render pages
 exports.index = function(req, res, next) {
-	res.render("index", {
+	return res.render("index", {
 		title: "Karasu OS",
 		description: "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation.",
 		user: req.user
@@ -21,7 +22,7 @@ exports.getCardsListPage = async function(req, res, next) {
 	try {
 		var cards = await Cards.find().sort({ number: -1 });
 		return res.render("cardsList", {
-			title: "Card Gallery", description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
+			title: i18next.t("title.cards"), description: "Obey Me! Cards Database. This is also the place to manage your card collection.",
 			cardsList: cards, path: "list",
 			user: req.user
 		});
@@ -83,6 +84,15 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 				Memory: { owned: 0, total: 0 }
 			}
 		};
+
+		if (req.user && req.user.name === username) {
+			var title = i18next.t("title.my_collection");
+		} else {
+			var title = i18next.t("title.user_collection", { username: username });
+		}
+
+		var ownedCards = await usersController.getCardCollection(username, "owned");
+
 		countCardsForStats(ownedCards, cardStats, "owned");
 		countCardsForStats(await Cards.find(), cardStats, "total");
 
@@ -111,7 +121,8 @@ exports.getCardDetailPage = async function(req, res, next) {
 
 		var stats = await getCardStats(req.user, card);
 		res.render('cardDetail', {
-			title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
+			title: i18next.t("lang")==="en"?cardData.name:cardData.ja_name,
+			description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 			card: cardData, isHidden: false,
 			user: req.user, stats: stats });
 	} catch (e) {
@@ -127,9 +138,9 @@ exports.getFavouritesPage = async function(req, res, next) {
 		}
 
 		if (req.user && req.user.name === username) {
-			var title = 'My Favourites';
+			var title = i18next.t("title.my_favourites");
 		} else {
-			var title = username + "'s Favourites";
+			var title = i18next.t("title.user_favourites", { username: username });
 		}
 
 		var favedCards = await usersController.getCardCollection(username, "faved");

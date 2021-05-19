@@ -12,6 +12,7 @@ const { body, validationResult } = require("express-validator");
 const async = require("async");
 
 const ObjectId = require("mongodb").ObjectID;
+const i18next = require("i18next");
 
 require("dotenv").config();
 
@@ -22,7 +23,7 @@ const mg = mailgun.client({username: 'api', key: process.env.API_KEY});
 
 // Login and signup
 exports.getLoginPage = function(req, res, next) {
-  res.render('login', { title: 'Login', message: req.flash('message'), user: req.user });
+  res.render('login', { title: i18next.t("common.login"), message: req.flash('message'), user: req.user });
 };
 
 exports.login = passport.authenticate('local', {
@@ -38,7 +39,7 @@ exports.logout = function(req, res) {
 };
 
 exports.getSignupPage = function(req, res, next) {
-  res.render('signup', { title: 'Signup', user: req.user });
+  res.render('signup', { title: i18next.t("common.signup"), user: req.user });
 };
 
 exports.signup = [
@@ -137,7 +138,7 @@ exports.isLoggedIn = function() {
 exports.isAdmin = function() {
 	return function (req, res, next) {
 		if (req.user && req.user.type === "Admin") {
-			return next()
+			return next();
 		}
 		return next(createError(404));
 	}
@@ -169,7 +170,7 @@ exports.getOwnedCards = async function(req, res) {
 		var ownedCards = await exports.getCardCollection(req.user.name, "owned");
 		ownedCards = ownedCards.map(card => card.uniqueName);
 
-    console.log(ownedCards);
+    // console.log(ownedCards);
 
 		res.send(ownedCards);
 	} catch (e) {
@@ -318,12 +319,12 @@ exports.sendVerificationEmail = async function(req, res, next) {
 
 		await record.save();
 
-		await mg.messages.create('karasu-os.com', {
-		    from: "Karasu-OS <support@karasu-os.com>",
-		    to: [req.body.userData.email],
-		    subject: "Email confirmation",
-			text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
-		});
+    await mg.messages.create('karasu-os.com', {
+      from: "Karasu-OS <support@karasu-os.com>",
+      to: [req.body.userData.email],
+      subject: "Email Confirmation",
+      text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
+    });
 
 		return res.json({ err: false });
 	} catch (e) {
@@ -331,8 +332,8 @@ exports.sendVerificationEmail = async function(req, res, next) {
       Sentry.captureException(e);
     }
 
-    // return res.json({ err: true, message: e });
-    return res.json({ err: true, message: "An error occurred. We're trying to fix it!" });
+    return res.json({ err: true, message: e });
+    // return res.json({ err: true, message: "An error occurred. We're trying to fix it!" });
 	}
 };
 
@@ -521,10 +522,10 @@ exports.getRankingsPage = async function(req, res, next) {
         }
       },
       { $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
-      { $set: { name: "$name.name" } },
+      { $set: { name: "$name.name", ja_name: "$name.ja_name" } },
       { $unset: ["cardData"] }
     ]);
-    res.render("rankings", { title: "Rankings", description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
+    res.render("rankings", { title: i18next.t("common.rankings"), description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
   } catch (e) {
     return next(e);
   }
@@ -585,7 +586,7 @@ exports.updateUserProfile = function(req, res) {
         return res.json({ err: true, message: "Something went wrong :(" });
       }
 
-      console.log(result);  // https://docs.mongodb.com/manual/reference/command/update/#std-label-update-command-output
+      // console.log(result);  // https://docs.mongodb.com/manual/reference/command/update/#std-label-update-command-output
 
       if (result.nModified === 1) {
         return res.json({ err: null, message: "Profile updated!"})

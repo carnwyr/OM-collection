@@ -5,9 +5,7 @@ block scripts
   script(src="/javascripts/cardsListFunctions.js")
 
 block content
-  div(id="successAlert" class="alert alert-success" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Collection updated!
-  div(id="failAlert" class="alert alert-danger" role="alert" style="position: fixed; z-index: 2; right: 20px; display: none; top: -100px") Something went wrong, please reload the page
-
+  div#alert(role="alert")
   div(class="container")
     h1= title
 
@@ -17,109 +15,121 @@ block content
       include favouriteStats.pug
 
     //- Card Navigation
-    div(class="card sticky-top sticky-offset mb-3 shadow")
+    div(class="card sticky-top sticky-offset mb-3")
       div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
         div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
-            span(class="d-none d-sm-block") Go to Demon Cards
-            span(class="d-sm-none") Demon
+            span(class="d-none d-sm-block")= t("cards.demon_jump_L")
+            span(class="d-sm-none")= t("cards.demon_jump")
           div(style="border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem")
           button(class="btn btn-md text-secondary py-0 mb-0" id="gotoMemory" href="#memoryCards")
-            span(class="d-none d-sm-block") Go to Memory Cards
-            span(class="d-sm-none") Memory
+            span(class="d-none d-sm-block")= t("cards.memory_jump_L")
+            span(class="d-sm-none")= t("cards.memory_jump")
         div(class='d-lg-none' style='flex-basis: 100%; height: 0;')
         div(class="btn-group d-none mr-2" id="selectionButtons")
-          button(class="btn btn-secondary mb-md-0" id="deselectAll") Deselect all
-          button(class="btn btn-secondary mb-md-0" id="selectAll") Select all
+          button(class="btn btn-secondary mb-md-0" id="deselectAll")= t("cards.deselect_all")
+          button(class="btn btn-secondary mb-md-0" id="selectAll")= t("cards.select_all")
         div(class="btn-group d-none" id="manageButtons")
-          button(class="btn btn-primary mb-md-0" id="cancelManaging") Cancel
-          button(class="btn btn-primary mb-md-0" id="saveManaging") Save
+          button(class="btn btn-primary mb-md-0" id="cancelManaging")= t("cards.cancel")
+          button(class="btn btn-primary mb-md-0" id="saveManaging")= t("cards.save")
         if user && path === "list"
-          button(class="btn btn-primary btn-md mb-0" id="manageCollection") Manage Collection
+          button(class="btn btn-primary btn-md mb-0" id="manageCollection")
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square mb-1" viewBox="0 0 16 16">   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/> </svg>
+            |
+            | #{t("cards.manage_collection")}
 
-    div(id="searchBar" class="row text-left mb-3")
+    div(class="card mb-3")
+      div(class="card-body d-flex flex-wrap justify-content-around p-3")
+        div(class="dropdown text-center")
+          button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+            span Icon view
+          div(class="dropdown-menu shadow" aria-labelledby="viewMenuDropdown")
+            a(id="iconViewBtn" class="dropdown-item viewBtn iconViewBtn" role='button' data-viewmode="icon")
+              span.font-weight-bold.text-primary Icon view
+            div(class="dropdown-divider")
+            a(id="originalViewBtn" class="dropdown-item viewBtn originalViewBtn" role='button' data-viewmode="original")
+              span.font-weight-normal Full original view
+            a(id="bloomedViewBtn" class="dropdown-item viewBtn bloomedViewBtn" role='button' data-viewmode="bloomed")
+              span.font-weight-normal Full bloomed view
+        form(id="searchForm" class="col-md-auto flex-grow-1 px-2 mb-3 mb-md-0")
+          div(class="input-group rounded-pill" style="background-color:rgba(219,158,251,0.2)")
+            div(class="input-group-text border-0 bg-transparent text-primary" style="z-index:3;")
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
+            input(type="text" class="form-control border-0 text-primary bg-transparent pl-0" id="nameFilter" placeholder=t("cards.search"))
+        button(id="filterBtn" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters" style="padding:0 1.25rem")
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16" style="margin-bottom:.125rem">   <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/> </svg>
+          |
+          | #{t("cards.filters")}
+
+    div(id="filters" class="collapse shadow")
+      div(class="card card-body" style="border-left:4px solid var(--secondary);")
+        div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;")= t("cards.filters")
+        div#resetFilters.text-right.text-black-50.mb-2(style="margin-top:-.8rem;")
+          a(type="button")= t("cards.reset")
+        if path === "list"
+          div.row
+            // add margin to align with rest of filters
+            p.col-12.col-lg-1.mb-lg-0(style="margin-left:5px")= t("temp.cards")
+            div.col
+              ul#cardsfilter
+                li(class="custom-control custom-radio")
+                  input(type="radio" class="custom-control-input" id="checkCardsAll" name="cards")
+                  label(class="custom-control-label" for="checkCardsAll") All
+                li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
+                  input(type="radio" class="custom-control-input" id="checkCardsOwned" name="cards" disabled=(user?false:true))
+                  label(class="custom-control-label" for="checkCardsOwned")= t("cards.owned")
+                li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
+                  input(type="radio" class="custom-control-input" id="checkCardsNotOwned" name="cards" disabled=(user?false:true))
+                  label(class="custom-control-label" for="checkCardsNotOwned")= t("cards.not_owned")
+                if !user
+                  li
+                    a(href="/signup")= t("common.signup")
+                    |
+                    |
+                    span.text-dark /
+                    |
+                    |
+                    a(href="/login")= t("common.login")
+          hr
+        div#general.row
+          div.col-sm-12.col-md-6
+            p= t("cards.rarity")
+            form#rarityForm
+              ul
+                li(class="custom-control custom-radio")
+                  input(type="radio" class="custom-control-input" id="checkRarityAll" name="rarity")
+                  label(class="custom-control-label" for="checkRarityAll") All
+                each rarity in ["N", "R", "SR", "SSR", "UR", "URp"]
+                  li(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name="rarity" value=rarity)
+                    label(class="custom-control-label" for="checkRarity"+rarity)= rarity==="URp"?"UR+":rarity
+            hr
+            p= t("cards.attribute")
+            form#attributeForm
+              ul
+                li(class="custom-control custom-radio")
+                  input(type="radio" class="custom-control-input" id="checkAttributeAll" name="attribute")
+                  label(class="custom-control-label" for="checkAttributeAll") All
+                each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+                  li(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name="attribute" value=attribute)
+                    label(class="custom-control-label" for="checkAttribute"+attribute)= t(attribute)
+            hr.d-md-none
+          div#characterFilters.col
+            p= t("cards.character")
+            form#characterForm
+              ul
+                li(class="custom-control custom-radio")
+                  input(type="radio" class="custom-control-input" id="checkCharacterAll" name="character")
+                  label(class="custom-control-label" for="checkCharacterAll") All
+                each character in ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
+                  li(class="custom-control custom-checkbox")
+                    input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name="character" value=character)
+                    label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?t("Little D"):t(character)
+
+    div(class="row pt-3" id="demonCards")
       div(class="col-12")
-        div(class="card shadow")
-          div(class="card-body d-flex flex-wrap justify-content-around p-3")
-            div(class="dropdown text-center")
-              button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-                span Icon view
-              div(class="dropdown-menu shadow" aria-labelledby="viewMenuDropdown")
-                a(id="iconViewBtn" class="dropdown-item viewBtn iconViewBtn" role='button' data-viewmode="icon")
-                  span.font-weight-bold.text-primary Icon view
-                div(class="dropdown-divider")
-                a(id="originalViewBtn" class="dropdown-item viewBtn originalViewBtn" role='button' data-viewmode="original")
-                  span.font-weight-normal Full original view
-                a(id="bloomedViewBtn" class="dropdown-item viewBtn bloomedViewBtn" role='button' data-viewmode="bloomed")
-                  span.font-weight-normal Full bloomed view
-            form(id="searchForm" class="col-md-auto flex-grow-1 px-2 mb-3 mb-md-0")
-              div(class="input-group rounded-pill" style="background-color:rgba(219,158,251,0.2)")
-                div(class="input-group-text border-0 bg-transparent text-primary" style="z-index: 3;")
-                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
-                input(type="text" class="form-control text-primary bg-transparent pl-0" id="nameFilter" placeholder="Search for card name..." style = "border: 0px;")
-            div(class="mx-auto text-center")
-              span(class="mb-1 mb-md-0 d-flex d-sm-inline-flex")
-                button(id="expandFilters" class="btn btn-secondary btn-sm rounded-pill mr-2 mb-0" data-toggle="collapse" href="#filters" role="button" aria-expanded="false" aria-controls="filters" style="width: 104px") Filters
-                button(id="resetFilters" class="btn btn-primary btn-sm rounded-pill mb-0" style="width: 104px") Reset filters
-
-    div(id="filters" class="row text-left collapse")
-      div.col-12.col-md-6.pr-md-1.mb-2
-        div(id="rarityFilter" class="card mb-2 shadow" style="border-left: 4px solid #8B9AF0;")
-          div(class="card-header pb-0") Rarity
-          div(class="card-body")
-            form(id="rarityForm")
-              div(class="container")
-                div(class="row")
-                  div(class="custom-control custom-radio mr-3 col-1")
-                    input(type="radio" class="custom-control-input" id="checkRarityAll" name="All")
-                    label(class="custom-control-label" for="checkRarityAll") All
-                  - var rarities = ["N", "R", "SR", "SSR", "UR"]
-                  each rarity in rarities
-                    div(class="custom-control custom-checkbox mr-3 col-1")
-                      input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name=rarity)
-                      label(class="custom-control-label" for="checkRarity"+rarity) #{rarity}
-                  div(class="custom-control custom-checkbox col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkRarityUR+" name="URp")
-                    label(class="custom-control-label" for="checkRarityUR+") UR+
-        div(id="attributeFilter" class="card shadow" style="border-left: 4px solid #F06292;")
-          div(class="card-header pb-0") Attribute
-          div(class="card-body")
-            form(id="attributeForm")
-              div(class="container")
-                div(class="row")
-                  div(class="custom-control custom-radio mr-5 ml-1 col-1")
-                    input(type="radio" class="custom-control-input" id="checkAttributeAll" name="All")
-                    label(class="custom-control-label" for="checkAttributeAll") All
-                  - var attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony"]
-                  each attribute in attributes
-                    div(class="custom-control custom-checkbox mr-5 ml-1 col-1")
-                      input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name=attribute)
-                      label(class="custom-control-label" for="checkAttribute"+attribute) #{attribute}
-                  div(class="custom-control custom-checkbox ml-1 col-1")
-                    input(type="checkbox" class="custom-control-input" id="checkAttributeSloth" name="Sloth")
-                    label(class="custom-control-label" for="checkAttributeSloth") Sloth
-      div.col-12.col-md-6.pl-md-1.mb-2
-        div(id="characterFilter" class="card shadow h-100" style="border-left: 4px solid #C297EC;")
-          div(class="card-header") Character
-          div(class="card-body")
-            form(id="characterForm")
-              div(class="container pl-0")
-                div(class="row")
-                  div(class="custom-control custom-radio mr-5 ml-3 col-2")
-                    input(type="radio" class="custom-control-input" id="checkCharacterAll" name="All")
-                    label(class="custom-control-label" for="checkCharacterAll") All
-                  - var characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon"]
-                  each character in characters
-                    div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                      input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name=character)
-                      label(class="custom-control-label" for="checkCharacter"+character) #{character}
-                  div(class="custom-control custom-checkbox mr-5 ml-3 col-2")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacterLittleD" name="LittleD")
-                    label(class="custom-control-label" for="checkCharacterLittleD" style="min-width: 75px;") Little D
-
-    div(class="row" id="demonCards")
-      div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper") Demon Cards
+        h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper")= t("cards.demon_cards")
           |
           |
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
@@ -130,7 +140,7 @@ block content
             if card.type == "Demon"
               a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                figcaption #{card.name}
+                figcaption= t("lang")==="en"?card.name:card.ja_name
 
     if (!user || !user.supportStatus.includes("adfree"))
       div.container.ddd
@@ -141,7 +151,7 @@ block content
 
     div(class="row" id="memoryCards")
       div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper") Memory Cards
+        h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper")= t("cards.memory_cards")
           |
           |
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
@@ -152,4 +162,4 @@ block content
             if card.type == "Memory"
               a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                 img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                figcaption #{card.name}
+                figcaption= t("lang")==="en"?card.name:card.ja_name

@@ -3,13 +3,13 @@ $(function() {
 	const ctx = canvas.getContext("2d");
 
 	var Engine = Matter.Engine,
-  		Render = Matter.Render,
-  		Runner = Matter.Runner,
-  		Composite = Matter.Composite,
-  		Composites = Matter.Composites,
-  		MouseConstraint = Matter.MouseConstraint,
-  		Mouse = Matter.Mouse,
-  		Bodies = Matter.Bodies;
+			Render = Matter.Render,
+			Runner = Matter.Runner,
+			Composite = Matter.Composite,
+			Composites = Matter.Composites,
+			MouseConstraint = Matter.MouseConstraint,
+			Mouse = Matter.Mouse,
+			Bodies = Matter.Bodies;
 
 	var engine = Engine.create(), world = engine.world;
 	var render = Render.create({
@@ -98,15 +98,15 @@ $(function() {
 
 	// add mouse control
 	var mouse = Mouse.create(render.canvas),
-		mouseConstraint = MouseConstraint.create(engine, {
-			mouse: mouse,
-			constraint: {
-				stiffness: 0.2,
-				render: {
-					visible: false
+			mouseConstraint = MouseConstraint.create(engine, {
+				mouse: mouse,
+				constraint: {
+					stiffness: 0.2,
+					render: {
+						visible: false
+					}
 				}
-			}
-		});
+			});
 
 	Composite.add(world, mouseConstraint);
 

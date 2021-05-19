@@ -1,27 +1,27 @@
 extends layout
 
-block content
+block scripts
+  link(rel="stylesheet" href="/stylesheets/forms.css")
+  script(src="javascripts/signUpFunctions.js")
 
+block content
   div.row
     div(class="col-12 col-lg-6 mx-auto")
       div(class="card card-signin flex-row my-5")
         div(class="card-body")
-          h5(class="card-title text-center") Sign Up
+          h5(class="card-title text-center")= t("common.signup")
           form(class="form-signin" method="POST" action="")
             div.form-label-group
               input#username.form-control(type="text" name="username" pattern="[A-Za-z0-9._-]+" title="Username can include letters, numbers and ._-" maxlength="50" autocomplete="off" required autofocus)
-              span.floating-label Username
+              span.floating-label= t("user.username")
               small#usernameError.form-text.text-danger
             div.form-label-group
               input#password.form-control(type="password" name="password" pattern="[A-Za-z0-9!@#$%^]{8,}" maxlength="50" autocomplete="off" required)
-              span.floating-label Password
+              span.floating-label= t("user.password")
               small#passwordError.form-text.text-danger
             div.form-label-group
               input#confirmPassword.form-control(type="password" name="confirmPassword" maxlength="50" autocomplete="off" required)
-              span.floating-label Confirm Password
+              span.floating-label= t("user.confirm_pass")
               small#passwordConfirmationError.form-text.text-danger
-            button(class="btn btn-lg btn-primary btn-block text-uppercase" id="signUp" type="submit") Sign Up
-            a(class="d-block text-center mt-2 small" href="login") Login
-
-  link(rel="stylesheet" href="/stylesheets/forms.css")
-  script(src="javascripts/signUpFunctions.js")
+            button(class="btn btn-lg btn-primary btn-block text-uppercase" id="signUp" type="submit")= t("common.signup")
+            a(class="d-block text-center mt-2 small" href="login")= t("common.login")
