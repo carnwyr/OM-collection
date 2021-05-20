@@ -59,12 +59,12 @@ var cookieExpiryDate = () => {
 function switchBackToTopButton() {
 	if ($(window).scrollTop() > $(window).height()*3) {
 		$("#b2t").fadeIn();
-		if ($(window).width() < 540) {
-			$("#cookieToast").css("transform", "translate(0, -64px)");
-		}
+		// if ($(window).width() < 540) {
+		// 	$("#cookieToast").css("transform", "translate(0, -64px)");
+		// }
 	} else {
 		$("#b2t").fadeOut();
-		$("#cookieToast").css("transform", "");
+		// $("#cookieToast").css("transform", "");
 	}
 }
 
