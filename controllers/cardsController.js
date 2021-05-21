@@ -221,9 +221,9 @@ exports.getProfilePage = async function(req, res, next) {
 		}
 
 		if (req.user && req.user.name === username) {
-			var title = 'My Profile';
+			var title = i18next.t("title.my_profile");
 		} else {
-			var title = username + "'s Profile";
+			var title = i18next.t("title.user_profile", { username: username });
 		}
 
 		var cards = {

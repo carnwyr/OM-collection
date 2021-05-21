@@ -419,17 +419,17 @@ const makeBloomed = function(target) { return target.replace('.jpg', '_b.jpg'); 
 
 const changes = {
 	'icon': {
-		'dropdownText': 'Icon view',
+		'dropdownText': i18next["icon_view"],
 		'fullViewAction': removeFullImageClass,
 		'srcAction': function (target) { return removeBloom(replaceLToS($(target).attr('src'))); }
 	},
 	'original': {
-		'dropdownText': 'Full original view',
+		'dropdownText': i18next["full_original"],
 		'fullViewAction': addFullImageClass,
 		'srcAction': function (target) { return removeBloom(replaceSToL($(target).attr('src'))); }
 	},
 	'bloomed': {
-		'dropdownText': 'Full bloomed view',
+		'dropdownText': i18next["full_bloomed"],
 		'fullViewAction': addFullImageClass,
 		'srcAction': function (target) {
 			if ($(target).parent().parent().attr('id') === 'demonSection') return makeBloomed(replaceSToL($(target).attr('src')));

@@ -4,8 +4,7 @@
     "home": "ホーム",
     "gallery": "カード",
     "my_karasu": "My Karasu",
-    "cards": "アドレス帳",
-    "favourites": "お気に入り",
+    "cards": "カード",
     "profile": "プロフィール",
     "rankings": "ランキング",
     "tools": "ツール",
@@ -51,7 +50,13 @@
     "my_collection": "アドレス帳",
     "user_collection": "{{username}}のアドレス帳",
     "my_favourites": "お気に入り",
-    "user_favourites": "{{username}}のお気に入り"
+    "user_favourites": "{{username}}のお気に入り",
+    "my_profile": "プロフィール",
+    "user_profile": "{{username}}のプロフィール"
+  },
+  "collection": {
+    "cards": "アドレス帳",
+    "favourites": "お気に入り"
   },
   "user": {
     "username": "Karasu ID",
@@ -59,6 +64,11 @@
     "forgot_pass": "アカウントを忘れた場合",
     "show_pass": "パスワードを表示します",
     "confirm_pass": "パスワードを認証する"
+  },
+  "profile": {
+    "name": "ユーザーID",
+    "friend_id": "フレンドID",
+    "view_all": "すべて見る"
   },
   "spg": {
     "shortActions": "アクションを１つだけ表示",

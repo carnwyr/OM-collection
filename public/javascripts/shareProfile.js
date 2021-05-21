@@ -15,7 +15,7 @@ function copyCollectionLink() {
 	copyText.select();
 	copyText.setSelectionRange(0, 9999);
 	document.execCommand("copy");
-	showAlert("div#successAlert", "Link successfully copied!");
+	showAlert("success", "Link successfully copied!");
 }
 
 function loadStatsImage(e) {

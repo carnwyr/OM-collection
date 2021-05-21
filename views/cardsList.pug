@@ -2,6 +2,8 @@ extends layout
 
 block scripts
   link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
+  script.
+    const i18next = { "icon_view": "#{t("cards.icon_view")}", "full_original": "#{t("cards.full_original")}", "full_bloomed": "#{t("cards.full_bloomed")}" };
   script(src="/javascripts/cardsListFunctions.js")
 
 block content
@@ -42,15 +44,15 @@ block content
       div(class="card-body d-flex flex-wrap justify-content-around p-3")
         div(class="dropdown text-center")
           button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-            span Icon view
+            span= t("cards.icon_view")
           div(class="dropdown-menu shadow" aria-labelledby="viewMenuDropdown")
             a(id="iconViewBtn" class="dropdown-item viewBtn iconViewBtn" role='button' data-viewmode="icon")
-              span.font-weight-bold.text-primary Icon view
+              span.font-weight-bold.text-primary= t("cards.icon_view")
             div(class="dropdown-divider")
             a(id="originalViewBtn" class="dropdown-item viewBtn originalViewBtn" role='button' data-viewmode="original")
-              span.font-weight-normal Full original view
+              span.font-weight-normal= t("cards.full_original")
             a(id="bloomedViewBtn" class="dropdown-item viewBtn bloomedViewBtn" role='button' data-viewmode="bloomed")
-              span.font-weight-normal Full bloomed view
+              span.font-weight-normal= t("cards.full_bloomed")
         form(id="searchForm" class="col-md-auto flex-grow-1 px-2 mb-3 mb-md-0")
           div(class="input-group rounded-pill" style="background-color:rgba(219,158,251,0.2)")
             div(class="input-group-text border-0 bg-transparent text-primary" style="z-index:3;")
@@ -69,7 +71,7 @@ block content
         if path === "list"
           div.row
             // add margin to align with rest of filters
-            p.col-12.col-lg-1.mb-lg-0(style="margin-left:5px")= t("temp.cards")
+            p.col-12.col-lg-1.mb-lg-0(style="margin-left:5px")= t("common.cards")
             div.col
               ul#cardsfilter
                 li(class="custom-control custom-radio")

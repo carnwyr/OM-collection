@@ -3,7 +3,7 @@
   "common": {
     "home": "Home",
     "gallery": "Gallery",
-    "my_pages": "My Karasu",
+    "my_karasu": "My Karasu",
     "cards": "Cards",
     "favourites": "Favourites",
     "profile": "Profile",
@@ -53,14 +53,27 @@
     "my_collection": "My Collection",
     "user_collection": "{{username}}'s Collection",
     "my_favourites": "My Favourites",
-    "user_favourites": "{{username}}'s Favourites"
+    "user_favourites": "{{username}}'s Favourites",
+    "my_profile": "My Profile",
+    "user_profile": "{{username}}'s Profile"
+  },
+  "collection": {
+    "cards": "Cards",
+    "favourites":" Favourites"
   },
   "user": {
     "username": "Username",
     "password": "Password",
-    "forgot_pass": "Forgot?",
+    "forgot_pass": "Forgot account?",
     "show_pass": "Show password",
     "confirm_pass": "Confirm password"
+  },
+  "profile": {
+    "name": "In-game name",
+    "friend_id": "Friend ID",
+    "join_karasu": "Joined on {{date}}",
+    "entered_rad": "Entered RAD on",
+    "view_all": "View All"
   },
   "spg": {
     "shortActions": "Show one option for each action",
