@@ -56,31 +56,32 @@ block content
           a.nav-link.active.text-primary(href='#') <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person mb-1" viewBox="0 0 16 16">   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/> </svg>
             |
             |
-            span.d-none.d-lg-inline #{t("common.profile")}
+            span.d-none.d-lg-inline= t("common.profile")
         li.nav-item
           a.nav-link.text-muted(href="collection") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-person mb-1" viewBox="0 0 16 16">   <path d="M12 1a1 1 0 0 1 1 1v10.755S12 11 8 11s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/>   <path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/> </svg>
             |
             |
-            span.d-none.d-lg-inline #{t("collection.cards")}
+            span.d-none.d-lg-inline= t("collection.cards")
         li.nav-item
           a.nav-link.text-muted(href="favourites") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill mb-1" viewBox="0 0 16 16">   <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/> </svg>
             |
             |
-            span.d-none.d-lg-inline #{t("collection.favourites")}
-      if title === "My Profile"
+            span.d-none.d-lg-inline= t("collection.favourites")
+      if title === t("title.my_profile")
         script(src="/javascripts/shareProfile.js" defer)
         div(style="position:absolute;right:1.25rem;")
           button(type="button" id="shareLink" class="btn btn-primary" data-toggle="modal" data-target="#openLink")
             <svg class="bi bi-share mb-1" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
             |
-            | Share
+            | #{t("profile.share")}
       div.row
         div.col.col-lg-4.text-center
           img(src="/images/cards/L/" + (profileInfo.display?profileInfo.display:"The_Mammon_Way") + ".jpg" style="width:256px;height:auto;")
         div.col
           h5.mt-3 #{page_user}
-            span.text-muted.ml-4(style="font-size:12px;letter-spacing:.4px;") <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
-              | Joined #{profileInfo.joinKarasu}
+            span.text-muted.ml-4(style="font-size:12px;letter-spacing:.4px;")
+              | <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
+              | #{t("profile.join_karasu", { date: profileInfo.joinKarasu })}
           if badges.length !== 0
             div.d-flex
               each badge in badges
@@ -101,17 +102,17 @@ block content
               span= profileInfo.name?profileInfo.name:"???"
             div.col.col-md-6
               span= t("profile.friend_id")
-              span #{profileInfo.id?profileInfo.id:"???"}
+              span= profileInfo.id?profileInfo.id:"???"
             div.w-100.d-md-none.mb-0
             div.col.col-md-6
-              span Entered RAD on
-              span #{profileInfo.joined?profileInfo.joined.toDateString().slice(4):"???"}
+              span= t("profile.entered_rad")
+              span= profileInfo.joined?profileInfo.joined.toDateString().slice(4):"???"
             - var lang = {"en": "English", "jp": "日本語"}
             div.col-12.col-md-6
-              span Language
-              span #{profileInfo.language?lang[profileInfo.language]:"???"}
+              span= t("profile.language")
+              span= profileInfo.language?lang[profileInfo.language]:"???"
             div.col-12
-              span Favourite character(s)
+              span= t("profile.favourite_chara")
               div(style="border-radius:8px;border:2px solid var(--secondary);margin-top:.25rem;padding:.5rem;width:50%;")
                 if profileInfo.characters.length == 0
                   | ???
@@ -158,47 +159,48 @@ block content
               div.view_all
                 a(type="button" href="favourites" class="btn btn-primary")= t("profile.view_all")
 
-  if title==="My Profile"
+  if title === t("title.my_profile")
     <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
     div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
       div(class="modal-dialog" role="document")
         div(class="modal-content")
           div(class="modal-header")
-            h5(class="modal-title text-primary" id="openShareLink") Share
+            h5(class="modal-title text-primary" id="openShareLink")= t("profile.share")
             button(type="button" class="close" data-dismiss="modal" aria-label="Close")
               span(aria-hidden="true") &times;
           div(class="modal-body mb-2")
             div.input-group
               input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link" disabled)
               div.input-group-append
-                button#copyLink.btn.btn-primary(style="border-radius:0 4px 4px 0;") Copy
-            p.mt-3.mb-0 Share on Twitter to get a special badge!
-              a(class="twitter-share-button ml-2" target="_blank")
-                i
-                span.ml-1 Tweet
-            style.
-              .twitter-share-button {
-                position: relative;
-                display:inline-block;
-                height: 28px;
-                box-sizing: border-box;
-                padding: 1px 10px 1px 9px;
-                background-color: #1b95e0;
-                color: #fff;
-                border-radius: 4px;
-                font-weight: bold;
-                font-size: small;
-                cursor: pointer;
-              }
-              .twitter-share-button i {
-                position: relative;
-                top: 4px;
-                display: inline-block;
-                width: 18px;
-                height: 18px;
-                background: transparent 0 0 no-repeat;
-                background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2072%2072%22%3E%3Cpath%20fill%3D%22none%22%20d%3D%22M0%200h72v72H0z%22%2F%3E%3Cpath%20class%3D%22icon%22%20fill%3D%22%23fff%22%20d%3D%22M68.812%2015.14c-2.348%201.04-4.87%201.744-7.52%202.06%202.704-1.62%204.78-4.186%205.757-7.243-2.53%201.5-5.33%202.592-8.314%203.176C56.35%2010.59%2052.948%209%2049.182%209c-7.23%200-13.092%205.86-13.092%2013.093%200%201.026.118%202.02.338%202.98C25.543%2024.527%2015.9%2019.318%209.44%2011.396c-1.125%201.936-1.77%204.184-1.77%206.58%200%204.543%202.312%208.552%205.824%2010.9-2.146-.07-4.165-.658-5.93-1.64-.002.056-.002.11-.002.163%200%206.345%204.513%2011.638%2010.504%2012.84-1.1.298-2.256.457-3.45.457-.845%200-1.666-.078-2.464-.23%201.667%205.2%206.5%208.985%2012.23%209.09-4.482%203.51-10.13%205.605-16.26%205.605-1.055%200-2.096-.06-3.122-.184%205.794%203.717%2012.676%205.882%2020.067%205.882%2024.083%200%2037.25-19.95%2037.25-37.25%200-.565-.013-1.133-.038-1.693%202.558-1.847%204.778-4.15%206.532-6.774z%22%2F%3E%3C%2Fsvg%3E);
-              }
-              .twitter-share-button:hover {
-                color: white;
-              }
+                button#copyLink.btn.btn-primary(style="border-radius:0 4px 4px 0;")= t("profile.copy")
+            //-
+                p.mt-3.mb-0 Share on Twitter to get a special badge!
+                  a(class="twitter-share-button ml-2" target="_blank")
+                    i
+                    span.ml-1 Tweet
+                style.
+                  .twitter-share-button {
+                    position: relative;
+                    display:inline-block;
+                    height: 28px;
+                    box-sizing: border-box;
+                    padding: 1px 10px 1px 9px;
+                    background-color: #1b95e0;
+                    color: #fff;
+                    border-radius: 4px;
+                    font-weight: bold;
+                    font-size: small;
+                    cursor: pointer;
+                  }
+                  .twitter-share-button i {
+                    position: relative;
+                    top: 4px;
+                    display: inline-block;
+                    width: 18px;
+                    height: 18px;
+                    background: transparent 0 0 no-repeat;
+                    background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2072%2072%22%3E%3Cpath%20fill%3D%22none%22%20d%3D%22M0%200h72v72H0z%22%2F%3E%3Cpath%20class%3D%22icon%22%20fill%3D%22%23fff%22%20d%3D%22M68.812%2015.14c-2.348%201.04-4.87%201.744-7.52%202.06%202.704-1.62%204.78-4.186%205.757-7.243-2.53%201.5-5.33%202.592-8.314%203.176C56.35%2010.59%2052.948%209%2049.182%209c-7.23%200-13.092%205.86-13.092%2013.093%200%201.026.118%202.02.338%202.98C25.543%2024.527%2015.9%2019.318%209.44%2011.396c-1.125%201.936-1.77%204.184-1.77%206.58%200%204.543%202.312%208.552%205.824%2010.9-2.146-.07-4.165-.658-5.93-1.64-.002.056-.002.11-.002.163%200%206.345%204.513%2011.638%2010.504%2012.84-1.1.298-2.256.457-3.45.457-.845%200-1.666-.078-2.464-.23%201.667%205.2%206.5%208.985%2012.23%209.09-4.482%203.51-10.13%205.605-16.26%205.605-1.055%200-2.096-.06-3.122-.184%205.794%203.717%2012.676%205.882%2020.067%205.882%2024.083%200%2037.25-19.95%2037.25-37.25%200-.565-.013-1.133-.038-1.693%202.558-1.847%204.778-4.15%206.532-6.774z%22%2F%3E%3C%2Fsvg%3E);
+                  }
+                  .twitter-share-button:hover {
+                    color: white;
+                  }

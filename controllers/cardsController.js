@@ -39,9 +39,9 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 		}
 
 		if (req.user && req.user.name === username) {
-			var title = 'My Collection';
+			var title = i18next.t("title.my_collection");
 		} else {
-			var title = `${username}'s Collection`;
+			var title = i18next.t("title.user_collection", { username: username });
 		}
 
 		var ownedCards = await usersController.getCardCollection(username, "owned");
@@ -85,19 +85,13 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 			}
 		};
 
-		if (req.user && req.user.name === username) {
-			var title = i18next.t("title.my_collection");
-		} else {
-			var title = i18next.t("title.user_collection", { username: username });
-		}
-
 		var ownedCards = await usersController.getCardCollection(username, "owned");
 
 		countCardsForStats(ownedCards, cardStats, "owned");
 		countCardsForStats(await Cards.find(), cardStats, "total");
 
 		return res.render('cardsList', {
-			title: title, description: `${req.params.username}'s Collection on Karasu-OS.com`,
+			title: title, description: `${username}'s Collection on Karasu-OS.com`,
 			user: req.user, cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
 	} catch (e) {
 		return next(e);

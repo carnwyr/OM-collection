@@ -50,7 +50,7 @@ html(lang=t("lang"))
             a(class="nav-link" href='/cards')= t("common.gallery")
           if user
             li(class="nav-item dropdown")
-              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")= t("common.my_karasu")
+              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Karasu
               div(class="dropdown-menu shadow px-2" aria-labelledby="collectionDropdown")
                 span#overline collections
                 a(class="dropdown-item" href='/' + user.name + '/collection')= t("collection.cards")

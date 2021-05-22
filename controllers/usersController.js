@@ -560,9 +560,12 @@ exports.getProfileInfo = async function(username) {
     var user = await Users.findOne({ "info.name": username });
     info = user.profile;
 
-    var month = new Intl.DateTimeFormat('en', { month: 'long'}).format(ObjectId(user._id).getTimestamp());
     var year = ObjectId(user._id).getTimestamp().getFullYear();
-    info.joinKarasu = month + ' ' + year;
+    if (i18next.t("lang") === "en") {
+      info.joinKarasu = `${new Intl.DateTimeFormat("en", { month: "long" }).format(ObjectId(user._id).getTimestamp())} ${year}`;
+    } else {
+      info.joinKarasu = `${year}年${ObjectId(user._id).getTimestamp().getMonth() + 1}月`;
+    }
 
     info.numDemonCards = user.cards.owned.length;
     info.numMemoryCards = user.cards.faved.length;

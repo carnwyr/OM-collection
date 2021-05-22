@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	$("#shareLink").on("click", () => { $("#userLink").val(window.location.href); });
+	$("#shareLink").on("click", () => { $("#userLink").val(window.location.href.split('?')[0]); });
 	$("#copyLink").on("click", copyCollectionLink);
   var path = window.location.pathname.split("/").pop();
   if (path === "collection") {

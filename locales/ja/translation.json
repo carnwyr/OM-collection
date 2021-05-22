@@ -3,7 +3,6 @@
   "common": {
     "home": "ホーム",
     "gallery": "カード",
-    "my_karasu": "My Karasu",
     "cards": "カード",
     "profile": "プロフィール",
     "rankings": "ランキング",
@@ -68,7 +67,16 @@
   "profile": {
     "name": "ユーザーID",
     "friend_id": "フレンドID",
-    "view_all": "すべて見る"
+    "join_karasu": "{{date}}からKarasu OSを利用しています",
+    "entered_rad": "RAD(???)登録日",
+    "language": "言語",
+    "favourite_chara": "好きなキャラ",
+    "view_all": "すべて見る",
+    "share": "シェア",
+    "copy": "コピー",
+    "main_chara": "7兄弟",
+    "side_chara": "サイドキャラ",
+    "percentage_calculation": "このページのデータは全種類のカードによって計算されたのです。(アクマカードとメモリーカード)"
   },
   "spg": {
     "shortActions": "アクションを１つだけ表示",
@@ -77,9 +85,6 @@
   },
   "error": {
     "invalid_char": "Karasu IDに使用できるのは半角英数小文字と ._- のみです"
-  },
-  "temp": {
-    "cards": "カード"
   },
 
   "Action 1": "1回目",

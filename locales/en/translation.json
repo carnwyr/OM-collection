@@ -3,7 +3,6 @@
   "common": {
     "home": "Home",
     "gallery": "Gallery",
-    "my_karasu": "My Karasu",
     "cards": "Cards",
     "favourites": "Favourites",
     "profile": "Profile",
@@ -59,7 +58,7 @@
   },
   "collection": {
     "cards": "Cards",
-    "favourites":" Favourites"
+    "favourites": " Favourites"
   },
   "user": {
     "username": "Username",
@@ -71,9 +70,16 @@
   "profile": {
     "name": "In-game name",
     "friend_id": "Friend ID",
-    "join_karasu": "Joined on {{date}}",
+    "join_karasu": "Joined in {{date}}",
     "entered_rad": "Entered RAD on",
-    "view_all": "View All"
+    "language": "Language",
+    "favourite_chara": "Favourite character(s)",
+    "view_all": "View All",
+    "share": "Share",
+    "copy": "copy",
+    "main_chara": "Characters",
+    "side_chara": "Side characters",
+    "percentage_calculation": "Percentage is calculated based on the entire collection (both demon and memory cards)."
   },
   "spg": {
     "shortActions": "Show one option for each action",

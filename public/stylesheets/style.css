@@ -124,3 +124,7 @@ footer ul {
   display: none;
   top: -100px;
 }
+
+#bmc-wbtn {
+  z-index: 99 !important;
+}
