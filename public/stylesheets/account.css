@@ -1,8 +1,8 @@
-.#donation:hover {
+#donation:hover {
   background-color: white !important;
 }
 
-#adFreeStatus.custom-control-input:checked ~ .custom-control-label::before {
+#perks .custom-control-input:checked ~ .custom-control-label::before {
   border-color: var(--success);
   background-color: var(--success);
 }

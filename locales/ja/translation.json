@@ -78,6 +78,9 @@
     "side_chara": "サイドキャラ",
     "percentage_calculation": "このページのデータは全種類のカードによって計算されたのです。(アクマカードとメモリーカード)"
   },
+  "settings": {
+    "user": "ユーザー設定"
+  },
   "spg": {
     "shortActions": "アクションを１つだけ表示",
     "allActions": "全アクションを表示",
@@ -116,6 +119,7 @@
   "Simeon": "シメオン",
   "Solomon": "ソロモン",
   "Little D": "リトルD",
+  "LittleD": "リトルD",
 
   "Pride": "傲慢",
   "Greed": "強欲",
