@@ -287,7 +287,7 @@ exports.getAccountPage = function(req, res, next) {
     var u = result[0].info;
     u.profile = result[0].profile;
 
-    return res.render('account', { title: 'Account settings', user: u });
+    return res.render("account", { title: i18next.t("title.settings"), user: u });
   });
 };
 

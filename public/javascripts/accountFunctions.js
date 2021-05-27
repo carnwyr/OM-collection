@@ -13,26 +13,28 @@ $(document).ready(function() {
 				url: "/getAllCards"
 			}).done(function(result) {
 				lst = result;
+				// console.log(lst);
 			});
 		}
 	});
 	$("#cardSearch button").on("click", searchCard);
 	$(".list-group").on("click", "li", updateDisplayCard);
-	$(document).on("click", function(e) {
-		/**
-		 * Checks that
-		 * 1) target isn't .list-group
-		 * 2) target isn't the search button
-		 * 3) target isn't .list-group-item
-		 */
-		var $dropdown = $(".list-group");
-		if (!$dropdown.is(e.target) && !$("#cardSearch button").is(e.target) && $dropdown.has(e.target).length === 0) {
-			$(".list-group").slideUp();
-		}
-	});
 
 	$("#sortable").sortable();
 	$("#sortable").disableSelection();
+});
+
+$(document).on("click", function(e) {
+	/**
+	 * Checks that
+	 * 1) target isn't .list-group
+	 * 2) target isn't anything in the search button
+	 * 3) target isn't .list-group-item
+	 */
+	var $dropdown = $(".list-group");
+	if (!$dropdown.is(e.target) && !$("#cardSearch *").is(e.target) && $dropdown.has(e.target).length === 0) {
+		$(".list-group").slideUp();
+	}
 });
 
 function sendVerificationMessage() {
@@ -128,6 +130,7 @@ function validateFieldsPassword() {
 	return true;
 }
 
+// needs update for better performance
 function updateProfile(e) {
 	e.preventDefault();
 	var formData = new FormData($("form#profile")[0]);
@@ -143,7 +146,6 @@ function updateProfile(e) {
 		}
 	}
 	updatedInfo.characters = charaList;
-
 	updatedInfo.display = card;
 
 	$.ajax({
@@ -154,9 +156,9 @@ function updateProfile(e) {
 		cache: false
 	}).done(function(result) {
 		if (result.err) {
-			showAlert(false, result.message);
+			showAlert("danger", result.message);
 		} else {
-			showAlert(true, result.message);
+			showAlert("success", result.message);
 		}
 	});
 }

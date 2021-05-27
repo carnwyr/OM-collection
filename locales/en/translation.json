@@ -54,7 +54,8 @@
     "my_favourites": "My Favourites",
     "user_favourites": "{{username}}'s Favourites",
     "my_profile": "My Profile",
-    "user_profile": "{{username}}'s Profile"
+    "user_profile": "{{username}}'s Profile",
+    "settings": "User Settings"
   },
   "collection": {
     "cards": "Cards",
@@ -65,7 +66,8 @@
     "password": "Password",
     "forgot_pass": "Forgot account?",
     "show_pass": "Show password",
-    "confirm_pass": "Confirm password"
+    "confirm_pass": "Confirm password",
+    "email": "Email"
   },
   "profile": {
     "name": "In-game name",

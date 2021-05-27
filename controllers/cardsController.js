@@ -354,14 +354,19 @@ function getReplacedImages() {
 	return Promise.all([p1, p2, p3]);
 };
 
-exports.getAllCards = function(req, res, next) {
-	Cards.find({}, "name uniqueName", function(err, result) {
-		if (err) return next(err);
-
-		// console.log(result);
-
-		return res.send(result);
-	});
+exports.getAllCards = async function(req, res) {
+	try {
+		var fields = { "uniqueName": 1 };
+		if (i18next.t("lang") === "en") {
+			fields.name = 1;
+		} else {
+			fields.name = "$ja_name";
+		}
+		return res.send(await Cards.aggregate([{ $project: fields }]));
+	} catch(e) {
+		// console.error(e);
+		return res.send([]);
+	}
 }
 
 

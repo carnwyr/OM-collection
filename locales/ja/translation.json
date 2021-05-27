@@ -51,7 +51,8 @@
     "my_favourites": "お気に入り",
     "user_favourites": "{{username}}のお気に入り",
     "my_profile": "プロフィール",
-    "user_profile": "{{username}}のプロフィール"
+    "user_profile": "{{username}}のプロフィール",
+    "settings": "ユーザー設定"
   },
   "collection": {
     "cards": "アドレス帳",
@@ -77,9 +78,6 @@
     "main_chara": "7兄弟",
     "side_chara": "サイドキャラ",
     "percentage_calculation": "このページのデータは全種類のカードによって計算されたのです。(アクマカードとメモリーカード)"
-  },
-  "settings": {
-    "user": "ユーザー設定"
   },
   "spg": {
     "shortActions": "アクションを１つだけ表示",
