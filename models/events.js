@@ -2,28 +2,36 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
+var APSchema = new Schema({
+    amount: { type: Number, required: true },
+    points: { type: Number, required: true },
+    page: { type: Number }
+});
+
 var RewardsSchema = new Schema({
-    type: { type: String, required: true },
+    tag: { type: String, required: true },
     points: { type: Number, required: true },
     card: { type: String }
 });
 
-var APSchema = new Schema({
-    amount: { type: Number, required: true },
-    points: { type: Number, required: true },
-    repeat: { type: Boolean }
+var LockedSchema = new Schema({
+    keysNeeded: { type: Number, required: true },
+    availableKeyStages: { type: Number, required: true }
 });
 
 var EventsSchema = new Schema(
   {
     name: { type: String, required: true },
     ja_name: { type: String, required: true },
-    type: { type: String, required: true, enum: ['Pop Quiz', 'Nightmare'] },
-    cards: [String],
-    costs: [RewardsSchema],
+    img_name: { type: String, required: true },
+    type: { type: String, required: true, enum: ['Pop Quiz', 'Lonely Devil', 'Birthday'] },
+    start: { type: Date},
+    end: { type: Date },
     ap: [APSchema],
-    status: { type: String, enum: ['Unavailable', 'Running', 'Returned'] },
-    end_date: { type: Date }
+    rewards: [RewardsSchema],
+    stages: { type: Number, required: true },
+    pageCost: { type: Number, required: true },
+    lockedStages: [LockedSchema]
   }
 );
 

@@ -1,23 +1,35 @@
 $(document).ready(function() {
-	$("#calculate").click(() => calculate());
+	$("#currentPoints").on('input', () => updateCalculator());
+	$("#pointsPerBattle").on('input', () => updateCalculator());
+
+	updateCalculator();
 })
 
-function calculate() {
-	var totalPoints = $("#totalPoints").val();
+function updateCalculator() {
+	var currentPoints = $("#currentPoints").val();
 	var pointsPerBattle = $("#pointsPerBattle").val();
+
+	if (!currentPoints || !pointsPerBattle) {
+		return;
+	}
+
 	$.ajax({
-			type: "post",
-			url: "/event/" + encodeURIComponent(eventName.replace(/ /g, '_')) + "/calculate",
-			contentType: "application/json",
-			data: JSON.stringify({ totalPoints: totalPoints, pointsPerBattle: pointsPerBattle })
+		type: "post",
+		url: "/event/" + encodeURIComponent(event.name.replace(/ /g, '_')) + "/calculate",
+		contentType: "application/json",
+		data: JSON.stringify({ currentPoints: currentPoints, pointsPerBattle: pointsPerBattle })
 	}).done(function(data) {
 		if (!data.err) {
-			$('#calculationResult').text(data.result);
-			if ($('#calculationResult').hasClass("d-none")) {
-				$('#calculationResult').toggleClass("d-none d-block");
-			}
+			updateResults(data.result);
 		} else {
 			showAlert("danger", "Something went wrong :(");
 		}
+	});
+}
+
+function updateResults(calculationResults) {
+	calculationResults.forEach(result => {
+		$("#stages_"+result.tag.replace(" ", "")).text("Daily: " + result.dailyStages + " stages");
+		$("#total_"+result.tag.replace(" ", "")).text("Total " + result.totalBattles + " battles, " + result.totalAp + " ap");;
 	});
 }
