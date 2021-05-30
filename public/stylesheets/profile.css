@@ -61,7 +61,7 @@ li.placeholder {
 
 #profile div.col-md-6 {
   display: flex;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 /* {
@@ -97,4 +97,23 @@ hr.style-eight::after {
   font-size: 1.5em;
   padding: 0 .5em;
   background: white;
+}
+
+#usernav span {
+  max-width: 0;
+  -webkit-transition: max-width 1s;
+  transition: max-width 1s;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#usernav>.btn-outline-primary:hover>span {
+  max-width: 7rem;
+}
+
+#usernav>.btn-outline-primary {
+  color: var(--primary);
+  background-color: white;
 }

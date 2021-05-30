@@ -63,7 +63,8 @@
     "password": "パスワード",
     "forgot_pass": "アカウントを忘れた場合",
     "show_pass": "パスワードを表示します",
-    "confirm_pass": "パスワードを認証する"
+    "confirm_pass": "パスワードを認証する",
+    "email": "メールアドレス"
   },
   "profile": {
     "name": "ユーザーID",
@@ -78,6 +79,20 @@
     "main_chara": "7兄弟",
     "side_chara": "サイドキャラ",
     "percentage_calculation": "このページのデータは全種類のカードによって計算されたのです。(アクマカードとメモリーカード)"
+  },
+  "settings": {
+    "card_display": "お気に入りカード",
+    "fav_char_instruction": "Ah...",
+    "update": "変更",
+    "linked_email": "This is the email that will receive instructions for password recovery.",
+    "no_linked_email": "No emails linked",
+    "pls_link_email": "To enable password recovery, link your email address.",
+    "update_email": "メールアドレスを変更する",
+    "email_instruction": "新しいメールアドレスを入力してください。入力したメールアドレス宛に確認メールが送信されます。",
+    "send_email": "送信する",
+    "current_pass": "現在のパスワード",
+    "new_pass": "新しいパスワード",
+    "confirm_new_pass": "新しいパスワードを認証する"
   },
   "spg": {
     "shortActions": "アクションを１つだけ表示",

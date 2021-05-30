@@ -4,7 +4,6 @@
     "home": "Home",
     "gallery": "Gallery",
     "cards": "Cards",
-    "favourites": "Favourites",
     "profile": "Profile",
     "rankings": "Rankings",
     "tools": "Tools",
@@ -59,7 +58,7 @@
   },
   "collection": {
     "cards": "Cards",
-    "favourites": " Favourites"
+    "favourites": "Favourites"
   },
   "user": {
     "username": "Username",
@@ -83,10 +82,33 @@
     "side_chara": "Side characters",
     "percentage_calculation": "Percentage is calculated based on the entire collection (both demon and memory cards)."
   },
+  "settings": {
+    "card_display": "Favourite Card Display",
+    "fav_char_instruction": "Check your favourite characters and drag to put them in order!",
+    "update": "Update",
+    "linked_email": "This is the email that will receive instructions for password recovery.",
+    "no_linked_email": "No emails linked",
+    "pls_link_email": "To enable password recovery, link your email address.",
+    "update_email": "Update email",
+    "email_instruction": "A confirmation message will be sent to your email. Please open the link in it to verify the email address.",
+    "send_email": "Send email confirmation",
+    "current_pass": "Current password",
+    "new_pass": "New password",
+    "confirm_new_pass": "Confirm new password"
+  },
   "spg": {
     "shortActions": "Show one option for each action",
     "allActions": "Show alternative options",
     "use_item": "Use items"
+  },
+  "donation": {
+    "supporter_perks": "Supporter Perks",
+    "ad-free": "Ad-free status",
+    "badge": "Special badge",
+    "support_karasu": "Support Karasu!",
+    "message": "Donate now to browse Karasu-OS.com ad-free. You will also receive a special badge to display on your profile :)",
+    "thanks": "Thank you for supporting us. We hope you have been enjoying the Obey Me! resources we provide, and will continue to support Karasu-OS.com!",
+    "donate": "Make a Donation"
   },
 
   "Pride": "Pride",

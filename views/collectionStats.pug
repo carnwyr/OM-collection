@@ -23,71 +23,24 @@ mixin percentBar(owned, total, name)
       if name==='UR'
         div(id="barCoverUR" style={width: (100 - percentage) + '%'})
 
-if title === t("title.my_collection")
-  div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
-    div(class="modal-dialog modal-lg" role="document")
-      div(class="modal-content")
-        div(class="modal-header")
-          h5(class="modal-title text-primary" id="openShareLink")= t("profile.share")
-          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-            span(aria-hidden="true") &times;
-        div(class="modal-body mb-2")
-          div.input-group
-            input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link" disabled)
-            div.input-group-append
-              button#copyLink.btn.btn-primary(style="border-radius:0 4px 4px 0;")= t("profile.copy")
-          div.text-center.text-secondary.mt-2 Stats image to copy and share
-          div(class='d-flex justify-content-center align-items-center mt-3' id='statsImageContainer')
-            div(id='statsSpinner' class="spinner-border text-secondary" role="status" style='display: none')
-            img(id='statsImage' class='img-fluid')
-            div(id='statsMessage')
-
 div#statsCard.card.card-body.shadow.mb-3
-  ul.nav.nav-tabs.mb-4
-    li.nav-item
-      a.nav-link.text-muted(href="profile") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person mb-1" viewBox="0 0 16 16">   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/> </svg>
-        |
-        |
-        span.d-none.d-lg-inline= t("common.profile")
-    li.nav-item
-      a.nav-link.active.text-primary(href="#") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-person mb-1" viewBox="0 0 16 16">   <path d="M12 1a1 1 0 0 1 1 1v10.755S12 11 8 11s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/>   <path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/> </svg>
-        |
-        |
-        span.d-none.d-lg-inline= t("collection.cards")
-    li.nav-item
-      a.nav-link.text-muted(href="favourites") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill mb-1" viewBox="0 0 16 16">   <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/> </svg>
-        |
-        |
-        span.d-none.d-lg-inline= t("collection.favourites")
-  if title === t("title.my_collection")
-    script(src="/javascripts/shareProfile.js" defer)
-    div(style="position:absolute;right:1.25rem;")
-      button(type="button" id="shareLink" class="btn btn-primary" data-toggle="modal" data-target="#openLink")
-        <svg class="bi bi-share mb-1" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
-        |
-        | #{t("profile.share")}
-  div.row
-    //- first mx-auto is needed for current share stats image
-    div#statsTotal.container.col-lg-4.mx-auto.mb-3.mb-lg-0
-      div.row.text-center.mx-auto.align-items-center
-        div.col-6
-          h5.text-primary.mb-0= t("cards.Demon")
-          - var demonPercentage = roundPercentage(cardStats.cards.Demon.owned / cardStats.cards.Demon.total * 100);
-          div(style="position:relative;")
-            img.img-fluid.p-2(src="/images/demon_card.png" style="max-width:120px;width:100%;")
-            div#demonblend
-          div.d-none.d-sm-block #{cardStats.cards.Demon.owned} of #{cardStats.cards.Demon.total}
-          small.d-block.d-sm-none #{cardStats.cards.Demon.owned} of #{cardStats.cards.Demon.total}
-          small.text-muted #{demonPercentage}%
-        div.col-6
-          h5.text-primary.mb-0= t("cards.Memory")
-          - var memoryPercentage = roundPercentage(cardStats.cards.Memory.owned / cardStats.cards.Memory.total * 100);
-          div(style="position:relative;")
-            img.img-fluid.p-2(src="/images/memory_card.png" style="max-width:120px;width:100%;")
-            div#memoryblend
-          div.d-none.d-sm-block #{cardStats.cards.Memory.owned} of #{cardStats.cards.Memory.total}
-          small.d-block.d-sm-none #{cardStats.cards.Memory.owned} of #{cardStats.cards.Memory.total}
-          small.text-muted #{memoryPercentage}%
+  div.row.align-items-center
+    //- mx-auto is needed for share stats image
+    div#statsTotal.col-lg-4.d-flex.text-center.mb-3.mb-lg-0.mx-auto
+      div.w-50
+        h5.text-primary.mb-0= t("cards.Demon")
+        - var demonPercentage = roundPercentage(cardStats.cards.Demon.owned / cardStats.cards.Demon.total * 100);
+        img.img-fluid.p-2(src="/images/demon_card.png" style="max-width:120px;width:100%;")
+        div#demonblend
+        p.mb-0 #{cardStats.cards.Demon.owned} of #{cardStats.cards.Demon.total}
+        small.text-muted #{demonPercentage}%
+      div.w-50
+        h5.text-primary.mb-0= t("cards.Memory")
+        - var memoryPercentage = roundPercentage(cardStats.cards.Memory.owned / cardStats.cards.Memory.total * 100);
+        img.img-fluid.p-2(src="/images/memory_card.png" style="max-width:120px;width:100%;")
+        div#memoryblend
+        p.mb-0 #{cardStats.cards.Memory.owned} of #{cardStats.cards.Memory.total}
+        small.text-muted #{memoryPercentage}%
 
     div.col-lg-8
       div.nav.nav-pills.mb-2(id='statsNavTab' role='tablist')
@@ -158,3 +111,22 @@ style.
   #memoryblend {
     height: calc((100% - 1rem - 8px) * #{(100 - memoryPercentage)/100});
   }
+
+if title === t("title.my_collection")
+  div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
+    div(class="modal-dialog modal-lg" role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h5(class="modal-title text-primary" id="openShareLink")= t("profile.share")
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span(aria-hidden="true") &times;
+        div(class="modal-body mb-2")
+          div.input-group
+            input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link" disabled)
+            div.input-group-append
+              button#copyLink.btn.btn-primary(style="border-radius:0 4px 4px 0;")= t("profile.copy")
+          div.text-center.text-secondary.mt-2 Stats image to copy and share
+          div(class='d-flex justify-content-center align-items-center mt-3' id='statsImageContainer')
+            div(id='statsSpinner' class="spinner-border text-secondary" role="status" style='display: none')
+            img(id='statsImage' class='img-fluid')
+            div(id='statsMessage')

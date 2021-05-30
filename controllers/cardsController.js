@@ -226,6 +226,7 @@ exports.getProfilePage = async function(req, res, next) {
 		};
 
 		var profileInfo = await usersController.getProfileInfo(username);
+		profileInfo.karasu_name = username;
 
 		// console.log(profileInfo);
 
