@@ -1,12 +1,8 @@
 $(document).ready(function() {
-	$("#shareLink").on("click", () => { $("#userLink").val(window.location.href.split('?')[0]); });
 	$("#copyLink").on("click", copyCollectionLink);
   var path = window.location.pathname.split("/").pop();
   if (path === "collection") {
     $('#openLink').on('show.bs.modal', loadStatsImage);
-  } else if (path === "profile") {
-    var text = encodeURIComponent("My #obeyme profile and card collections ↓↓↓\n"+window.location.href+"\n\n@karasu_os\n#obeyme #おべいみー");
-    $(".twitter-share-button").attr("href", "https://twitter.com/intent/tweet?text="+text);
   }
 });
 

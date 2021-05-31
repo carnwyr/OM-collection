@@ -52,15 +52,33 @@ block content
         //- Share Event
         div#ShareEvent.card.mb-3
           div.card-body.text-center
-            h5 Get this badge!
+            h5 Limited-time Badge
             img.m-2(src="/images/ShareKarasu.png" alt="Badge for sharing karasu-os.com" style="width:64px;height:64px;")
-            p Share your profile on Twitter to get a special badge!
-            div.d-lg-flex.justify-content-center
-              h5 Step 1:
-              p.ml-2 Go to your profile, My Pages > Profile, and click Share
-            div.d-lg-flex.justify-content-center
-              h5 Step 2:
-              p.ml-2 Publish the Tweet!
+            p Share Karasu-OS.com on Twitter to get a special badge for your profile!
+            if !user
+              p Please
+                |
+                |
+                a(href="/signup")= t("common.signup")
+                |
+                | or
+                |
+                a(href="/login")= t("common.login")
+                |
+                | to participate in this event!
+              p.mt-3.mb-0(style="pointer-events:none;opacity:50%;") ✧ *｡
+                a(class="twitter-share-button ml-2" href='#')
+                  i
+                  span.ml-1 Tweet
+                |
+                | ｡* ✧
+            else
+              p.mt-3.mb-0 ✧ *｡
+                a(class="twitter-share-button ml-2" href="https://twitter.com/intent/tweet?text="+encodeURIComponent(t("temp.share_karasu", { username: user.name })) target="_blank")
+                  i
+                  span.ml-1 Tweet
+                |
+                | ｡* ✧
         //- End of Event Notice
 
         div.row

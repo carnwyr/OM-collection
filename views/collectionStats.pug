@@ -122,7 +122,7 @@ if title === t("title.my_collection")
             span(aria-hidden="true") &times;
         div(class="modal-body mb-2")
           div.input-group
-            input(type="text" id="userLink" class="form-control" aria-label="user's collection link" aria-describedby="user link" disabled)
+            input(type="text" id="userLink" class="form-control" value=`https://karasu-os.com/${user.name}/collection` name="userlink" autocomplete="off" aria-label="user's collection link" aria-describedby="user link" readonly)
             div.input-group-append
               button#copyLink.btn.btn-primary(style="border-radius:0 4px 4px 0;")= t("profile.copy")
           div.text-center.text-secondary.mt-2 Stats image to copy and share

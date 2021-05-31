@@ -251,9 +251,9 @@ function applyEffectWithoutTransition(elements, effect, args) {
 }
 
 function resetFilters() {
-	$("input[type=radio]").prop('checked', true);
-	$("input[type=checkbox]").prop("checked", false);
-	$("input[type=text]").val("");
+	$("#filters input[type=radio]").prop("checked", true);
+	$("#filters input[type=checkbox]").prop("checked", false);
+	$("#filters input[type=text]").val("");
 	$("#checkCardsAll").prop("checked", true);
 }
 

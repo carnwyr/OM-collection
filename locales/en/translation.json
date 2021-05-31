@@ -77,7 +77,7 @@
     "favourite_chara": "Favourite character(s)",
     "view_all": "View All",
     "share": "Share",
-    "copy": "copy",
+    "copy": "Copy",
     "main_chara": "Characters",
     "side_chara": "Side characters",
     "percentage_calculation": "Percentage is calculated based on the entire collection (both demon and memory cards)."
@@ -109,6 +109,9 @@
     "message": "Donate now to browse Karasu-OS.com ad-free. You will also receive a special badge to display on your profile :)",
     "thanks": "Thank you for supporting us. We hope you have been enjoying the Obey Me! resources we provide, and will continue to support Karasu-OS.com!",
     "donate": "Make a Donation"
+  },
+  "temp": {
+    "share_karasu": "My Obey Me! profile and card collections on Karasu OS ↓↓↓\n\nhttps://karasu-os.com/{{username}}/profile\n\n@karasu_os\n#obeyme #おべいみー"
   },
 
   "Pride": "Pride",
