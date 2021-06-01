@@ -354,7 +354,7 @@ exports.verifyEmail = function(req, res, next) {
 			if (err) {
 				return next(err);
 			}
-			res.redirect('/user/'+record.user);
+			res.redirect("/user");
 		});
 	});
 };

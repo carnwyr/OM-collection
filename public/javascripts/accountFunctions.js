@@ -4,7 +4,7 @@ $(document).ready(function() {
 
 	$("#sendVerification").on("click", sendVerificationMessage);
 	$("#changePassword").on("click", changePassword);
-	$("form#profile input[type=submit]").on("click", updateProfile);
+	$("input#updateProfile").on("click", updateProfile);
 
 	$("#cardSearch input").on("focus", function() {
 		if (lst.length === 0) {

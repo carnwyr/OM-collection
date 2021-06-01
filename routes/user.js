@@ -14,7 +14,7 @@ router.get('/:name/confirmEmail/:code', usersController.isSameUser(), usersContr
 router.post('/:name/changePassword', usersController.isSameUser(), usersController.changePassword);
 
 // Account settings page
-router.get('/:name', usersController.isSameUser(), usersController.getAccountPage);
+router.get('/', usersController.isSameUser(), usersController.getAccountPage);
 
 // update profile
 router.post('/:name/updateUserProfile', usersController.isSameUser(), usersController.updateUserProfile);

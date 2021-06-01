@@ -17,11 +17,11 @@ block content
 				div.row
 					div.col-12.col-md-3.text-center.text-md-left.mb-3.mb-md-0
 						div(class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical")
-							a(class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true")= t("common.profile")
-							a(class="nav-link" id="v-pills-email-tab" data-toggle="pill" href="#v-pills-email" role="tab" aria-controls="v-pills-email" aria-selected="false")= t("user.email")
+							a(class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true") Profile
+							a(class="nav-link" id="v-pills-email-tab" data-toggle="pill" href="#v-pills-email" role="tab" aria-controls="v-pills-email" aria-selected="false") Email
 								if !user.email
 									span(class="badge badge-pill badge-warning ml-2") !
-							a(class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false")= t("user.password")
+							a(class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false") Password
 					div.col-12.col-md-9
 						div(class="tab-content" id="v-pills-tabContent")
 							div(class="tab-pane show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab")
@@ -29,16 +29,20 @@ block content
 									form#profile.col-12.col-md
 										div.form-row
 											div.form-group.col-md-6
-												label(for="inputInGameName")= t("profile.name")
+												//- label(for="inputInGameName")= t("profile.name")
+												label(for="inputInGameName") In-game Name
 												input(type="text" class="form-control" id="inputInGameName" name="name" placeholder="???" value=user.profile.name maxlength="10")
 											div.form-group.col-md-6
-												label(for="inputFriendID")= t("profile.friend_id")
+												//- label(for="inputFriendID")= t("profile.friend_id")
+												label(for="inputFriendID") Friend ID
 												input(type="text" class="form-control" id="inputFriendID" name="id" placeholder="???" value=user.profile.id maxlength="20")
 											div.form-group.col-md-6
-												label(for="inputJoinOM")= t("profile.entered_rad")
+												//- label(for="inputJoinOM")= t("profile.entered_rad")
+												label(for="inputJoinOM") Entered RAD on
 												input(type="date" class="form-control" id="inputJoinOM" name="joined" value=user.profile.joined.toISOString().split("T")[0] min="2019-12-11")
 											div.col-md-6
-												span= t("profile.language")
+												//- span= t("profile.language")
+												span Language
 												div.form-check
 													input(type="radio" class="form-check-input" id="english" name="language" value="en" checked)
 													label(for="english" class="form-check-label") English
@@ -46,9 +50,10 @@ block content
 													input(type="radio" class="form-check-input" id="japanese" name="language" value="jp")
 													label(for="japanese" class="form-check-label") 日本語
 
-										p.my-2= t("profile.favourite_chara")
+										//- p.my-2= t("profile.favourite_chara")
+										p.my-2 Favourite Character(s)
 										p.text-muted= t("settings.fav_char_instruction")
-										- var ch = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Luke", "Simeon", "Solomon", "LittleD"];
+										- var ch = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Luke", "Simeon", "Solomon"];
 										ul#sortable.mb-2
 											each i in user.profile.characters
 												- ch.splice(ch.indexOf(i), 1);
@@ -58,7 +63,7 @@ block content
 														label.form-check-label.ml-2(for=i)
 															img(src="/images/faces/"+ i + ".png" style="width:32px;height:32px;")
 															|
-															| #{t(i)}
+															| #{i}
 													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/></svg>
 											each c in ch
 												li.row
@@ -67,7 +72,7 @@ block content
 														label.form-check-label.ml-2(for=c)
 															img(src="/images/faces/"+ c + ".png" style="width:32px;height:32px;")
 															|
-															| #{t(c)}
+															| #{c}
 													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/></svg>
 									div#cardSearch.col-12.col-md-4
 										div.mb-2= t("settings.card_display")
@@ -78,7 +83,7 @@ block content
 										ul.list-group(style="position:absolute;width:100%;padding:inherit;left:0;")
 										img(src="/images/cards/L/" + (user.profile.display?user.profile.display:"The_Mammon_Way") + ".jpg" style="width:100%;")
 								br
-								input.btn.btn-primary(type="submit" value=t("settings.update"))
+								input#updateProfile.btn.btn-primary(type="submit" value=t("settings.update"))
 
 							div(class="tab-pane" id="v-pills-email" role="tabpanel" aria-labelledby="v-pills-email-tab")
 								div.row
@@ -90,7 +95,8 @@ block content
 											- var emailStatus = t("settings.no_linked_email")
 											- var emailMsg = t("settings.pls_link_email")
 
-										p.mb-2= t("user.email")
+										//- p.mb-2= t("user.email")
+										p.mb-2 Email
 											if !user.email
 												span(class="badge badge-pill badge-warning ml-1") !
 										p.card-text.text-muted= emailMsg
@@ -102,10 +108,12 @@ block content
 										p.text-muted= t("settings.email_instruction")
 										form
 											div(class="form-group")
-												label(for="email")= t("user.email")
+												//- label(for="email")= t("user.email")
+												label(for="email") Email
 												input(class="form-control" type="email" id="email" name="email")
 											div(class="form-group")
-												label(for="password")= t("user.password") + " (Karasu OS)"
+												//- label(for="password")= t("user.password") + " (Karasu OS)"
+												label(for="password") Password (Karasu OS)
 												input(class="form-control" type="password" id="password" name="password")
 								button(type="button" class="btn btn-primary" id="sendVerification")= t("settings.send_email")
 								small#cooldown.text-muted

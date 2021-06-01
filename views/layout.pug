@@ -63,7 +63,7 @@ html(lang=t("lang"))
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.tools")
             div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
               a(class="dropdown-item" href='/SurpriseGuest')= t("common.spg")
-          if user && user.isAdmin
+          if user && user.type === "Admin"
             li(class="nav-item dropdown")
               a(class="nav-link dropdown-toggle" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
               div(class="dropdown-menu shadow px-2" aria-labelledby="adminDropdownButton")
@@ -85,12 +85,12 @@ html(lang=t("lang"))
                 if !user.email
                   span(class="badge badge-pill badge-warning mx-1") !
               div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="accountDropdownButton")
-                a(class="dropdown-item" href='/user/'+user.name)= t("common.settings")
+                a(class="dropdown-item" href="/user")= t("common.settings")
                   if !user.email
                     span(class="badge badge-pill badge-warning ml-1") !
                 a(class="dropdown-item" href='/logout')= t("common.logout")
             li(class="nav-item d-md-none")
-              a(class="nav-link" href='/user/'+user.name)= t("common.settings")
+              a(class="nav-link" href="/user")= t("common.settings")
                 if !user.email
                   span(class="badge badge-pill badge-warning ml-1") !
             li(class="nav-item d-md-none")
