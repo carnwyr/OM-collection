@@ -34,10 +34,6 @@ $(document).ready(function(){
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
 		$(this).delay(100).removeClass('show');
 	});
-
-	$("#b2t").on('click', () => { $('html, body').animate({scrollTop:0}, 500); });
-	$(window).scroll(switchBackToTopButton);
-	switchBackToTopButton();
 });
 
 $(document).on("adBlocked", () => { adBlock = true; });
@@ -54,18 +50,6 @@ var cookieExpiryDate = () => {
 	var d = new Date();
 	d.setMonth(d.getMonth() + 3);
 	return d.toUTCString();
-}
-
-function switchBackToTopButton() {
-	if ($(window).scrollTop() > $(window).height()*3) {
-		$("#b2t").fadeIn();
-		// if ($(window).width() < 540) {
-		// 	$("#cookieToast").css("transform", "translate(0, -64px)");
-		// }
-	} else {
-		$("#b2t").fadeOut();
-		// $("#cookieToast").css("transform", "");
-	}
 }
 
 function showAlert(type, message) {

@@ -170,9 +170,11 @@ block content
 
     if (!user || !user.supportStatus.includes("adfree"))
       div.container.ddd
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7371452932" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        script.
-          (adsbygoogle = window.adsbygoogle || []).push({});
+        div.row
+          div.col
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7371452932" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            script.
+              (adsbygoogle = window.adsbygoogle || []).push({});
         a(type="button" class="text-muted" data-toggle="modal" data-target="#removeAdsModal" style="display:none;") Remove Ads
 
     div(class="row" id="memoryCards")
@@ -203,3 +205,6 @@ block content
                 input(type="text" id="userLink" class="form-control" value=`https://karasu-os.com/${user.name}/favourites` name="userlink" aria-label="user's collection link" aria-describedby="user link" readonly)
                 div.input-group-append
                   button#copyLink.btn.btn-primary(style="border-radius:0 4px 4px 0;")= t("profile.copy")
+
+  div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
+    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>

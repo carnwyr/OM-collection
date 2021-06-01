@@ -58,6 +58,10 @@ $(document).ready(function() {
 	}, function() {
 		$(this).parent().find('.dropdown-menu').first().stop(true, true).delay(250).slideUp();
 	});
+
+	$("#b2t").on('click', () => { $('html, body').animate({scrollTop:0}, 500); });
+	$(window).scroll(switchBackToTopButton);
+	switchBackToTopButton();
 });
 
 function fillRank(container) {
@@ -511,4 +515,16 @@ async function applyQuery() {
 	}
 
 	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val(), ownedCards), viewType);
+}
+
+function switchBackToTopButton() {
+	if ($(window).scrollTop() > $(window).height()*3) {
+		$("#b2t").fadeIn();
+		// if ($(window).width() < 540) {
+		// 	$("#cookieToast").css("transform", "translate(0, -64px)");
+		// }
+	} else {
+		$("#b2t").fadeOut();
+		// $("#cookieToast").css("transform", "");
+	}
 }
