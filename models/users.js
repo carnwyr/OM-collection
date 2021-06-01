@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
 var Schema = mongoose.Schema;
 
@@ -6,7 +6,7 @@ var UsersSchema = new Schema({
 	info: {
 		name: { type: String, required: true, unique: true },
 		password: { type: String, required: true, unique: true },
-		type: { type: String, required: true, enum: ['Admin', 'User'] },
+		type: { type: String, required: true, enum: ["Admin", "User"] },
 		email: { type: String },
 		supportStatus: { type: Array }
 	},
@@ -25,4 +25,4 @@ var UsersSchema = new Schema({
 });
 
 
-module.exports = mongoose.model('users', UsersSchema);
+module.exports = mongoose.model("users", UsersSchema);

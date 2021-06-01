@@ -571,14 +571,11 @@ exports.getProfileInfo = async function(username) {
       info.joinKarasu = `${year}年${ObjectId(user._id).getTimestamp().getMonth() + 1}月`;
     }
 
-    info.numDemonCards = user.cards.owned.length;
-    info.numMemoryCards = user.cards.faved.length;
-
     info.badges = user.info.supportStatus;
 
     return info;
   } catch(e) {
-    // add sentry.io
+    Sentry.captureException(e);
     return info;
   }
 }
@@ -589,7 +586,7 @@ exports.updateUserProfile = function(req, res) {
     { $set: { "profile" : req.body.updatedInfo } },
     function(err, result) {
       if (err) {
-        // add sentry
+        Sentry.captureException(e);
         return res.json({ err: true, message: "Something went wrong :(" });
       }
 
