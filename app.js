@@ -1,6 +1,7 @@
 const express = require("express");
 const compression = require("compression");
 const Sentry = require("@sentry/node");
+const helmet = require("helmet");
 
 const createError = require("http-errors");
 const path = require("path");
@@ -37,6 +38,10 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
+app.use(helmet({
+		contentSecurityPolicy: false
+	})
+);
 app.use(Sentry.Handlers.requestHandler());
 
 i18next
