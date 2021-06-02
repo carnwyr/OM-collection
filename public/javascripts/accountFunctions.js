@@ -138,7 +138,6 @@ function updateProfile(e) {
 	var updatedInfo = {};
 	var charaList = [];
 	for (var pair of formData.entries()) {
-		// console.log(pair);
 		if (pair[0] !== "characters") {
 			updatedInfo[pair[0]] = pair[1];
 		} else {

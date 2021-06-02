@@ -178,8 +178,6 @@ exports.getProfilePage = async function(req, res, next) {
 		var profileInfo = await usersController.getProfileInfo(username);
 		profileInfo.karasu_name = username;
 
-		// console.log(profileInfo);
-
 		res.render("profile", {
 			title: title, description: `See ${username}'s profile on Karasu-OS.com`,
 			user: req.user,

@@ -174,9 +174,6 @@ exports.getOwnedCards = async function(req, res) {
 
 		res.send(ownedCards);
 	} catch (e) {
-		// TODO proper error handling
-		// console.error(e);
-
     Sentry.captureException(e);
     return res.send([]);
 	}
@@ -223,7 +220,8 @@ exports.modifyCollection = async function(req, res, callback) {
 			throw e;
 		}
 	} catch (e) {
-		console.error(e.message);
+		// console.error(e.message);
+    Sentry.captureException(e);
 		return res.json({ err: true, message: e.clientMessage ? e.clientMessage : e.message });
 	}
 };
@@ -559,16 +557,25 @@ exports.deleteCardInCollections = function(cardName) {
 };
 
 exports.getProfileInfo = async function(username) {
-  var info = {};
   try {
     var user = await Users.findOne({ "info.name": username });
-    info = user.profile;
+    var info = { ...user.profile };
 
-    var year = ObjectId(user._id).getTimestamp().getFullYear();
     if (i18next.t("lang") === "en") {
-      info.joinKarasu = `${new Intl.DateTimeFormat("en", { month: "long" }).format(ObjectId(user._id).getTimestamp())} ${year}`;
+      info.joinKarasu = `${new Intl.DateTimeFormat("en", { month: "long" }).format(ObjectId(user._id).getTimestamp())} ${ObjectId(user._id).getTimestamp().getFullYear()}`;
     } else {
-      info.joinKarasu = `${year}年${ObjectId(user._id).getTimestamp().getMonth() + 1}月`;
+      info.joinKarasu = `${ObjectId(user._id).getTimestamp().getFullYear()}年${ObjectId(user._id).getTimestamp().getMonth() + 1}月`;
+    }
+
+    if (info.joined) {
+      var date = info.joined.getUTCDate(),
+          month = info.joined.getUTCMonth() + 1,
+          year = info.joined.getUTCFullYear();
+      if (i18next.t("lang") === "en") {
+        info.joined = `${date} ${new Intl.DateTimeFormat("en", { month: "long" }).format(info.joined)} ${year}`;
+      } else {
+        info.joined = `${year}年${month}月${date}日`;
+      }
     }
 
     info.badges = user.info.supportStatus;
@@ -576,7 +583,7 @@ exports.getProfileInfo = async function(username) {
     return info;
   } catch(e) {
     Sentry.captureException(e);
-    return info;
+    return {};
   }
 }
 

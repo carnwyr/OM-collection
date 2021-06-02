@@ -1,6 +1,5 @@
 #display .card-body {
   height: 256px;
-  /* overflow: hidden; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,13 +13,13 @@
   overflow: hidden;
 }
 
-#display li {
-  display: inline;
-}
-
 #display ul img {
   width: 82px;
   margin: .25rem;
+}
+
+#display li {
+  display: inline;
 }
 
 li.placeholder {
@@ -39,64 +38,36 @@ li.placeholder {
   background-image: linear-gradient(to bottom, transparent, white 80%, white);
 }
 
-#profile div {
+#profile>div {
   margin-bottom: .5rem;
 }
 
-#profile div span:first-child {
-  /* color: #714ED2; */
+#profile>div>span:first-child {
+  width: 8.5rem;
   font-size: small;
-  /* letter-spacing: 1.25px; */
-  /* font-weight: bold; */
-  /* text-transform: uppercase; */
+  text-align: center;
   margin-right: .5em;
-
-  /* TEMP:  */
   color: white;
   padding: .175rem 1rem;
   background: linear-gradient(to right, rgb(184,121,252), rgb(223,130,246));
   border-radius: 16px;
-
 }
 
-#profile div.col-md-6 {
-  display: flex;
-  margin-bottom: 1.25rem;
-}
-
-/* {
-  border: 2px solid var(--secondary);
-  border-radius: 8px;
-  left: 1rem;
-  position: relative;
-  padding: 0 2px;
-  width: 46%;
-} */
-
-#profile div.col-md-6 span:last-child {
-  /* width: 100%; */
+#profile>div.col-lg-6>span:last-child {
   border-bottom: 2px dotted;
-  /* margin-bottom: .5rem; */
-  /* display: inline-block; */
   flex-grow: 1;
   text-align: center;
 }
 
-hr.style-eight {
-  overflow: visible; /* For IE */
-  border-color: #ffd700;
-  color: #ffd700;
-  text-align: center;
-  margin: 2rem 0;
+#profile>div.col-lg-6 {
+  display: flex;
+  margin-bottom: 1.25rem;
 }
 
-hr.style-eight::after {
-  content: "◆";
-  position: relative;
-  top: -.9em;
-  font-size: 1.5em;
-  padding: 0 .5em;
-  background: white;
+@media (min-width:992px) {
+  #profile>div.col-12>div {
+    width: 50%;
+  }
 }
 
 #usernav span {
