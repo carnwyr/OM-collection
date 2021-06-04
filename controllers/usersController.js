@@ -162,6 +162,11 @@ exports.favesCard = function(user, card) {
 	return Users.exists({"info.name": user, "cards.faved": card});
 };
 
+exports.isPrivateUser = async function(username) {
+  var visibility = await Users.find({ "info.name": username }, "profile.isPrivate");
+  return visibility[0].profile.isPrivate;
+};
+
 
 // Card management
 // getOwnedCards() is redundant and can be modified
@@ -287,6 +292,14 @@ exports.getAccountPage = function(req, res, next) {
 
     if (!u.profile.joined) {
       u.profile.joined = Date();
+    }
+
+    if (!u.profile.display) {
+      u.profile.display = "The_Mammon_Way";
+    }
+
+    if (!u.profile.isPrivate) {
+      u.profile.isPrivate = false;
     }
 
     return res.render("account", { title: i18next.t("title.settings"), user: u });
@@ -600,7 +613,7 @@ exports.updateUserProfile = function(req, res) {
       // console.log(result);  // https://docs.mongodb.com/manual/reference/command/update/#std-label-update-command-output
 
       if (result.nModified === 1) {
-        return res.json({ err: null, message: "Profile updated!"})
+        return res.json({ err: null, message: "Updated!"})
       } else {
         return res.json({ err: true, message: "Something went wrong :(" });
       }

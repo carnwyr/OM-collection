@@ -22,6 +22,7 @@ block content
 								if !user.email
 									span(class="badge badge-pill badge-warning ml-2") !
 							a(class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false") Password
+							a(class="nav-link" id="v-pills-privacy-tab" data-toggle="pill" href="#v-pills-privacy" role="tab" aria-controls="v-pills-privacy" aria-selected="false") Privacy
 					div.col-12.col-md-9
 						div(class="tab-content" id="v-pills-tabContent")
 							div(class="tab-pane show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab")
@@ -81,7 +82,7 @@ block content
 											div.input-group-append
 												button(class="btn btn-outline-primary" style="border-radius:0 4px 4px 0;") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search mb-1" viewBox="0 0 16 16">   <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/> </svg>
 										ul.list-group(style="position:absolute;width:100%;padding:inherit;left:0;")
-										img(src="/images/cards/L/" + (user.profile.display?user.profile.display:"The_Mammon_Way") + ".jpg" style="width:100%;")
+										img(src="/images/cards/L/" + user.profile.display + ".jpg" style="width:100%;")
 								br
 								input#updateProfile.btn.btn-primary(type="submit" value=t("settings.update"))
 
@@ -116,7 +117,7 @@ block content
 												label(for="password") Password (Karasu OS)
 												input(class="form-control" type="password" id="password" name="password")
 								button(type="button" class="btn btn-primary" id="sendVerification")= t("settings.send_email")
-								small#cooldown.text-muted
+								small#cooldown.text-muted.ml-1
 
 							div(class="tab-pane" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab")
 								div.row
@@ -131,6 +132,21 @@ block content
 											label(for="newPasswordConfirm")= t("settings.confirm_new_pass")
 											input(class="form-control" type="password" id="newPasswordConfirm" name="newPasswordConfirm")
 								button(type="button" class="btn btn-primary" id="changePassword")= t("settings.update")
+							div(class="tab-pane" id="v-pills-privacy" role="tabpanel" aria-labelledby="v-pills-privacy-tab")
+								p Collection Visibility
+								form
+									div(class="form-check")
+										input(class="form-check-input" type="radio" name="privacy" id="publicProfileRadio" value="public" checked=(user.profile.isPrivate?false:true))
+										label(class="form-check-label" for="publicProfileRadio") Public
+									div(class="form-check")
+										input(class="form-check-input" type="radio" name="privacy" id="privateProfileRadio" value="private" checked=(user.profile.isPrivate?true:false))
+										label(class="form-check-label" for="privateProfileRadio") Private
+								br
+								p Public: collections are fully visible to everyone
+									br
+									| Private: collections are only visible to yourself. However, visitors can still see part of your collection from your profile page's collection preview section.
+								br
+								input#updatePrivacy.btn.btn-primary(type="submit" value=t("settings.update"))
 				hr
 				div.row
 					div.col-12.col-md-5.text-center.mx-auto

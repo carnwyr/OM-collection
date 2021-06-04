@@ -44,6 +44,11 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 			var title = i18next.t("title.user_collection", { username: username });
 		}
 
+		var privateUser = await usersController.isPrivateUser(username);
+		if (privateUser && title !== i18next.t("title.my_collection")) {
+			return res.render("cardsList", { title: title, description: `${username}'s Collection on Karasu-OS.com`, isPrivate: true, path: "collection", user: req.user });
+		}
+
 		var ownedCards = await usersController.getCardCollection(username, "owned");
 
 		var cardStats = {
@@ -135,6 +140,11 @@ exports.getFavouritesPage = async function(req, res, next) {
 			var title = i18next.t("title.my_favourites");
 		} else {
 			var title = i18next.t("title.user_favourites", { username: username });
+		}
+
+		var privateUser = await usersController.isPrivateUser(username);
+		if (privateUser && title !== i18next.t("title.my_favourites")) {
+			return res.render("cardsList", { title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`, isPrivate: true, path: "fav", user: req.user });
 		}
 
 		var favedCards = await usersController.getCardCollection(username, "faved");

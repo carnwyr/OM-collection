@@ -80,7 +80,10 @@
     "copy": "Copy",
     "main_chara": "Characters",
     "side_chara": "Side characters",
-    "percentage_calculation": "Percentage is calculated based on the entire collection (both demon and memory cards)."
+    "percentage_calculation": "Percentage is calculated based on the entire collection (both demon and memory cards).",
+    "empty_collection": "An empty collection (o_o)",
+    "private_collection": "You're visiting a private collection.",
+    "edit": "Edit profile"
   },
   "settings": {
     "card_display": "Favourite Card Display",

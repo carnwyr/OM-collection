@@ -1,10 +1,10 @@
-var lst = [], nameDict = {};
+var lst = [], nameDict = {}, unsavedChange = false;
 $(document).ready(function() {
 	$("#inputJoinOM").attr("max", new Date().toISOString().split("T")[0]);
 
 	$("#sendVerification").on("click", sendVerificationMessage);
 	$("#changePassword").on("click", changePassword);
-	$("input#updateProfile").on("click", updateProfile);
+	$("input#updateProfile, input#updatePrivacy").on("click", updateProfile);
 
 	$("#cardSearch input").on("focus", function() {
 		if (lst.length === 0) {
@@ -22,6 +22,8 @@ $(document).ready(function() {
 
 	$("#sortable").sortable();
 	$("#sortable").disableSelection();
+
+	$("form#profile").on("change", function() { unsavedChange = true });
 });
 
 $(document).on("click", function(e) {
@@ -35,6 +37,10 @@ $(document).on("click", function(e) {
 	if (!$dropdown.is(e.target) && !$("#cardSearch *").is(e.target) && $dropdown.has(e.target).length === 0) {
 		$(".list-group").slideUp();
 	}
+});
+
+$(window).on("beforeunload", () => {
+	if (unsavedChange) return confirm("You have unsaved change for your profile. Do you wish to exit without saving?");
 });
 
 function sendVerificationMessage() {
@@ -147,6 +153,9 @@ function updateProfile(e) {
 	updatedInfo.characters = charaList;
 	updatedInfo.display = card;
 
+	// seriously needs update
+	updatedInfo.isPrivate = $("#privateProfileRadio").is(":checked");
+
 	$.ajax({
 		type: "post",
 		url: "/user/" + username + "/updateUserProfile",
@@ -157,6 +166,7 @@ function updateProfile(e) {
 		if (result.err) {
 			showAlert("danger", result.message);
 		} else {
+			unsavedChange = false;
 			showAlert("success", result.message);
 		}
 	});

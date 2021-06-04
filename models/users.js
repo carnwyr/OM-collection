@@ -16,7 +16,8 @@ var UsersSchema = new Schema({
 		joined: { type: Date },
 		characters: { type: Array },
 		language: { type: String, enum: ["en", "jp"] },
-		display: { type: String }
+		display: { type: String },
+		isPrivate: { type: Boolean }
 	},
 	cards: {
 		owned: { type: Array },
