@@ -5,7 +5,7 @@ block scripts
 
 block content
   if user
-    div#alert(role="alert" style="position:fixed;right:20px;top:-100px;")
+    div#alert(role="alert")
     if user.type === "Admin"
       div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
         div(class="modal-dialog" role="document")

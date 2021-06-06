@@ -48,10 +48,9 @@ $(window).on("load", () => {
 
 var footerOffset;
 $(window).on("scroll", () => {
-	if ($("footer").isInViewport()) {
+	if ($("footer").isInViewport() && window.innerWidth < 576) {
 		footerOffset = window.innerHeight - document.querySelector("footer").getBoundingClientRect().top;
 		$("#bmc-wbtn, #b2t").css("bottom", "calc(32px + " + footerOffset + "px)");
-		$("#bmc-wbtn").css({ "z-index": "1030", "transition": "0s" });  // hardcoded
 		$("#cookieToast").css("bottom", "calc(100px + " + footerOffset + "px)");
 	} else {
 		$("#bmc-wbtn, #b2t").css("bottom", "32px");
