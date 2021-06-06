@@ -3,34 +3,34 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var APSchema = new Schema({
-    amount: { type: Number, required: true },
-    points: { type: Number, required: true },
+    amount: { type: Number, required: function() { return this.type !== "Nightmare"; } },
+    points: { type: Number, required: function() { return this.type !== "Nightmare"; } },
     page: { type: Number }
 });
 
 var RewardsSchema = new Schema({
-    tag: { type: String, required: true },
-    points: { type: Number, required: true },
+    tag: { type: String, required: function() { return this.type !== "Nightmare"; } },
+    points: { type: Number, required: function() { return this.type !== "Nightmare"; } },
     card: { type: String }
 });
 
 var LockedSchema = new Schema({
-    keysNeeded: { type: Number, required: true },
-    availableKeyStages: { type: Number, required: true }
+    keysNeeded: { type: Number, required: function() { return this.type !== "Nightmare"; } },
+    availableKeyStages: { type: Number, required: function() { return this.type !== "Nightmare"; } }
 });
 
 var EventsSchema = new Schema(
   {
-    name: { type: String, required: true },
-    ja_name: { type: String, required: true },
-    img_name: { type: String, required: true },
-    type: { type: String, required: true, enum: ['Pop Quiz', 'Lonely Devil', 'Birthday'] },
+    name: { type: String, required: function() { return this.type !== "Nightmare"; } },
+    ja_name: { type: String, required: function() { return this.type !== "Nightmare"; } },
+    img_name: { type: String, required: function() { return this.type !== "Nightmare"; } },
+    type: { type: String, required: function() { return this.type !== "Nightmare"; }, enum: ['Pop Quiz', 'Lonely Devil', 'Birthday', "Nightmare"] },
     start: { type: Date},
     end: { type: Date },
     ap: [APSchema],
     rewards: [RewardsSchema],
-    stages: { type: Number, required: true },
-    pageCost: { type: Number, required: true },
+    stages: { type: Number, required: function() { return this.type !== "Nightmare"; } },
+    pageCost: { type: Number, required: function() { return this.type !== "Nightmare"; } },
     lockedStages: [LockedSchema]
   }
 );

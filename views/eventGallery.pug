@@ -1,0 +1,64 @@
+extends layout
+
+block scripts
+  link(rel="stylesheet" href="/stylesheets/eventGallery.css")
+
+block content
+  div.container
+    h1 Pop Quiz
+    div.card.card-body.shadow
+      div.row
+        div.col-12.col-lg-5
+          img.img-fluid(src="/images/events/" + events[0].img_name + ".jpg")
+        div.col.d-flex.align-content-between.flex-wrap
+          p.text-muted.m-auto Content to be determined.
+          //-
+            h5.card-title.mb-0 A Very Cool Event Title
+              |
+              |
+              small.text-muted Until 05 May 2020
+            p.card-text.my-2 Next stage reset in
+              |
+              |
+              span.h5 8
+              |
+              | hours
+              |
+              span.h5 35
+              |
+              | minutes
+              |
+              span.h5 2
+              |
+              | seconds.
+            p.card-text Event ends in
+              |
+              |
+              span.h5 7
+              |
+              | days
+              |
+              span.h5 2
+              |
+              | hours
+              |
+              span.h5 5
+              |
+              | minutes
+              |
+              span.h5 2
+              |
+              | seconds.
+            div#stuff.mb-0
+              for i in [1, 2, 3, 4, 5, 6]
+                a(href="/card/1001_Devildom_Nights")
+                  img.img-fluid(src="/images/cards/S/1001_Devildom_Nights.jpg")
+    ul#gallery
+        //-for i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+      each event in events
+        li
+          div.card.shadow
+            img.card-img-top(src="/images/events/" + event.img_name + ".jpg")
+            div.card-body
+              p.card-title= event.name
+              small.text-muted= event.start + " - " + event.end

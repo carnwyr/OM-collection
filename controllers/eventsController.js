@@ -5,11 +5,12 @@ const eventsService = require("../services/eventsService");
 const eventCalculatorService = require("../services/eventCalculatorService");
 
 exports.getEventsPage = async function(req, res, next) {
+	// if (url is nightmare) then { var events = await eventsService.getEvents({ type: nightmare }); }
 	var events = await eventsService.getEvents();
-	res.render('events', { 
-		title: "Events", 
-		description: "A list of Obey Me events, including Nightmare and Pop Quizzes.", 
-		user: req.user, 
+	res.render("eventGallery", {
+		title: "Events",
+		description: "A list of Obey Me events, including Nightmare and Pop Quizzes.",
+		user: req.user,
 		events: events });
 }
 
