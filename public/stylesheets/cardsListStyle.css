@@ -217,4 +217,5 @@ a>figcaption {
   background-color: white;
   width: 64px;
   height: 64px;
+  z-index: 1030;
 }

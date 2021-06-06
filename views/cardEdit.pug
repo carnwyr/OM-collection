@@ -7,7 +7,7 @@ block scripts
 		var cardName = !{JSON.stringify(card ? card.uniqueName : '')};
 
 block content
-	div#alert(role="alert")
+	div#alert(role="alert" style="position:fixed;right:20px;top:-100px;")
 	div(class="container")
 		h1= title
 

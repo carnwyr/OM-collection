@@ -4,7 +4,7 @@ block scripts
   link(rel="stylesheet" href="/stylesheets/profile.css")
 
 block content
-  div#alert(role="alert")
+  div#alert(role="alert" style="position:fixed;right:20px;top:-100px;")
   div(class="container")
     h1= title
 
@@ -63,7 +63,7 @@ block content
         script(src="/javascripts/shareProfile.js")
     div.card.card-body.shadow.mb-3
       if title === t("title.my_profile")
-        a.btn.btn-outline-secondary.d-none.d-lg-block(type="button" href="/user" style="position:absolute;right:1rem;")= t("profile.edit")
+        a#settingslink.btn.btn-outline-secondary(type="button" href="/user")= t("profile.edit")
       div.row.align-items-center
         div.col-md-5.col-lg-4.text-center.mb-3.mb-lg-auto
           img(src="/images/cards/L/" + (profileInfo.display?profileInfo.display:"The_Mammon_Way") + ".jpg" style="width:256px;height:auto;")

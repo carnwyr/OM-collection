@@ -87,7 +87,7 @@
   },
   "settings": {
     "card_display": "Favourite Card Display",
-    "fav_char_instruction": "Check your favourite characters and drag to put them in order!",
+    "fav_char_instruction": "Check your favourite characters and drag to put them in order! (Sorting favourites is only available on desktop devices.)",
     "update": "Update",
     "linked_email": "This is the email that will receive instructions for password recovery.",
     "no_linked_email": "No emails linked",

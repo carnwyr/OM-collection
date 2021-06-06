@@ -26,15 +26,15 @@ mixin percentBar(owned, total, name)
 div#statsCard.card.card-body.shadow.mb-3
   div.row.align-items-center
     //- mx-auto is needed for share stats image
-    div#statsTotal.col-lg-4.d-flex.text-center.mb-3.mb-lg-0.mx-auto
-      div.w-50
+    div#statsTotal.col-lg-4.row.text-center.mb-3.mb-lg-0.mx-auto
+      div.col-6
         h5.text-primary.mb-0= t("cards.Demon")
         - var demonPercentage = roundPercentage(cardStats.cards.Demon.owned / cardStats.cards.Demon.total * 100);
         img.img-fluid.p-2(src="/images/demon_card.png" style="max-width:120px;width:100%;")
         div#demonblend
         p.mb-0 #{cardStats.cards.Demon.owned} of #{cardStats.cards.Demon.total}
         small.text-muted #{demonPercentage}%
-      div.w-50
+      div.col-6
         h5.text-primary.mb-0= t("cards.Memory")
         - var memoryPercentage = roundPercentage(cardStats.cards.Memory.owned / cardStats.cards.Memory.total * 100);
         img.img-fluid.p-2(src="/images/memory_card.png" style="max-width:120px;width:100%;")

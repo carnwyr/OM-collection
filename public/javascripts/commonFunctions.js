@@ -46,6 +46,19 @@ $(window).on("load", () => {
 	}
 })
 
+var footerOffset;
+$(window).on("scroll", () => {
+	if ($("footer").isInViewport()) {
+		footerOffset = window.innerHeight - document.querySelector("footer").getBoundingClientRect().top;
+		$("#bmc-wbtn, #b2t").css("bottom", "calc(32px + " + footerOffset + "px)");
+		$("#bmc-wbtn").css({ "z-index": "1030", "transition": "0s" });  // hardcoded
+		$("#cookieToast").css("bottom", "calc(100px + " + footerOffset + "px)");
+	} else {
+		$("#bmc-wbtn, #b2t").css("bottom", "32px");
+		$("#cookieToast").css("bottom", "100px");
+	}
+});
+
 var cookieExpiryDate = () => {
 	var d = new Date();
 	d.setMonth(d.getMonth() + 3);
@@ -53,10 +66,20 @@ var cookieExpiryDate = () => {
 }
 
 function showAlert(type, message) {
-	$("#alert").removeClass().addClass("alert").addClass("alert-"+type);
+	$("#alert").removeClass().addClass("alert alert-"+type);
 	$("#alert").html(message);
-	$("#alert").show().animate({top: 65}, 500);
-	setTimeout(function () {
-		$("#alert").animate({top: -100}, 500).promise().done(function() {$("#alert").hide()})
+	$("#alert").show().animate({ top: 65 }, 500);
+	setTimeout(function() {
+		$("#alert").animate({ top: -100 }, 500).promise().done(function() { $("#alert").hide() });
 	}, 5000);
+}
+
+$.fn.isInViewport = function() {
+	var elementTop = $(this).offset().top;
+	var elementBottom = elementTop + $(this).outerHeight();
+
+	var viewportTop = $(window).scrollTop();
+	var viewportBottom = viewportTop + $(window).height();
+
+	return elementBottom > viewportTop && elementTop < viewportBottom;
 }
