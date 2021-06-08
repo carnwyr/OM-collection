@@ -136,10 +136,10 @@ block content
 								p Collection Visibility
 								form
 									div(class="form-check")
-										input(class="form-check-input" type="radio" name="privacy" id="publicProfileRadio" value="public" checked=(user.profile.isPrivate?false:true))
+										input(class="form-check-input" type="radio" name="isPrivate" id="publicProfileRadio" value="false" checked=(user.profile.isPrivate?false:true))
 										label(class="form-check-label" for="publicProfileRadio") Public
 									div(class="form-check")
-										input(class="form-check-input" type="radio" name="privacy" id="privateProfileRadio" value="private" checked=(user.profile.isPrivate?true:false))
+										input(class="form-check-input" type="radio" name="isPrivate" id="privateProfileRadio" value="true" checked=(user.profile.isPrivate?true:false))
 										label(class="form-check-label" for="privateProfileRadio") Private
 								br
 								p Public: collections are fully visible to everyone

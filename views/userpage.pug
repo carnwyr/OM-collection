@@ -12,7 +12,8 @@ block content
         hr
       p.mb-0 Specifications
       ul
-        li ?sortby= date (of registration), name, email
+        li ?sortby= name, email, supportStatus (no sortby param will sort by date of registration)
+        li ?order= 1 or -1, ascending or descending order
         li multiple elements example ["do","this"] must be "," no space <strike>["not", "this"]</strike>
         li supporter level badge needs to be "Lv"+number (e.g. "Lv5") with the number being the amount of "whip of love" they donated
       table(class="table table-hover table-responsive-sm")

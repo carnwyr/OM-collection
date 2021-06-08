@@ -1,6 +1,8 @@
-var lst = [], nameDict = {}, unsavedChange = false;
+var lst = [], nameDict = {}, updatedInfo = {};
 $(document).ready(function() {
 	$("#inputJoinOM").attr("max", new Date().toISOString().split("T")[0]);
+	$("#sortable").sortable();
+	$("#sortable").disableSelection();
 
 	$("#sendVerification").on("click", sendVerificationMessage);
 	$("#changePassword").on("click", changePassword);
@@ -13,17 +15,15 @@ $(document).ready(function() {
 				url: "/getAllCards"
 			}).done(function(result) {
 				lst = result;
-				// console.log(lst);
 			});
 		}
 	});
 	$("#cardSearch button").on("click", searchCard);
-	$(".list-group").on("click", "li", updateDisplayCard);
-
-	$("#sortable").sortable();
-	$("#sortable").disableSelection();
-
-	$("form#profile").on("change", function() { unsavedChange = true });
+	$("#cardSearch .list-group").on("click", "li", updateDisplayCard);
+	$("form#profile, #v-pills-privacy form").on("change", (event) => {
+		updatedInfo[event.target.name] = event.target.value;
+	});
+	$("#sortable").on("DOMSubtreeModified", () => { updatedInfo["characters"] = true; });
 });
 
 $(document).on("click", function(e) {
@@ -40,7 +40,9 @@ $(document).on("click", function(e) {
 });
 
 $(window).on("beforeunload", () => {
-	if (unsavedChange) return confirm("You have unsaved change for your profile. Do you wish to exit without saving?");
+	if (Object.keys(updatedInfo).length !== 0) {
+		return confirm("You have unsaved change for your profile. Do you wish to exit without saving?");
+	}
 });
 
 function sendVerificationMessage() {
@@ -136,25 +138,19 @@ function validateFieldsPassword() {
 	return true;
 }
 
-// needs update for better performance
 function updateProfile(e) {
 	e.preventDefault();
-	var formData = new FormData($("form#profile")[0]);
 
-	var updatedInfo = {};
-	var charaList = [];
-	for (var pair of formData.entries()) {
-		if (pair[0] !== "characters") {
-			updatedInfo[pair[0]] = pair[1];
-		} else {
-			charaList.push(pair[1]);
-		}
+	if (Object.keys(updatedInfo).length === 0) {
+		showAlert("warning", "Your profile is up-to-date :)");
+		return;
 	}
-	updatedInfo.characters = charaList;
-	updatedInfo.display = card;
 
-	// seriously needs update
-	updatedInfo.isPrivate = $("#privateProfileRadio").is(":checked");
+	// characters need to be specially updated because it's an array
+	if (updatedInfo["characters"]) {
+		var formData = new FormData($("form#profile")[0]);
+		updatedInfo["characters"] = formData.getAll("characters");
+	}
 
 	$.ajax({
 		type: "post",
@@ -166,7 +162,7 @@ function updateProfile(e) {
 		if (result.err) {
 			showAlert("danger", result.message);
 		} else {
-			unsavedChange = false;
+			updatedInfo = {};
 			showAlert("success", result.message);
 		}
 	});
@@ -192,6 +188,7 @@ function searchCard(e) {
 
 function updateDisplayCard() {
 	card = nameDict[$(this).text()];
+	updatedInfo["display"] = card;
 	$("#cardSearch input").val($(this).text());
 	$("#cardSearch img").attr("src",`/images/cards/L/${card}.jpg`);
 	$(".list-group").slideUp();

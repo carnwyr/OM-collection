@@ -58,7 +58,7 @@ exports.signup = [
 			return;
 		}
 
-		let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection', "image", "images", "character", "characters", "rankings", "surpriseguest"];
+		let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection', "image", "images", "character", "characters", "rankings", "surpriseguest", "userpage", "calculator"];
 		if (blacklist.includes(req.body.username.toLowerCase())) {
 			req.flash('message', 'Username invalid');
 			res.render('signup', { title: 'Signup', user: req.user });
@@ -450,23 +450,17 @@ exports.updateSupport = function(req, res) {
   const user = req.body.supportstatus.user;
   const newstatus = req.body.supportstatus.newstatus;
 
-  return new Promise(async function(resolve, reject) {
-    var updated = await Users.updateOne({ "info.name": user }, { "info.supportStatus": newstatus });
+  Users.updateOne({ "info.name": user }, { "info.supportStatus": newstatus }, function(err, result) {
+    if (err) {
+      Sentry.captureException(err);
+      return res.json({ err: true, message: err });
+    }
 
-    if (updated.nModified === 1) {
-      resolve(user+"'s supporting status successfully updated :)");
+    if (result.nModified === 1) {
+      return res.json({ err: null, message: user + "'s support status updated!"});
     } else {
-      reject("Error "+reject+" :( try again? It's also possible that you didn't change anything.");
+      return res.json({ err: true, message: "Update failed. Refresh the page and try again." });
     }
-  }).then(
-    function(result) {
-      res.json({ err: null, message: result });
-    },
-    function(error) {
-      res.json({ err: true, message: error });
-    }
-  ).catch(err => {
-    res.status(500).json({ message: err.message });
   });
 };
 
@@ -484,6 +478,7 @@ exports.countCardInCollections = function(card, collection) {
 
 exports.getUserListPage = async function(req, res) {
   const page = req.query.page?req.query.page:1;
+  const order = req.query.order?req.query.order:1;
   const limit = 50;
 
   const startIndex = (page - 1) * limit;
@@ -492,10 +487,10 @@ exports.getUserListPage = async function(req, res) {
   var result = {};
 
   try {
-    if (req.query.sortby === "name") {
-      result.users = await Users.find({},"info").sort( { "info.name" : 1 } ).limit(limit).skip(startIndex);
-    } else if (req.query.sortby === "email") {
-      result.users = await Users.find({},"info").sort( { "info.email" : 1 } ).limit(limit).skip(startIndex);
+    if (req.query.sortby) {
+      var sort = {};
+      sort[`info.${req.query.sortby}`] = order;
+      result.users = await Users.find({},"info").sort(sort).limit(limit).skip(startIndex);
     } else {
       result.users = await Users.find({},"info").limit(limit).skip(startIndex);
     }
@@ -601,19 +596,22 @@ exports.getProfileInfo = async function(username) {
 }
 
 exports.updateUserProfile = function(req, res) {
+  var update = {};
+  for (const field in req.body.updatedInfo) {
+    update[`profile.${field}`] = req.body.updatedInfo[field];
+  }
+
   Users.updateOne(
     { "info.name": req.user.name },
-    { $set: { "profile" : req.body.updatedInfo } },
+    { $set: update },
     function(err, result) {
       if (err) {
         Sentry.captureException(e);
         return res.json({ err: true, message: "Something went wrong :(" });
       }
 
-      // console.log(result);  // https://docs.mongodb.com/manual/reference/command/update/#std-label-update-command-output
-
       if (result.nModified === 1) {
-        return res.json({ err: null, message: "Updated!"})
+        return res.json({ err: null, message: "Updated!" });
       } else {
         return res.json({ err: true, message: "Something went wrong :(" });
       }
