@@ -487,13 +487,13 @@ exports.getUserListPage = async function(req, res) {
   var result = {};
 
   try {
-    if (req.query.sortby) {
-      var sort = {};
+    var sort = {};
+    if (req.query.sortby && req.query.sortby !== '') {
       sort[`info.${req.query.sortby}`] = order;
-      result.users = await Users.find({},"info").sort(sort).limit(limit).skip(startIndex);
     } else {
-      result.users = await Users.find({},"info").limit(limit).skip(startIndex);
+      sort = { "_id": order };
     }
+    result.users = await Users.find({},"info").sort(sort).limit(limit).skip(startIndex);
     var totalusers = await exports.getNumberOfUsers();
   } catch(e) {
     return res.status(500).json({ message: e.message });
