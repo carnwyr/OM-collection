@@ -45,10 +45,10 @@ block content
 												//- span= t("profile.language")
 												span Language
 												div.form-check
-													input(type="radio" class="form-check-input" id="english" name="language" value="en" checked)
+													input(type="radio" class="form-check-input" id="english" name="language" value="en" checked=(user.profile.language==="en"?true:false))
 													label(for="english" class="form-check-label") English
 												div.form-check
-													input(type="radio" class="form-check-input" id="japanese" name="language" value="jp")
+													input(type="radio" class="form-check-input" id="japanese" name="language" value="jp" checked=(user.profile.language==="jp"?true:false))
 													label(for="japanese" class="form-check-label") 日本語
 
 										//- p.my-2= t("profile.favourite_chara")
