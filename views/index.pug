@@ -40,33 +40,46 @@ block content
       div.container
         div.row(style="margin-top:140px;")
           div.col-12.mb-3.text-center
-            a(href="/cards" type="button" class="btn btn-primary m-1")= t("temp.cards")
+            a(href="/cards" type="button" class="btn btn-primary m-1")= t("common.cards")
             if !user
               a(href="/signup" type="button" class="btn btn-primary m-1")= t("common.signup")
               a(href="/login" type="button" class="btn btn-primary m-1")= t("common.login")
             else
               a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1")= t("title.my_collection")
               a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1")= t("title.my_favourites")
+              a(href="/" + user.name + "/profile" type="button" class="btn btn-primary m-1")= t("title.my_profile")
             a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
 
         //- Share Event
         div#ShareEvent.card.mb-3
           div.card-body.text-center
-            h5 Get this badge!
+            h5 Limited-time Badge
             img.m-2(src="/images/ShareKarasu.png" alt="Badge for sharing karasu-os.com" style="width:64px;height:64px;")
-            p.text-muted This event is temporarily on hold while we update a feature. We hope you're looking forward to it!
-            //-
-              div.d-lg-flex.justify-content-center
-                h5 Step 1:
-                p.ml-2 Share karasu-os.com on any social media platform.
-              div.d-lg-flex.justify-content-center
-                h5 Step 2:
-                p.ml-2 Mention our Twitter
-                  |
-                  |
-                  a(href="https://twitter.com/karasu_os") @karasu_os
-                  |
-                  | (make sure to include your karasu username)!
+            p Share Karasu-OS.com on Twitter to get a special badge for your profile!
+            if !user
+              p Please
+                |
+                |
+                a(href="/login") Login
+                |
+                | or
+                |
+                a(href="/signup") Sign up
+                |
+                | to participate in this event!
+              p.mt-3.mb-0(style="pointer-events:none;opacity:50%;") ✧ *｡
+                a(class="twitter-share-button ml-2" href='#')
+                  i
+                  span.ml-1 Tweet
+                |
+                | ｡* ✧
+            else
+              p.mt-3.mb-0 ✧ *｡
+                a(class="twitter-share-button ml-2" href="https://twitter.com/intent/tweet?text="+encodeURIComponent(t("temp.share_karasu", { username: user.name })) target="_blank")
+                  i
+                  span.ml-1 Tweet
+                |
+                | ｡* ✧
         //- End of Event Notice
 
         div.row

@@ -1,0 +1,103 @@
+#display .card-body {
+  height: 256px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#display ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#display ul img {
+  width: 82px;
+  margin: .25rem;
+}
+
+#display li {
+  display: inline;
+}
+
+li.placeholder {
+  width: 90px;
+  height: 90px;
+}
+
+.view_all {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  padding: 45px 0 20px;
+  background-image: linear-gradient(to bottom, transparent, white 80%, white);
+}
+
+#profile>div {
+  margin-bottom: .5rem;
+}
+
+#profile>div>span:first-child {
+  width: 8.5rem;
+  font-size: small;
+  text-align: center;
+  margin-right: .5em;
+  color: white;
+  padding: .175rem 1rem;
+  background: linear-gradient(to right, rgb(184,121,252), rgb(223,130,246));
+  border-radius: 16px;
+}
+
+#profile>div.col-lg-6>span:last-child {
+  border-bottom: 2px dotted;
+  flex-grow: 1;
+  text-align: center;
+}
+
+#profile>div.col-lg-6 {
+  display: flex;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width:992px) {
+  #profile>div.col-12>div {
+    width: 50%;
+  }
+}
+
+#usernav>.btn-outline-primary {
+  color: var(--primary);
+  background-color: white;
+}
+
+#usernav span {
+  max-width: 0;
+  -webkit-transition: max-width 1s;
+  transition: max-width 1s;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  #usernav>.btn-outline-primary:hover>span {
+    max-width: 7rem;
+  }
+}
+
+#settingslink {
+  margin: 0 auto 1.25rem;
+}
+
+@media (min-width: 992px) {
+  #settingslink {
+    position: absolute;
+    right: 1rem;
+  }
+}

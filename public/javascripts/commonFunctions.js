@@ -1,7 +1,7 @@
 var adBlock;
-
 $(document).ready(function(){
-	$('head').append(`<meta property="og:url" content="${window.location.href}">`);
+	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
+	$("head").append(`<link rel="alternate" hreflang="${$("select#language").val()}" href="${window.location.href}">`);
 	$("select#language").on("change", function() {
 		window.location.href = window.location.href.split('?')[0] + "?lang=" + $("select#language").val();
 	});
@@ -34,14 +34,9 @@ $(document).ready(function(){
 		$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
 		$(this).delay(100).removeClass('show');
 	});
-
-	$("#b2t").on('click', () => { $('html, body').animate({scrollTop:0}, 500); });
-	$(window).scroll(switchBackToTopButton);
-	switchBackToTopButton();
 });
 
 $(document).on("adBlocked", () => { adBlock = true; });
-
 $(window).on("load", () => {
 	if (adBlock === true) {
 		$(".ddd>.row").hide();
@@ -51,29 +46,39 @@ $(window).on("load", () => {
 	}
 })
 
+var footerOffset;
+$(window).on("scroll", () => {
+	if ($("footer").isInViewport() && window.innerWidth < 576) {
+		footerOffset = window.innerHeight - document.querySelector("footer").getBoundingClientRect().top;
+		$("#bmc-wbtn, #b2t").css("bottom", "calc(32px + " + footerOffset + "px)");
+		$("#cookieToast").css("bottom", "calc(100px + " + footerOffset + "px)");
+	} else {
+		$("#bmc-wbtn, #b2t").css("bottom", "32px");
+		$("#cookieToast").css("bottom", "100px");
+	}
+});
+
 var cookieExpiryDate = () => {
 	var d = new Date();
 	d.setMonth(d.getMonth() + 3);
 	return d.toUTCString();
 }
 
-function switchBackToTopButton() {
-	if ($(window).scrollTop() > $(window).height()*3) {
-		$("#b2t").fadeIn();
-		if ($(window).width() < 540) {
-			$("#cookieToast").css("transform", "translate(0, -64px)");
-		}
-	} else {
-		$("#b2t").fadeOut();
-		$("#cookieToast").css("transform", "");
-	}
+function showAlert(type, message) {
+	$("#alert").removeClass().addClass("alert alert-"+type);
+	$("#alert").html(message);
+	$("#alert").show().animate({ top: 65 }, 500);
+	setTimeout(function() {
+		$("#alert").animate({ top: -100 }, 500).promise().done(function() { $("#alert").hide() });
+	}, 5000);
 }
 
-function showAlert(type, message) {
-	$("#alert").removeClass().addClass("alert").addClass("alert-"+type);
-	$("#alert").html(message);
-	$("#alert").show().animate({top: 65}, 500);
-	setTimeout(function () {
-		$("#alert").animate({top: -100}, 500).promise().done(function() {$("#alert").hide()})
-	}, 5000);
+$.fn.isInViewport = function() {
+	var elementTop = $(this).offset().top;
+	var elementBottom = elementTop + $(this).outerHeight();
+
+	var viewportTop = $(window).scrollTop();
+	var viewportBottom = viewportTop + $(window).height();
+
+	return elementBottom > viewportTop && elementTop < viewportBottom;
 }

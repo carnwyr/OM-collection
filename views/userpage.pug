@@ -10,11 +10,23 @@ block content
       div.d-md-none
         h5.card-title try to find a device with larger screen, or one with console
         hr
-      p.mb-0 Specifications
+      p.mb-0 Notes
       ul
-        li ?sortby= date (of registration), name, email
         li multiple elements example ["do","this"] must be "," no space <strike>["not", "this"]</strike>
-        li supporter level badge needs to be "Lv"+number (e.g. "Lv5") with the number being the amount of "whip of love" they donated
+        li supporter level badge needs to be "Lv"+number (e.g. "Lv5") with the number being the amount of "whip of love" they donated (total donation / 2)
+      form.form-inline.mb-3
+        select.custom-select.mr-3(name="sortby")
+          option(value="") registration date
+          option(value="name") name
+          option(value="email") email
+          option(value="supportStatus") supportStatus
+        div.custom-control.custom-radio.custom-control-inline
+          input#ascending.custom-control-input(type="radio" name="order" value="1")
+          label.custom-control-label(for="ascending") Ascending
+        div.custom-control.custom-radio.custom-control-inline
+          input#descending.custom-control-input(type="radio" name="order" value="-1")
+          label.custom-control-label(for="descending") Descending
+        input(type="submit" value="Go")
       table(class="table table-hover table-responsive-sm")
         thead
           tr
@@ -22,14 +34,14 @@ block content
             th(scope="col") Email
             th(scope="col") Supporter Status
         tbody
-          each usr in userList.users
+          each u in userList.users
             tr
-              td #{usr.info.name}
-              td #{usr.info.email}
-              td(id=usr.info.name)
-                input(class="form-control" type="text" value=usr.info.supportStatus)
+              td #{u.info.name}
+              td #{u.info.email}
+              td(id=u.info.name)
+                input(class="form-control" type="text" value=u.info.supportStatus)
       nav(aria-label="user table navigation")
         ul(class="pagination justify-content-center")
 
   script.
-    paginate(!{JSON.stringify(userList)});
+    const tableData = !{JSON.stringify(userList)};

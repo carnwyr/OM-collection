@@ -1,100 +1,167 @@
 extends layout
 
 block scripts
+	link(rel="stylesheet" href="/stylesheets/account.css")
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	script(src="/javascripts/accountFunctions.js")
 	script.
 		var username = !{JSON.stringify(user.name)};
+		var card = !{JSON.stringify(user.profile.display)};
 
 block content
 	div#alert(role="alert")
-	div(class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="bindEmailLabel" aria-hidden="true")
-		div(class="modal-dialog" role="document")
-			div(class="modal-content")
-				div(class="modal-header")
-					h5(class="modal-title" id="bindEmailLabel") Link email
-					button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-						span( aria-hidden="true") &times;
-				div(class="modal-body")
-					p A confirmation message will be sent to your email. Please open the link in it to verify the email address.
-					form
-						div(class='form-group')
-							label(for="email") Email
-							input(class='form-control' type="email" id="email" name="email")
-						div(class='form-group')
-							label(for="password") Karasu OS password
-							input(class='form-control' type="password" id="password" name="password")
-				div(class="modal-footer")
-					small#cooldown.text-muted
-					button(type="button" class="btn btn-secondary text-light" id="sendVerification") Send verification message
+	div.container
+		div.row
+			div.card.card-body
+				h2.text-center.text-md-left= t("title.settings")
+				div.row
+					div.col-12.col-md-3.text-center.text-md-left.mb-3.mb-md-0
+						div(class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical")
+							a(class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true") Profile
+							a(class="nav-link" id="v-pills-email-tab" data-toggle="pill" href="#v-pills-email" role="tab" aria-controls="v-pills-email" aria-selected="false") Email
+								if !user.email
+									span(class="badge badge-pill badge-warning ml-2") !
+							a(class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false") Password
+							a(class="nav-link" id="v-pills-privacy-tab" data-toggle="pill" href="#v-pills-privacy" role="tab" aria-controls="v-pills-privacy" aria-selected="false") Privacy
+					div.col-12.col-md-9
+						div(class="tab-content" id="v-pills-tabContent")
+							div(class="tab-pane show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab")
+								div.row
+									form#profile.col-12.col-md
+										div.form-row
+											div.form-group.col-md-6
+												//- label(for="inputInGameName")= t("profile.name")
+												label(for="inputInGameName") In-game Name
+												input(type="text" class="form-control" id="inputInGameName" name="name" placeholder="???" value=user.profile.name maxlength="10")
+											div.form-group.col-md-6
+												//- label(for="inputFriendID")= t("profile.friend_id")
+												label(for="inputFriendID") Friend ID
+												input(type="text" class="form-control" id="inputFriendID" name="id" placeholder="???" value=user.profile.id maxlength="20")
+											div.form-group.col-md-6
+												//- label(for="inputJoinOM")= t("profile.entered_rad")
+												label(for="inputJoinOM") Entered RAD on
+												input(type="date" class="form-control" id="inputJoinOM" name="joined" value=user.profile.joined.toISOString().split("T")[0] min="2019-12-11")
+											div.col-md-6
+												//- span= t("profile.language")
+												span Language
+												div.form-check
+													input(type="radio" class="form-check-input" id="english" name="language" value="en" checked)
+													label(for="english" class="form-check-label") English
+												div.form-check
+													input(type="radio" class="form-check-input" id="japanese" name="language" value="jp")
+													label(for="japanese" class="form-check-label") 日本語
 
-	div(class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true")
-		div(class="modal-dialog" role="document")
-			div(class="modal-content")
-				div(class="modal-header")
-					h5(class="modal-title" id="changePasswordLabel") Change Password
-					button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-						span( aria-hidden="true") &times;
-				div(class="modal-body")
-					form
-						div(class='form-group')
-							label(for="oldPassword") Old password
-							input(class='form-control' type="password" id="oldPassword" name="oldPassword")
-						div(class='form-group')
-							label(for="newPassword") New password
-							input(class='form-control' type="password" id="newPassword" name="newPassword")
-						div(class='form-group')
-							label(for="newPasswordConfirm") Confirm new password
-							input(class='form-control' type="password" id="newPasswordConfirm" name="newPasswordConfirm")
-				div(class="modal-footer")
-					button(type="button" class="btn btn-secondary text-light" id="changePassword") Update password
+										//- p.my-2= t("profile.favourite_chara")
+										p.my-2 Favourite Character(s)
+										p.text-muted= t("settings.fav_char_instruction")
+										- var ch = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Luke", "Simeon", "Solomon"];
+										ul#sortable.mb-2
+											each i in user.profile.characters
+												- ch.splice(ch.indexOf(i), 1);
+												li.row
+													div.form-check.col-10
+														input.form-check-input(id=i style="position:relative;" type="checkbox" value=i aria-label="Checkbox for "+i name="characters" checked)
+														label.form-check-label.ml-2(for=i)
+															img(src="/images/faces/"+ i + ".png" style="width:32px;height:32px;")
+															|
+															| #{i}
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/></svg>
+											each c in ch
+												li.row
+													div.form-check.col-10
+														input.form-check-input(id=c style="position:relative;" type="checkbox" value=c aria-label="Checkbox for "+c name="characters")
+														label.form-check-label.ml-2(for=c)
+															img(src="/images/faces/"+ c + ".png" style="width:32px;height:32px;")
+															|
+															| #{c}
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/></svg>
+									div#cardSearch.col-12.col-md-4
+										div.mb-2= t("settings.card_display")
+										form.input-group.mb-3
+											input.form-control(type="text" placeholder=t("cards.search") aria-label="Search")
+											div.input-group-append
+												button(class="btn btn-outline-primary" style="border-radius:0 4px 4px 0;") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search mb-1" viewBox="0 0 16 16">   <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/> </svg>
+										ul.list-group(style="position:absolute;width:100%;padding:inherit;left:0;")
+										img(src="/images/cards/L/" + user.profile.display + ".jpg" style="width:100%;")
+								br
+								input#updateProfile.btn.btn-primary(type="submit" value=t("settings.update"))
 
-	div(class="container")
-		div(class="row justify-content-center mb-3")
-			h2(class="col-lg-10 text-center py-2") #{user.name}'s Settings
-			div(class="card col-lg-10")
-				div(class="card-body col-lg-6 mx-auto mb-3")
+							div(class="tab-pane" id="v-pills-email" role="tabpanel" aria-labelledby="v-pills-email-tab")
+								div.row
+									div.col-12.col-md-7
+										if user.email
+											- var emailStatus = user.email
+											- var emailMsg = t("settings.linked_email")
+										else
+											- var emailStatus = t("settings.no_linked_email")
+											- var emailMsg = t("settings.pls_link_email")
 
-					if user.email
-						- var emailStatus = user.email
-						- var buttonText = "Change email"
-						- var emailMsg = "This is the email that will receive instructions for password recovery."
-					else
-						- var emailStatus = "No emails linked"
-						- var buttonText = "Link email"
-						- var emailMsg = "To enable password recovery, link your email address."
+										//- p.mb-2= t("user.email")
+										p.mb-2 Email
+											if !user.email
+												span(class="badge badge-pill badge-warning ml-1") !
+										p.card-text.text-muted= emailMsg
+										div.form-group.mb-3
+											label(for="staticEmail" class="sr-only")= t("user.email")
+											input(type="text" readonly class="form-control" id="staticEmail" value=emailStatus)
+										br
+										p.mb-2= t("settings.update_email")
+										p.text-muted= t("settings.email_instruction")
+										form
+											div(class="form-group")
+												//- label(for="email")= t("user.email")
+												label(for="email") Email
+												input(class="form-control" type="email" id="email" name="email")
+											div(class="form-group")
+												//- label(for="password")= t("user.password") + " (Karasu OS)"
+												label(for="password") Password (Karasu OS)
+												input(class="form-control" type="password" id="password" name="password")
+								button(type="button" class="btn btn-primary" id="sendVerification")= t("settings.send_email")
+								small#cooldown.text-muted.ml-1
 
-					h5.card-title Account
-					div.col-12
-						p.card-text.mb-2 Email
-							if !user.email
-								span(class="badge badge-pill badge-warning ml-1") !
-						p.card-text.text-muted= emailMsg
-						div.input-group.mb-3
-							input(type="text" readonly class="form-control rounded mr-2" id="staticEmail" value=emailStatus)
-							div(class="input-group-append")
-								button(class="btn btn-primary rounded-pill" id="setEmail" data-toggle="modal" data-target="#emailModal")= buttonText
-						p.card-text Password -
-							|
-							|
-							a(id="#setPassword" href="#" data-toggle="modal" data-target="#passwordModal") Change Password
-					br
-					h5.card-title Supporter Perks
-					div.col-12
-						div(class="custom-control custom-switch")
-							input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
-							label(class="custom-control-label" for="adFreeStatus") Ad-free Status
-						br
-					if !user.supportStatus.includes("adfree")
-						div.card.card-body.text-light.text-center(style="border-radius:8px;background-color:#8d6fe2;")
-							h5.card-title.mb-0 Become a Supporter
+							div(class="tab-pane" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab")
+								div.row
+									form.col-12.col-md-5
+										div(class="form-group")
+											label(for="oldPassword")= t("settings.current_pass")
+											input(class="form-control" type="password" id="oldPassword" name="oldPassword")
+										div(class="form-group")
+											label(for="newPassword")= t("settings.new_pass")
+											input(class="form-control" type="password" id="newPassword" name="newPassword")
+										div(class="form-group")
+											label(for="newPasswordConfirm")= t("settings.confirm_new_pass")
+											input(class="form-control" type="password" id="newPasswordConfirm" name="newPasswordConfirm")
+								button(type="button" class="btn btn-primary" id="changePassword")= t("settings.update")
+							div(class="tab-pane" id="v-pills-privacy" role="tabpanel" aria-labelledby="v-pills-privacy-tab")
+								p Collection Visibility
+								form
+									div(class="form-check")
+										input(class="form-check-input" type="radio" name="isPrivate" id="publicProfileRadio" value="false" checked=(user.profile.isPrivate?false:true))
+										label(class="form-check-label" for="publicProfileRadio") Public
+									div(class="form-check")
+										input(class="form-check-input" type="radio" name="isPrivate" id="privateProfileRadio" value="true" checked=(user.profile.isPrivate?true:false))
+										label(class="form-check-label" for="privateProfileRadio") Private
+								br
+								p Public: collections are fully visible to everyone
+									br
+									| Private: collections are only visible to yourself. However, visitors can still see part of your collection from your profile page's collection preview section.
+								br
+								input#updatePrivacy.btn.btn-primary(type="submit" value=t("settings.update"))
+				hr
+				div.row
+					div.col-12.col-md-5.text-center.mx-auto
+						h5.card-title Supporter Perks
+						div#perks.col-12
+							div(class="custom-control custom-switch")
+								input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+								label(class="custom-control-label" for="adFreeStatus")= t("donation.ad-free")
+							div(class="custom-control custom-switch")
+								input(type="checkbox" class="custom-control-input" id="specialBadge" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+								label(class="custom-control-label" for="specialBadge")= t("donation.badge")
+							br
+						div.card.card-body.text-light.text-center.mb-3(style="border-radius:8px;background-color:#8d6fe2;")
+							h5.card-title.mb-0 Support Karasu!
 							img(src="/images/karasu.png" alt="karasu icon" style="width:32px;height:32px;margin:10px auto;")
-							p.card-text Make a donation now to browser Karasu-OS.com ad-free and receive a special badge to display on your profile! <br>
-								a(id="donation" class="btn bg-light text-primary my-3" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") Become a Supporter
-	style.
-		#donation:hover {
-			background-color: white !important;
-		}
-		#adFreeStatus.custom-control-input:checked ~ .custom-control-label::before {
-			border-color: var(--success);
-			background-color: var(--success);
-		}
+							p.card-text= user.supportStatus.includes("adfree") ? t("donation.thanks") : t("donation.message")
+								br
+								a(id="donation" class="btn bg-light text-primary my-3" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") Make a Donation

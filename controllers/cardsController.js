@@ -38,6 +38,19 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
+		if (req.user && req.user.name === username) {
+			var title = i18next.t("title.my_collection");
+		} else {
+			var title = i18next.t("title.user_collection", { username: username });
+		}
+
+		var privateUser = await usersController.isPrivateUser(username);
+		if (privateUser && title !== i18next.t("title.my_collection")) {
+			return res.render("cardsList", { title: title, description: `${username}'s Collection on Karasu-OS.com`, isPrivate: true, path: "collection", user: req.user });
+		}
+
+		var ownedCards = await usersController.getCardCollection(username, "owned");
+
 		var cardStats = {
 			characters: {
 				Lucifer: { owned: 0, total: 0 },
@@ -77,23 +90,14 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 			}
 		};
 
-		if (req.user && req.user.name === username) {
-			var title = i18next.t("title.my_collection");
-		} else {
-			var title = i18next.t("title.user_collection", { username: username });
-		}
-
 		var ownedCards = await usersController.getCardCollection(username, "owned");
 
 		countCardsForStats(ownedCards, cardStats, "owned");
 		countCardsForStats(await Cards.find(), cardStats, "total");
 
-		var badges = await usersController.getUserBadges(username);
-
 		return res.render('cardsList', {
 			title: title, description: `${username}'s Collection on Karasu-OS.com`,
-			user: req.user, badges: badges.info.supportStatus,
-			cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
+			user: req.user, cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
 	} catch (e) {
 		return next(e);
 	}
@@ -138,12 +142,16 @@ exports.getFavouritesPage = async function(req, res, next) {
 			var title = i18next.t("title.user_favourites", { username: username });
 		}
 
+		var privateUser = await usersController.isPrivateUser(username);
+		if (privateUser && title !== i18next.t("title.my_favourites")) {
+			return res.render("cardsList", { title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`, isPrivate: true, path: "fav", user: req.user });
+		}
+
 		var favedCards = await usersController.getCardCollection(username, "faved");
 
-		res.render("cardsList", {
+		return res.render("cardsList", {
 			title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`,
-			user: req.user,
-			cardsList: favedCards, path: "fav"
+			user: req.user, cardsList: favedCards, path: "fav"
 		});
 	} catch (e) {
 		return next(e);
@@ -155,6 +163,38 @@ exports.getHiddenCardsListPage = async function(req, res, next) {
 		var cards = await HiddenCards.find().sort({ number: -1 });
 		return res.render('cardsList', { title: 'Hidden Cards', cardsList: cards, user: req.user, path: 'hidden' });
 	} catch(e) {
+		return next(e);
+	}
+};
+
+exports.getProfilePage = async function(req, res, next) {
+	try {
+		var username = await usersController.userExists(req.params.username);
+		if (!username) {
+			throw "User notfound";
+		}
+
+		if (req.user && req.user.name === username) {
+			var title = i18next.t("title.my_profile");
+		} else {
+			var title = i18next.t("title.user_profile", { username: username });
+		}
+
+		var cards = {
+		  owned: (await usersController.getCardCollection(username, "owned")).slice(0, 15),
+		  faved: (await usersController.getCardCollection(username, "faved")).slice(0, 15)
+		};
+
+		var profileInfo = await usersController.getProfileInfo(username);
+		profileInfo.karasu_name = username;
+
+		res.render("profile", {
+			title: title, description: `See ${username}'s profile on Karasu-OS.com`,
+			user: req.user,
+			profileInfo: profileInfo,
+			cards: cards
+		});
+	} catch (e) {
 		return next(e);
 	}
 };
@@ -272,6 +312,21 @@ function getReplacedImages() {
 
 	return Promise.all([p1, p2, p3]);
 };
+
+exports.getAllCards = async function(req, res) {
+	try {
+		var fields = { "uniqueName": 1 };
+		if (i18next.t("lang") === "en") {
+			fields.name = 1;
+		} else {
+			fields.name = "$ja_name";
+		}
+		return res.send(await Cards.aggregate([{ $project: fields }]));
+	} catch(e) {
+		// console.error(e);
+		return res.send([]);
+	}
+}
 
 
 // Card detail functions

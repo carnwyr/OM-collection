@@ -11,6 +11,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const { body, validationResult } = require("express-validator");
 const async = require("async");
 
+const ObjectId = require("mongodb").ObjectID;
 const i18next = require("i18next");
 
 require("dotenv").config();
@@ -57,7 +58,7 @@ exports.signup = [
 			return;
 		}
 
-		let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection'];
+		let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection', "image", "images", "character", "characters", "rankings", "surpriseguest", "userpage", "calculator"];
 		if (blacklist.includes(req.body.username.toLowerCase())) {
 			req.flash('message', 'Username invalid');
 			res.render('signup', { title: 'Signup', user: req.user });
@@ -137,7 +138,7 @@ exports.isLoggedIn = function() {
 exports.isAdmin = function() {
 	return function (req, res, next) {
 		if (req.user && req.user.type === "Admin") {
-			return next()
+			return next();
 		}
 		return next(createError(404));
 	}
@@ -161,17 +162,23 @@ exports.favesCard = function(user, card) {
 	return Users.exists({"info.name": user, "cards.faved": card});
 };
 
+exports.isPrivateUser = async function(username) {
+  var visibility = await Users.find({ "info.name": username }, "profile.isPrivate");
+  return visibility[0].profile.isPrivate;
+};
+
 
 // Card management
+// getOwnedCards() is redundant and can be modified
 exports.getOwnedCards = async function(req, res) {
 	try {
 		var ownedCards = await exports.getCardCollection(req.user.name, "owned");
 		ownedCards = ownedCards.map(card => card.uniqueName);
+
+    // console.log(ownedCards);
+
 		res.send(ownedCards);
 	} catch (e) {
-		// TODO proper error handling
-		// console.error(e);
-
     Sentry.captureException(e);
     return res.send([]);
 	}
@@ -218,7 +225,8 @@ exports.modifyCollection = async function(req, res, callback) {
 			throw e;
 		}
 	} catch (e) {
-		console.error(e.message);
+		// console.error(e.message);
+    Sentry.captureException(e);
 		return res.json({ err: true, message: e.clientMessage ? e.clientMessage : e.message });
 	}
 };
@@ -277,7 +285,25 @@ async function updateCountOnPage(res, card, collection) {
 
 // Account management
 exports.getAccountPage = function(req, res, next) {
-	res.render('account', { title: 'Account settings', user: req.user });
+  Users.find({ "info.name": req.user.name }, function(err, result) {
+    if (err) { return next(err) }
+    var u = result[0].info;
+    u.profile = result[0].profile;
+
+    if (!u.profile.joined) {
+      u.profile.joined = Date();
+    }
+
+    if (!u.profile.display) {
+      u.profile.display = "The_Mammon_Way";
+    }
+
+    if (!u.profile.isPrivate) {
+      u.profile.isPrivate = false;
+    }
+
+    return res.render("account", { title: i18next.t("title.settings"), user: u });
+  });
 };
 
 exports.sendVerificationEmail = async function(req, res, next) {
@@ -339,7 +365,7 @@ exports.verifyEmail = function(req, res, next) {
 			if (err) {
 				return next(err);
 			}
-			res.redirect('/user/'+record.user);
+			res.redirect("/user");
 		});
 	});
 };
@@ -424,23 +450,17 @@ exports.updateSupport = function(req, res) {
   const user = req.body.supportstatus.user;
   const newstatus = req.body.supportstatus.newstatus;
 
-  return new Promise(async function(resolve, reject) {
-    var updated = await Users.updateOne({ "info.name": user }, { "info.supportStatus": newstatus });
+  Users.updateOne({ "info.name": user }, { "info.supportStatus": newstatus }, function(err, result) {
+    if (err) {
+      Sentry.captureException(err);
+      return res.json({ err: true, message: err });
+    }
 
-    if (updated.nModified === 1) {
-      resolve(user+"'s supporting status successfully updated :)");
+    if (result.nModified === 1) {
+      return res.json({ err: null, message: user + "'s support status updated!"});
     } else {
-      reject("Error "+reject+" :( try again? It's also possible that you didn't change anything.");
+      return res.json({ err: true, message: "Update failed. Refresh the page and try again." });
     }
-  }).then(
-    function(result) {
-      res.json({ err: null, message: result });
-    },
-    function(error) {
-      res.json({ err: true, message: error });
-    }
-  ).catch(err => {
-    res.status(500).json({ message: err.message });
   });
 };
 
@@ -458,6 +478,7 @@ exports.countCardInCollections = function(card, collection) {
 
 exports.getUserListPage = async function(req, res) {
   const page = req.query.page?req.query.page:1;
+  const order = req.query.order?req.query.order:1;
   const limit = 50;
 
   const startIndex = (page - 1) * limit;
@@ -466,13 +487,13 @@ exports.getUserListPage = async function(req, res) {
   var result = {};
 
   try {
-    if (req.query.sortby === "name") {
-      result.users = await Users.find({},"info").sort( { "info.name" : 1 } ).limit(limit).skip(startIndex);
-    } else if (req.query.sortby === "email") {
-      result.users = await Users.find({},"info").sort( { "info.email" : 1 } ).limit(limit).skip(startIndex);
+    var sort = {};
+    if (req.query.sortby && req.query.sortby !== '') {
+      sort[`info.${req.query.sortby}`] = order;
     } else {
-      result.users = await Users.find({},"info").limit(limit).skip(startIndex);
+      sort = { "_id": order };
     }
+    result.users = await Users.find({},"info").sort(sort).limit(limit).skip(startIndex);
     var totalusers = await exports.getNumberOfUsers();
   } catch(e) {
     return res.status(500).json({ message: e.message });
@@ -543,8 +564,59 @@ exports.deleteCardInCollections = function(cardName) {
 	return promise;
 };
 
-exports.getUserBadges = async function(username) {
-  return await Users.findOne({ "info.name" : username }, "info.supportStatus");
+exports.getProfileInfo = async function(username) {
+  try {
+    var user = await Users.findOne({ "info.name": username });
+    var info = { ...user.profile };
+
+    if (i18next.t("lang") === "en") {
+      info.joinKarasu = `${new Intl.DateTimeFormat("en", { month: "long" }).format(ObjectId(user._id).getTimestamp())} ${ObjectId(user._id).getTimestamp().getFullYear()}`;
+    } else {
+      info.joinKarasu = `${ObjectId(user._id).getTimestamp().getFullYear()}年${ObjectId(user._id).getTimestamp().getMonth() + 1}月`;
+    }
+
+    if (info.joined) {
+      var date = info.joined.getUTCDate(),
+          month = info.joined.getUTCMonth() + 1,
+          year = info.joined.getUTCFullYear();
+      if (i18next.t("lang") === "en") {
+        info.joined = `${date} ${new Intl.DateTimeFormat("en", { month: "long" }).format(info.joined)} ${year}`;
+      } else {
+        info.joined = `${year}年${month}月${date}日`;
+      }
+    }
+
+    info.badges = user.info.supportStatus;
+
+    return info;
+  } catch(e) {
+    Sentry.captureException(e);
+    return {};
+  }
+}
+
+exports.updateUserProfile = function(req, res) {
+  var update = {};
+  for (const field in req.body.updatedInfo) {
+    update[`profile.${field}`] = req.body.updatedInfo[field];
+  }
+
+  Users.updateOne(
+    { "info.name": req.user.name },
+    { $set: update },
+    function(err, result) {
+      if (err) {
+        Sentry.captureException(e);
+        return res.json({ err: true, message: "Something went wrong :(" });
+      }
+
+      if (result.nModified === 1) {
+        return res.json({ err: null, message: "Updated!" });
+      } else {
+        return res.json({ err: true, message: "Something went wrong :(" });
+      }
+    }
+  );
 }
 
 

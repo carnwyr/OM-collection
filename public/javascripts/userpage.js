@@ -1,33 +1,42 @@
-$(document).ready(function(){
+var page, sortby, order;
+$(document).ready(function() {
   $(".form-control").focusout(updateSupportStatus);
+
+  if ('URLSearchParams' in window) {
+    const params = new URLSearchParams(document.location.search.substring(1));
+    page = params.get("page")?params.get("page"):1;
+    sortby = params.get("sortby")?params.get("sortby"):'';
+    order = params.get("order")?params.get("order"):1;
+
+    $("select[name='sortby']").val(sortby);
+    $(`input[value="${order}"]`).prop("checked", true);
+
+    paginate(tableData)
+  } else {
+    console.error("Unsupported Browser for URLSearchParams");
+  }
 });
 
 function paginate(tableData) {
-  if ('URLSearchParams' in window) {
-    const params = new URLSearchParams(document.location.search.substring(1));
-    const page = params.get("page")?params.get("page"):1;
-    const sortby = params.get("sortby")?params.get("sortby"):"date";
+  const totalpage = tableData.totalpage;
+  sortby = "&sortby=" + sortby;
+  order = "&order=" + order;
 
-    var totalpage = tableData.totalpage;
-
-    // add first
-    if (tableData.previouspage) {
-      $("ul.pagination").append(`<li class="page-item"><a class="page-link" href="?page=1&sortby=${sortby}">First</a></li>`)
-    } else {
-      $("ul.pagination").append(`<li class="page-item disabled"><a class="page-link" href="#">First</a></li>`)
-    }
-    // add in-between
-    for (let i = 1; i < totalpage + 1; i++) {
-      $("ul.pagination").append(`<li class="page-item${i==page?" active":""}"><a class="page-link" href="?page=${i}&sortby=${sortby}">${i}</a></li>`)
-    }
-    // add last
-    if (tableData.nextpage) {
-      $("ul.pagination").append(`<li class="page-item"><a class="page-link" href="?page=${totalpage}&sortby=${sortby}">Last</a></li>`)
-    } else {
-      $("ul.pagination").append(`<li class="page-item disabled"><a class="page-link" href="#">Last</a></li>`)
-    }
+  // add first
+  if (tableData.previouspage) {
+    $("ul.pagination").append(`<li class="page-item"><a class="page-link" href="?page=1${sortby}${order}">First</a></li>`)
   } else {
-    console.error("Unsupported Browser for URLSearchParams");
+    $("ul.pagination").append(`<li class="page-item disabled"><a class="page-link" href="#">First</a></li>`)
+  }
+  // add in-between
+  for (let i = 1; i < totalpage + 1; i++) {
+    $("ul.pagination").append(`<li class="page-item${i==page?" active":""}"><a class="page-link" href="?page=${i}${sortby}${order}">${i}</a></li>`)
+  }
+  // add last
+  if (tableData.nextpage) {
+    $("ul.pagination").append(`<li class="page-item"><a class="page-link" href="?page=${totalpage}${sortby}${order}">Last</a></li>`)
+  } else {
+    $("ul.pagination").append(`<li class="page-item disabled"><a class="page-link" href="#">Last</a></li>`)
   }
 }
 
@@ -44,10 +53,10 @@ function updateSupportStatus() {
     data: JSON.stringify({ supportstatus: supportstatus })
   }).done(function(result) {
     if (result.err) {
-      // console.error(result.message);
+      console.error(result.message);
       return;
     } else {
-      // console.log(result.message);
+      console.log(result.message);
     }
   });
 }

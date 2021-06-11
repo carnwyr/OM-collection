@@ -136,37 +136,8 @@ img.lazy {
   box-shadow: none;
 }
 
-#filters ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-#filters li {
-  float: left;
-}
-
-#rarityForm li {
-  width: 4rem;
-}
-
-#attributeForm li {
-  width: 6rem;
-}
-
-#characterForm li {
-  width: 8rem;
-}
-
-#cardsfilter li {
-  margin-right: 2rem;
-}
-
-@media screen and (min-width: 768px) {
-  #characterFilters {
-    border-left: 1px solid rgba(0,0,0,.1);
-  }
+.nav-tabs .nav-link:not(.active):hover {
+  border-color: transparent;
 }
 
 a>figcaption {
@@ -205,4 +176,46 @@ a>figcaption {
 
 #cardsfilter li {
   margin-right: 2rem;
+}
+
+@media screen and (min-width: 768px) {
+  #characterFilters {
+    border-left: 1px solid rgba(0,0,0,.1);
+  }
+}
+
+/* collection and favourites page */
+
+#usernav span {
+  max-width: 0;
+  -webkit-transition: max-width 1s;
+  transition: max-width 1s;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#usernav>.btn-outline-primary:hover>span {
+  max-width: 7rem;
+}
+
+#usernav>.btn-outline-primary {
+  color: var(--primary);
+  background-color: white;
+}
+
+#b2t {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: fixed;
+  bottom: 32px;
+  right: 18px;
+  border-radius: 50%;
+  background-color: white;
+  width: 64px;
+  height: 64px;
+  z-index: 1030;
 }
