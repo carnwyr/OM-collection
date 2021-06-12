@@ -49,8 +49,12 @@ async function getFullEventData(eventName) {
 				"rewards.card.attribute": 0,
 				"rewards.card.type": 0,
 				"rewards.card.rarity": 0,
-				"rewards.card.characters": 0, 
-				"rewards.card.number": 0
+				"rewards.card.characters": 0
+			}},
+			{
+				$sort: {
+					"rewards.points": -1,
+					"rewards.card.number": -1
 			}},
 			{ $group: { 
 				_id: "$_id",
