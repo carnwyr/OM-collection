@@ -184,6 +184,11 @@ a>figcaption {
   }
 }
 
+#searchForm input::placeholder {
+  color: var(--primary);
+  opacity: .7;
+}
+
 /* collection and favourites page */
 
 #usernav span {
@@ -196,26 +201,13 @@ a>figcaption {
   overflow: hidden;
 }
 
-#usernav>.btn-outline-primary:hover>span {
-  max-width: 7rem;
+@media (min-width: 768px) {
+  #usernav>.btn-outline-primary:hover>span {
+    max-width: 7rem;
+  }
 }
 
 #usernav>.btn-outline-primary {
   color: var(--primary);
   background-color: white;
-}
-
-#b2t {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: fixed;
-  bottom: 32px;
-  right: 18px;
-  border-radius: 50%;
-  background-color: white;
-  width: 64px;
-  height: 64px;
-  z-index: 1030;
 }

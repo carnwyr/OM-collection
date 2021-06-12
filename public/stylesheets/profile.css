@@ -35,7 +35,7 @@ li.placeholder {
   text-align: center;
   margin: 0;
   padding: 45px 0 20px;
-  background-image: linear-gradient(to bottom, transparent, white 80%, white);
+  background-image: linear-gradient(to bottom, rgba(255,255,255,0), white 80%, white);
 }
 
 #profile>div {
