@@ -113,3 +113,18 @@ footer ul {
   z-index: 1030 !important;
   transition: 0s !important;
 }
+
+#b2t {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: fixed;
+  bottom: 32px;
+  right: 18px;
+  border-radius: 50%;
+  background-color: white;
+  width: 64px;
+  height: 64px;
+  z-index: 1030;
+}

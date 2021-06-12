@@ -96,27 +96,7 @@ html(lang=t("lang"))
             li(class="nav-item d-md-none")
               a(class="nav-link" href='/logout')= t("common.logout")
 
-    div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
-      div(class="toast-body")
-        span This site uses cookies to improve your experience.
-          |
-          |
-          a(href="/policies") More information
-        button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
-          span(aria-hidden="true") Got it &#x1F44D
-
-    //-
-      div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
-        div.toast-header
-          img.mr-2(src="/images/twitter.png" width="20px")
-          strong.mr-auto Karasu-OS Joined Twitter!
-          button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
-            span(aria-hidden="true") &times;
-        div.toast-body
-          | Follow us on Twitter to be the first to see our newest features!
-          a(href="https://twitter.com/karasu_os" class="btn btn-sm btn-block mt-3" style="background:#1DA1F2;color:white;" target="_blank") Follow @karasu_os
-
-    main(class='container-fluid mb-5')
+    main(class='container-fluid mb-5' style="position:relative;")
       block content
       if ((!user || !user.supportStatus.includes("adfree")) && title !== "Privacy Policy")
         div.container.ddd
@@ -141,6 +121,30 @@ html(lang=t("lang"))
             div(class="modal-footer")
               button(type="button" class="btn btn-secondary" data-dismiss="modal") No thanks
               a(type="button" class="btn btn-primary" href="https://www.buymeacoffee.com/karasuos" target="_blank") Support now
+
+      //- toasts
+      div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
+        div(class="toast-body")
+          span This site uses cookies to improve your experience.
+            |
+            |
+            a(href="/policies") More information
+          button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
+            span(aria-hidden="true") Got it &#x1F44D
+
+      //-
+        div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
+          div.toast-header
+            img.mr-2(src="/images/twitter.png" width="20px")
+            strong.mr-auto Karasu-OS Joined Twitter!
+            button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
+              span(aria-hidden="true") &times;
+          div.toast-body
+            | Follow us on Twitter to be the first to see our newest features!
+            a(href="https://twitter.com/karasu_os" class="btn btn-sm btn-block mt-3" style="background:#1DA1F2;color:white;" target="_blank") Follow @karasu_os
+
+      div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
+        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
 
     footer.bg-primary.text-light.mt-auto
       div.container.mt-5.mb-3
