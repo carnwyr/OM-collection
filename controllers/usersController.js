@@ -606,7 +606,7 @@ exports.updateUserProfile = function(req, res) {
     { $set: update },
     function(err, result) {
       if (err) {
-        Sentry.captureException(e);
+        Sentry.captureException(err);
         return res.json({ err: true, message: "Something went wrong :(" });
       }
 
