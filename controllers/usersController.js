@@ -34,9 +34,10 @@ exports.login = passport.authenticate('local', {
 
 exports.logout = function (req, res) {
 	req.logout();
-	req.session.destroy(err => {
+	req.session.destroy(function (err) {
+		req.user=null
 		res.clearCookie('connect.sid');
-  	res.redirect('/');
+    res.redirect('/');
   });
 };
 
