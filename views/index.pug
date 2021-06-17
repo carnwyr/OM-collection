@@ -51,7 +51,8 @@ block content
             a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
 
         if (!user || !user.supportStatus.includes("adfree"))
-          <div id="ezoic-pub-ad-placeholder-109"> </div>
+          div.row.justify-content-center
+            <div id="ezoic-pub-ad-placeholder-109"> </div>
 
         //- Share Event
         div#ShareEvent.card.mb-3
