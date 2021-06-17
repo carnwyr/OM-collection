@@ -132,6 +132,8 @@ async function applyFilters() {
 
 	if (search !== '') {
 		querystr.set("search", search);
+	} else {
+		querystr.delete("search");
 	}
 
 	if ($('#checkCardsNotOwned').prop('checked')) {
@@ -253,7 +255,7 @@ function applyEffectWithoutTransition(elements, effect, args) {
 function resetFilters() {
 	$("#filters input[type=radio]").prop("checked", true);
 	$("#filters input[type=checkbox]").prop("checked", false);
-	$("#filters input[type=text]").val("");
+	$("#searchForm input[type=text]").val("");
 	$("#checkCardsAll").prop("checked", true);
 }
 

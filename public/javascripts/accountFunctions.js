@@ -146,6 +146,11 @@ function updateProfile(e) {
 		return;
 	}
 
+	if (isNaN(parseInt($("#inputFriendID").val()))) {
+		showAlert("danger", "Friend ID should be a number.");
+		return;
+	}
+
 	// characters need to be specially updated because it's an array
 	if (updatedInfo["characters"]) {
 		var formData = new FormData($("form#profile")[0]);
