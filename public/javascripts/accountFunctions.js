@@ -147,7 +147,7 @@ function updateProfile(e) {
 	}
 
 	if (isNaN(parseInt($("#inputFriendID").val()))) {
-		showAlert("danger", "Friend ID should be a number.");
+		showAlert("warning", "Friend ID should be a number. Phone > Add Friends > Your ID");
 		return;
 	}
 

@@ -87,14 +87,14 @@ footer ul {
   }
 }
 
-.ddd {
+/* .ddd {
   margin: 2rem auto;
   text-align: center;
 }
 
 .ddd>.row {
   min-height: 250px;
-}
+} */
 
 @media (min-width: 768px) {
   .navbar-nav.ml-auto>li>a {
