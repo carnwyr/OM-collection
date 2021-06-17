@@ -50,6 +50,9 @@ block content
               a(href="/" + user.name + "/profile" type="button" class="btn btn-primary m-1")= t("title.my_profile")
             a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
 
+        if (!user || !user.supportStatus.includes("adfree"))
+          <div id="ezoic-pub-ad-placeholder-109"> </div>
+
         //- Share Event
         div#ShareEvent.card.mb-3
           div.card-body.text-center
