@@ -2,6 +2,7 @@ const express = require("express");
 const compression = require("compression");
 const Sentry = require("@sentry/node");
 const helmet = require("helmet");
+const cors = require("cors");
 
 const createError = require("http-errors");
 const path = require("path");
@@ -79,6 +80,7 @@ app.use(function (req, res, next) {
 app.use(compression());
 app.use(logger("dev"));
 app.use(cookieParser());
+app.use(cors());
 
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json({ limit: "50mb" }));
