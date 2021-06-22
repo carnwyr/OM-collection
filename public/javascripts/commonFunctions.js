@@ -3,7 +3,7 @@ $(document).ready(function(){
 	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
 	$("head").append(`<link rel="alternate" hreflang="${$("select#language").val()}" href="${window.location.href}">`);
 	$("select#language").on("change", function() {
-		window.location.href = window.location.href.split("?")[0] + "?lang=" + $("select#language").val();
+		window.location.href = "https://" + $("select#language").val() + ".karasu-os.com" + location.pathname;
 	});
 
 	$(".navbar .nav-item.active").removeClass("active");
