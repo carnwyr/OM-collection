@@ -8,6 +8,11 @@ block content
   div(class="container")
     h1= title
 
+    if (!user || !user.supportStatus.includes("adfree"))
+      div.row.justify-content-center
+        <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+        //- <div id="ezoic-pub-ad-placeholder-109"> <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script> </div>
+
     - var badges = profileInfo.badges;
 
     if badges.length !== 0
