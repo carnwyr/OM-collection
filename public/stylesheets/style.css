@@ -128,3 +128,9 @@ footer ul {
   height: 64px;
   z-index: 1030;
 }
+
+@media (max-width: 768px) {
+  .adsbygoogle {
+    max-width: 768px;
+  }
+}
