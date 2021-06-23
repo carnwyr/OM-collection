@@ -12,7 +12,7 @@ block content
     h1= title
 
     if (!user || !user.supportStatus.includes("adfree"))
-      div.text-center.mb-3
+      div.row.justify-content-center.mb-3
         <div id="ezoic-pub-ad-placeholder-109"></div>
 
     if path === "collection"
@@ -75,7 +75,7 @@ block content
               | #{t("cards.manage_collection")}
 
       if (!user || !user.supportStatus.includes("adfree"))
-        div.text-center.mb-3
+        div.row.justify-content-center.mb-3
           <div id="ezoic-pub-ad-placeholder-111"></div>
 
       //- Filters
@@ -169,7 +169,7 @@ block content
                       label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?t("Little D"):t(character)
 
       if (!user || !user.supportStatus.includes("adfree"))
-        div.text-center.mb-3
+        div.row.justify-content-center
           <div id="ezoic-pub-ad-placeholder-108"></div>
 
       div(class="row pt-3" id="demonCards")
@@ -188,7 +188,7 @@ block content
                   figcaption= t("lang")==="en"?card.name:card.ja_name
 
       if (!user || !user.supportStatus.includes("adfree"))
-        div.text-center.mb-3
+        div.row.justify-content-center.mb-3
           div#ezoic-pub-ad-placeholder-105
             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
 
