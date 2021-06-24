@@ -85,6 +85,10 @@ footer ul {
   #overline {
     color: #6c757d;
   }
+
+  .navbar-nav.ml-auto>li>a {
+    color: var(--light) !important;
+  }
 }
 
 /* .ddd {
@@ -96,10 +100,9 @@ footer ul {
   min-height: 250px;
 } */
 
-@media (min-width: 768px) {
-  .navbar-nav.ml-auto>li>a {
-    color: var(--light) !important;
-  }
+.ddd {
+  text-align: center;
+  margin-bottom: .5rem;
 }
 
 #alert {
