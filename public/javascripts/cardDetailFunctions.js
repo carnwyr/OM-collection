@@ -35,9 +35,9 @@ function updateCollection() {
     if (!data.err) {
       $('.'+collectionType).toggleClass("addCardButton removeCardButton");
       if (collectionType === "owned") {
-        $(".ownedCount").text("Collected by "+data.updatedVal+"% of users");
+        $(".ownedCount").text(i18next.collected_count.replace("undefined", data.updatedVal));
       } else {
-        $(".favedCount").text("by "+data.updatedVal+"% of users");
+        $(".favedCount").text(i18next.favourite_count.replace("undefined", data.updatedVal));
       }
       showAlert("success", data.message);
     } else {

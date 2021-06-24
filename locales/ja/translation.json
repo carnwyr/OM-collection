@@ -43,7 +43,9 @@
     "bloomed": "開花後",
     "icon_view": "アイコン一覧",
     "full_original": "開花前の絵柄",
-    "full_bloomed": "開花後の絵柄"
+    "full_bloomed": "開花後の絵柄",
+    "collected_count": "全プレイヤーの所有率：{{percentage}}%",
+    "favourite_count": "お気に入り登録率：{{percentage}}%"
   },
   "title": {
     "cards": "カード一覧",
