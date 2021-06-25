@@ -237,7 +237,12 @@ async function getUniqueName(name) {
 
 async function getLatestCardNum(rarity) {
 	try {
-		var last = await Cards.find({ rarity: rarity }).sort({ number: -1 }).limit(1);
+		var query = {};
+		if (rarity !== "UR" && rarity !== "UR+") {
+			query = { rarity: rarity };
+		}
+
+		var last = await Cards.find(query).sort({ number: -1 }).limit(1);
 		return last[0].number + 1;
 	} catch(e) {
 		return 99999;  // reserved error number
