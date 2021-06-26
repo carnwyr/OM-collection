@@ -4,84 +4,98 @@ block scripts
 	link(rel="stylesheet" href="/stylesheets/eventEdit.css")
 	script(src="/javascripts/eventEdit.js")
 
- block content
+block content
 	div#alert(role="alert")
 	div.container
 		h1= title
-		div.card.card-body.shadow
-			form
+		div.card.shadow
+			div.card-body
 				h5 Event Info
-				div.form-row
-					div.col
-						div.form-group
-							label(for="name") Name
-							input#name.form-control(type="text" required)
-						div.form-group
-							label(for="ja_name") Japanese name
-							input#ja_name.form-control(type="text" required)
-						div.form-group
-							label(for="img_name") Image name
-							input#img_name.form-control(type="text" required)
-					div.col
-						div.form-group
-							label(for="start") Start date
-							input#start.form-control(type="date" required)
-						div.form-group
-							label(for="end") End date
-							input#end.form-control(type="date" required)
-						//- div.col-2
-						p.mb-0 Type
-						div.form-check.form-check-inline
-							input#popquiz.form-check-input(type="radio" name="type" value="Pop Quiz")
-							label.form-check-label(for="popquiz") Pop Quiz
-						div.form-check.form-check-inline
-							input#lonelydevil.form-check-input(type="radio" name="type" value="Lonely Devil")
-							label.form-check-label(for="lonelydevil") Lonely Devil
-						div.form-check.form-check-inline
-							input#birthday.form-check-input(type="radio" name="type" value="Birthday")
-							label.form-check-label(for="birthday") Birthday
-						div.form-check.form-check-inline
-							input#nightmare.form-check-input(type="radio" name="type" value="Nightmare")
-							label(for="nightmare") Nightmare
-					div.col
-						p.mb-2 Media
-						div.custom-file
-							input#img.custom-file-input(type="file" accept=".jpg, .png" required)
-							label.custom-file-label(for="img") Choose File (must be .jpg)
-						img#preview.w-100.my-2
-				br
+				form
+					div.form-row
+						div.col-3
+							div.form-group
+								label(for="name") Name
+								input#name.form-control(type="text" name="name" required)
+							div.form-group
+								label(for="ja_name") Japanese name
+								input#ja_name.form-control(type="text" name="ja_name" required)
+							div.form-group
+								label(for="img_name") Image name
+								input#img_name.form-control(type="text" name="img_name" required)
+						div.col
+							div.form-group
+								label(for="start") Start date
+								input#start.form-control(type="date" name="start" required)
+							div.form-group
+								label(for="stages") Number of stages
+								input#stages.form-control(type="number" name="stages" required)
+							div.form-group
+								label(for="pageCost") Page cost
+								input#pageCost.form-control(type="number" name="pageCost" required)
+						div.col
+							div.form-group
+								label(for="end") End date
+								input#end.form-control(type="date" name="end" required)
+
+							p.mb-0 Type
+							div.form-check
+								input#popquiz.form-check-input(type="radio" name="type" value="Pop Quiz")
+								label.form-check-label(for="popquiz") Pop Quiz
+							div.form-check
+								input#lonelydevil.form-check-input(type="radio" name="type" value="Lonely Devil")
+								label.form-check-label(for="lonelydevil") Lonely Devil
+							div.form-check
+								input#birthday.form-check-input(type="radio" name="type" value="Birthday")
+								label.form-check-label(for="birthday") Birthday
+							div.form-check
+								input#nightmare.form-check-input(type="radio" name="type" value="Nightmare")
+								label(for="nightmare") Nightmare
+
+						div.col-4
+							p.mb-2 Media
+							div.custom-file
+								input#img.custom-file-input(type="file" accept=".jpg, .png" required)
+								label.custom-file-label(for="img") Choose File (must be .jpg)
+							img#preview.w-100.mt-2(src="")
+
 				h5 Rewards
-				div#rewards.form-inline
-					span.mr-2 1
-					label.sr-only(for="rewardname1") Name
-					input#name1.form-control.mr-2(type="text" placeholder="reward name" required)
-
-					label.sr-only(for="rewardcost1") Cost
-					input#points1.form-control.mr-2(type="number" placeholder="reward cost" required)
-
-					label.sr-only(for="rewardcard1") Card name (if applicable)
-					input#card1.form-control.mr-2(type="text" placeholder="card name (if applicable)")
-
-					button Remove
+					small.ml-2 Please remove empty rows before updating event
+				form#rewards
+					div.form-inline
+						input.form-control(type="text" placeholder="reward name" name="tag" required)
+						input.form-control(type="number" placeholder="reward cost" name="points" required)
+						input.form-control(type="text" placeholder="card name (if applicable)" name="card")
+						button Remove
 				hr
-				button#addReward Add reward
+				button#addReward(data-target="#rewards" data-clone="#rewardTemplate") Add reward
+
 				br
 				br
 				h5 AP Rewards
-				div#AP.form-inline
-					span.mr-2 1
-					label.sr-only(for="APamount1") Amount
-					input#amount1.form-control.mr-2(type="number" required)
-
-					label.sr-only(for="APcost1") Cost
-					input#cost1.form-control.mr-2(type="number" required)
-
-					label.sr-only(for="APpage1") Page (if available only on specific page)
-					input#page1.form-control.mr-2(type="number")
-
-					button Remove
+					small.ml-2 Please remove empty rows before updating event
+				form#AP
+					div.form-inline
+						input.form-control(type="number" placeholder="AP amount" name="amount" required)
+						input.form-control(type="number" placeholder="AP cost" name="points" required)
+						input.form-control(type="number" placeholder="available page" name="page")
+						button Remove
 				hr
-				button Add reward
+				button#addAP(data-target="#AP" data-clone="#APTemplate") Add AP reward
 				br
 				br
-				input.btn.btn-primary(type="submit" value="Create")
+				button#submit.btn.btn-primary Submit Change
+
+			template#rewardTemplate
+				div.form-inline
+					input.form-control(type="text" placeholder="reward name" name="tag" required)
+					input.form-control(type="number" placeholder="reward cost" name="points" required)
+					input.form-control(type="text" placeholder="card name (if applicable)" name="card")
+					button Remove
+
+			template#APTemplate
+				div.form-inline
+					input.form-control(type="number" placeholder="AP amount" name="amount" required)
+					input.form-control(type="number" placeholder="AP cost" name="points" required)
+					input.form-control(type="number" placeholder="available page" name="page")
+					button Remove

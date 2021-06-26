@@ -1,17 +1,10 @@
 $(document).ready(function() {
 	$("input[type=file]").on("change", loadImage);
-	$("#addReward").on("click", addReward);
-	$("#addAP").on("click", addAP);
+	$("#addReward, #addAP").on("click", addItem);
+	$("#submit").on("click", submitChange);
 });
 
 function loadImage(event) {
-	// const files = event.target.files;
-	//
-	// console.log('files', files);
-	//
-	// var image = document.getElementById('output');
-	// image.src = URL.createObjectURL(event.target.files[0]);
-
 	const preview = document.getElementById("preview");
 	const file = event.target.files[0];
 	const reader = new FileReader();
@@ -20,22 +13,72 @@ function loadImage(event) {
 		// convert image file to base64 string
 		preview.src = reader.result;
 
-		// console.log(preview.src);
+		console.log(preview);
+
 
 	}, false);
 
 	if (file) {
 		reader.readAsDataURL(file);
 	}
-
-	// console.log(image.src);
 }
 
-function addReward() {
-	var rewardTemplate = "";
-	$("#rewards").append("");
+function addItem() {
+	var parentForm = $(this).data("target");
+	var template = $(this).data("clone");
+	$(parentForm).append($(template).html());
 }
 
-function addAP() {
-	$("#AP").append("");
+function submitChange() {
+	var data = {};
+
+	var formData = new FormData($("form")[0]);
+	for (let pair of formData.entries()) {
+		data[pair[0]] = pair[1];
+	}
+
+	data.img = $("img#preview").attr("src");
+
+	var rewardData = new FormData($("form")[1]),
+			apData = new FormData($("form")[2]),
+			temp = {};
+	data.rewards = [], data.ap = [];
+	for (let form of [rewardData, apData]) {
+		let lst, end;
+		if (form === rewardData) {
+			lst = data.rewards;
+			end = "card";
+		} else {
+			lst = data.ap;
+			end = "page";
+		}
+		for (let pair of form.entries()) {
+			temp[pair[0]] = pair[1];
+			if (pair[0] === end) {
+				lst.push(temp);
+				temp = {};
+			}
+		}
+	}
+
+	for (let key in data) {
+		if (data[key] === "") {
+			showAlert("danger", "Please fill: "+key);
+			return;
+		}
+	}
+
+	$.ajax({
+    type: "post",
+    url: "/event/updateEvent",
+    contentType: "application/json",
+    data: JSON.stringify({ data: data })
+  })
+  .done(function(result) {
+    if (result.err) {
+      showAlert("danger", result.message);
+      return;
+    }
+    showAlert("success", "Event updated!");
+  });
 }
