@@ -37,7 +37,7 @@ function updateCollection() {
       if (collectionType === "owned") {
         $(".ownedCount").text(i18next.collected_count.replace("undefined", data.updatedVal));
       } else {
-        $(".favedCount").text(i18next.favourite_count.replace("undefined", data.updatedVal));
+        $(".favedCount").html(i18next.favourite_count.replace("undefined", data.updatedVal));
       }
       showAlert("success", data.message);
     } else {
