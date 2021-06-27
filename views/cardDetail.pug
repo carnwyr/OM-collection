@@ -68,7 +68,7 @@ block content
             hr
             if !isHidden
               p.ownedCount= t("cards.collected_count", { percentage: stats.ownedTotal })
-              p.favedCount !{t("cards.favourite_count", { percentage: stats.favedTotal })}
+              p.favedCount= t("cards.favourite_count", { percentage: stats.favedTotal })
             if user
               div(class='d-none d-md-block')
                 hr
