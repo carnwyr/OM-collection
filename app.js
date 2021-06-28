@@ -38,7 +38,8 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
-app.use(helmet({ contentSecurityPolicy: false }));
+// app.use(helmet({ contentSecurityPolicy: false }));
+app.disable("x-powered-by");
 app.use(Sentry.Handlers.requestHandler());
 
 var languageDetector = new i18nextMiddleware.LanguageDetector();
@@ -78,7 +79,7 @@ app.use(function(req, res, next) {
 app.use(compression());
 app.use(logger("dev"));
 app.use(cookieParser());
-app.use(cors());
+// app.use(cors());
 
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json({ limit: "50mb" }));
