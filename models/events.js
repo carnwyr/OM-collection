@@ -3,14 +3,14 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var APSchema = new Schema({
-  amount: { type: Number, required: function() { return this.type !== "Nightmare"; } },
-  points: { type: Number, required: function() { return this.type !== "Nightmare"; } },
+  amount: { type: Number, required: true },
+  points: { type: Number, required: true },
   page: { type: Number }
 });
 
 var RewardsSchema = new Schema({
-  tag: { type: String, required: function() { return this.type !== "Nightmare"; } },
-  points: { type: Number, required: function() { return this.type !== "Nightmare"; } },
+  tag: { type: String, required: true },
+  points: { type: Number, required: true },
   card: { type: String }
 });
 
@@ -22,8 +22,8 @@ var EventsSchema = new Schema(
     type: { type: String, required: true, enum: ["Pop Quiz", "Lonely Devil", "Birthday", "Nightmare"] },
     start: { type: Date },
     end: { type: Date },
-    ap: [APSchema],
-    rewards: [RewardsSchema],
+    ap: { type: [APSchema], required: function() { return this.type !== "Nightmare"; } },
+    rewards: { type: [RewardsSchema], required: function() { return this.type !== "Nightmare"; } },
     stages: { type: Number, required: function() { return this.type !== "Nightmare"; } },
     pageCost: { type: Number, required: function() { return this.type !== "Nightmare"; } }
   }

@@ -40,37 +40,23 @@ function submitChange() {
 		data[pair[0]] = pair[1];
 	}
 
-	var rewardData = new FormData($("form")[1]),
-			apData = new FormData($("form")[2]),
-			temp = {};
-	data.rewards = [], data.ap = [];
-	for (let f of [rewardData, apData]) {
-		let lst, end;
-		if (f === rewardData) {
-			lst = data.rewards;
-			end = "card";
-		} else {
-			lst = data.ap;
-			end = "page";
-		}
-		for (let pair of f.entries()) {
-			temp[pair[0]] = pair[1];
-			if (pair[0] === end) {
-				lst.push(temp);
-				temp = {};
-			}
-		}
+	if (data.type !== "Nightmare") {
+		data.rewards = formatRewards(new FormData($("form")[1]), "card");
+		data.ap = formatRewards(new FormData($("form")[2]), "page");
 	}
 
 	for (let key in data) {
 		// console.log(key, data[key]);
 		if (data[key] === "") {
+			if (data.type === "Nightmare" && ["stages", "pageCost"].includes(key)) {
+				continue;
+			}
 			showAlert("danger", "Please fill: "+key);
 			return;
 		}
 	}
 
-	console.log(data);
+	// console.log(data);
 
 	$.ajax({
     type: "post",
@@ -89,4 +75,16 @@ function submitChange() {
     }
     showAlert("success", result.message);
   });
+}
+
+function formatRewards(f, end) {
+	var temp = {}, lst = [];
+	for (let pair of f.entries()) {
+		temp[pair[0]] = pair[1];
+		if (pair[0] === end) {
+			lst.push(temp);
+			temp = {};
+		}
+	}
+	return lst;
 }

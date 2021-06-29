@@ -81,7 +81,10 @@ exports.updateEvent = async function(req, res) {
 			return res.json({ err: null, message: "Event created!" });
 		}
 
-		let e = await Events.findOne({ name: req.params.event });
+		let e = await Events.findOne({ name: req.body.name });
+
+		// console.log(e, req.body.name);
+
 		if (e.img_name !== data.img_name) {
 			// rename image
 		}
@@ -90,7 +93,7 @@ exports.updateEvent = async function(req, res) {
 			// find image with img_name and replace image
 		}
 
-		await Events.findOneAndUpdate({ name: req.body.name }, data).exec();
+		await Events.findOneAndUpdate({ name: req.body.name }, data, { runValidators: true }).exec();
 
 		return res.json({ err: null, message: "Event updated!" });
 	} catch(e) {
