@@ -1,32 +1,33 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
 var Schema = mongoose.Schema;
 
 var APSchema = new Schema({
-    amount: { type: Number, required: true },
-    points: { type: Number, required: true },
-    page: { type: Number }
+  amount: { type: Number, required: function() { return this.type !== "Nightmare"; } },
+  points: { type: Number, required: function() { return this.type !== "Nightmare"; } },
+  page: { type: Number }
 });
 
 var RewardsSchema = new Schema({
-    tag: { type: String, required: true },
-    points: { type: Number, required: true },
-    card: { type: String }
+  tag: { type: String, required: function() { return this.type !== "Nightmare"; } },
+  points: { type: Number, required: function() { return this.type !== "Nightmare"; } },
+  card: { type: String }
 });
 
 var EventsSchema = new Schema(
   {
     name: { type: String, required: true },
     ja_name: { type: String, required: true },
-    img_name: { type: String, required: true },
-    type: { type: String, required: true, enum: ['Pop Quiz', 'Lonely Devil', 'Birthday'] },
-    start: { type: Date},
+    img_name: { type: String, required: true, unique: true },
+    type: { type: String, required: true, enum: ["Pop Quiz", "Lonely Devil", "Birthday", "Nightmare"] },
+    start: { type: Date },
     end: { type: Date },
     ap: [APSchema],
     rewards: [RewardsSchema],
-    stages: { type: Number, required: true },
-    pageCost: { type: Number, required: true }
+    stages: { type: Number, required: function() { return this.type !== "Nightmare"; } },
+    pageCost: { type: Number, required: function() { return this.type !== "Nightmare"; } }
   }
 );
 
-module.exports = mongoose.model('events', EventsSchema);
+
+module.exports = mongoose.model("events", EventsSchema);

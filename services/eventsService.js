@@ -1,5 +1,6 @@
 const Sentry = require('@sentry/node');
 const async = require("async");
+const fs = require("fs");
 
 const Events = require("../models/events");
 
@@ -24,7 +25,7 @@ exports.getEvent = async function(eventName) {
 exports.getCurrentEvent = async function() {
 	var currentTime = new Date();
 	try {
-		var currentEventName = await Events.findOne({ start: { "$lte": currentTime }, end: { "$gt": currentTime }}, {name: 1}); 
+		var currentEventName = await Events.findOne({ start: { "$lte": currentTime }, end: { "$gt": currentTime }}, {name: 1});
 		if (!currentEventName) return;
 		var currentEvent = await eventsController.getFullEventData(currentEventName);
 		return currentEvent;
@@ -56,10 +57,10 @@ async function getFullEventData(eventName) {
 					"rewards.points": -1,
 					"rewards.card.number": -1
 			}},
-			{ $group: { 
+			{ $group: {
 				_id: "$_id",
 				temp: { "$first": "$$ROOT" },
-				rewards: { "$push": "$rewards" } 
+				rewards: { "$push": "$rewards" }
 			}},
 			{ $replaceRoot: { "newRoot": { "$mergeObjects": ["$temp", { rewards: "$rewards" }]}}}
 		]);
@@ -67,5 +68,34 @@ async function getFullEventData(eventName) {
 		return event?.length ? event[0] : null;
 	} catch (e) {
 		Sentry.captureException(e);
+	}
+}
+
+exports.updateEvent = async function(req, res) {
+	try {
+		let data = req.body.data;
+
+		if (!req.body.name) {  // from /addEvent
+			await Events.create(data);
+			// write image
+			return res.json({ err: null, message: "Event created!" });
+		}
+
+		let e = await Events.findOne({ name: req.params.event });
+		if (e.img_name !== data.img_name) {
+			// rename image
+		}
+
+		if (req.body.img.startsWith("data:image/jpeg;base64")) {
+			// find image with img_name and replace image
+		}
+
+		await Events.findOneAndUpdate({ name: req.body.name }, data).exec();
+
+		return res.json({ err: null, message: "Event updated!" });
+	} catch(e) {
+		console.error(e);
+		Sentry.captureException(e);
+		return res.json({ err: true, message: e.message });
 	}
 }

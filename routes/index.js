@@ -36,5 +36,8 @@ router.get('/:username/favourites', cardsController.getFavouritesPage);
 router.get("/userpage", usersController.isAdmin(), usersController.getUserListPage);
 router.post("/updateSupport", usersController.isAdmin(), usersController.updateSupport);
 
+//
+router.get("/addEvent", eventsController.getEventEditPage);
+
 
 module.exports = router;

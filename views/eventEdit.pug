@@ -13,60 +13,70 @@ block content
 				h5 Event Info
 				form
 					div.form-row
-						div.col-3
+						div.col-4
 							div.form-group
 								label(for="name") Name
-								input#name.form-control(type="text" name="name" required)
+								input#name.form-control(type="text" name="name" value=data.name)
 							div.form-group
 								label(for="ja_name") Japanese name
-								input#ja_name.form-control(type="text" name="ja_name" required)
+								input#ja_name.form-control(type="text" name="ja_name" value=data.ja_name)
 							div.form-group
 								label(for="img_name") Image name
-								input#img_name.form-control(type="text" name="img_name" required)
-						div.col
+								input#img_name.form-control(type="text" name="img_name" value=data.img_name)
+						div.col-4
 							div.form-group
-								label(for="start") Start date
-								input#start.form-control(type="date" name="start" required)
+								label(for="start") Start date (UTC)*
+								input#start.form-control(type="datetime-local" name="start" value=data.start)
 							div.form-group
 								label(for="stages") Number of stages
-								input#stages.form-control(type="number" name="stages" required)
+								input#stages.form-control(type="number" name="stages" value=data.stages)
 							div.form-group
 								label(for="pageCost") Page cost
-								input#pageCost.form-control(type="number" name="pageCost" required)
-						div.col
+								input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
+						div.col-4
 							div.form-group
-								label(for="end") End date
-								input#end.form-control(type="date" name="end" required)
+								label(for="end") End date (UTC)*
+								input#end.form-control(type="datetime-local" name="end" value=data.end)
 
 							p.mb-0 Type
 							div.form-check
-								input#popquiz.form-check-input(type="radio" name="type" value="Pop Quiz")
+								input#popquiz.form-check-input(type="radio" name="type" value="Pop Quiz" checked=data.type==="Pop Quiz")
 								label.form-check-label(for="popquiz") Pop Quiz
 							div.form-check
-								input#lonelydevil.form-check-input(type="radio" name="type" value="Lonely Devil")
+								input#lonelydevil.form-check-input(type="radio" name="type" value="Lonely Devil" checked=data.type==="Lonely Devil")
 								label.form-check-label(for="lonelydevil") Lonely Devil
 							div.form-check
-								input#birthday.form-check-input(type="radio" name="type" value="Birthday")
+								input#birthday.form-check-input(type="radio" name="type" value="Birthday" checked=data.type==="Birthday")
 								label.form-check-label(for="birthday") Birthday
 							div.form-check
-								input#nightmare.form-check-input(type="radio" name="type" value="Nightmare")
+								input#nightmare.form-check-input(type="radio" name="type" value="Nightmare" checked=data.type==="Nightmare")
 								label(for="nightmare") Nightmare
 
 						div.col-4
 							p.mb-2 Media
 							div.custom-file
-								input#img.custom-file-input(type="file" accept=".jpg, .png" required)
+								input#img.custom-file-input(type="file" accept=".jpg")
 								label.custom-file-label(for="img") Choose File (must be .jpg)
-							img#preview.w-100.mt-2(src="")
+							img#preview.w-100.mt-2(src=data.img_name?"/images/events/"+data.img_name:"")
 
+						small *time format: YYYY-MM-DDT00:00:00.000Z example: 2021-06-15T21:05:00.000Z
+				br
 				h5 Rewards
 					small.ml-2 Please remove empty rows before updating event
 				form#rewards
-					div.form-inline
-						input.form-control(type="text" placeholder="reward name" name="tag" required)
-						input.form-control(type="number" placeholder="reward cost" name="points" required)
-						input.form-control(type="text" placeholder="card name (if applicable)" name="card")
-						button Remove
+					if data.rewards && data.rewards.length !== 0
+						each reward in data.rewards
+							div.form-inline
+								input.form-control(type="text" placeholder="reward name" name="tag" value=reward.tag)
+								input.form-control(type="number" placeholder="reward cost" name="points" value=reward.points)
+								input.form-control(type="text" placeholder="card name (if applicable)" name="card" value=reward.card)
+								button(type="button") Remove
+					else
+						div.form-inline
+							input.form-control(type="text" placeholder="reward name" name="tag")
+							input.form-control(type="number" placeholder="reward cost" name="points")
+							input.form-control(type="text" placeholder="card name (if applicable)" name="card")
+							button(type="button") Remove
 				hr
 				button#addReward(data-target="#rewards" data-clone="#rewardTemplate") Add reward
 
@@ -75,11 +85,19 @@ block content
 				h5 AP Rewards
 					small.ml-2 Please remove empty rows before updating event
 				form#AP
-					div.form-inline
-						input.form-control(type="number" placeholder="AP amount" name="amount" required)
-						input.form-control(type="number" placeholder="AP cost" name="points" required)
-						input.form-control(type="number" placeholder="available page" name="page")
-						button Remove
+					if data.ap && data.ap.length !== 0
+						each ap in data.ap
+							div.form-inline
+								input.form-control(type="number" placeholder="AP amount" name="amount" value=ap.amount)
+								input.form-control(type="number" placeholder="AP cost" name="points" value=ap.points)
+								input.form-control(type="number" placeholder="page (if non-repeating)" name="page" value=ap.page)
+								button(type="button") Remove
+					else
+						div.form-inline
+							input.form-control(type="number" placeholder="AP amount" name="amount")
+							input.form-control(type="number" placeholder="AP cost" name="points")
+							input.form-control(type="number" placeholder="page (if non-repeating)" name="page")
+							button(type="button") Remove
 				hr
 				button#addAP(data-target="#AP" data-clone="#APTemplate") Add AP reward
 				br
@@ -88,14 +106,14 @@ block content
 
 			template#rewardTemplate
 				div.form-inline
-					input.form-control(type="text" placeholder="reward name" name="tag" required)
-					input.form-control(type="number" placeholder="reward cost" name="points" required)
+					input.form-control(type="text" placeholder="reward name" name="tag")
+					input.form-control(type="number" placeholder="reward cost" name="points")
 					input.form-control(type="text" placeholder="card name (if applicable)" name="card")
-					button Remove
+					button(type="button") Remove
 
 			template#APTemplate
 				div.form-inline
-					input.form-control(type="number" placeholder="AP amount" name="amount" required)
-					input.form-control(type="number" placeholder="AP cost" name="points" required)
+					input.form-control(type="number" placeholder="AP amount" name="amount")
+					input.form-control(type="number" placeholder="AP cost" name="points")
 					input.form-control(type="number" placeholder="available page" name="page")
-					button Remove
+					button(type="button") Remove

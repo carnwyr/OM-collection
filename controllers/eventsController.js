@@ -6,10 +6,10 @@ const eventCalculatorService = require("../services/eventCalculatorService");
 
 exports.getEventsPage = async function(req, res, next) {
 	var events = await eventsService.getEvents();
-	res.render('events', { 
-		title: "Events", 
-		description: "A list of Obey Me events, including Nightmare and Pop Quizzes.", 
-		user: req.user, 
+	res.render('events', {
+		title: "Events",
+		description: "A list of Obey Me events, including Nightmare and Pop Quizzes.",
+		user: req.user,
 		events: events });
 }
 
@@ -35,3 +35,22 @@ exports.calculate = async function(req, res) {
 	var result = eventCalculatorService.calculate(event, req.body.currentPoints, req.body.pointsPerBattle);
 	return res.json({ err: false, result: result });
 }
+
+const Events = require("../models/events");  // temp until todo in services/eventCacheService.js is complete
+
+exports.getEventEditPage = async function(req, res, next) {
+	if (req.params.event) {
+		try {
+			// let data = await eventsService.getEvent(req.params.event);
+			let data = await Events.find({ name: req.params.event });  // temp, same reason as above
+			if (data.length === 0) throw createError(404, "Event not found");
+
+			console.log(data);
+
+			return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data[0], user: req.user });
+		} catch(e) {
+			return next(e);
+		}
+	}
+	return res.render("eventEdit", { title: "Add Event", description: ":)", data: {}, user: req.user });
+};

@@ -1,5 +1,6 @@
 $(document).ready(function() {
 	$("input[type=file]").on("change", loadImage);
+	$("form").on("click", ".form-inline>button", removeItem);
 	$("#addReward, #addAP").on("click", addItem);
 	$("#submit").on("click", submitChange);
 });
@@ -9,18 +10,20 @@ function loadImage(event) {
 	const file = event.target.files[0];
 	const reader = new FileReader();
 
-	reader.addEventListener("load", function () {
-		// convert image file to base64 string
-		preview.src = reader.result;
+	reader.addEventListener("load", function() {
+		preview.src = reader.result;  // convert image file to base64 string
 
-		console.log(preview);
-
+		console.log(preview.src);
 
 	}, false);
 
 	if (file) {
 		reader.readAsDataURL(file);
 	}
+}
+
+function removeItem() {
+	$(this).parent().remove();
 }
 
 function addItem() {
@@ -37,22 +40,20 @@ function submitChange() {
 		data[pair[0]] = pair[1];
 	}
 
-	data.img = $("img#preview").attr("src");
-
 	var rewardData = new FormData($("form")[1]),
 			apData = new FormData($("form")[2]),
 			temp = {};
 	data.rewards = [], data.ap = [];
-	for (let form of [rewardData, apData]) {
+	for (let f of [rewardData, apData]) {
 		let lst, end;
-		if (form === rewardData) {
+		if (f === rewardData) {
 			lst = data.rewards;
 			end = "card";
 		} else {
 			lst = data.ap;
 			end = "page";
 		}
-		for (let pair of form.entries()) {
+		for (let pair of f.entries()) {
 			temp[pair[0]] = pair[1];
 			if (pair[0] === end) {
 				lst.push(temp);
@@ -62,23 +63,30 @@ function submitChange() {
 	}
 
 	for (let key in data) {
+		// console.log(key, data[key]);
 		if (data[key] === "") {
 			showAlert("danger", "Please fill: "+key);
 			return;
 		}
 	}
 
+	console.log(data);
+
 	$.ajax({
     type: "post",
     url: "/event/updateEvent",
     contentType: "application/json",
-    data: JSON.stringify({ data: data })
+    data: JSON.stringify({
+			data: data,
+			img: $("img#preview").attr("src"),
+			name: location.pathname.split("/")[2]
+		})
   })
   .done(function(result) {
     if (result.err) {
       showAlert("danger", result.message);
       return;
     }
-    showAlert("success", "Event updated!");
+    showAlert("success", result.message);
   });
 }
