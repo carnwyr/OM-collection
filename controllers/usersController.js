@@ -659,9 +659,3 @@ passport.deserializeUser(function(id, next) {
     next(err, userInfo);
   });
 });
-
-// TEMP: login error
-exports.sendLoginError = (req, res) => {
-  Sentry.captureMessage("Login Error");
-  return res.json({ msg: "Thanks for letting us know. The problem is under review!" });
-};

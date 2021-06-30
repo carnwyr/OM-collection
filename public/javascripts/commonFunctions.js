@@ -1,5 +1,5 @@
 // var adBlock;
-$(document).ready(function(){
+$(document).ready(function() {
 	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
 	$("head").append(`<link rel="alternate" hreflang="${$("select#language").val()}" href="${window.location.href}">`);
 	$("select#language").on("change", function() {
@@ -38,6 +38,8 @@ $(document).ready(function(){
 	$("#bmc-wbtn").appendTo("main");
 
 	$("#b2t").on("click", () => { $("html, body").animate({scrollTop:0}, 500); });
+
+	showLanguageModal();
 });
 
 // $(document).on("adBlocked", () => { adBlock = true; });
@@ -97,5 +99,16 @@ function switchBackToTopButton() {
 	} else {
 		$("#b2t").fadeOut();
 		// $("#cookieToast").css("transform", "");
+	}
+}
+
+function showLanguageModal() {
+	if (location.host === "karasu-os.com" &&
+			JSON.stringify(navigator.languages).indexOf("ja") !== -1  &&
+			document.cookie.indexOf("confirmLanguage=true") === -1)
+	{
+		$("#jp_redirect").attr("href", "https://ja.karasu-os.com" + location.pathname);
+		$("#languageModal").modal("show");
+		document.cookie = "confirmLanguage=true";
 	}
 }
