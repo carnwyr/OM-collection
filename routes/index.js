@@ -37,7 +37,5 @@ router.post("/updateSupport", usersController.isAdmin(), usersController.updateS
 
 router.get('/getAllCards', cardsController.getAllCards);
 
-router.post("/sendLoginError", usersController.sendLoginError);
-
 
 module.exports = router;

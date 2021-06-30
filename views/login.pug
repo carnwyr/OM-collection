@@ -42,11 +42,6 @@ block content
             button(class="btn btn-lg btn-primary btn-block text-uppercase" type="submit")= t("common.login")
             a(class="d-block text-center mt-2 small" href="signup")= t("common.signup")
 
-          div#loginErr.w-100.text-center
-            button.btn.btn-link(style="font-size:small;" onclick="sendLoginError()") Kept getting redirected to home page, still can't login?
-              br
-              | Report Issue
-
   if errors
     for error in errors
       console.error(error.msg)
@@ -60,19 +55,7 @@ block content
 
       $("input#username").on('keyup', function() { var username = $("input#username").val(); $("input#username").attr('value', username); });
       $("input#password").on('keyup', function() { var password = $("input#password").val(); $("input#password").attr('value', password); });
-
-      if (document.cookie.indexOf("loginErr=reported") !== -1) {
-        $("#loginErr").remove();
-      }
     });
-
-    function sendLoginError() {
-      $.post("/sendLoginError", (status) => {
-        showAlert("success", status.msg);
-      });
-      $("#loginErr").remove();
-      document.cookie = "loginErr=reported;";
-    }
 
     function togglePass() {
       const field = document.getElementById("password");

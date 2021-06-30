@@ -106,17 +106,39 @@ html(lang=t("lang"))
             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4992362293" data-ad-format="auto" data-full-width-responsive="true"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
 
       //- modals
-      div(class="modal fade" id="removeAdsModal" tabindex="-1" aria-labelledby="removeAdsModalLabel" aria-hidden="true")
+      div(id="languageModal" class="modal fade" tabindex="-1")
         div(class="modal-dialog")
           div(class="modal-content")
             div(class="modal-header")
-              h5(class="modal-title" id="exampleModalLabel") Remove Ads
+              h5(class="modal-title") Please select your preferred language:
               button(type="button" class="close" data-dismiss="modal" aria-label="Close")
                 span(aria-hidden="true") &times;
-            div(class="modal-body") Karasu-OS.com is supported by advertisement and donations. Show your support and browse without distraction!
+            div(class="modal-body text-center")
+              div.row
+                div.col
+                  a(href="#" data-dismiss="modal")
+                    img.w-50(src="/images/uk.png")
+                    p English
+                div.col
+                  a(id="jp_redirect" href="#")
+                    img.w-50(src="/images/jp.png")
+                    p 日本語
             div(class="modal-footer")
-              button(type="button" class="btn btn-secondary" data-dismiss="modal") No thanks
-              a(type="button" class="btn btn-primary" href="https://www.buymeacoffee.com/karasuos" target="_blank") Support now
+              small.text-muted.w-75.mr-auto Kept seeing this pop-up? Please allow cookies for karasu-os.com to work properly.
+              button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
+
+      //-
+        div(class="modal fade" id="removeAdsModal" tabindex="-1" aria-labelledby="removeAdsModalLabel" aria-hidden="true")
+          div(class="modal-dialog")
+            div(class="modal-content")
+              div(class="modal-header")
+                h5(class="modal-title" id="exampleModalLabel") Remove Ads
+                button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                  span(aria-hidden="true") &times;
+              div(class="modal-body") Karasu-OS.com is supported by advertisement and donations. Show your support and browse without distraction!
+              div(class="modal-footer")
+                button(type="button" class="btn btn-secondary" data-dismiss="modal") No thanks
+                a(type="button" class="btn btn-primary" href="https://www.buymeacoffee.com/karasuos" target="_blank") Support now
 
       //- toasts
       div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
