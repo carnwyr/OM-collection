@@ -134,18 +134,17 @@ exports.isLoggedIn = function() {
 	}
 };
 
-exports.isAdmin = function() {
-	return function (req, res, next) {
-		if (req.user && req.user.type === "Admin") {
-			return next()
-		}
-		return next(createError(404));
-	}
-};
+exports.hasAccess = function(role) {
+  return function(req, res, next) {
+    var access = { "User": 0, "Moderator": 1, "Admin": 2 };
+    if (req.user && access[req.user.type] >= access[role]) return next();
+    return next(createError(404));
+  }
+}
 
 exports.isSameUser = function() {
 	return function (req, res, next) {
-		if (req.user && (req.user.name == req.params.name || exports.isAdmin())) {
+		if (req.user && (req.user.name == req.params.name || exports.hasAccess("Admin"))) {
 			return next()
 		}
 		var err = new Error('You must be logged in your account');

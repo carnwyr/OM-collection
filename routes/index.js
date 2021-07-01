@@ -15,7 +15,7 @@ router.get('/events', eventsController.getEventsPage);
 
 // Cards list
 router.get('/cards', cardsController.getCardsListPage);
-router.get('/hiddenCards', usersController.isAdmin(), cardsController.getHiddenCardsListPage);
+router.get('/hiddenCards', usersController.hasAccess("Admin"), cardsController.getHiddenCardsListPage);
 
 // Account management
 router.get('/login', usersController.getLoginPage);
@@ -33,8 +33,8 @@ router.post('/:username/getStatsImage', cardsController.getStatsImage);
 router.get('/:username/favourites', cardsController.getFavouritesPage);
 
 // User Management
-router.get("/userpage", usersController.isAdmin(), usersController.getUserListPage);
-router.post("/updateSupport", usersController.isAdmin(), usersController.updateSupport);
+router.get("/userpage", usersController.hasAccess("Admin"), usersController.getUserListPage);
+router.post("/updateSupport", usersController.hasAccess("Admin"), usersController.updateSupport);
 
 //
 router.get("/addEvent", eventsController.getEventEditPage);
