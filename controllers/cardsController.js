@@ -171,7 +171,7 @@ exports.getProfilePage = async function(req, res, next) {
 	try {
 		var username = await usersController.userExists(req.params.username);
 		if (!username) {
-			throw "User notfound";
+			throw createError(404, "User not found");
 		}
 
 		if (req.user && req.user.name === username) {

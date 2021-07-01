@@ -146,11 +146,6 @@ function updateProfile(e) {
 		return;
 	}
 
-	if ($("#inputFriendID").val() && isNaN(parseInt($("#inputFriendID").val()))) {
-		showAlert("warning", "Friend ID should be a number. Phone > Add Friends > Your ID");
-		return;
-	}
-
 	// characters need to be specially updated because it's an array
 	if (updatedInfo["characters"]) {
 		var formData = new FormData($("form#profile")[0]);

@@ -12,7 +12,7 @@ var UsersSchema = new Schema({
 	},
 	profile: {
 		name: { type: String },
-		id: { type: Number },
+		id: { type: String },
 		joined: { type: Date },
 		characters: { type: Array },
 		language: { type: String, enum: ["en", "jp"] },
