@@ -107,6 +107,9 @@ dist
 # card images
 public/images/cards/
 
+# event images
+public/images/events/
+
 # temp files
 temp/
 

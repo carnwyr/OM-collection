@@ -77,7 +77,9 @@ exports.updateEvent = async function(req, res) {
 
 		if (!req.body.name) {  // from /addEvent
 			await Events.create(data);
-			// write image
+
+			writeImage(data.img_name, req.body.img.replace("data:image/jpeg;base64", ""));
+
 			return res.json({ err: null, message: "Event created!" });
 		}
 
@@ -86,11 +88,14 @@ exports.updateEvent = async function(req, res) {
 		// console.log(e, req.body.name);
 
 		if (e.img_name !== data.img_name) {
-			// rename image
+			// rename image fsPromises.rename(oldPath, newPath)
+			fs.rename("/images/events/" + e.img_name + ".jpg",
+								"/images/events/" + data.img_name + ".jpg");
 		}
 
-		if (req.body.img.startsWith("data:image/jpeg;base64")) {
-			// find image with img_name and replace image
+		if (req.body.img.startsWith("data:image/jpeg;base64,")) {
+			// replace image
+			writeImage(data.img_name, req.body.img.replace("data:image/jpeg;base64", ""));
 		}
 
 		await Events.findOneAndUpdate({ name: req.body.name }, data, { runValidators: true }).exec();
@@ -101,4 +106,18 @@ exports.updateEvent = async function(req, res) {
 		Sentry.captureException(e);
 		return res.json({ err: true, message: e.message });
 	}
+}
+
+exports.deleteEvent = function(req, res) {
+	Events.findOneAndDelete({ name: req.params.event }, function(err, doc) {
+		if (err) return next(err);
+		fs.unlink("public/images/events/" + doc.img_name + ".jpg", function (err) {
+		  if (err) return next(err);
+		});
+	});
+}
+
+function writeImage(name, base64) {
+	var buffer = Buffer.from(base64, "base64");
+	fs.writeFileSync("public/images/events/" + name + ".jpg", buffer);
 }

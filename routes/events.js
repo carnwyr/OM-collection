@@ -14,5 +14,7 @@ router.get("/:event/edit", eventsController.getEventEditPage);
 
 router.post('/updateEvent', eventsService.updateEvent);
 
+router.post("/:event/delete", eventsService.deleteEvent);
+
 
 module.exports = router;

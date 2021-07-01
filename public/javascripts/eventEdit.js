@@ -12,9 +12,6 @@ function loadImage(event) {
 
 	reader.addEventListener("load", function() {
 		preview.src = reader.result;  // convert image file to base64 string
-
-		console.log(preview.src);
-
 	}, false);
 
 	if (file) {
@@ -40,13 +37,17 @@ function submitChange() {
 		data[pair[0]] = pair[1];
 	}
 
+	if (navigator.userAgent.indexOf("Chrome") !== -1) {
+		data.start += ":00.000Z";
+		data.end += ":00.000Z";
+	}
+
 	if (data.type !== "Nightmare") {
 		data.rewards = formatRewards(new FormData($("form")[1]), "card");
 		data.ap = formatRewards(new FormData($("form")[2]), "page");
 	}
 
 	for (let key in data) {
-		// console.log(key, data[key]);
 		if (data[key] === "") {
 			if (data.type === "Nightmare" && ["stages", "pageCost"].includes(key)) {
 				continue;

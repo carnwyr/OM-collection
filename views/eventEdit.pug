@@ -3,6 +3,13 @@ extends layout
 block scripts
 	link(rel="stylesheet" href="/stylesheets/eventEdit.css")
 	script(src="/javascripts/eventEdit.js")
+	if data.start && data.end
+		script.
+			var start = "!{data.start.toISOString()}", end = "!{data.end.toISOString()}";
+			if (navigator.userAgent.indexOf("Chrome") !== -1) {
+				$("#start").val(start.substr(0, 16));
+				$("#end").val(end.substr(0, 16));
+			}
 
 block content
 	div#alert(role="alert")
@@ -57,9 +64,12 @@ block content
 							div.custom-file
 								input#img.custom-file-input(type="file" accept=".jpg")
 								label.custom-file-label(for="img") Choose File (must be .jpg)
-							img#preview.w-100.mt-2(src=data.img_name?"/images/events/"+data.img_name:"")
+							img#preview.w-100.mt-2(src=data.img_name?"/images/events/"+data.img_name+".jpg":"")
 
-						small *time format: YYYY-MM-DDT00:00:00.000Z example: 2021-06-15T21:05:00.000Z
+						p *Notes
+						ul
+							li time format: YYYY-MM-DDT00:00:00.000Z example: 2021-06-15T21:05:00.000Z
+							li events usually starts at 1:00am utc, ends at ... idk
 				br
 				h5 Rewards
 					small.ml-2 Please remove empty rows before updating event
