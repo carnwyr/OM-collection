@@ -17,6 +17,10 @@ function loadImage(event) {
 	if (file) {
 		reader.readAsDataURL(file);
 	}
+
+	// change file input display name
+	var fileName = $(this).val();
+	$(this).next(".custom-file-label").text(fileName.replace("C:\\fakepath\\", ""));
 }
 
 function removeItem() {
@@ -60,22 +64,21 @@ function submitChange() {
 	// console.log(data);
 
 	$.ajax({
-    type: "post",
-    url: "/event/updateEvent",
-    contentType: "application/json",
-    data: JSON.stringify({
+		type: "post",
+		url: "/event/updateEvent",
+		contentType: "application/json",
+		data: JSON.stringify({
 			data: data,
 			img: $("img#preview").attr("src"),
 			name: location.pathname.split("/")[2]
 		})
-  })
-  .done(function(result) {
-    if (result.err) {
-      showAlert("danger", result.message);
-      return;
-    }
-    showAlert("success", result.message);
-  });
+	}).done(function(result) {
+			if (result.err) {
+				showAlert("danger", result.message);
+				return;
+			}
+			showAlert("success", result.message);
+		});
 }
 
 function formatRewards(f, end) {

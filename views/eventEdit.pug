@@ -59,17 +59,18 @@ block content
 								input#nightmare.form-check-input(type="radio" name="type" value="Nightmare" checked=data.type==="Nightmare")
 								label(for="nightmare") Nightmare
 
-						div.col-4
-							p.mb-2 Media
+						div.col-7
 							div.custom-file
 								input#img.custom-file-input(type="file" accept=".jpg")
-								label.custom-file-label(for="img") Choose File (must be .jpg)
-							img#preview.w-100.mt-2(src=data.img_name?"/images/events/"+data.img_name+".jpg":"")
+								label.custom-file-label(for="img")= data.img_name?data.img_name+".jpg":"Choose File (must be .jpg)"
+							div(style="display:flex;justify-content:center;align-items:center;background:aliceblue;border-radius:1rem;height:16rem;margin-top:.5rem;")
+								img#preview(style="height:85%;width:auto;" src=data.img_name?"/images/events/"+data.img_name+".jpg":"")
 
-						p *Notes
-						ul
-							li time format: YYYY-MM-DDT00:00:00.000Z example: 2021-06-15T21:05:00.000Z
-							li events usually starts at 1:00am utc, ends at ... idk
+						div.col-5.pl-5 *Notes
+							ul
+								li (Firefox only) time format: <span style="white-space:nowrap;">YYYY-MM-DDT00:00:00.000Z</span> example: <span style="white-space:nowrap;">2021-06-15T21:05:00.000Z</span>
+								li pop quiz usually starts at 1:00am UTC, ends at... idk
+								li nightmare also starts at 1:00am UTC, ends at... idk
 				br
 				h5 Rewards
 					small.ml-2 Please remove empty rows before updating event
@@ -80,16 +81,15 @@ block content
 								input.form-control(type="text" placeholder="reward name" name="tag" value=reward.tag)
 								input.form-control(type="number" placeholder="reward cost" name="points" value=reward.points)
 								input.form-control(type="text" placeholder="card name (if applicable)" name="card" value=reward.card)
-								button(type="button") Remove
+								button.btn.btn-outline-secondary(type="button") Remove
 					else
 						div.form-inline
 							input.form-control(type="text" placeholder="reward name" name="tag")
 							input.form-control(type="number" placeholder="reward cost" name="points")
 							input.form-control(type="text" placeholder="card name (if applicable)" name="card")
-							button(type="button") Remove
+							button.btn.btn-outline-secondary(type="button") Remove
 				hr
-				button#addReward(data-target="#rewards" data-clone="#rewardTemplate") Add reward
-
+				button#addReward.btn.btn-secondary(data-target="#rewards" data-clone="#rewardTemplate") Add reward
 				br
 				br
 				h5 AP Rewards
@@ -101,15 +101,15 @@ block content
 								input.form-control(type="number" placeholder="AP amount" name="amount" value=ap.amount)
 								input.form-control(type="number" placeholder="AP cost" name="points" value=ap.points)
 								input.form-control(type="number" placeholder="page (if non-repeating)" name="page" value=ap.page)
-								button(type="button") Remove
+								button.btn.btn-outline-secondary(type="button") Remove
 					else
 						div.form-inline
 							input.form-control(type="number" placeholder="AP amount" name="amount")
 							input.form-control(type="number" placeholder="AP cost" name="points")
 							input.form-control(type="number" placeholder="page (if non-repeating)" name="page")
-							button(type="button") Remove
+							button.btn.btn-outline-secondary(type="button") Remove
 				hr
-				button#addAP(data-target="#AP" data-clone="#APTemplate") Add AP reward
+				button#addAP.btn.btn-secondary(data-target="#AP" data-clone="#APTemplate") Add AP reward
 				br
 				br
 				button#submit.btn.btn-primary Submit Change
@@ -119,11 +119,11 @@ block content
 					input.form-control(type="text" placeholder="reward name" name="tag")
 					input.form-control(type="number" placeholder="reward cost" name="points")
 					input.form-control(type="text" placeholder="card name (if applicable)" name="card")
-					button(type="button") Remove
+					button.btn.btn-outline-secondary(type="button") Remove
 
 			template#APTemplate
 				div.form-inline
 					input.form-control(type="number" placeholder="AP amount" name="amount")
 					input.form-control(type="number" placeholder="AP cost" name="points")
 					input.form-control(type="number" placeholder="available page" name="page")
-					button(type="button") Remove
+					button.btn.btn-outline-secondary(type="button") Remove
