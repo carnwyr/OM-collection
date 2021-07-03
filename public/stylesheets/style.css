@@ -52,7 +52,7 @@ footer ul {
   bottom: 32px;
   left: 18px;
   z-index: 1030;
-  /* transition: 0.3s; */
+  transition: 0.3s;
 }
 #cookieToast button {
   border-radius: 4px;
@@ -63,14 +63,6 @@ footer ul {
 }
 .collapser[aria-expanded="false"]>.chevron {
   transform: scaleY(-1);
-}
-
-.supportBtn {
-  background-color: #FFDD00;
-  color: black;
-}
-.supportBtn:hover {
-  box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
 }
 
 #overline {
