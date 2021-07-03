@@ -49,10 +49,10 @@ footer ul {
 /* MISC */
 #cookieToast {
   position: fixed;
-  bottom: 100px;
+  bottom: 32px;
   left: 18px;
   z-index: 1030;
-  /* transition: 0.3s; */
+  transition: 0.3s;
 }
 #cookieToast button {
   border-radius: 4px;
@@ -63,14 +63,6 @@ footer ul {
 }
 .collapser[aria-expanded="false"]>.chevron {
   transform: scaleY(-1);
-}
-
-.supportBtn {
-  background-color: #FFDD00;
-  color: black;
-}
-.supportBtn:hover {
-  box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
 }
 
 #overline {
@@ -91,15 +83,6 @@ footer ul {
   }
 }
 
-/* .ddd {
-  margin: 2rem auto;
-  text-align: center;
-}
-
-.ddd>.row {
-  min-height: 250px;
-} */
-
 .ddd {
   text-align: center;
   margin-bottom: .5rem;
@@ -110,11 +93,6 @@ footer ul {
   right: 20px;
   display: none;
   top: -100px;
-}
-
-#bmc-wbtn {
-  z-index: 1030 !important;
-  transition: 0s !important;
 }
 
 #b2t {

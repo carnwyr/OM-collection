@@ -14,7 +14,7 @@ block content
 		div.row
 			div.card.card-body
 				h2.text-center.text-md-left= t("title.settings")
-				div.row
+				div.row.mb-4
 					div.col-12.col-md-3.text-center.text-md-left.mb-3.mb-md-0
 						div(class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical")
 							a(class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true") Profile
@@ -147,22 +147,16 @@ block content
 									| Private: collections are only visible to yourself. However, visitors can still see part of your collection from your profile page's collection preview section.
 								br
 								input#updatePrivacy.btn.btn-primary(type="submit" value=t("settings.update"))
-				hr
-				div.row
-					p.col-12.text-center 100% of donation goes to paying fees to keep karasu-os.com online!
-					div.col-12.col-md-5.text-center.mx-auto
-						h5.card-title Supporter Perks
-						div#perks.col-12
-							div(class="custom-control custom-switch")
-								input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
-								label(class="custom-control-label" for="adFreeStatus")= t("donation.ad-free")
-							div(class="custom-control custom-switch")
-								input(type="checkbox" class="custom-control-input" id="specialBadge" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
-								label(class="custom-control-label" for="specialBadge")= t("donation.badge")
-							br
-						div.card.card-body.text-light.text-center.mb-3(style="border-radius:8px;background-color:#8d6fe2;")
-							h5.card-title.mb-0 Support Karasu!
-							img(src="/images/karasu.png" alt="karasu icon" style="width:32px;height:32px;margin:10px auto;")
-							p.card-text= user.supportStatus.includes("adfree") ? t("donation.thanks") : t("donation.message")
-								br
-								a(id="donation" class="btn bg-light text-primary my-3" href="https://www.buymeacoffee.com/karasuos" role="button" target="_blank") Make a Donation
+				//-
+					hr
+					div.row
+						p.col-12.text-center 100% of donation goes to paying fees to keep karasu-os.com online!
+						div.col-12.col-md-5.text-center.mx-auto
+							h5.card-title Supporter Perks
+							div#perks.col-12
+								div(class="custom-control custom-switch")
+									input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+									label(class="custom-control-label" for="adFreeStatus")= t("donation.ad-free")
+								div(class="custom-control custom-switch")
+									input(type="checkbox" class="custom-control-input" id="specialBadge" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+									label(class="custom-control-label" for="specialBadge")= t("donation.badge")

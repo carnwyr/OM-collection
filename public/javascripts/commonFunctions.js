@@ -1,4 +1,4 @@
-// var adBlock;
+var adBlock;
 $(document).ready(function() {
 	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
 	$("head").append(`<link rel="alternate" hreflang="${$("select#language").val()}" href="${window.location.href}">`);
@@ -35,33 +35,25 @@ $(document).ready(function() {
 		$(this).delay(100).removeClass("show");
 	});
 
-	$("#bmc-wbtn").appendTo("main");
-
 	$("#b2t").on("click", () => { $("html, body").animate({scrollTop:0}, 500); });
 
 	showLanguageModal();
 });
 
-// $(document).on("adBlocked", () => { adBlock = true; });
-// $(window).on("load", () => {
-// 	if (adBlock === true) {
-// 		$(".ddd>.row").hide();
-// 		$(".ddd").append("<div class=\"card shadow-none\"><div class=\"card-body col-md-8 mx-auto my-4\"><h5 class=\"card-title\">Using an ad-blocker?</h5><p class=\"card-text\">Karasu-OS.com is supported by donation and advertisement. <br>Please consider whitelisting karasu-os.com or making a donation to keep karasu alive for your enjoyment.</p><a class=\"btn supportBtn\" href=\"https://www.buymeacoffee.com/karasuos\" role=\"button\" target=\"_blank\">&#x1F608 Donate now</a></div></div>");
-// 	} else {
-// 		$("[data-target='#removeAdsModal']").show();
-// 	}
-// });
+$(document).on("adBlocked", () => { adBlock = true; });
+$(window).on("load", () => {
+	if (adBlock === true) {
+		$("#kool-aid>.row").hide();
+		$("#kool-aid").append(`<div class="card shadow-none" style="background:rgba(255,255,255,.8)"><div class="card-body col-md-8 mx-auto" style="border-radius:1rem;"><h5 class="card-title">Using an ad-blocker?</h5><img style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png"><p>Advertisements help us cover the cost to keep karasu-os online.</p><p>Please consider whitelisting karasu-os.com to keep the website free for everyone!</p></div></div>`);
+	}
+});
 
 $(window).on("scroll", () => {
 	switchBackToTopButton();
 	if ($("footer").isInViewport() && window.innerWidth < 576) {
-		$("#bmc-wbtn, #cookieToast, #b2t").css("position", "absolute");
-		$("#bmc-wbtn, #b2t").css("bottom", "-1rem");
-		$("#cookieToast").css("bottom", " 3.25rem");
+		$("#cookieToast, #b2t").css({ "position": "absolute", "bottom": "-1rem" });
 	} else {
-		$("#bmc-wbtn, #cookieToast, #b2t").css("position", "fixed");
-		$("#bmc-wbtn, #b2t").css("bottom", "32px");
-		$("#cookieToast").css("bottom", "100px");
+		$("#cookieToast, #b2t").css({ "position": "fixed", "bottom": "32px" });
 	}
 });
 
@@ -93,12 +85,12 @@ $.fn.isInViewport = function() {
 function switchBackToTopButton() {
 	if ($(window).scrollTop() > $(window).height()*3) {
 		$("#b2t").fadeIn();
-		// if ($(window).width() < 540) {
-		// 	$("#cookieToast").css("transform", "translate(0, -64px)");
-		// }
+		if ($(window).width() < 540) {
+			$("#cookieToast").css("transform", "translate(0, -64px)");
+		}
 	} else {
 		$("#b2t").fadeOut();
-		// $("#cookieToast").css("transform", "");
+		$("#cookieToast").css("transform", "");
 	}
 }
 
