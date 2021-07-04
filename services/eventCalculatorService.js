@@ -1,51 +1,61 @@
 const async = require("async");
 
 const eventsService = require("../services/eventsService");
+const dayjs         = require('dayjs');
+const utc           = require('dayjs/plugin/utc');
+const timezone      = require('dayjs/plugin/timezone');
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const apPerDay = 20 + 50 + 60 + 20 + 50; // guests + ads + fridge + to do + friends
 
 exports.calculate = function (event, currentPoints, pointsPerBattle) {
 	var rewards = event.rewards.sort();
 
-	var endTime     = new Date(event.end);
-	var endDate     = new Date(endTime).setUTCHours(0, 0, 0, 0);
-	var currentTime = new Date();
-	var currentDate = new Date(currentTime).setUTCHours(0, 0, 0, 0);
-	var daysLeft    = Math.round((endDate - currentDate) / (24 * 60 * 60 * 1000)) - 1;
+	var endTime     = dayjs(event.end).tz("Asia/Tokyo");
+	var endDate     = endTime.startOf("day");
+	var currentTime = dayjs().tz("Asia/Tokyo");
+	var currentDate = currentTime.startOf("day");
+	var daysLeft    = endDate.diff(currentDate, "day");
 
-	rewards = rewards.map(reward => {
-		if (reward.points <= currentPoints) {
-			return { tag: reward.tag, collected: true };
-		}
+	rewards = rewards.filter(reward => reward.points)
+		.map(reward => {
+			if (reward.points <= currentPoints) {
+				return { tag: reward.tag, collected: true };
+			}
 
-		let pointsNeeded = reward.points - currentPoints;
-		let triesNeeded  = Math.ceil(pointsNeeded / pointsPerBattle);
-		let apNeeded     = triesNeeded * 8;
+			var pointsNeeded = reward.points - currentPoints;
+			var triesNeeded  = Math.ceil(pointsNeeded / pointsPerBattle);
+			var apNeeded     = triesNeeded * 8;
 
-		let triesLeftMin = (3 * event.stages + 5) * daysLeft;
+			var triesLeftMin = (3 * event.stages + 5) * daysLeft;
 
-		let apRegen = Math.floor((endTime.getTime() - currentTime.getTime()) / (60 * 1000) / 5);
+			var apRegen = Math.floor(endTime.diff(currentTime, "minute") / 5);
+				
+			var currentPage = Math.floor(currentPoints / event.pageCost);
+			var finalPage   = Math.floor(reward.points / event.pageCost) - (reward.points % event.pageCost === 0 ? 1 : 0);
+			var apRewarded  = 0;
+			for (var i = currentPage; i <= finalPage; i++) {
+				event.ap
+					.filter(ap => !ap.page || ap.page === i + 1)
+					.map(ap => { ap.points += i * event.pageCost; return ap; })
+					.filter(ap => ap.points > currentPoints && ap.points < reward.points)
+					.forEach(ap => apRewarded += ap.amount);
+			}
 
-		let currentPage = Math.floor(currentPoints / event.pageCost);
-		let finalPage   = Math.floor(reward.points / event.pageCost) - (reward.points % event.pageCost === 0 ? 1 : 0);
-		let apRewarded  = 0;
-		for (var i = currentPage; i <= finalPage; i++) {
-			event.ap
-				.filter(ap => !ap.page || ap.page === i + 1)
-				.map(ap => { ap.points += i * event.pageCost; return ap; })
-				.filter(ap => ap.points > currentPoints && ap.points < reward.points)
-				.forEach(ap => apRewarded += ap.amount);
-		}
+			var apMin        = apRegen + apRewarded + apPerDay * daysLeft;
+			var dailyBattles = Math.ceil(triesNeeded / daysLeft);
+			var triesToBuy   = Math.max(triesNeeded - triesLeftMin, 0);
+			
+			var detailedPoints = [];
+			var nextReset = currentTime.add(1, "day").startOf("day");
+			for (var time = nextReset, dayPoints = Number(currentPoints); time < endTime; time = time.add(1, 'day'), dayPoints += dailyBattles * pointsPerBattle) {
+				detailedPoints.push({ date: time.toString(), points: dayPoints });
+			}
+			detailedPoints.push({ date: endTime.toString(), points: Number(currentPoints) + triesNeeded * pointsPerBattle });
 
-		let apMin = apRegen + apRewarded * + apPerDay * daysLeft;
-
-		if (triesNeeded > triesLeftMin) {
-			var triesToBuy = triesNeeded - triesLeftMin;
-		} else {
-			var dailyStages = Math.ceil(Math.ceil(triesNeeded / daysLeft) / 3);
-		}
-
-		return { tag: reward.tag, triesToBuy: triesToBuy, dailyStages: dailyStages, apToBuy: apNeeded - apMin, totalBattles: triesNeeded, totalAp: apNeeded };
+			return { tag: reward.tag, triesToBuy: triesToBuy, dailyBattles: dailyBattles, apToBuy: Math.max(apNeeded - apMin, 0), totalBattles: triesNeeded, totalAp: apNeeded, detailedPoints: detailedPoints };
 	});
 
 	return rewards;
