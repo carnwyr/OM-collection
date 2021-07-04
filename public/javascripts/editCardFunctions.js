@@ -12,6 +12,9 @@ $(document).ready(function() {
   $('.image-area button').on('click', removeImage);
 
   $('#save').on('click', saveChanges);
+
+  $("#addEvent, #ja_addEvent").on("click", addEvent);
+  $("#removeEvent, #ja_removeEvent").on("click", removeEvent);
 });
 
 function fillUniqueName() {
@@ -115,6 +118,8 @@ function sendCardData(images) {
     name: $('#name').val(),
     uniqueName: $('#uniqueName').val(),
     ja_name: $("#ja_name").val(),
+    source: getCardSource("source"),
+    ja_source: getCardSource("ja_source"),
     type: $('#type').val(),
     rarity: $('#rarity').val(),
     attribute: $('#attribute').val(),
@@ -138,4 +143,22 @@ function sendCardData(images) {
     }
     showAlert("success", 'Card successfully updated!');
   });
+}
+
+function getCardSource(src) {
+  var lst = [];
+  $("[name=" + src + "]").serializeArray().forEach((item) => {
+    if (item.value !== "") lst.push(item.value);
+  });
+  return lst;
+}
+
+function addEvent() {
+  var target = $(this).data("target");
+  $(target).append(`<input class="form-control" type="text" name="${target}">`);
+}
+
+function removeEvent() {
+  var target = $(this).data("target");
+  $(target + " input:last-child").remove();
 }

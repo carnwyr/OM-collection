@@ -23,6 +23,27 @@ block content
 				div(class='form-group')
 					label(for="ja_name") Japanese Name
 					input(class='form-control' type="text" id="ja_name" name="ja_name" value=card?card.ja_name:'???')
+				span How to get
+				div.form-inline.mb-2
+					div#source
+						if card && card.source.length !== 0
+							each i in card.source
+								input(class="form-control" type="text" name="source" value=i)
+						else
+							input(class="form-control" type="text" name="source" value="???")
+					button#removeEvent.btn.text-primary(type="button" data-target="#source") &minus;
+					button#addEvent.btn.text-primary(type="button" data-target="#source") &plus;
+				span How to get (JP)
+				div.form-inline
+					div#ja_source
+						if card && card.ja_source.length !== 0
+							each i in card.ja_source
+								input(class="form-control" type="text" name="ja_source" value=i)
+						else
+							input(class="form-control" type="text" name="ja_source" value="???")
+					button#ja_removeEvent.btn.text-primary(type="button" data-target="#ja_source") &minus;
+					button#ja_addEvent.btn.text-primary(type="button" data-target="#ja_source") &plus;
+				p.small.text-muted If card is from lesson, only include first lesson (i.e. Lesson 3/ 3-13).
 				div(class='form-group')
 					label(for="type") Type
 					select(class='custom-select' id="type" name="type")
