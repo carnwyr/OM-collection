@@ -41,3 +41,7 @@ input:not(:focus):valid ~ .floating-label{
   border-color: transparent;
   box-shadow: 0 .2rem 0 0 rgba(141,111,226,.25);
 }
+
+tbody tr:first-of-type > * {
+  border-top: 0em;
+}

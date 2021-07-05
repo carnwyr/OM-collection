@@ -48,14 +48,14 @@ exports.calculate = function (event, currentPoints, pointsPerBattle) {
 			var dailyBattles = Math.ceil(triesNeeded / daysLeft);
 			var triesToBuy   = Math.max(triesNeeded - triesLeftMin, 0);
 			
-			var detailedPoints = [];
+			var pointsPerDay = [];
 			var nextReset = currentTime.add(1, "day").startOf("day");
 			for (var time = nextReset, dayPoints = Number(currentPoints); time < endTime; time = time.add(1, 'day'), dayPoints += dailyBattles * pointsPerBattle) {
-				detailedPoints.push({ date: time.toString(), points: dayPoints });
+				pointsPerDay.push({ date: time.toString(), points: dayPoints });
 			}
-			detailedPoints.push({ date: endTime.toString(), points: Number(currentPoints) + triesNeeded * pointsPerBattle });
+			pointsPerDay.push({ date: endTime.toString(), points: Number(currentPoints) + triesNeeded * pointsPerBattle });
 
-			return { tag: reward.tag, triesToBuy: triesToBuy, dailyBattles: dailyBattles, apToBuy: Math.max(apNeeded - apMin, 0), totalBattles: triesNeeded, totalAp: apNeeded, detailedPoints: detailedPoints };
+			return { tag: reward.tag, triesToBuy: triesToBuy, dailyBattles: dailyBattles, apToBuy: Math.max(apNeeded - apMin, 0), totalBattles: triesNeeded, totalAp: apNeeded, pointsPerDay: pointsPerDay };
 	});
 
 	return rewards;
