@@ -68,7 +68,7 @@ block content
             - var fromLesson = false;
             p #[strong #{t("cards.source")}: ]
               - var source = t("lang") === "en" ? card.source : card.ja_source;
-              each val, index in source
+              each val, index in source.length ? source : ["???"]
                 | #{val}
                 if index < source.length - 1
                   | ,
