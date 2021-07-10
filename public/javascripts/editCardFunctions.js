@@ -118,8 +118,8 @@ function sendCardData(images) {
     name: $('#name').val(),
     uniqueName: $('#uniqueName').val(),
     ja_name: $("#ja_name").val(),
-    source: getCardSource("source"),
-    ja_source: getCardSource("ja_source"),
+    source: getCardSource("#source"),
+    ja_source: getCardSource("#ja_source"),
     type: $('#type').val(),
     rarity: $('#rarity').val(),
     attribute: $('#attribute').val(),
@@ -146,11 +146,8 @@ function sendCardData(images) {
 }
 
 function getCardSource(src) {
-  var lst = [];
-  $("[name=" + src + "]").serializeArray().forEach((item) => {
-    if (item.value !== "") lst.push(item.value);
-  });
-  return lst;
+  var list = $.map($(src).children(), input => $(input).val()).filter(x => x !== "");
+  return list;
 }
 
 function addEvent() {
