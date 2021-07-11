@@ -29,6 +29,20 @@ input:not(:focus):valid ~ .floating-label{
   color: var(--gray);
 }
 
+.underline-text {
+  border-radius: 0%;
+  border-left: 0px none;
+  border-right: 0px none;
+  border-top: 0px none;
+  border-bottom: 1px solid var(--secondary);
+  outline: none;
+}
+
+.underline-text:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .underline-input {
   border-radius: 0%;
   border-left: 0px none;
@@ -40,4 +54,8 @@ input:not(:focus):valid ~ .floating-label{
   border-radius: 1px;
   border-color: transparent;
   box-shadow: 0 .2rem 0 0 rgba(141,111,226,.25);
+}
+
+tbody tr:first-of-type > * {
+  border-top: 0em;
 }

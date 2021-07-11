@@ -78,10 +78,10 @@ footer ul {
   height: 64px;
 }
 
-.collapser>.chevron {
+.collapser .chevron {
   transition: all 300ms;
 }
-.collapser[aria-expanded="false"]>.chevron {
+.collapser[aria-expanded="false"] .chevron {
   transform: scaleY(-1);
 }
 
