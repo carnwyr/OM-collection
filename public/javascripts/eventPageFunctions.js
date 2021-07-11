@@ -1,15 +1,17 @@
-$(document).ready(function() {
-	$("#currentPoints").on('input', () => updateCalculator());
-	$("#pointsPerBattle").on('input', () => updateCalculator());
+$(document).ready(function () {
+	$("#calculate").click(() => updateCalculator());
 
 	updateCalculator();
 
 	$(".card-link").click(e => e.stopPropagation());
 })
 
+// TODO save vip in cookies
+// TODO save points per battle in cookie that expires when event ends
 function updateCalculator() {
-	var currentPoints = $("#currentPoints").val();
+	var currentPoints   = $("#currentPoints").val();
 	var pointsPerBattle = $("#pointsPerBattle").val();
+	var isVip           = $("#vip").prop("checked");
 
 	if (!currentPoints || !pointsPerBattle) {
 		event.rewards.forEach(reward => {
@@ -30,7 +32,7 @@ function updateCalculator() {
 		type: "post",
 		url: "/event/" + encodeURIComponent(event.name.replace(/ /g, '_')) + "/calculate",
 		contentType: "application/json",
-		data: JSON.stringify({ currentPoints: currentPoints, pointsPerBattle: pointsPerBattle })
+		data: JSON.stringify({ currentPoints: currentPoints, pointsPerBattle: pointsPerBattle, isVip: isVip })
 	}).done(function(data) {
 		if (!data.err) {
 			updateResults(data.result);

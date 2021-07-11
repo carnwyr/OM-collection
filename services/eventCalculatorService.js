@@ -8,9 +8,12 @@ const timezone      = require('dayjs/plugin/timezone');
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const apPerDay = 20 + 50 + 60 + 20 + 50; // guests + ads + fridge + to do + friends
+// TODO fridge based on user's time
+const baseApPerDay = 20 + 50 + 20 + 50;  // guests + ads + to do + friends
+const baseFridgeAp = 2 * 30;
+const vipFridgeAp  = 2 * 60;
 
-exports.calculate = function (event, currentPoints, pointsPerBattle) {
+exports.calculate = function (event, currentPoints, pointsPerBattle, isVip) {
 	var rewards = event.rewards.sort();
 
 	var endTime     = dayjs(event.end).tz("Asia/Tokyo");
@@ -44,7 +47,7 @@ exports.calculate = function (event, currentPoints, pointsPerBattle) {
 					.forEach(ap => apRewarded += ap.amount);
 			}
 
-			var apMin        = apRegen + apRewarded + apPerDay * daysLeft;
+			var apMin        = apRegen + apRewarded + getDailyAp(isVip) * daysLeft;
 			var dailyBattles = Math.ceil(triesNeeded / daysLeft);
 			var triesToBuy   = Math.max(triesNeeded - triesLeftMin, 0);
 			
@@ -59,4 +62,8 @@ exports.calculate = function (event, currentPoints, pointsPerBattle) {
 	});
 
 	return rewards;
+}
+
+function getDailyAp(isVip) {
+	return baseApPerDay + (isVip ? vipFridgeAp : baseFridgeAp)
 }

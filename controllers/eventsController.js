@@ -32,6 +32,6 @@ exports.calculate = async function(req, res) {
 
 	if (!event) return res.json({ err: true });
 
-	var result = eventCalculatorService.calculate(event, req.body.currentPoints, req.body.pointsPerBattle);
+	var result = eventCalculatorService.calculate(event, req.body.currentPoints, req.body.pointsPerBattle, req.body.isVip);
 	return res.json({ err: false, result: result });
 }
