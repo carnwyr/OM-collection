@@ -16,6 +16,7 @@
     "account": "アカウント"
   },
   "cards": {
+    "source": "入手方法",
     "type": "種類",
     "rarity": "レア",
     "attribute": "属性",

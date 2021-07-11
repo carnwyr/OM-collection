@@ -16,6 +16,7 @@
     "account": "Account"
   },
   "cards": {
+    "source": "How to get",
     "type": "Type",
     "rarity": "Rarity",
     "attribute": "Attribute",
