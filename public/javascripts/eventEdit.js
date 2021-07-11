@@ -1,5 +1,6 @@
 $(document).ready(function() {
 	$("input[type=file]").on("change", loadImage);
+	$("input[name=name]").on("focusout", addImageName);
 	$("form").on("click", ".form-inline>button", removeItem);
 	$("#addReward, #addAP").on("click", addItem);
 	$("#submit").on("click", submitChange);
@@ -21,6 +22,11 @@ function loadImage(event) {
 	// change file input display name
 	var fileName = $(this).val();
 	$(this).next(".custom-file-label").text(fileName.replace("C:\\fakepath\\", ""));
+}
+
+function addImageName() {
+	var img_name = $(this).val().replace(/[\\/:*?"<>|]/g, '').replace(/ /g, '_');
+	$("input[name=img_name]").val(img_name);
 }
 
 function removeItem() {

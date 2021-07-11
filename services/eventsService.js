@@ -75,6 +75,8 @@ exports.updateEvent = async function(req, res) {
 	try {
 		let data = req.body.data;
 
+		console.log(data);
+
 		if (!req.body.name) {  // from /addEvent
 			await Events.create(data);
 
@@ -83,9 +85,9 @@ exports.updateEvent = async function(req, res) {
 			return res.json({ err: null, message: "Event created!" });
 		}
 
-		let e = await Events.findOne({ name: req.body.name });
+		let e = await Events.findOne({ name: decodeURI(req.body.name) });
 
-		// console.log(e, req.body.name);
+		console.log(e, req.body.name);
 
 		if (e.img_name !== data.img_name) {
 			// rename image fsPromises.rename(oldPath, newPath)
@@ -98,7 +100,7 @@ exports.updateEvent = async function(req, res) {
 			writeImage(data.img_name, req.body.img.replace("data:image/jpeg;base64", ""));
 		}
 
-		await Events.findOneAndUpdate({ name: req.body.name }, data, { runValidators: true }).exec();
+		await Events.findOneAndUpdate({ name: decodeURI(req.body.name) }, data, { runValidators: true }).exec();
 
 		return res.json({ err: null, message: "Event updated!" });
 	} catch(e) {
