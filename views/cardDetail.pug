@@ -65,7 +65,6 @@ block content
                 if index < card.characters.length - 1
                   | ,
                   |
-            - var fromLesson = false;
             p #[strong #{t("cards.source")}: ]
               - var source = t("lang") === "en" ? card.source : card.ja_source;
               each val, index in source.length ? source : ["???"]
@@ -73,12 +72,6 @@ block content
                 if index < source.length - 1
                   | ,
                   |
-                if val.includes("/")
-                  - fromLesson = true;
-
-            if fromLesson === true
-              p.small.text-muted For more ways to obtain card pieces, check in-game: Contacts &rarr; Card Piece/#{card.type} &rarr; click card
-
             hr
             if !isHidden
               p.ownedCount= t("cards.collected_count", { percentage: stats.ownedTotal })

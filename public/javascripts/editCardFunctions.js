@@ -152,7 +152,7 @@ function getCardSource(src) {
 
 function addEvent() {
   var target = $(this).data("target");
-  $(target).append(`<input class="form-control" type="text" name="${target}">`);
+  $(target).append(`<input class="form-control" type="text">`);
 }
 
 function removeEvent() {
