@@ -15,13 +15,13 @@ function updateCalculator() {
 
 	if (!currentPoints || !pointsPerBattle) {
 		event.rewards.forEach(reward => {
+			if (!reward || !reward.tag) {
+				return;
+			}
+
 			var tag     = reward.tag.replace(" ", "");
 			var reward  = $("#reward_" + tag);
 			var details = $("#details_" + tag);
-
-			if (!reward) {
-				return;
-			}
 				
 			disableReward(reward, details, "");
 		});
