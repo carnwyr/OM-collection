@@ -8,6 +8,7 @@ $(document).ready(function () {
 
 // TODO save vip in cookies
 // TODO save points per battle in cookie that expires when event ends
+// TODO support for the last day calculation
 function updateCalculator() {
 	var currentPoints   = $("#currentPoints").val();
 	var pointsPerBattle = $("#pointsPerBattle").val();
