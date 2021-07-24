@@ -1,0 +1,45 @@
+/* body {
+	font-family: 'Rubik', sans-serif;
+} */
+
+ul#ttt .active>img {
+	outline: 4px solid green;
+}
+
+.card {
+	box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+	margin-bottom: 1rem;
+	border-radius: .5rem;
+}
+
+.carousel-indicators li {
+	background-color: black;
+	width: .5rem;
+	margin-right: 2px;
+}
+
+h6 {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+h6:before,
+h6:after {
+  content: '';
+  border-top: 1px solid rgba(0,0,0,.2);
+  margin: 0 18px 0 0;
+  flex: 1 0 18px;
+}
+
+h6:after {
+  margin: 0 0 0 20px;
+}
+
+table.table thead {
+	border-radius: 8px;
+	background-color: var(--primary);
+	border: 0;
+}

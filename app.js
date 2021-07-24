@@ -26,7 +26,7 @@ const i18next = require("i18next");
 const i18nextMiddleware = require("i18next-http-middleware");
 const Backend = require("i18next-fs-backend");
 
-Sentry.init({ dsn: "https://b147d3a7c4e04bc88a15f8850a4bd610@o513655.ingest.sentry.io/5615947" });
+// Sentry.init({ dsn: "https://b147d3a7c4e04bc88a15f8850a4bd610@o513655.ingest.sentry.io/5615947" });
 
 var mongoose = require("mongoose");
 var mongoDB = process.env.URI;

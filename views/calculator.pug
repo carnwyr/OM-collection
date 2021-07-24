@@ -1,0 +1,313 @@
+link(rel="stylesheet" href="/stylesheets/forms.css")
+link(rel="stylesheet" href="/stylesheets/calculator.css")
+<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Rubik&display=swap" rel="stylesheet">
+
+
+div.row
+	div.col-12
+		div.card.card-body.p-4.bg-transparent.shadow-none
+			div.row
+				div.col-4(style="border-right:1px solid rgba(0,0,0,.2);padding:0 1.25rem;")
+					// h5(style="border-bottom:2px solid var(--secondary)") Calculator
+					form
+						div.form-row
+							h6.col-12 Required
+							div.col-6.form-group
+								label Points per battle
+								input.form-control(type="number" required)
+							div.col-6.form-group
+								label Current points
+								input.form-control(type="number" required)
+
+							h6.col-12.mt-3 Optional
+							div.col-6.form-group
+								label Custom goal
+								input.form-control(type="number" required)
+							//-
+								div.col-6.form-group
+									label Stages unlocked
+									input.form-control(type="number")
+							div.col-6.form-group
+								label Stages cleared today
+								input.form-control(type="number")
+							//-
+								div.col-6.form-group
+									label VIP
+									div(class="btn-group btn-group-toggle" data-toggle="buttons")
+										label(class="btn btn-outline-secondary active" style="") No
+											input(type="radio" name="options" id="option1" checked)
+
+										label(class="btn btn-outline-secondary rounded") Yes
+											input(type="radio" name="options" id="option2")
+							//-
+								div.col-6.form-group.d-flex.align-items-center
+									<div class="custom-control custom-switch"> <input type="checkbox" class="custom-control-input" id="customSwitch1"> <label class="custom-control-label" for="customSwitch1">VIP</label></div>
+							div.col-12.mb-3
+								button.btn.btn-primary.btn-block Calculate
+
+
+
+					//- div.col
+					div.card.shadow-none(style="border-radius:1rem;background:rgba(255,255,255,.9);")
+						div.card-body(style="border-radius:1rem;border:3px solid rgb(137,207,240);background:rgba(137,207,240,.025);")
+							p.text-center
+								//-
+									| Server time
+									br
+									| 09 September 2021, 23:23:00
+									br
+									br
+									| Your local time
+									br
+									| 09 September 2021, 19:23:00
+									br
+									br
+								sup *
+								| "Free" AP breakdown:
+								ul
+									li __ from every 5 minutes
+									li friends 50
+									li 60 fridge mission, 120 vip fridge mission
+									li __ from ads
+									li 20 from surprise guest
+
+				div.col-12.col-lg-8
+					h5(style="border-bottom:2px solid var(--secondary);text-align:center;font-weight:500;letter-spacing:1.25px;") Rewards
+					//- p(style="background-color:var(--primary);margin-bottom:0;border-radius:8px;color:white;padding:.5rem;text-align:center;font-weight:500;letter-spacing:1.25px;") Rewards
+					table.table.text-center
+						//-
+							thead
+								tr
+									th(colspan=2) Rewards
+						tbody
+							tr
+								td(style="border:0;")
+									div.d-flex.justify-content-around
+										div.p-2(style="border-radius:8px;box-shadow: 0 0 0 2pt cornflowerblue;")
+											img.mx-2(style="width:3.5rem;height:3.5rem;" src="/images/cards/S/In_Pursuit_of_Presents.jpg")
+											p.mb-0 Demon SSR
+											small 10,000
+										div.p-2
+											img.mx-2(style="width:3.5rem;height:3.5rem;" src="/images/cards/S/In_Pursuit_of_Presents.jpg")
+											p.mb-0 Demon SSR
+											small 10,000
+										div.p-2
+											img.mx-2(style="width:3.5rem;height:3.5rem;" src="/images/cards/S/In_Pursuit_of_Presents.jpg")
+											p.mb-0 Demon SSR
+											small 10,000
+										div.p-2
+											img.mx-2(style="width:3.5rem;height:3.5rem;" src="/images/cards/S/In_Pursuit_of_Presents.jpg")
+											p.mb-0 Demon SSR
+											small 10,000
+
+								// td Memory SSR &ensp; 12,000
+								// td Demon UR &ensp; 15,000
+							//-
+								tr
+									td
+										div.d-flex
+											img.mx-2(style="width:3.5rem;height:3.5rem;" src="/images/cards/S/In_Pursuit_of_Presents.jpg")
+											p.mb-0 In Pursuit of Presents
+												br
+												| Demon SSR
+									td
+										| 10,000
+									// td Memory UR &ensp; 25,000
+									// td Icon 1 &ensp; 35,000
+									// td Icon 2 &ensp; 45,000
+								tr
+									td
+										div.d-flex
+											img.mx-2(style="width:3.5rem;height:3.5rem;" src="/images/cards/S/In_Pursuit_of_Presents.jpg")
+											p.mb-0 In Pursuit of Presents
+												br
+												| Demon SSR
+									td
+										| 10,000
+									// td voucher x2 &ensp; 55,000
+									// td voucher x3 &ensp; 65,000
+									// td voucher x5 &ensp; 75,000
+								tr
+									td
+										div.d-flex
+											img.mx-2(style="width:3.5rem;height:3.5rem;" src="/images/cards/S/In_Pursuit_of_Presents.jpg")
+											p.mb-0 In Pursuit of Presents
+												br
+												| Demon SSR
+									td
+										| 10,000
+									// td voucher x2 &ensp; 55,000
+									// td voucher x3 &ensp; 65,000
+									// td voucher x5 &ensp; 75,000
+
+
+					div(id="carouselExampleIndicators" class="carousel slide mx-auto w-50 d-none" data-interval="false" data-ride="carousel")
+						ol(class="carousel-indicators")
+							li(data-target="#carouselExampleIndicators" data-slide-to="0" class="active")
+							li(data-target="#carouselExampleIndicators" data-slide-to="1")
+							li(data-target="#carouselExampleIndicators" data-slide-to="2")
+							li(data-target="#carouselExampleIndicators" data-slide-to="2")
+							li(data-target="#carouselExampleIndicators" data-slide-to="2")
+							li(data-target="#carouselExampleIndicators" data-slide-to="2")
+							li(data-target="#carouselExampleIndicators" data-slide-to="2")
+							li(data-target="#carouselExampleIndicators" data-slide-to="2")
+							li(data-target="#carouselExampleIndicators" data-slide-to="2")
+							li(data-target="#carouselExampleIndicators" data-slide-to="2")
+
+						div(class="carousel-inner")
+							div(class="carousel-item active")
+								p.text-center.pt-2.pb-4 Demon SSR
+									br
+									small 1,000
+
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory SSR
+									br
+									small 15,000
+
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory UR
+									br
+									small 10,000
+
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory UR
+									br
+									small 10,000
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory UR
+									br
+									small 10,000
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory UR
+									br
+									small 10,000
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory UR
+									br
+									small 10,000
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory UR
+									br
+									small 10,000
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory UR
+									br
+									small 10,000
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory UR
+									br
+									small 10,000
+							div(class="carousel-item")
+								p.text-center.pt-2.pb-4 Memory UR
+									br
+									small 10,000
+						a(class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev")
+							span(class="carousel-control-prev-icon" aria-hidden="true")
+								svg(xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-align-bottom" viewBox="0 0 10 10")
+									path(d="M5.25 0l-4 4 4 4 1.5-1.5L4.25 4l2.5-2.5L5.25 0z")
+							span(class="sr-only") Previous
+
+						a(class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next")
+							span(class="carousel-control-next-icon" aria-hidden="true")
+								svg(xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-align-bottom" viewBox="0 0 10 10")
+									path(d="M2.75 0l-1.5 1.5L3.75 4l-2.5 2.5L2.75 8l4-4-4-4z")
+							span(class="sr-only") Next
+
+					//-
+						ul.nav
+							li.nav-item
+								a.nav-link.d-flex.active
+									input(type="radio" name="reward")
+									label.m-0.d-flex
+										img.mx-2(style="width:3.5rem;height:auto;" src="/images/cards/S/In_Pursuit_of_Presents.jpg")
+										div Memory UR
+											br
+											small.text-dark 30,000
+							li.nav-item
+								a.nav-link.d-flex.active
+									input(type="radio" name="reward")
+									label.m-0.d-flex
+										img.mx-2(style="width:3.5rem;height:auto;" src="/images/cards/S/What_Goes_Around_Comes_Around.jpg")
+										div Memory SSR
+											br
+											small.text-dark 30,000
+							li.nav-item
+								a.nav-link.d-flex.active
+									input(type="radio" name="reward")
+									label.m-0.d-flex
+										img.mx-2(style="width:3.5rem;height:auto;" src="/images/cards/S/The_Mammon_Way.jpg")
+										div Demon SSR
+											br
+											small.text-dark 30,000
+							li.nav-item
+								a.nav-link.d-flex.active
+									input(type="radio" name="reward")
+									label.m-0.d-flex
+										img.mx-2(style="width:3.5rem;height:auto;" src="/images/cards/S/The_Mammon_Way.jpg")
+										div Demon SSR
+											br
+											small.text-dark 30,000
+							li.nav-item
+								a.nav-link.d-flex.active
+									input(type="radio" name="reward")
+									label.m-0.d-flex
+										div.ml-2 Random Icon
+											br
+											small.text-dark 30,000
+
+					div.mt-2
+						//-
+							ul#ttt.nav.justify-content-center.mb-3
+								li.nav-item
+									a.nav-link.d-flex.active(href="#")
+										img(style="width:3.5rem;height:auto;" src="/images/cards/S/The_Mammon_Way.jpg")
+										div The Mammon Way
+											small Demon SSR<br>30,000
+
+								each reward in event.rewards
+									if reward.card && reward.card.length
+										li.nav-item
+											a.nav-link(href='#')= reward.card
+									else
+										li.nav-item
+											a.nav-link(href='#')
+												img(style="width:3.5rem;height:auto;" src="/images/rewards/sushi.webp")
+						div.row
+							div.col-lg-5.px-4
+								img.img-fluid(src="/images/cards/L/The_Mammon_Way.jpg")
+							div.col-lg-7
+								div.card.card-body
+									div.d-flex.justify-content-between
+										h5 Total
+											// small.ml-1 (ends in 1h 2m 3s)
+										button(class="btn btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample") v details
+									div.d-flex
+										p.w-50 • 4,000 battle
+										p.w-50 • 32,000 ap
+									div(class="collapse" id="collapseExample")
+										ul
+											li clear 4,500 battles
+												ul
+													li 3,500 free
+													li 1,000 needs to be specially prepared
+											li spend 1,000 AP
+												ul
+													li 500 free
+														sup *
+													li 500 needs to be specially prepared
+									<div class="progress" style="height:9px;">   <div class="progress-bar" style="width:10%;height:9px;background-color:#FFC300;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div> </div>
+									div.d-flex.justify-content-between
+										small Ending in
+										small 10 days
+								div.card.card-body
+									h5 Today
+										small.text-right.ml-1 (ends in 1h 2m 3s)
+									ul
+										li clear all stages + 45 extra battles
+										li spend a total of 1,000 AP (at least 250 of the 1,000 AP needs to be bought)
+										li reach 89,000 points
+									<div class="progress" style="height:9px;">   <div class="progress-bar" style="width:60%;height:9px;background-color:#f48fb1;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div> </div>
+									div.d-flex.justify-content-between
+										small 60%
+										small 120,000 pts
