@@ -67,7 +67,7 @@ function sendVerificationMessage() {
 				return;
 			}
 			$("#sendVerification").attr("disabled", "disabled");
-			showAlert("success", "Confirmation sent. Please allow a few minutes for the email to arrive!");
+			showAlert("success", "Confirmation sent!");
 			var cooldown = 120;
 			var cooldownTimer = setInterval(function() {
 				if(cooldown <= 0) {

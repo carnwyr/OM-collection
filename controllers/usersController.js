@@ -338,10 +338,12 @@ exports.sendVerificationEmail = async function(req, res, next) {
 		await record.save();
 
     await mg.messages.create('karasu-os.com', {
-      from: "Karasu-OS <support@karasu-os.com>",
       to: [req.body.userData.email],
-      subject: "Email Confirmation",
-      text: "You've received this message because your email was used to bind an account on karasu-os.com. To confirm the email please open this link: \n\nkarasu-os.com/user/"+req.params.name+"/confirmEmail/"+code+"\n\nIf you didn't request email binding please ignore this message."
+      from: "Karasu OS <no-reply@karasu-os.com>",
+      'h:Reply-To': 'karasu.os.mail@gmail.com',
+      subject: i18next.t("settings.email_confirmation") + " - Karasu-OS.com",
+      template: i18next.t("settings.email_template"),
+      'h:X-Mailgun-Variables': JSON.stringify({ username: req.params.name, code: code })
     });
 
 		return res.json({ err: false });
@@ -422,10 +424,11 @@ exports.restorePassword = function(req, res, next) {
 		var newPassword = cryptoRandomString({length: 8, type: 'alphanumeric'});
 
 		mg.messages.create('karasu-os.com', {
-		    from: "Karasu-OS <support@karasu-os.com>",
-		    to: [req.body.email],
-		    subject: "Restore password",
-			text: "Username: " + user.info.name + "\nNew password: " + newPassword
+      to: [req.body.email],
+      from: "Karasu OS <no-reply@karasu-os.com>",
+      'h:Reply-To': 'karasu.os.mail@gmail.com',
+      subject: "Restore password",
+      text: `${i18next.t("user.username")}: ${user.info.name}\n${i18next.t("user.password")}: ${newPassword}`
 		})
 		.then(result => {
 			bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {

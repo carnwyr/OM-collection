@@ -12,10 +12,10 @@ html(lang=t("lang"))
     <!-- End Google Tag Manager -->
     title= title+t("header")
     meta(name='viewport' content='width=device-width, initial-scale=1')
-    meta(name="description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
+    meta(name="description" content=description?description:title+t("header"))
     meta(name="keywords" content="Obey Me, おべいみー, cards, tools")
     meta(property="og:title" content=title)
-    meta(property="og:description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
+    meta(property="og:description" content=description?description:title+t("header"))
     if card
       meta(property="og:image" content=`https://karasu-os.com/images/cards/S/${card.uniqueName}.jpg`)
     else

@@ -2,7 +2,7 @@ extends layout
 
 block scripts
 	link(rel="stylesheet" href="/stylesheets/account.css")
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
 	script(src="/javascripts/accountFunctions.js")
 	script.
 		var username = !{JSON.stringify(user.name)};
@@ -13,16 +13,16 @@ block content
 	div.container
 		div.row
 			div.card.card-body
-				h2.text-center.text-md-left= t("title.settings")
+				h2.text-center.text-md-left= title
 				div.row.mb-4
 					div.col-12.col-md-3.text-center.text-md-left.mb-3.mb-md-0
 						div(class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical")
-							a(class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true") Profile
-							a(class="nav-link" id="v-pills-email-tab" data-toggle="pill" href="#v-pills-email" role="tab" aria-controls="v-pills-email" aria-selected="false") Email
+							a(class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true")= t("common.profile")
+							a(class="nav-link" id="v-pills-email-tab" data-toggle="pill" href="#v-pills-email" role="tab" aria-controls="v-pills-email" aria-selected="false")= t("user.email")
 								if !user.email
 									span(class="badge badge-pill badge-warning ml-2") !
-							a(class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false") Password
-							a(class="nav-link" id="v-pills-privacy-tab" data-toggle="pill" href="#v-pills-privacy" role="tab" aria-controls="v-pills-privacy" aria-selected="false") Privacy
+							a(class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false")= t("user.password")
+							a(class="nav-link" id="v-pills-privacy-tab" data-toggle="pill" href="#v-pills-privacy" role="tab" aria-controls="v-pills-privacy" aria-selected="false")= t("settings.privacy")
 					div.col-12.col-md-9
 						div(class="tab-content" id="v-pills-tabContent")
 							div(class="tab-pane show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab")
@@ -30,20 +30,16 @@ block content
 									form#profile.col-12.col-md
 										div.form-row
 											div.form-group.col-md-6
-												//- label(for="inputInGameName")= t("profile.name")
-												label(for="inputInGameName") In-game Name
+												label(for="inputInGameName")= t("profile.name")
 												input(type="text" class="form-control" id="inputInGameName" name="name" placeholder="???" value=user.profile.name maxlength="10")
 											div.form-group.col-md-6
-												//- label(for="inputFriendID")= t("profile.friend_id")
-												label(for="inputFriendID") Friend ID
+												label(for="inputFriendID")= t("profile.friend_id")
 												input(type="text" class="form-control" id="inputFriendID" name="id" placeholder="???" value=user.profile.id maxlength="20")
 											div.form-group.col-md-6
-												//- label(for="inputJoinOM")= t("profile.entered_rad")
-												label(for="inputJoinOM") Entered RAD on
+												label(for="inputJoinOM")= t("profile.entered_rad")
 												input(type="date" class="form-control" id="inputJoinOM" name="joined" value=user.profile.joined.toISOString().split("T")[0] min="2019-12-11")
 											div.col-md-6
-												//- span= t("profile.language")
-												span Language
+												span= t("profile.language")
 												div.form-check
 													input(type="radio" class="form-check-input" id="english" name="language" value="en" checked=(user.profile.language==="en"?true:false))
 													label(for="english" class="form-check-label") English
@@ -51,8 +47,7 @@ block content
 													input(type="radio" class="form-check-input" id="japanese" name="language" value="jp" checked=(user.profile.language==="jp"?true:false))
 													label(for="japanese" class="form-check-label") 日本語
 
-										//- p.my-2= t("profile.favourite_chara")
-										p.my-2 Favourite Character(s)
+										p.my-2= t("profile.favourite_chara")
 										p.text-muted= t("settings.fav_char_instruction")
 										- var ch = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Luke", "Simeon", "Solomon"];
 										ul#sortable.mb-2
@@ -64,7 +59,7 @@ block content
 														label.form-check-label.ml-2(for=i)
 															img(src="/images/faces/"+ i + ".png" style="width:32px;height:32px;")
 															|
-															| #{i}
+															| #{t(i)}
 													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/></svg>
 											each c in ch
 												li.row
@@ -73,7 +68,7 @@ block content
 														label.form-check-label.ml-2(for=c)
 															img(src="/images/faces/"+ c + ".png" style="width:32px;height:32px;")
 															|
-															| #{c}
+															| #{t(c)}
 													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move col pr-0 mt-2" style="margin-right:-1rem;" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"/></svg>
 									div#cardSearch.col-12.col-md-4
 										div.mb-2= t("settings.card_display")
@@ -91,13 +86,12 @@ block content
 									div.col-12.col-md-7
 										if user.email
 											- var emailStatus = user.email
-											- var emailMsg = t("settings.linked_email")
+											- var emailMsg = ''
 										else
 											- var emailStatus = t("settings.no_linked_email")
 											- var emailMsg = t("settings.pls_link_email")
 
-										//- p.mb-2= t("user.email")
-										p.mb-2 Email
+										p.mb-2= t("user.email")
 											if !user.email
 												span(class="badge badge-pill badge-warning ml-1") !
 										p.card-text.text-muted= emailMsg
@@ -109,12 +103,10 @@ block content
 										p.text-muted= t("settings.email_instruction")
 										form
 											div(class="form-group")
-												//- label(for="email")= t("user.email")
-												label(for="email") Email
+												label(for="email")= t("user.email")
 												input(class="form-control" type="email" id="email" name="email")
 											div(class="form-group")
-												//- label(for="password")= t("user.password") + " (Karasu OS)"
-												label(for="password") Password (Karasu OS)
+												label(for="password")= t("user.password") + " (Karasu OS)"
 												input(class="form-control" type="password" id="password" name="password")
 								button(type="button" class="btn btn-primary" id="sendVerification")= t("settings.send_email")
 								small#cooldown.text-muted.ml-1
@@ -133,18 +125,19 @@ block content
 											input(class="form-control" type="password" id="newPasswordConfirm" name="newPasswordConfirm")
 								button(type="button" class="btn btn-primary" id="changePassword")= t("settings.update")
 							div(class="tab-pane" id="v-pills-privacy" role="tabpanel" aria-labelledby="v-pills-privacy-tab")
-								p Collection Visibility
+								p= t("settings.collection_visibility")
 								form
 									div(class="form-check")
 										input(class="form-check-input" type="radio" name="isPrivate" id="publicProfileRadio" value="false" checked=(user.profile.isPrivate?false:true))
-										label(class="form-check-label" for="publicProfileRadio") Public
+										label(class="form-check-label" for="publicProfileRadio")= t("settings.public")
 									div(class="form-check")
 										input(class="form-check-input" type="radio" name="isPrivate" id="privateProfileRadio" value="true" checked=(user.profile.isPrivate?true:false))
-										label(class="form-check-label" for="privateProfileRadio") Private
+										label(class="form-check-label" for="privateProfileRadio")= t("settings.private")
+											sup *
 								br
-								p Public: collections are fully visible to everyone
-									br
-									| Private: collections are only visible to yourself. However, visitors can still see part of your collection from your profile page's collection preview section.
+								p.text-muted
+									sup *
+									| #{t("settings.privacy_note")}
 								br
 								input#updatePrivacy.btn.btn-primary(type="submit" value=t("settings.update"))
 				//-
