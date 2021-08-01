@@ -4,33 +4,6 @@ block scripts
   link(rel="stylesheet" href="/stylesheets/homepage.css")
 
 block content
-  div(class="modal fade" id="contactLaele" tabindex="-1" role="dialog" aria-labelledby="contactLaeleLabel" aria-hidden="true")
-    div(class="modal-dialog" role="document")
-      div(class="modal-content")
-        div(class="modal-header")
-          h5(class="modal-title" id="contactLaeleLabel") Contact Laele
-          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-            span( aria-hidden="true") &times;
-        div(class="modal-body")
-          p Discord: carnwyr#6733
-          span Email:
-            |
-            |
-            a(href="mailto:carnwyr@gmail.com") carnwyr@gmail.com
-        div(class="modal-footer")
-          button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Close
-  div(class="modal fade" id="contactChar" tabindex="-1" role="dialog" aria-labelledby="contactCharLabel" aria-hidden="true")
-    div(class="modal-dialog" role="document")
-      div(class="modal-content")
-        div(class="modal-header")
-          h5(class="modal-title" id="contactCharLabel") Contact char
-          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-            span( aria-hidden="true") &times;
-        div(class="modal-body")
-          p Discord: char#9463
-        div(class="modal-footer")
-          button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Close
-
   div.row
     section.landing-page
       div.card.hovercard
@@ -103,13 +76,6 @@ block content
                       |
                       |
                       a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
-                div.d-flex
-                  div(data-toggle='modal' data-target="#contactLaele" style='cursor: pointer')
-                    img(class="pfp" alt="pfp" src="/images/karasu.png")
-                    span.mr-5 Laele
-                  div(data-toggle='modal' data-target="#contactChar" style='cursor: pointer')
-                    img(class="pfp" alt="pfp" src="/images/karasu.png")
-                    span char
           div.col-12.col-md-6.mb-4
             div#About.card.h-100
               div.card-body
