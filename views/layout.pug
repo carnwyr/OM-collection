@@ -109,28 +109,6 @@ html(lang=t("lang"))
             div.col
               <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6866037896"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
 
-      //- modals
-      div(id="languageModal" class="modal fade" tabindex="-1")
-        div(class="modal-dialog")
-          div(class="modal-content")
-            div(class="modal-header")
-              h5(class="modal-title") Please select your preferred language:
-              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-                span(aria-hidden="true") &times;
-            div(class="modal-body text-center")
-              div.row
-                div.col
-                  a(href="#" data-dismiss="modal")
-                    img.w-50(src="/images/uk.png")
-                    p English
-                div.col
-                  a(id="jp_redirect" href="#")
-                    img.w-50(src="/images/jp.png")
-                    p 日本語
-            div(class="modal-footer")
-              small.text-muted.w-75.mr-auto Kept seeing this pop-up? Please allow cookies for karasu-os.com to work properly.
-              button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
-
       //- toasts
       div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
         div(class="toast-body")
