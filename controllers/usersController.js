@@ -150,10 +150,9 @@ exports.isAdmin = function() {
 exports.isSameUser = function() {
 	return function (req, res, next) {
 		if (req.user && (req.user.name == req.params.name || exports.isAdmin())) {
-			return next()
+			return next();
 		}
-		var err = new Error('You must be logged in your account');
-		return next(err);
+		return next(createError(404, "Please log in and try again!"));
 	}
 };
 
