@@ -55,7 +55,8 @@
     "my_favourites": "お気に入り",
     "user_favourites": "{{username}}のお気に入り",
     "my_profile": "プロフィール",
-    "user_profile": "{{username}}のプロフィール"
+    "user_profile": "{{username}}のプロフィール",
+    "settings": "ユーザー設定"
   },
   "collection": {
     "cards": "アドレス帳",
@@ -85,6 +86,28 @@
     "empty_collection": "ありません…",
     "private_collection": "カードは非公開です",
     "edit": "プロフィールを編集"
+  },
+  "settings": {
+    "card_display": "お気に入りカード",
+    "fav_char_instruction": "好きなキャラの順番を決めましょう！（PC版サイト限定）",
+    "update": "変更",
+    "no_linked_email": "メールアドレス連携していません",
+    "pls_link_email": "メールアドレス連携した場合、パスワードを忘れたらメールで再設定することができます。",
+    "update_email": "メールアドレスを変更する",
+    "email_instruction": "新しいメールアドレスを入力してください。入力したメールアドレス宛に確認メールが送信されます。",
+    "send_email": "送信する",
+    "current_pass": "現在のパスワード",
+    "new_pass": "新しいパスワード",
+    "confirm_new_pass": "新しいパスワードを認証する",
+    "email_template": "link_email_jp",
+    "privacy": "プライバシー",
+    "email_confirmation": "メール認証",
+    "account_recovery": "パスワードをリセット",
+    "account_recovery_instruction": "メールアドレスを入力してください。アカウントと連携した場合、新しいパスワードはメールで送信されます。",
+    "collection_visibility": "アドレス帳・お気に入り",
+    "public": "全体公開",
+    "private": "非公開",
+    "privacy_note": "一部のカードはプロフィールページで見ることができます。"
   },
   "spg": {
     "shortActions": "アクションを１つだけ表示",

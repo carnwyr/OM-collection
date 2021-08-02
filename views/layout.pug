@@ -12,15 +12,15 @@ html(lang=t("lang"))
     <!-- End Google Tag Manager -->
     title= title+t("header")
     meta(name='viewport' content='width=device-width, initial-scale=1')
-    meta(name="description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
-    meta(name="keywords" content="Obey Me, おべいみー, cards, tools")
+    meta(name="description" content=description?description:title+t("header"))
+    meta(name="keywords" content="Obey Me, おべいみー, cards, tools, 攻略")
     meta(property="og:title" content=title)
-    meta(property="og:description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
+    meta(property="og:description" content=description?description:title+t("header"))
     if card
       meta(property="og:image" content=`https://karasu-os.com/images/cards/S/${card.uniqueName}.jpg`)
     else
       meta(property="og:image" content="https://karasu-os.com/images/karasu.png")
-    link(rel="icon" type="image/png" href="/images/favicon.png")
+    link(rel="icon" type="image/x-icon" href="/images/favicon.ico")
     link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Kanit|Nunito:wght@200;300;400;700')
     link(rel='stylesheet' href='/stylesheets/theme.css')
@@ -33,8 +33,6 @@ html(lang=t("lang"))
     block scripts
 
   body(class="d-flex flex-column min-vh-100")
-    //- FF FOUC bug fix
-    <script>0</script>
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TQRDPDG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
@@ -108,28 +106,6 @@ html(lang=t("lang"))
               <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4893005895"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
             div.col
               <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6866037896"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
-
-      //- modals
-      div(id="languageModal" class="modal fade" tabindex="-1")
-        div(class="modal-dialog")
-          div(class="modal-content")
-            div(class="modal-header")
-              h5(class="modal-title") Please select your preferred language:
-              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-                span(aria-hidden="true") &times;
-            div(class="modal-body text-center")
-              div.row
-                div.col
-                  a(href="#" data-dismiss="modal")
-                    img.w-50(src="/images/uk.png")
-                    p English
-                div.col
-                  a(id="jp_redirect" href="#")
-                    img.w-50(src="/images/jp.png")
-                    p 日本語
-            div(class="modal-footer")
-              small.text-muted.w-75.mr-auto Kept seeing this pop-up? Please allow cookies for karasu-os.com to work properly.
-              button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
 
       //- toasts
       div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")

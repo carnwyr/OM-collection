@@ -36,8 +36,6 @@ $(document).ready(function() {
 	});
 
 	$("#b2t").on("click", () => { $("html, body").animate({scrollTop:0}, 500); });
-
-	showLanguageModal();
 });
 
 $(document).on("adBlocked", () => { adBlock = true; });
@@ -91,16 +89,5 @@ function switchBackToTopButton() {
 	} else {
 		$("#b2t").fadeOut();
 		$("#cookieToast").css("transform", "");
-	}
-}
-
-function showLanguageModal() {
-	if (location.host === "karasu-os.com" &&
-			JSON.stringify(navigator.languages).indexOf("ja") !== -1  &&
-			document.cookie.indexOf("confirmLanguage=true") === -1)
-	{
-		$("#jp_redirect").attr("href", "https://ja.karasu-os.com" + location.pathname);
-		$("#languageModal").modal("show");
-		document.cookie = "confirmLanguage=true";
 	}
 }
