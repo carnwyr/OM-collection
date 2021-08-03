@@ -5,8 +5,10 @@ const eventsService = require("../services/eventsService");
 const eventCalculatorService = require("../services/eventCalculatorService");
 
 exports.getEventsPage = async function(req, res, next) {
+	// TODO: add method to only retrieve a certain type of event
+	// TODO: format events to be { name: __, start: __, end:__ } and remove unused variables. 
 	var events = await eventsService.getEvents();
-	res.render('events', {
+	res.render('eventGallery', {
 		title: "Events",
 		description: "A list of Obey Me events, including Nightmare and Pop Quizzes.",
 		user: req.user,

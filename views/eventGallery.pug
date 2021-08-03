@@ -4,14 +4,31 @@ block scripts
   link(rel="stylesheet" href="/stylesheets/eventGallery.css")
 
 block content
+  -
+    function getFormatedDate(d) {
+      var day = d.getDate(), year = d.getFullYear();
+      if (t("lang") === "en") {
+        var month = d.toLocaleString('default', { month: 'long' });
+        return `${day} ${month} ${year}`;
+      } else {
+        var month = d.getMonth();
+        return `${year}年${month}月${day}日`;
+      }
+    }
+
+    function getEventName(e) {
+      if (t("lang") === "en") return e.name;
+      return e.ja_name;
+    }
+
   div.container
-    h1 Pop Quiz
+    h1= title
     ul#gallery
-        //-for i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
       each event in events
-        li
+        li.col-12.col-sm-6.col-lg-4.mb-3
           div.card.shadow
             img.card-img-top(src="/images/events/" + event.img_name + ".jpg")
             div.card-body
-              p.card-title= event.name
-              small.text-muted= event.start + " - " + event.end
+              p.card-title
+                a(href="event/"+encodeURIComponent(event.name.replace(/ /g, '_')))= getEventName(event)
+              small.text-muted= getFormatedDate(event.start) + " - " + getFormatedDate(event.end)

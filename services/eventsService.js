@@ -75,7 +75,7 @@ exports.updateEvent = async function(req, res) {
 	try {
 		let data = req.body.data;
 
-		console.log(data);
+		// console.log(data);
 
 		if (!req.body.name) {  // from /addEvent
 			await Events.create(data);
@@ -87,12 +87,16 @@ exports.updateEvent = async function(req, res) {
 
 		let e = await Events.findOne({ name: decodeURI(req.body.name) });
 
-		console.log(e, req.body.name);
+		// console.log(e, req.body.name);
+		console.log(e, data);
 
 		if (e.img_name !== data.img_name) {
 			// rename image fsPromises.rename(oldPath, newPath)
-			fs.rename("/images/events/" + e.img_name + ".jpg",
-								"/images/events/" + data.img_name + ".jpg");
+			fs.rename("./public/images/events/" + e.img_name + ".jpg", "./public/images/events/" + data.img_name + ".jpg",
+				(err) => {
+					if (err) {} // how to do this error
+				}
+			);
 		}
 
 		if (req.body.img.startsWith("data:image/jpeg;base64,")) {
