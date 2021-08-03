@@ -2,13 +2,13 @@ extends layout
 
 block scripts
 	//- link(rel="stylesheet" href="/stylesheets/event.css")
-	//- script(src="/javascripts/eventPageFunctions.js")
-	//-
-		script.
-			var event = !{JSON.stringify(event)};
+	script(src="/javascripts/eventPageFunctions.js")
+	
+	script.
+		var event = !{JSON.stringify(event)};
 
 block content
-	.container(style="background:rgba(255,255,255,.6)")
+	.container
 		h1.my-2.text-dark(style="border:0;margin-bottom:0;text-align:center;") Pop Quiz Calculator
 		p.text-center
 			i On-going Pop Quiz Title

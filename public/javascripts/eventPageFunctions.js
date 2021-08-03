@@ -12,9 +12,9 @@ $(document).ready(function () {
 function updateCalculator() {
 	var currentPoints   = $("#currentPoints").val();
 	var pointsPerBattle = $("#pointsPerBattle").val();
-	var isVip           = $("#vip").prop("checked");
 
 	if (!currentPoints || !pointsPerBattle) {
+		console.log(currentPoints)
 		event.rewards.forEach(reward => {
 			if (!reward || !reward.tag) {
 				return;
@@ -33,10 +33,11 @@ function updateCalculator() {
 		type: "post",
 		url: "/event/" + encodeURIComponent(event.name.replace(/ /g, '_')) + "/calculate",
 		contentType: "application/json",
-		data: JSON.stringify({ currentPoints: currentPoints, pointsPerBattle: pointsPerBattle, isVip: isVip })
+		data: JSON.stringify({ currentPoints: currentPoints, pointsPerBattle: pointsPerBattle, isVip: false })
 	}).done(function(data) {
 		if (!data.err) {
-			updateResults(data.result);
+			console.log(data.result)
+			//updateResults(data.result);
 		} else {
 			showAlert("danger", "Something went wrong :(");
 		}
