@@ -84,6 +84,7 @@ function submitChange() {
 				return;
 			}
 			showAlert("success", result.message);
+			location.pathname = `/event/${encodeURIComponent($("input#name").val())}/edit`;  // temp
 		});
 }
 
