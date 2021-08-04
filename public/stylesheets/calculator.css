@@ -1,10 +1,11 @@
- h6 {
+h6 {
   display: flex;
   width: 100%;
   justify-content: center;
   align-items: center;
   text-align: center;
-	font-size: 0.9em
+  font-size: 0.9em;
+  color: var(--secondary);
 }
 
 h6:before,
@@ -19,28 +20,28 @@ h6:after {
   margin: 0 0 0 20px;
 }
 
-.reward-button{
-	border-radius: 1.5rem;
+.reward-button {
+  border-radius: 1.5rem;
 }
 
-.reward-button:hover{
-	background-color: rgba(219, 158, 251, 0.15);
+.reward-button:hover {
+  background-color: rgba(219, 158, 251, 0.15);
 }
 
-.reward-button.active{
-	background-color: rgba(219, 158, 251, 0.25);
+.reward-button.active {
+  background-color: rgba(219, 158, 251, 0.25);
 }
 
-.reward-button figcaption{
-	color: #4e5761
+.reward-button figcaption {
+  color: #4e5761
 }
 
 .reward-button:hover figcaption,
-.reward-button.active figcaption{
-	color: #7767a6
+.reward-button.active figcaption {
+  color: #7767a6
 }
 
 .reward-button:focus {
-  outline:none;
+  outline: none;
   box-shadow: none;
 }
