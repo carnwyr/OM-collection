@@ -12,6 +12,7 @@ router.get("/policies", miscController.privacyPolicy);
 router.get("/surpriseGuest", miscController.surpriseGuest);
 router.get("/rankings", usersController.getRankingsPage);
 router.get("/events", eventsController.getEventsPage);
+router.get("/calculator", eventsController.getCalculatorPage);
 
 // Cards list
 router.get("/cards", cardsController.getCardsListPage);

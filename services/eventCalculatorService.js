@@ -13,7 +13,11 @@ const baseApPerDay = 20 + 50 + 20 + 50;  // guests + ads + to do + friends
 const baseFridgeAp = 2 * 30;
 const vipFridgeAp  = 2 * 60;
 
-exports.calculate = function (event, currentPoints, pointsPerBattle, isVip) {
+exports.calculate = function (event, input) {
+	// TODO:
+	var currentPoints = input.currentPoints, pointsPerBattle = input.pointsPerBattle, isVip = false;
+
+
 	var rewards = event.rewards.sort();
 
 	var endTime     = dayjs(event.end).tz("Asia/Tokyo");
@@ -35,7 +39,7 @@ exports.calculate = function (event, currentPoints, pointsPerBattle, isVip) {
 			var triesLeftMin = (3 * event.stages + 5) * daysLeft;
 
 			var apRegen = Math.floor(endTime.diff(currentTime, "minute") / 5);
-				
+
 			var currentPage = Math.floor(currentPoints / event.pageCost);
 			var finalPage   = Math.floor(reward.points / event.pageCost) - (reward.points % event.pageCost === 0 ? 1 : 0);
 			var apRewarded  = 0;
@@ -50,7 +54,7 @@ exports.calculate = function (event, currentPoints, pointsPerBattle, isVip) {
 			var apMin        = apRegen + apRewarded + getDailyAp(isVip) * daysLeft;
 			var dailyBattles = Math.ceil(triesNeeded / daysLeft);
 			var triesToBuy   = Math.max(triesNeeded - triesLeftMin, 0);
-			
+
 			var pointsPerDay = [];
 			var nextReset = currentTime.add(1, "day").startOf("day");
 			for (var time = nextReset, dayPoints = Number(currentPoints); time < endTime; time = time.add(1, 'day'), dayPoints += dailyBattles * pointsPerBattle) {
