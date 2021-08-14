@@ -24,40 +24,7 @@ block content
             a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
 
         if (!user || !user.supportStatus.includes("adfree"))
-          div.ddd
-            <div id="ezoic-pub-ad-placeholder-109"></div>
-
-        //- Share Event
-        div#ShareEvent.card.mb-3
-          div.card-body.text-center
-            h5 Limited-time Badge (English version ending soon!)
-            img.m-2(src="/images/ShareKarasu.png" alt="Badge for sharing karasu-os.com" style="width:64px;height:64px;")
-            p Share Karasu-OS.com on Twitter to get a special badge for your profile!
-            if !user
-              p Please
-                |
-                |
-                a(href="/login") Login
-                |
-                | or
-                |
-                a(href="/signup") Sign up
-                |
-                | to participate in this event!
-              p.mt-3.mb-0(style="pointer-events:none;opacity:50%;") ✧ *｡
-                a(class="twitter-share-button ml-2" href='#')
-                  i
-                  span.ml-1 Tweet
-                |
-                | ｡* ✧
-            else
-              p.mt-3.mb-0 ✧ *｡
-                a(class="twitter-share-button ml-2" href="https://twitter.com/intent/tweet?text="+encodeURIComponent(t("temp.share_karasu", { username: user.name })) target="_blank")
-                  i
-                  span.ml-1 Tweet
-                |
-                | ｡* ✧
-        //- End of Event Notice
+          div.ddd <div id="ezoic-pub-ad-placeholder-109"></div>
 
         div.row
           div.col-12.col-md-6.mb-4
