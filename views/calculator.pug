@@ -18,7 +18,7 @@ block content
 		// if /*event.type === "Lonely Devil" ||*/ (event.type === "Pop Quiz" && (event.start <= new Date() && event.end >= new Date()))
 		.row
 			.col-12.col-lg-4
-				.card.shadow(style="border-radius:8px;")
+				.card.shadow.h-100(style="border-radius:8px;")
 					div.card-body
 						p.text-center.text-primary(style="letter-spacing:.25rem;")
 							strong CALCULATOR
@@ -49,21 +49,26 @@ block content
 
 							input.btn.btn-primary.btn-block(type="submit" value="Calculate!")
 
-						.mt-3.mb-4.small
-							.text-muted The calculation assumes you use the free AP to the maximum extent, which includes:
-							ul.text-muted
-								li All recovered AP (1 in 5 minutes)
-								li 50 from friends
-								li Fridge mission twice a day (not VIP)
-								li 50 from ads
-								li 20 from surprise guest
-								li 20 from To Do tasks
+
+						.my-3.small.text-muted This calculator will assist you, please also use your own judgement to manage your spending in events.
+							//-
+								.text-muted The calculation assumes you use the free AP to the maximum extent, which includes:
+								ul.text-muted
+									li All recovered AP (1 in 5 minutes)
+									li 50 from friends
+									li Fridge mission twice a day (not VIP)
+									li 50 from ads
+									li 20 from surprise guest
+									li 20 from To Do tasks
 
 
 			.col-12.col-lg-8
-				.card.shadow.border-secondary.rounded
-					p.bg-secondary.text-white(style="background:var(--secondary);border-radius:8px;margin:.75rem;padding:.25rem;text-align:center;") Rewards
-					div.card-body.pt-0
+				.card.shadow.rounded.h-100
+					//- p.bg-secondary.text-white(style="background:var(--secondary);border-radius:8px;margin:.75rem;padding:.25rem;text-align:center;") Rewards
+					div.card-body
+						p.text-center.text-primary(style="letter-spacing:.25rem;")
+							strong REWARDS
+						hr(style="border-color:var(--secondary);border-width:2px;")
 						//-
 							.row.reward-selector
 								each reward in event.rewards.reverse()
@@ -105,101 +110,130 @@ block content
 						// TODO item support
 						each reward in [event.rewards[0]]
 							if reward.tag
-								.row.p-4
+								.row.px-3
 									.col-lg-5.px-4
 										//img.img-fluid(src=`/images/cards/L/${reward.card.uniqueName}.jpg`)
 										//.text-center.mt-2 #{reward.card.name}
-										img.img-fluid(src=`/images/cards/L/The_Mammon_Way.jpg`)
-										.text-center.mt-2 The Mammon Way
-									.col-lg-7
-										div(style="position:absolute;display:flex;justify-content:center;font-size:large;transform:translateY(35px);")
-											strong To be determined
-										div(style="opacity:.25;")
-											.mb-4
-												.m-0.mb-1.d-flex.align-items-baseline.rounded
-													h5.mb-0.text-primary Today
-													//small.text-right.ml-1.text-muted (ends in 1h 2m)
-												.ml-3.mb-1.d-flex.align-items-start
-													img.img-fluid.mr-1(src='/images/stageIcon.png' style='max-height:1.5em')
-													p.m-0 Сlear
-														|
-														|
-														span(style="font-weight:600") all
-														|
-														| stages +
-														|
-														span(style="font-weight:600") 45
-														|
-														| extra battles
-												.ml-3.mb-1.d-flex.align-items-start
-													img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-													p.m-0 Spend
-														|
-														|
-														span(style="font-weight:600") #{(1000).toLocaleString()}
-														|
-														| AP (
-														span(style="font-weight:600") ~#{(250).toLocaleString()}
-														|
-														| AP needs to be bought)
-												.ml-3.d-flex.align-items-start
-													img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-													p.m-0 Reach
-														|
-														|
-														span(style="font-weight:600") #{(89000).toLocaleString()}
-														|
-														| points
+										a(href="/")
+											img.img-fluid(src=`/images/cards/L/The_Mammon_Way.jpg`)
+											figcaption.text-center.mt-2 The Mammon Way
+									div.col-lg-7
+										//-
+										<ul class="nav mb-3"> <li class="nav-item"> <a class="nav-link active" href="#" style="border-bottom:3px solid var(--primary);">Today</a> </li> <li class="nav-item"> <a class="nav-link" href="#" style="opacity:.7;">Summary</a> </li> </ul>
+										//- p.text-primary(style="font-size:large;") Today
+											//- small.text-right.ml-1.text-muted (ends in 1h 2m)
+											div.mt-3
+												p
+													img.img-fluid.mx-2(src='/images/stageIcon.png' style='max-height:1.5em')
+													| Сlear
+													|
+													span(style="font-size:large;font-weight:600;") ALL
+													|
+													| stages +
+													|
+													span(style="font-weight:600;") 45
+													|
+													| extra battles
+												p
+													img.img-fluid.mx-2(src='/images/AP.png' style='max-height:1.5em')
+													span(style="font-size:large;font-weight:600;") #{(1000).toLocaleString()}
+													|
+													| (
+													span(style="font-weight:600;") ~#{(250).toLocaleString()}
+													|
+													| paid
+													//- button.btn.btn-sm.mx-1(style="border:2px solid #ccd4da;line-height:1;padding:2px 5px;margin-bottom:.125rem;font-size:small;") ?
+													| )
+												p
+													img.img-fluid.mx-2(src='/images/battle_star.png' style='max-height:1.5em')
+													| Reach
+													|
+													span(style="font-size:large;font-weight:600;") #{(89000).toLocaleString()}
+													|
+													| points
+											//-
+												p
+													span.text-primary Total battles required:
+													|
+													| #{(4000).toLocaleString()} (300 paid)
+												p
+													span.text-primary Total AP required:
+													|
+													| #{(32000).toLocaleString()} (3,000 paid)
+										//-
+										div.container
+											div.row
+												div.col-6.mb-2.pl-0.pr-1
+													div(style="border-radius:16px;background-color:aliceblue;")
+														p.text-center.mb-0.py-2(style="color:white;background:#0080f0;border-radius:16px 16px 0 0;")
+															| Battles
+														// hr(style="border-color:#0080f0;margin:.75rem 0;")
+														//-
+															table.w-100.text-center(style="color:#0080f0;")
+																tr
+																	td(style="width:25%;")
+																	td(style="width:25%;") Free
+																	td(style="width:25%;") Paid
+																	td(style="width:25%;") Total
+																tr
+																	td Daily
+																	td 100
+																	td 1,000
+																	td 1,100
+																tr
+																	td Total (?)
+																	td 1,000
+																	td 10,000
+																	td 11,000
+														div.px-3.py-2
+															div.d-flex.justify-content-between(style="color:#0080f0;")
+																span.text-left Free
+																span 100
+															div.d-flex.justify-content-between.mb-3(style="color:#0080f0;")
+																span.text-left Buy
+																span.text-right 30
+															div.d-flex.justify-content-between(style="color:#0080f0;")
+																span.text-left Total
+																span.text-right 130
 
-											.pt-2.rounded
-												h5.m-0.text-primary Summary
-											.ml-3.mb-1.d-flex.align-items-start
-													img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-													p.m-0 Win
-														|
-														|
-														span(style="font-weight:600") #{(4000).toLocaleString()}
-														|
-														| battles in total, which will take
-														|
-														span(style="font-weight:600") #{(32000).toLocaleString()}
-														|
-														| AP
-											button.text-muted.btn.btn-sm(type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample") Details v
-											.collapse.mt-2#collapseExample
-												.ml-3.mb-1.d-flex.align-items-start
-													img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-													p.m-0 You can get up to
-														|
-														|
-														span(style="font-weight:600") #{(9000).toLocaleString()}
-														|
-														| points every day without resetting stages
-												.ml-3.mb-1.d-flex.align-items-start
-													img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-													p.m-0 Which results in
-														|
-														|
-														span(style="font-weight:600") #{(150000).toLocaleString()}
-														|
-														| points total
-												.ml-3.mb-1.d-flex.align-items-start
-													img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-													p.m-0 To get the reward, you need to use DP or D-Energy for additional
-														|
-														|
-														span(style="font-weight:600") #{(1000).toLocaleString()}
-														|
-														| battles
-												.ml-3.mb-1.d-flex.align-items-start
-													img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-													p.m-0 If you use AP to the maximum extent, you need to get
-														|
-														|
-														span(style="font-weight:600") #{(15000).toLocaleString()}
-														|
-														| AP with DP or from long-term To Do rewards, Devil's Tree, levelling up, mail gifts and log-in rewards
-											.progress.mt-3(style="height:9px;")
+												div.col-6.pl-1.pr-0
+													div.px-3.py-2(style="border-radius:16px;background-color:#fff7f0;")
+														p.text-center.mb-0(style="color:#f07000;") AP
+														hr(style="border-color:#f07000;margin:.75rem 0;")
+														//-
+															table.w-100.text-center(style="color:#f07000;")
+																tr
+																	td(style="width:25%;")
+																	td(style="width:25%;") Free
+																	td(style="width:25%;") Paid
+																	td(style="width:25%;") Total
+																tr
+																	td Daily
+																	td 100
+																	td 1,000
+																	td 1,100
+																tr
+																	td Total (?)
+																	td 1,000
+																	td 10,000
+																	td 11,000
+
+
+														div.d-flex.justify-content-between(style="color:#f07000;")
+															span.text-left Free
+															span 800
+														div.d-flex.justify-content-between.mb-3(style="color:#f07000;")
+															span.text-left Buy
+															span.text-right 240
+														div.d-flex.justify-content-between(style="color:#f07000;")
+															span.text-left Total
+															span.text-right 1,040
+												div.col-12.text-center
+													p.mt-3.mb-0 Today's Goal:
+													p(style="font-size:large") 89,000
+													p(style="font-size:large") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16">   <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg> 20 hours 32 minutes 05 seconds
+										//-
+											.progress.mt-5(style="height:9px;")
 												.progress-bar(style="width:10%;height:9px;background-color:#FFC300;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
 											.d-flex.justify-content-between
 												small Ending in
@@ -209,5 +243,49 @@ block content
 											.d-flex.justify-content-between
 												small 85%
 												small #{(175000).toLocaleString()} pts
-		p
-			pre !{JSON.stringify(result, null, 4)}
+		div.card.card-body.mt-3.shadow.col-12
+				h5 Additional Information
+				p explain 1) meaning of "paid" AP, 2) meaning of "paid" battles, 3) 1 stage = 3 battles
+				ul.text-muted
+					li All recovered AP (1 in 5 minutes)
+					li 50 from friends
+					li Fridge mission twice a day (not VIP)
+					li 50 from ads
+					li 20 from surprise guest
+					li 20 from To Do tasks
+				div
+					.ml-3.mb-1.d-flex.align-items-start
+						img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
+						p.m-0 You can get up to
+							|
+							|
+							span(style="font-weight:600") #{(9000).toLocaleString()}
+							|
+							| points every day without resetting stages
+					.ml-3.mb-1.d-flex.align-items-start
+						img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
+						p.m-0 Which results in
+							|
+							|
+							span(style="font-weight:600") #{(150000).toLocaleString()}
+							|
+							| points total
+					.ml-3.mb-1.d-flex.align-items-start
+						img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
+						p.m-0 To get the reward, you need to use DP or D-Energy for additional
+							|
+							|
+							span(style="font-weight:600") #{(1000).toLocaleString()}
+							|
+							| battles
+					.ml-3.mb-1.d-flex.align-items-start
+						img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
+						p.m-0 If you use AP to the maximum extent, you need to get
+							|
+							|
+							span(style="font-weight:600") #{(15000).toLocaleString()}
+							|
+							| AP with DP or from long-term To Do rewards, Devil's Tree, levelling up, mail gifts and log-in rewards
+		//-
+			p
+				pre !{JSON.stringify(result, null, 4)}
