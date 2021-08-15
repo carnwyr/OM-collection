@@ -7,7 +7,9 @@ const fs = require("fs");
 const nodeHtmlToImage = require("node-html-to-image");
 const i18next = require("i18next");
 
-var usersController = require("../controllers/usersController");
+const fileService = require("../services/fileService");
+
+const usersController = require("../controllers/usersController");
 
 // Functions to render pages
 exports.index = function(req, res, next) {
@@ -367,15 +369,16 @@ exports.updateCard = async function(req, res, next) {
 		var promiseCard = Cards.findOneAndUpdate({uniqueName: originalUniqueName}, data);
 		var promiseCollections = usersController.renameCardInCollections(originalUniqueName, newUniqueName);
 
-		var promiseL = saveImage(originalUniqueName, newUniqueName, data.images.L, 'L', false);
-		var promiseLB = saveImage(originalUniqueName, newUniqueName, data.images.LB, 'L', true);
-		var promiseS = saveImage(originalUniqueName, newUniqueName, data.images.S, 'S', false);
+		var promiseL = await fileService.saveImage(data.images.L, originalUniqueName, newUniqueName, 'cards/L');
+		var promiseLB = await fileService.saveImage(data.images.LB, originalUniqueName + '_b', newUniqueName + '_b', 'cards/L');
+		var promiseS = await fileService.saveImage(data.images.S, originalUniqueName, newUniqueName, 'cards/S');
 
 		Promise.all([promiseCard, promiseCollections, promiseL, promiseLB, promiseS])
 			.then(() => { res.json({ err: null, message: 'Success' }); })
 			.catch(reason => { res.json({ err: true, message: reason.message }); });
 
 	} catch (err) {
+		console.error(err);
 		return res.json({ err: true, message: err.message });
 	}
 };
@@ -389,51 +392,6 @@ async function isNameUnique(unqiueName) {
 	}
 	var hasCard = card ? true : false;
 	return [null, hasCard];
-};
-
-function saveImage(oldName, newName, baseImage, cardSize, isBoomed) {
-	if (oldName === newName) {
-		if (baseImage) {
-			return writeImage(newName, baseImage, cardSize, isBoomed);
-		}
-	} else {
-		var oldImagePath = './public/images/cards/' + cardSize + '/' + oldName + (isBoomed?'_b':'') + '.jpg';
-		if (baseImage) {
-			var deletePromise = new Promise((resolve, reject) => {
-				fs.unlink(oldImagePath, err => {
-					if (err) reject(err);
-						resolve();
-				});
-			});
-			var writePromise = writeImage(newName, baseImage, cardSize, isBoomed);
-			return Promise.all([deletePromise, writePromise]);
-		} else {
-			return new Promise((resolve, reject) => {
-				fs.rename(oldImagePath, oldImagePath.replace(oldName, newName), err => {
-					if (err) reject(err);
-						resolve();
-				});
-			});
-		}
-	}
-};
-
-function writeImage(name, baseImage, cardSize, isBoomed) {
-	if(!baseImage) return;
-
-	const ext = baseImage.substring(baseImage.indexOf("/")+1, baseImage.indexOf(";base64"));
-	const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
-	const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
-	const base64Data = baseImage.replace(regex, "");
-	const imageData = new Buffer.from(base64Data, 'base64');
-	const imagePath = './public/images/cards/' + cardSize + '/' + name + (isBoomed?'_b':'') + '.jpg';
-
-	return new Promise((resolve, reject) => {
-		fs.writeFile(imagePath, imageData, err => {
-			if (err) reject(err);
-			resolve();
-		});
-	});
 };
 
 async function addNewCard(cardData, res) {
@@ -459,15 +417,16 @@ async function addNewCard(cardData, res) {
 			});
 		}
 
-		var promiseL = writeImage(cardData.uniqueName, cardData.images.L, 'L', false);
-		var promiseLB = writeImage(cardData.uniqueName, cardData.images.LB, 'L', true);
-		var promiseS = writeImage(cardData.uniqueName, cardData.images.S, 'S', false);
+		var promiseL = await fileService.saveImage(cardData.images.L, null, cardData.uniqueName, 'cards/L');
+		var promiseLB = await fileService.saveImage(cardData.images.LB, null, cardData.uniqueName, 'cards/L');
+		var promiseS = await fileService.saveImage(cardData.images.S, null, cardData.uniqueName, 'cards/S');
 
 		Promise.all([promiseL, promiseLB, promiseS])
 			.then(() => { res.json({ err: null, message: 'Success' }); })
 			.catch(reason => { res.json({ err: true, message: reason.message }); });
 
 	} catch (err) {
+		console.error(err);
 		return res.json({ err: true, message: err.message });
 	}
 };
@@ -492,30 +451,15 @@ exports.deleteCard = function(req, res, next) {
 	});
 };
 
-function removeCardDependencies(cardName, res, next) {
+async function removeCardDependencies(cardName, res, next) {
 	var promiseCollections = usersController.deleteCardInCollections(cardName);
-	var promiseL = deleteFile('./public/images/cards/L/'+cardName+'.jpg');
-	var promiseLB = deleteFile('./public/images/cards/L/'+cardName+'_b.jpg');
-	var promiseS = deleteFile('./public/images/cards/S/'+cardName+'.jpg');
+	var promiseL = await fileService.deleteImage(cardName, "cards/L");
+	var promiseLB = await fileService.deleteImage(cardName+'_b', "cards/L");
+	var promiseS = await fileService.deleteImage(cardName, "cards/S");
 
 	Promise.all([promiseCollections, promiseL, promiseLB, promiseS ])
 		.catch(reason => { return next(reason); })
 		.then(() => { return res.redirect('/cards'); });
-};
-
-function deleteFile(file) {
-	return new Promise(function(resolve, reject) {
-		fs.access(file, fs.W_OK, function(err) {
-			if (!err) {
-				fs.unlink(file, function(err) {
-					if (err) { return reject(err); }
-					resolve();
-				});
-			} else {
-				resolve();
-			}
-		});
-	});
 };
 
 exports.makeCardPublic = function(req, res, next) {
