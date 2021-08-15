@@ -1,16 +1,17 @@
 const Sentry = require('@sentry/node');
 const async = require("async");
-const fs = require("fs");
 
 const Events = require("../models/events");
 
 const eventCacheService = require("../services/eventCacheService");
+const fileService = require("../services/fileService");
 
 exports.getEvents = async function(condition = {}) {
 	try {
 		return await Events.find(condition);
 	} catch (e) {
 		Sentry.captureException(e);
+		console.error(e);
 		return [];
 	}
 }
@@ -25,11 +26,12 @@ exports.getEvent = async function(eventName) {
 exports.getCurrentEvent = async function() {
 	var currentTime = new Date();
 	try {
-		var currentEventName = await Events.findOne({ start: { "$lte": currentTime }, end: { "$gt": currentTime }}, {name: 1});
-		if (!currentEventName) return;
-		var currentEvent = await eventsController.getFullEventData(currentEventName);
+		var currentEventName = await Events.findOne({ start: { "$lte": currentTime }, end: { "$gt": currentTime } }, { name: 1 });
+		if (!currentEventName.name) return;
+		var currentEvent = await getFullEventData(currentEventName.name);
 		return currentEvent;
 	} catch (e) {
+		console.error(e);
 		Sentry.captureException(e);
 	}
 }
@@ -67,6 +69,7 @@ async function getFullEventData(eventName) {
 
 		return event?.length ? event[0] : null;
 	} catch (e) {
+		console.error(e);
 		Sentry.captureException(e);
 	}
 }
@@ -75,36 +78,17 @@ exports.updateEvent = async function(req, res) {
 	try {
 		let data = req.body.data;
 
-		// console.log(data);
-
-		if (!req.body.name) {  // from /addEvent
+		if (!req.body.name) {
 			await Events.create(data);
-
-			writeImage(data.img_name, req.body.img.replace("data:image/jpeg;base64", ""));
+			await fileService.saveImage(req.body.img, null, data.img_name, "events");
 
 			return res.json({ err: null, message: "Event created!" });
 		}
 
-		let e = await Events.findOne({ name: decodeURI(req.body.name) });
-
-		// console.log(e, req.body.name);
-		console.log(e, data);
-
-		if (e.img_name !== data.img_name) {
-			// rename image fsPromises.rename(oldPath, newPath)
-			fs.rename("./public/images/events/" + e.img_name + ".jpg", "./public/images/events/" + data.img_name + ".jpg",
-				(err) => {
-					if (err) {} // how to do this error
-				}
-			);
-		}
-
-		if (req.body.img.startsWith("data:image/jpeg;base64,")) {
-			// replace image
-			writeImage(data.img_name, req.body.img.replace("data:image/jpeg;base64", ""));
-		}
+		let event = await Events.findOne({ name: decodeURI(req.body.name) });
 
 		await Events.findOneAndUpdate({ name: decodeURI(req.body.name) }, data, { runValidators: true }).exec();
+		await fileService.saveImage(req.body.img, event.img_name, data.img_name, "events");
 
 		return res.json({ err: null, message: "Event updated!" });
 	} catch(e) {
@@ -114,16 +98,13 @@ exports.updateEvent = async function(req, res) {
 	}
 }
 
-exports.deleteEvent = function(req, res) {
-	Events.findOneAndDelete({ name: req.params.event }, function(err, doc) {
-		if (err) return next(err);
-		fs.unlink("public/images/events/" + doc.img_name + ".jpg", function (err) {
-		  if (err) return next(err);
-		});
-	});
-}
-
-function writeImage(name, base64) {
-	var buffer = Buffer.from(base64, "base64");
-	fs.writeFileSync("public/images/events/" + name + ".jpg", buffer);
+exports.deleteEvent = async function (req, res) {
+	try {
+		await Events.findOneAndDelete({ name: req.params.event });
+		await fileService.deleteImage(doc.img_name, "events")
+	} catch (err) {
+		console.error(e);
+		Sentry.captureException(e);
+		return next(err);
+	}
 }
