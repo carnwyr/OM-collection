@@ -69,9 +69,9 @@ block content
 								input#customGoal.form-control(type="number" name="customGoal" min="0" value=query.customGoal)
 							div.form-group
 								label(for="stagesCleared") Cleared
-									input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
+									input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
 									| stages today
-								input.custom-range(type="range" min="0" max="10" value=query.stagesCleared?query.stagesCleared:0)
+								input.custom-range(type="range" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0)
 							input.btn.btn-primary.btn-block(type="submit" value="Calculate!")
 						small.my-3.text-muted This calculator will assist you, please also use your own judgement to manage your spending in events.
 
@@ -128,14 +128,14 @@ block content
 																p(style="background:#0080f0;") Battles
 																div.p-3
 																	div.d-flex.justify-content-between(style="color:#0080f0;")
-																		span.text-left Free
+																		span Free
 																		span= getValue(res.todayBattlesFree)
 																	div.d-flex.justify-content-between(style="color:#0080f0;")
-																		span.text-left Buy
+																		span Buy
 																		span= getValue(res.todayBattlesToBuy)
 																	hr.my-2(style="border-color:#0080f0;")
 																	div.d-flex.justify-content-between(style="color:#0080f0;")
-																		span.text-left Total
+																		span Total
 																		span= getValue(res.todayBattlesTotal)
 														div.col-6.pl-1.pr-0
 															div(style="border-radius:16px;background-color:#fff7f0;")
