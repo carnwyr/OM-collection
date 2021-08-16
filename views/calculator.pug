@@ -2,21 +2,54 @@ extends layout
 
 block scripts
 	link(rel="stylesheet" href="/stylesheets/calculator.css")
-	link(rel="stylesheet" href="/stylesheets/event.css")
+	script(src="/javascripts/calculator.js")
 
 	script.
+		startCountdown(!{JSON.stringify(event.end)})
 		var event = !{JSON.stringify(event)};
+		console.log(!{JSON.stringify(result)});
+
 
 block content
+	-
+		function getValue(i) {
+			if (typeof i !== "number") return "???";
+			return i.toLocaleString("en");
+		}
+
+		function getDaysLeft(d) {
+			var today = new Date();
+			return Math.floor((d - today) / (1000 * 60 * 60 * 24));
+		}
+
+		function getDaysLeftPercentage(start, end) {
+			var duration = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+			var daysPast = duration - getDaysLeft(end);
+			return Math.floor(daysPast / duration * 100);
+		}
+
+		// if item is first in list and no custom goal, select first tab.
+		function selectsTab(isFirstInList, reward_name) {
+			// if custom in list
+			if (event.rewards.filter(x=>x.tag==="Custom").length !== 0) {
+				// and reward is not custom
+				if (reward_name !== "Custom") return false;
+				return true;
+			}
+			// if custom not in list
+			if (isFirstInList) return true;
+			return false;
+		}
+
 	.container
-		h1.text-dark(style="border:0;margin-bottom:0;padding-top:1rem;text-align:center;") Pop Quiz Calculator
+		h1(style="border:0;margin-bottom:0;padding-top:1rem;text-align:center;") Pop Quiz Calculator
 		p.text-center(style="margin-bottom:2rem;")
 			i On-going Pop Quiz Title
 
-		// Calculator
-		// if /*event.type === "Lonely Devil" ||*/ (event.type === "Pop Quiz" && (event.start <= new Date() && event.end >= new Date()))
+		// if (event.start <= new Date() && event.end >= new Date()))
+		- var today = new Date();
 		.row
-			.col-12.col-lg-4
+			.col-12.col-lg-4.mb-3
 				.card.shadow.h-100(style="border-radius:8px;")
 					div.card-body
 						p.text-center.text-primary(style="letter-spacing:.25rem;")
@@ -24,267 +57,181 @@ block content
 						form
 							h6 Required
 							div.form-group
-								//- (style="border-radius:8px;border:1px solid var(--primary);padding:1.5rem 0;transform:translateY(-18px);")
 								label(for="pointsPerBattle") Points per battle
-								//- min=120 for now, need to change based on event type
+								// min=120 for now, need to change based on event type
 								input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" min="120" value=query.pointsPerBattle required)
 							div.form-group
-									label(for="currentPoints") Current points
-									input#currentPoints.form-control(type="number" name="currentPoints" min="0" value=query.currentPoints required)
+								label(for="currentPoints") Current points
+								input#currentPoints.form-control(type="number" name="currentPoints" min="0" value=query.currentPoints required)
 							h6 Optional
 							div.form-group
-								//- (style="border-radius:8px;border:1px solid var(--secondary);padding:1.5rem 0;transform:translateY(-18px);")
 								label(for="customGoal") Custom goal
 								input#customGoal.form-control(type="number" name="customGoal" min="0" value=query.customGoal)
 							div.form-group
-								//-
-									span.small.text-muted.text-nowrap.text-center Cleared 20 stages today
-									input.custom-range#stagesCleared(type="range" aria-label="Stages cleared today" min=0 max=event.stages * 3 + 5)
 								label(for="stagesCleared") Cleared
-									input.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:36px;")
+									input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
 									| stages today
-								//- max=event.stages * 3 + 5 ??? what's the +5?
 								input.custom-range(type="range" min="0" max="10" value=query.stagesCleared?query.stagesCleared:0)
-
 							input.btn.btn-primary.btn-block(type="submit" value="Calculate!")
+						small.my-3.text-muted This calculator will assist you, please also use your own judgement to manage your spending in events.
 
-
-						.my-3.small.text-muted This calculator will assist you, please also use your own judgement to manage your spending in events.
-							//-
-								.text-muted The calculation assumes you use the free AP to the maximum extent, which includes:
-								ul.text-muted
-									li All recovered AP (1 in 5 minutes)
-									li 50 from friends
-									li Fridge mission twice a day (not VIP)
-									li 50 from ads
-									li 20 from surprise guest
-									li 20 from To Do tasks
-
-
-			.col-12.col-lg-8
+			.col-12.col-lg-8.mb-3
 				.card.shadow.rounded.h-100
 					//- p.bg-secondary.text-white(style="background:var(--secondary);border-radius:8px;margin:.75rem;padding:.25rem;text-align:center;") Rewards
 					div.card-body
 						p.text-center.text-primary(style="letter-spacing:.25rem;")
 							strong REWARDS
 						hr(style="border-color:var(--secondary);border-width:2px;")
-						//-
-							.row.reward-selector
-								each reward in event.rewards.reverse()
-									if reward.tag
-										.d-block.col-2.mx-auto
-											//input(id="reward_"+reward.tag.replace(" ", "_") type="radio" value=reward.tag.replace(" ", "_"))
-											//label.text-center.m-0.text-decoration-none(for="reward_"+reward.tag.replace(" ", "_"))
-												img.img-fluid.d-flex.w-100(src="/images/cards/S/" + reward.card.uniqueName + ".jpg" style="max-width: 110px")
-												figcaption.mt-1.mb-0.text-dark.text-nowrap
-													.my-0.h6= reward.tag
-													.my-0= reward.points.toLocaleString()
-											button.btn.text-center.m-0.text-decoration-none.reward-button.pt-3(data-toggle="button")
-												img.img-fluid.d-flex.w-100(src="/images/cards/S/" + reward.card.uniqueName + ".jpg" style="max-width: 110px")
-												figcaption.mt-1.text-nowrap.mb-0
-													.my-0.h6= reward.tag
-													.my-0= reward.points.toLocaleString()
-
-						ul.nav.justify-content-around
-							each reward in event.rewards.reverse()
+						ul#rewards.nav.justify-content-around.mb-3
+							each reward in event.rewards
 								if reward.tag
 									li.nav-item
-										a.nav-link(href="#")
+										a.nav-link(id=reward.tag.replace(" ", "")+"-tab" class=selectsTab(reward===event.rewards[0], reward.tag)?"active":"" href=("#"+reward.tag.replace(" ", "")) data-toggle="tab" role="tab" aria-controls=reward.tag.replace(" ", "") aria-selected=selectsTab(reward===event.rewards[0])?"true":"false")
 											div.mx-auto.mb-1(style="width:4.5rem;height:4.5rem;")
 												img.img-fluid(src="/images/cards/S/" + "The_Mammon_Way" + ".jpg")
 											figcaption.text-dark.text-center= reward.tag
 												br
-												| #{reward.points.toLocaleString()}
-							li.nav-item
-								a.nav-link(href="#")
-									div.mx-auto.mb-1.p-3(style="width:4.5rem;height:4.5rem;")
-										//- temporary
-										img.img-fluid(src="/images/Twitter.png")
-									figcaption.text-center Custom
-										br
-										| temp img
+												| #{reward.points.toLocaleString("en")}
+							//-
+								li.nav-item
+									a.nav-link(href="#")
+										div.mx-auto.mb-1.p-3(style="width:4.5rem;height:4.5rem;")
+											//- temporary
+											img.img-fluid(src="/images/Twitter.png")
+										figcaption.text-center Custom
+											br
+											| temp img
 
-						//- .mr-auto.bg-secondary.text-white.p-1.px-2(style="border-bottom-right-radius:4px") Calculation results
-						//- hr
-						// TODO item support
-						each reward in [event.rewards[0]]
-							if reward.tag
-								.row.px-3
-									.col-lg-5.px-4
-										//img.img-fluid(src=`/images/cards/L/${reward.card.uniqueName}.jpg`)
-										//.text-center.mt-2 #{reward.card.name}
-										a(href="/")
-											img.img-fluid(src=`/images/cards/L/The_Mammon_Way.jpg`)
-											figcaption.text-center.mt-2 The Mammon Way
-									div.col-lg-7
-										//-
-										<ul class="nav mb-3"> <li class="nav-item"> <a class="nav-link active" href="#" style="border-bottom:3px solid var(--primary);">Today</a> </li> <li class="nav-item"> <a class="nav-link" href="#" style="opacity:.7;">Summary</a> </li> </ul>
-										//- p.text-primary(style="font-size:large;") Today
-											//- small.text-right.ml-1.text-muted (ends in 1h 2m)
-											div.mt-3
-												p
-													img.img-fluid.mx-2(src='/images/stageIcon.png' style='max-height:1.5em')
-													| Сlear
-													|
-													span(style="font-size:large;font-weight:600;") ALL
-													|
-													| stages +
-													|
-													span(style="font-weight:600;") 45
-													|
-													| extra battles
-												p
-													img.img-fluid.mx-2(src='/images/AP.png' style='max-height:1.5em')
-													span(style="font-size:large;font-weight:600;") #{(1000).toLocaleString()}
-													|
-													| (
-													span(style="font-weight:600;") ~#{(250).toLocaleString()}
-													|
-													| paid
-													//- button.btn.btn-sm.mx-1(style="border:2px solid #ccd4da;line-height:1;padding:2px 5px;margin-bottom:.125rem;font-size:small;") ?
-													| )
-												p
-													img.img-fluid.mx-2(src='/images/battle_star.png' style='max-height:1.5em')
-													| Reach
-													|
-													span(style="font-size:large;font-weight:600;") #{(89000).toLocaleString()}
-													|
-													| points
-											//-
-												p
-													span.text-primary Total battles required:
-													|
-													| #{(4000).toLocaleString()} (300 paid)
-												p
-													span.text-primary Total AP required:
-													|
-													| #{(32000).toLocaleString()} (3,000 paid)
-										//-
-										div.container
-											div.row
-												div.col-6.mb-2.pl-0.pr-1
-													div(style="border-radius:16px;background-color:aliceblue;")
-														p.text-center.mb-0.py-2(style="color:white;background:#0080f0;border-radius:16px 16px 0 0;")
-															| Battles
-														// hr(style="border-color:#0080f0;margin:.75rem 0;")
-														//-
-															table.w-100.text-center(style="color:#0080f0;")
-																tr
-																	td(style="width:25%;")
-																	td(style="width:25%;") Free
-																	td(style="width:25%;") Paid
-																	td(style="width:25%;") Total
-																tr
-																	td Daily
-																	td 100
-																	td 1,000
-																	td 1,100
-																tr
-																	td Total (?)
-																	td 1,000
-																	td 10,000
-																	td 11,000
-														div.px-3.py-2
-															div.d-flex.justify-content-between(style="color:#0080f0;")
-																span.text-left Free
-																span 100
-															div.d-flex.justify-content-between.mb-3(style="color:#0080f0;")
-																span.text-left Buy
-																span.text-right 30
-															div.d-flex.justify-content-between(style="color:#0080f0;")
-																span.text-left Total
-																span.text-right 130
+						div.tab-content
+							- var lst = result?result:event.rewards;
+							- var count = 0;  // best practise? not so sure.
+							each res in lst
+								div.tab-pane(id=res.tag.replace(" ", "") class=selectsTab(res==lst[0], res.tag)?"show active":"" role="tabpanel")
+									div.row.px-3
+										.col-lg-5.px-4
+											//img.img-fluid(src=`/images/cards/L/${reward.card.uniqueName}.jpg`)
+											//.text-center.mt-2 #{reward.card.name}
+											a(href="/")
+												img.img-fluid(src=`/images/cards/L/The_Mammon_Way.jpg`)
+												figcaption.text-center.mt-2 The Mammon Way
+										div.col-lg-7
+											ul#results.nav.mb-3
+												li.nav-item
+													a.nav-link.active(id=res.tag.replace(" ", "")+"-today-tab" href="#"+res.tag.replace(" ", "")+"-today" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-today" aria-selected="true") Today
+												li.nav-item
+													a.nav-link(id=res.tag.replace(" ", "")+"-summary-tab" href="#"+res.tag.replace(" ", "")+"-summary" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-summary" aria-selected="false") Summary
+											div.tab-content
+												div.tab-pane(id=res.tag.replace(" ", "")+"-today" class="show active" role="tabpanel")
+													div.row.m-0
+														div.col-6.mb-2.pl-0.pr-1
+															div(style="border-radius:16px;background-color:aliceblue;")
+																p(style="background:#0080f0;") Battles
+																div.p-3
+																	div.d-flex.justify-content-between(style="color:#0080f0;")
+																		span.text-left Free
+																		span= getValue(res.todayBattlesFree)
+																	div.d-flex.justify-content-between(style="color:#0080f0;")
+																		span.text-left Buy
+																		span= getValue(res.todayBattlesToBuy)
+																	hr.my-2(style="border-color:#0080f0;")
+																	div.d-flex.justify-content-between(style="color:#0080f0;")
+																		span.text-left Total
+																		span= getValue(res.todayBattlesTotal)
+														div.col-6.pl-1.pr-0
+															div(style="border-radius:16px;background-color:#fff7f0;")
+																p(style="background:#f07000;") AP
+																div.p-3
+																	div.d-flex.justify-content-between(style="color:#f07000;")
+																		span Free
+																		span= getValue(res.todayApFree)
+																	div.d-flex.justify-content-between(style="color:#f07000;")
+																		span Buy
+																		span= getValue(res.todayApToBuy)
+																	hr.my-2(style="border-color:#f07000;")
+																	div.d-flex.justify-content-between(style="color:#f07000;")
+																		span Total
+																		span= getValue(res.todayApTotal)
+														div.col-12.text-center
+															p.mt-3.mb-0 Today's Goal:
+															p(style="font-size:large")= getValue(res.goalToday)
+															p(style="font-size:large") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16">   <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
+																span#demo 20 hours 32 minutes 05 seconds
+												div.tab-pane(id=res.tag.replace(" ", "")+"-summary" role="tabpanel")
+													div.row.m-0
+														div.col-6.mb-2.pl-0.pr-1
+															div(style="border-radius:16px;background-color:aliceblue;")
+																p(style="background:#0080f0;") Battles
+																div.p-3
+																	div.d-flex.justify-content-between(style="color:#0080f0;")
+																		span Free
+																		span= getValue(res.totalBattlesFree)
+																	div.d-flex.justify-content-between(style="color:#0080f0;")
+																		span Buy
+																		span= getValue(res.totalBattlesToBuy)
+																	hr.my-2(style="border-color:#0080f0;")
+																	div.d-flex.justify-content-between(style="color:#0080f0;")
+																		span Total
+																		span= getValue(res.totalBattlesTotal)
 
-												div.col-6.pl-1.pr-0
-													div.px-3.py-2(style="border-radius:16px;background-color:#fff7f0;")
-														p.text-center.mb-0(style="color:#f07000;") AP
-														hr(style="border-color:#f07000;margin:.75rem 0;")
-														//-
-															table.w-100.text-center(style="color:#f07000;")
-																tr
-																	td(style="width:25%;")
-																	td(style="width:25%;") Free
-																	td(style="width:25%;") Paid
-																	td(style="width:25%;") Total
-																tr
-																	td Daily
-																	td 100
-																	td 1,000
-																	td 1,100
-																tr
-																	td Total (?)
-																	td 1,000
-																	td 10,000
-																	td 11,000
-
-
-														div.d-flex.justify-content-between(style="color:#f07000;")
-															span.text-left Free
-															span 800
-														div.d-flex.justify-content-between.mb-3(style="color:#f07000;")
-															span.text-left Buy
-															span.text-right 240
-														div.d-flex.justify-content-between(style="color:#f07000;")
-															span.text-left Total
-															span.text-right 1,040
-												div.col-12.text-center
-													p.mt-3.mb-0 Today's Goal:
-													p(style="font-size:large") 89,000
-													p(style="font-size:large") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16">   <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg> 20 hours 32 minutes 05 seconds
-										//-
-											.progress.mt-5(style="height:9px;")
-												.progress-bar(style="width:10%;height:9px;background-color:#FFC300;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
-											.d-flex.justify-content-between
-												small Ending in
-												small 10 days
-											.progress.mt-3(style="height:9px;")
-												.progress-bar(style="width:85%;height:9px;background-color:var(--success);" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
-											.d-flex.justify-content-between
-												small 85%
-												small #{(175000).toLocaleString()} pts
+														div.col-6.pl-1.pr-0
+															div(style="border-radius:16px;background-color:#fff7f0;")
+																p(style="background:#f07000;") AP
+																div.p-3
+																	div.d-flex.justify-content-between(style="color:#f07000;")
+																		span Free
+																		span= getValue(res.totalApFree)
+																	div.d-flex.justify-content-between(style="color:#f07000;")
+																		span Buy
+																		span= getValue(res.totalApToBuy)
+																	hr.my-2(style="border-color:#f07000;")
+																	div.d-flex.justify-content-between(style="color:#f07000;")
+																		span Total
+																		span= getValue(res.totalApTotal)
+													- var reward_cost = event.rewards[count++].points;
+													.progress.mt-3(style="height:9px;")
+														.progress-bar(style="width:"+getDaysLeftPercentage(event.start, event.end)+"%;height:9px;background-color:#FFC300;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+													.d-flex.justify-content-between
+														small Ending in
+														- var daysLeft = getDaysLeft(event.end);
+														small= daysLeft > 1 ? daysLeft + " days" : "< " + daysLeft + " day"
+													.progress.mt-3(style="height:9px;")
+														.progress-bar(style="width:"+Math.floor(query.currentPoints/reward_cost*100)+"%;height:9px;background-color:var(--success);" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+													.d-flex.justify-content-between
+														small= Math.floor(query.currentPoints/reward_cost*100) + "%"
+														small #{(reward_cost).toLocaleString()} pts
 		div.card.card-body.mt-3.shadow.col-12
-				h5 Additional Information
-				p explain 1) meaning of "paid" AP, 2) meaning of "paid" battles, 3) 1 stage = 3 battles
-				ul.text-muted
-					li All recovered AP (1 in 5 minutes)
-					li 50 from friends
-					li Fridge mission twice a day (not VIP)
-					li 50 from ads
-					li 20 from surprise guest
-					li 20 from To Do tasks
-				div
-					.ml-3.mb-1.d-flex.align-items-start
-						img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-						p.m-0 You can get up to
-							|
-							|
-							span(style="font-weight:600") #{(9000).toLocaleString()}
-							|
-							| points every day without resetting stages
-					.ml-3.mb-1.d-flex.align-items-start
-						img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-						p.m-0 Which results in
-							|
-							|
-							span(style="font-weight:600") #{(150000).toLocaleString()}
-							|
-							| points total
-					.ml-3.mb-1.d-flex.align-items-start
-						img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-						p.m-0 To get the reward, you need to use DP or D-Energy for additional
-							|
-							|
-							span(style="font-weight:600") #{(1000).toLocaleString()}
-							|
-							| battles
-					.ml-3.mb-1.d-flex.align-items-start
-						img.img-fluid.mr-1(src='/images/battle_star.png' style='max-height:1.5em')
-						p.m-0 If you use AP to the maximum extent, you need to get
-							|
-							|
-							span(style="font-weight:600") #{(15000).toLocaleString()}
-							|
-							| AP with DP or from long-term To Do rewards, Devil's Tree, levelling up, mail gifts and log-in rewards
-		//-
-			p
-				pre !{JSON.stringify(result, null, 4)}
+				h5.text-center.mb-3 Additional Info
+				div.row.m-0.text-center
+					div.col-4
+						div.p-2(style="border-radius:16px;border:3px solid var(--info);")
+							p(style="font-size:large;") Battles
+							| Free battles = the 3 tries per day + 5 battles with ads
+							br
+							| Buy = use dv, d-energy, etc.
+
+					div.col-4
+						div.p-2(style="border-radius:16px;border:3px solid var(--info);")
+							p(style="font-size:large;") AP
+							ul
+								li All recovered AP (1 in 5 minutes)
+								li 50 from friends
+								li Fridge mission twice a day (not VIP)
+								li 50 from ads
+								li 20 from surprise guest
+								li 20 from To Do tasks
+					div.col-4
+						div.p-2(style="border-radius:16px;border:3px solid var(--info);")
+							p(style="font-size:large;") Untitled
+							p.m-0 You can get up to
+								|
+								|
+								span(style="font-weight:600") #{(9000).toLocaleString()}
+								|
+								| points every day without resetting stages
+
+							p.m-0 Which results in
+								|
+								|
+								span(style="font-weight:600") #{(150000).toLocaleString()}
+								|
+								| points total

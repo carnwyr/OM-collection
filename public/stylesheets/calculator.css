@@ -20,28 +20,27 @@ h6:after {
   margin: 0 0 0 20px;
 }
 
-.reward-button {
-  border-radius: 1.5rem;
+figcaption {
+  margin-bottom: 0;
 }
 
-.reward-button:hover {
-  background-color: rgba(219, 158, 251, 0.15);
+.tab-pane .col-6 p {
+  text-align: center;
+  padding: .5rem 0;
+  margin: 0;
+  color: white;
+  border-radius: 16px 16px 0 0;
 }
 
-.reward-button.active {
-  background-color: rgba(219, 158, 251, 0.25);
+ul#rewards .active {
+  background: aliceblue;
 }
 
-.reward-button figcaption {
-  color: #4e5761
+ul#results .nav-link {
+  opacity: .7;
 }
 
-.reward-button:hover figcaption,
-.reward-button.active figcaption {
-  color: #7767a6
-}
-
-.reward-button:focus {
-  outline: none;
-  box-shadow: none;
+ul#results .active {
+  border-bottom: 3px solid var(--primary);
+  opacity: 1;
 }
