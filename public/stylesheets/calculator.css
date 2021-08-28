@@ -24,16 +24,29 @@ figcaption {
   margin-bottom: 0;
 }
 
-.tab-pane .col-6 p {
+.battles_calculation, .ap_calculation {
+  border-radius: 16px;
+  background: #f2f0ff;
+}
+
+.battles_calculation p, .ap_calculation p {
   text-align: center;
   padding: .5rem 0;
   margin: 0;
   color: white;
   border-radius: 16px 16px 0 0;
+  background: var(--primary);
+}
+
+.battles_calculation>div>div, .ap_calculation>div>div {
+  display: flex;
+  justify-content: space-between;
+  color: var(--primary);
 }
 
 ul#rewards .active {
-  background: aliceblue;
+  background: #f2f0ff;
+  border-radius: 16px;
 }
 
 ul#results .nav-link {
