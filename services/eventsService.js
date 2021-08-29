@@ -25,9 +25,27 @@ exports.getEvent = async function(eventName) {
 
 exports.getCurrentEvent = async function() {
 	var currentTime = new Date();
+	var cachedEvent = eventCacheService.getCachedEvent();
+	if (cachedEvent && cachedEvent.start < currentTime && cachedEvent.end > currentTime) {
+		return cachedEvent;
+	}
+
+	try {
+		var currentEventData = await exports.getCurrentEventData();
+		eventCacheService.setCachedEvent(currentEventData);
+		return currentEvent;
+	} catch (e) {
+		console.error(e);
+		Sentry.captureException(e);
+	}
+}
+
+exports.getCurrentEventData = async function() {
+	var currentTime = new Date();
 	try {
 		var currentEventName = await Events.findOne({ start: { "$lte": currentTime }, end: { "$gt": currentTime } }, { name: 1 });
-		if (!currentEventName.name) return;
+		if (!currentEventName || !currentEventName.name) return;
+
 		var currentEvent = await getFullEventData(currentEventName.name);
 		return currentEvent;
 	} catch (e) {
@@ -107,4 +125,8 @@ exports.deleteEvent = async function (req, res) {
 		Sentry.captureException(e);
 		return next(err);
 	}
+}
+
+exports.getChangeStream = function() {
+	return Events.watch();
 }

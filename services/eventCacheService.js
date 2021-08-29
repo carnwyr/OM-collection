@@ -1,15 +1,23 @@
-// TODO refresh curent event data if it's modified in db
 const async = require("async");
 
 const eventsService = require("../services/eventsService");
 
 var cachedEvent;
 
-exports.init = async function() {
-	cachedEvent = await eventsService.getCurrentEvent();
+exports.init = async function () {
+	cachedEvent = await eventsService.getCurrentEventData();
+
+	var changeStream = eventsService.getChangeStream();
+
+	changeStream.on('change', async next => {
+		cachedEvent = await eventsService.getCurrentEventData();
+	});
 }
 
-exports.getCachedEvent = function(eventName) {
-	if (cachedEvent && cachedEvent.name === eventName)
-		return cachedEvent;
+exports.setCachedEvent = function(event) {
+	cachedEvent = event;
+}
+
+exports.getCachedEvent = function() {
+	return cachedEvent;
 }
