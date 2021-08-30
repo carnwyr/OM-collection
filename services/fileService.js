@@ -49,7 +49,12 @@ function writeImage(baseImage, imagePath, name, extension) {
 async function renameImage(imagePath, oldName, newName) {
   var directory = path.join("public/images", imagePath);
   var files = await fs.promises.readdir(directory);
-  var image = files.find(file => file.split('.')[0] === oldName);
+  var image = files.find(file => file.replace(/\.[^/.]+$/, "") === oldName);
+
+  if (!image) {
+    return;
+  }
+
   var fullPath = path.join(directory, image);
   return new Promise((resolve, reject) => {
     fs.rename(fullPath, fullPath.replace(oldName, newName), err => {
