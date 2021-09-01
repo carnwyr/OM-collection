@@ -193,31 +193,39 @@ block content
 													.d-flex.justify-content-between
 														small= (query.currentPoints ? Math.floor(query.currentPoints/reward_cost*100) : 0) + "%"
 														small #{(reward_cost).toLocaleString()} pts
-		div.card.card-body.mt-3.shadow.col-12
-				h5.text-center.mb-3 Additional Info
-				div.row.m-0.text-center
-					div.col-4
-						div.p-2(style="border-radius:16px;border:3px solid var(--info);")
-							p(style="font-size:large;") Free battles
-							| 3 clears per stage
-							br
-							| 5 clears from watching ads
-
-					div.col-4
-						div.p-2(style="border-radius:16px;border:3px solid var(--info);")
-							p(style="font-size:large;") Free AP
-							ul
-								li All recovered AP (1 in 5 minutes)
-								li 50 from friends
-								li Fridge mission twice a day (not VIP)
-								li 50 from ads
-								li 20 from surprise guest
-								li 20 from To Do tasks
-					div.col-4
-						div.p-2(style="border-radius:16px;border:3px solid var(--info);")
-							p(style="font-size:large;") Cheat card calculation
-							p.m-0 1 UR/UR+ = __ pts
-							br
-							| 1 SSR = __ pts
-							br
-							| 1 SR = __ pts
+		div.row.mt-3
+			div.col-lg-8
+				div.card.card-body.shadow
+						h5.text-center.mb-3 Additional Info
+						div.row.m-0.text-center
+							div.col-6
+								div.p-2.h-100(style="border-radius:16px;border:3px solid var(--info);")
+									p(style="font-size:large;") Free battles
+									| 3 clears per stage
+									br
+									| 5 clears from watching ads
+							div.col-6
+								div.p-2(style="border-radius:16px;border:3px solid var(--info);")
+									p(style="font-size:large;") Free AP
+									ul
+										li All recovered AP (1 in 5 minutes)
+										li 50 from friends
+										li Fridge mission twice a day (not VIP)
+										li 50 from ads
+										li 20 from surprise guest
+										li 20 from To Do tasks
+			div.col-lg-4
+				div.card.card-body.shadow.h-100
+					//- (style="border-radius:16px;border:3px solid var(--info);")
+					h5.card-title.text-center.mb-3 Cheat card calculation
+					form.form-inline
+						div.form-group.mb-2
+							label.mr-2(style="width:3.5rem;") UR/UR+
+							input.form-control(type=number)
+						div.form-group.mb-2
+							label.mr-2(style="width:3.5rem;") SSR
+							input.form-control(type=number)
+						div.form-group.mb-2
+							label.mr-2(style="width:3.5rem;") SR
+							input.form-control(type=number)
+					p.text-center.mt-5 256 pts
