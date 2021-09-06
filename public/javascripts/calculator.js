@@ -1,5 +1,8 @@
 $(function() {
-  // startCountdown();
+	recallTab();
+	$("#rewards>li>a").click(function() { sessionStorage.setItem("selected", $(this).attr("id")); });
+
+	// sync stage cleared inputs
 	$("input#stagesCleared, input.custom-range").change(function() {
 		var val = $(this).val();
 		$("input#stagesCleared, input.custom-range").val(val);
@@ -28,4 +31,14 @@ function startCountdown(d) {
 
 	  $("span.countdown").text(hours + "h " + minutes + "m " + seconds + "s ");
 	}, 1000);
+}
+
+function recallTab() {
+	var params = new URLSearchParams(document.location.search.substring(1));
+	var custom = params.get("customGoal");
+	var selected = custom?"Custom":sessionStorage.getItem("selected");
+
+	if (selected) {
+		$('#'+selected).tab("show");
+	}
 }

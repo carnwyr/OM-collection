@@ -87,7 +87,7 @@ block content
 							each reward in event.rewards
 								if reward.tag
 									li.nav-item
-										a.nav-link(id=reward.tag.replace(" ", "")+"-tab" class=selectsTab(reward===event.rewards[0], reward.tag)?"active":"" href=("#"+reward.tag.replace(" ", "")) data-toggle="tab" role="tab" aria-controls=reward.tag.replace(" ", "") aria-selected=selectsTab(reward===event.rewards[0])?"true":"false")
+										a.nav-link(id=reward.tag.replace(" ", "")+"-tab" href=("#"+reward.tag.replace(" ", "")) data-toggle="tab" role="tab" aria-controls=reward.tag.replace(" ", ""))
 											div.mx-auto.mb-1(style="width:4.5rem;height:4.5rem;")
 												img.img-fluid(src="/images/cards/S/" + "The_Mammon_Way" + ".jpg")
 											figcaption.text-dark.text-center= reward.tag
@@ -97,7 +97,7 @@ block content
 							- var lst = result?result:event.rewards;
 							- var count = 0;  // best practise? not so sure.
 							each res in lst
-								div.tab-pane(id=res.tag.replace(" ", "") class=selectsTab(res==lst[0], res.tag)?"show active":"" role="tabpanel")
+								div.tab-pane(id=res.tag.replace(" ", "") role="tabpanel")
 									div.row.px-lg-3
 										.col-lg-5.px-4
 											//img.img-fluid(src=`/images/cards/L/${reward.card.uniqueName}.jpg`)
@@ -107,8 +107,8 @@ block content
 												figcaption.text-center.mt-2 The Mammon Way
 										div.col-lg-7
 											if res.collected
-												div(style="position:absolute;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,.75);width:100%;height:100%;z-index:1;")
-													p Collected!
+												div(style="position:absolute;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,.75);width:100%;height:100%;z-index:1;margin-left:-15px;")
+													img(src="/images/completed.png" style="width:75%;")
 											ul#results.nav.mb-3
 												li.nav-item
 													a.nav-link.active(id=res.tag.replace(" ", "")+"-today-tab" href="#"+res.tag.replace(" ", "")+"-today" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-today" aria-selected="true") Today
@@ -192,7 +192,7 @@ block content
 														.progress-bar(style="width:"+Math.floor(query.currentPoints/reward_cost*100)+"%;height:9px;background-color:#9fec3e;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
 													.d-flex.justify-content-between
 														small= (query.currentPoints ? Math.floor(query.currentPoints/reward_cost*100) : 0) + "%"
-														small #{(reward_cost).toLocaleString()} pts
+														small #{(reward_cost).toLocaleString("en")} pts
 		div.row.mt-3
 			div.col-lg-8
 				div.card.card-body.shadow
@@ -207,25 +207,17 @@ block content
 							div.col-6
 								div.p-2(style="border-radius:16px;border:3px solid var(--info);")
 									p(style="font-size:large;") Free AP
-									ul
+									ul(style="list-style:none;padding:0;")
 										li All recovered AP (1 in 5 minutes)
 										li 50 from friends
-										li Fridge mission twice a day (not VIP)
+										li Fridge mission x2 (not VIP)
 										li 50 from ads
 										li 20 from surprise guest
 										li 20 from To Do tasks
+										li All AP from reward list (?)
 			div.col-lg-4
 				div.card.card-body.shadow.h-100
-					//- (style="border-radius:16px;border:3px solid var(--info);")
-					h5.card-title.text-center.mb-3 Cheat card calculation
-					form.form-inline
-						div.form-group.mb-2
-							label.mr-2(style="width:3.5rem;") UR/UR+
-							input.form-control(type=number)
-						div.form-group.mb-2
-							label.mr-2(style="width:3.5rem;") SSR
-							input.form-control(type=number)
-						div.form-group.mb-2
-							label.mr-2(style="width:3.5rem;") SR
-							input.form-control(type=number)
-					p.text-center.mt-5 256 pts
+					div.d-flex.justify-content-center.align-items-center.h-100
+						div.text-center
+							span More tools
+							h5.text-primary Coming soon...
