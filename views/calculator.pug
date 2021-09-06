@@ -89,14 +89,17 @@ block content
 									li.nav-item
 										a.nav-link(id=reward.tag.replace(" ", "")+"-tab" href=("#"+reward.tag.replace(" ", "")) data-toggle="tab" role="tab" aria-controls=reward.tag.replace(" ", ""))
 											div.mx-auto.mb-1(style="width:4.5rem;height:4.5rem;")
-												img.img-fluid(src="/images/cards/S/" + "The_Mammon_Way" + ".jpg")
+												if reward.card
+													img.img-fluid(src=`/images/cards/S/${reward.card.uniqueName.replace(/ /g, '_')}.jpg`)
+												else
+													img.img-fluid(src=`/images/${reward.tag.toLowerCase()}.png` onerror="this.src='/images/defaultReward.png';this.onerror=null;")
 											figcaption.text-dark.text-center= reward.tag
 												br
 												| #{reward.points.toLocaleString("en")}
 						div.tab-content
 							- var lst = result?result:event.rewards;
 							- var count = 0;  // best practise? not so sure.
-							each res in lst
+							each res in lst.filter(x => x.tag)
 								div.tab-pane(id=res.tag.replace(" ", "") role="tabpanel")
 									div.row.px-lg-3
 										.col-lg-5.px-4
