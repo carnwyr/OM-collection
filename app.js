@@ -1,6 +1,7 @@
 const express = require("express");
 const compression = require("compression");
 const Sentry = require("@sentry/node");
+const helmet = require("helmet");
 
 const createError = require("http-errors");
 const path = require("path");
@@ -10,7 +11,6 @@ const passport = require("passport");
 const flash = require("connect-flash");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
-const bodyparser = require("body-parser");
 require("dotenv").config();
 
 var cardsController = require("./controllers/cardsController");
@@ -26,7 +26,7 @@ const i18next = require("i18next");
 const i18nextMiddleware = require("i18next-http-middleware");
 const Backend = require("i18next-fs-backend");
 
-// Sentry.init({ dsn: "https://b147d3a7c4e04bc88a15f8850a4bd610@o513655.ingest.sentry.io/5615947" });
+Sentry.init({ environment: "production", dsn: process.env.SENTRY });
 
 var mongoose = require("mongoose");
 var mongoDB = process.env.URI;
@@ -41,11 +41,24 @@ eventCacheService.init();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(Sentry.Handlers.requestHandler());
+
+var languageDetector = new i18nextMiddleware.LanguageDetector();
+languageDetector.addDetector({
+	name: "subdomain",
+	lookup: function(req, res, options) {
+		var subdomain = options.getHeaders(req).host.split('.')[0];
+		var lang = "en";
+		if (subdomain === "ja") { lang = "ja"; }
+		i18next.changeLanguage(lang);
+		return lang;
+	}, cacheUserLanguage: function(req, res, lng, options) {}
+});
 
 i18next
 	.use(Backend)
-	.use(i18nextMiddleware.LanguageDetector)
+	.use(languageDetector)
 	.init({
 		// debug: true,
 		backend: {
@@ -55,24 +68,14 @@ i18next
 		fallbackLng: "en",
 		preload: ["en", "ja"],
 		// saveMissing: true,
-    detection: {
-      order: ["querystring", "cookie"],
-      caches: ["cookie"],
-      lookupQuerystring: "lang",
-      lookupCookie: "lang",
-      ignoreCase: true,
-      cookieSecure: false
-    }
+    detection: { order: ["subdomain"] }
 	});
 
 app.use(i18nextMiddleware.handle(i18next));
-app.use(function (req, res, next) {
-	if (req.language !== i18next.t("lang")) {
-		i18next.changeLanguage(req.language, (e, t) => {
-	  	if (e) Sentry.captureException(e);
-		});
-	}
-  next();
+app.use(function(req, res, next) {
+	if (req.query.lang === "ja") return res.redirect("https://ja." + process.env.DOMAIN + req.path);
+	if (req.query.lang === "en") return res.redirect("https://" + process.env.DOMAIN + req.path);
+	next();
 });
 
 app.use(compression());

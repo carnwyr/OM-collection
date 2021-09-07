@@ -25,4 +25,5 @@ router.get('/:card/delete', usersController.hasAccess("Admin"), cardsController.
 // Card detail page
 router.get('/:card', cardsController.getCardDetailPage);
 
+
 module.exports = router;

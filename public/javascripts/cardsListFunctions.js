@@ -46,10 +46,6 @@ $(document).ready(function() {
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 
-	$("#shareCollection").on("click", () => { $("#userLink").val(window.location.href); });
-	$("#copyLink").on("click", copyCollectionLink);
-	$('#openLink').on('show.bs.modal', loadStatsImage);
-
 	$(".viewBtn").on('click', function() { switchViewOption($(this).data('viewmode')) });
 
 	fillRank("demonSection");
@@ -136,6 +132,8 @@ async function applyFilters() {
 
 	if (search !== '') {
 		querystr.set("search", search);
+	} else {
+		querystr.delete("search");
 	}
 
 	if ($('#checkCardsNotOwned').prop('checked')) {
@@ -255,9 +253,9 @@ function applyEffectWithoutTransition(elements, effect, args) {
 }
 
 function resetFilters() {
-	$("input[type=radio]").prop('checked', true);
-	$("input[type=checkbox]").prop("checked", false);
-	$("input[type=text]").val("");
+	$("#filters input[type=radio]").prop("checked", true);
+	$("#filters input[type=checkbox]").prop("checked", false);
+	$("#searchForm input[type=text]").val("");
 	$("#checkCardsAll").prop("checked", true);
 }
 
@@ -347,16 +345,6 @@ function switchCardsSelection(cardNames) {
 	}
 }
 
-$.fn.isInViewport = function () {
-	let elementTop = $(this).offset().top;
-	let elementBottom = elementTop + $(this).outerHeight();
-
-	let viewportTop = $(window).scrollTop();
-	let viewportBottom = viewportTop + $(window).height();
-
-	return elementBottom > viewportTop && elementTop < viewportBottom;
-}
-
 function cardClicked(e) {
 	if (!selectionMode) return;
 	if (e) e.preventDefault();
@@ -413,75 +401,6 @@ function addCardsToChangedList(cardsToSwitch, select) {
 	});
 }
 
-function copyCollectionLink() {
-	var copyText = document.getElementById("userLink");
-	copyText.select();
-	copyText.setSelectionRange(0, 9999);
-	document.execCommand("copy");
-	showAlert("success", "Link successfully copied!");
-}
-
-function loadStatsImage(e) {
-	var html = prepareHtml();
-	$('#statsMessage').html("");
-	$('#statsImage').attr('src', "");
-	var spinner = $('#statsSpinner').show();
-	$.ajax({
-		type: 'post',
-		url: './getStatsImage',
-		data: {html: html},
-		cache: false
-	})
-	.done(function(imageData){
-		spinner.hide();
-		if(imageData) {
-			$('#statsImage').attr('src', imageData);
-		} else {
-			$('#statsMessage').html("Sorry, couldn't load the image");
-		}
-	});
-}
-
-function prepareHtml() {
-	var head = $(document.head.cloneNode(true));
-	var links = $('body link').clone().appendTo(head);
-	$(head).find('link').each(function() {
-		if ($(this).attr('href')==='/stylesheets/style.css') {
-			$(this).remove();
-			return;
-		}
-		if ($(this).attr('href')[0]==='/') {
-			$(this).attr('href', "http://localhost:3000" + $(this).attr('href'));
-		}
-	});
-
-	var body = document.createElement('body');
-	var container = document.createElement('div');
-	container.className = 'container-fluid';
-
-	container.appendChild(document.getElementById('statsTotal').cloneNode(true));
-	$(container).find('#statsTotal').attr('style', 'max-width: 400px');
-	$(container).find('#statsTotal').addClass('mb-3');
-	container.appendChild(document.getElementById('charNav').cloneNode(true));
-	$(container).find('#charNav').addClass('show active mb-4');
-	container.appendChild(document.getElementById('sideCharNav').cloneNode(true));
-	$(container).find('#sideCharNav').addClass('show active mb-4');
-	container.appendChild(document.getElementById('rarityNav').cloneNode(true));
-	$(container).find('#rarityNav').addClass('show active mb-2');
-	container.appendChild(document.createElement('div'));
-
-	var watermark = document.createElement('div');
-	watermark.innerHTML = window.location.href.split('/').slice(-2)[0] + "'s Obey Me collection stats<br />Made with karasu-os.com";
-	watermark.className = 'text-muted text-right';
-
-	container.appendChild(watermark);
-
-	var newHTML = document.implementation.createHTMLDocument();
-	$(head).children().appendTo($(newHTML).find('head')[0]);
-	newHTML.body.appendChild(container);
-	return new XMLSerializer().serializeToString(newHTML);
-}
-
 /***/
 const removeFullImageClass = function(target) { $(target).removeClass('full-container').addClass("icon-container"); }
 const addFullImageClass = function(target) { $(target).removeClass("icon-container").addClass('full-container'); }
@@ -492,17 +411,17 @@ const makeBloomed = function(target) { return target.replace('.jpg', '_b.jpg'); 
 
 const changes = {
 	'icon': {
-		'dropdownText': 'Icon view',
+		'dropdownText': i18next["icon_view"],
 		'fullViewAction': removeFullImageClass,
 		'srcAction': function (target) { return removeBloom(replaceLToS($(target).attr('src'))); }
 	},
 	'original': {
-		'dropdownText': 'Full original view',
+		'dropdownText': i18next["full_original"],
 		'fullViewAction': addFullImageClass,
 		'srcAction': function (target) { return removeBloom(replaceSToL($(target).attr('src'))); }
 	},
 	'bloomed': {
-		'dropdownText': 'Full bloomed view',
+		'dropdownText': i18next["full_bloomed"],
 		'fullViewAction': addFullImageClass,
 		'srcAction': function (target) {
 			if ($(target).parent().parent().attr('id') === 'demonSection') return makeBloomed(replaceSToL($(target).attr('src')));

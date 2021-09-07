@@ -1,0 +1,31 @@
+#donation:hover {
+  background-color: white !important;
+}
+
+#perks .custom-control-input:checked ~ .custom-control-label::before {
+  border-color: var(--success);
+  background-color: var(--success);
+}
+
+#sortable {
+  list-style-type: none;
+  padding: 0;
+}
+
+#sortable li {
+  margin: 0 3px 3px 3px;
+  padding: .5rem 1rem;
+  background-color: rgb(233, 236, 239);
+  border-radius: 8px;
+}
+
+@media only screen and (max-width: 768px) {
+  #sortable li svg {
+    display: none;
+  }
+}
+
+.list-group-item:hover {
+  background: rgb(233, 236, 239);
+  cursor: pointer;
+}

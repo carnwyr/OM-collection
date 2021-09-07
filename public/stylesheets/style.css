@@ -1,6 +1,6 @@
 body {
   padding-top: 70px;
-  background: url("/images/background_sheep.png") fixed;
+  background: url("/images/background_sheep.jpg") fixed;
 }
 
 h1, h2 {
@@ -8,11 +8,6 @@ h1, h2 {
   padding-bottom: .5rem;
   margin-bottom: 1rem;
   border-bottom: 2px solid var(--primary);
-}
-
-/* header */
-.navbar-brand {
-  padding-top: 0.15rem;
 }
 
 footer a {
@@ -63,6 +58,43 @@ footer ul {
   border-radius: 4px;
 }
 
+.collapser>.chevron {
+  transition: all 300ms;
+}
+.collapser[aria-expanded="false"] .chevron {
+  transform: scaleY(-1);
+}
+
+#overline {
+  color: var(--light);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  padding-left: .5rem;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  #overline {
+    color: #6c757d;
+  }
+
+  .navbar-nav.ml-auto>li>a {
+    color: var(--light) !important;
+  }
+}
+
+.ddd {
+  text-align: center;
+  margin-bottom: .5rem;
+}
+
+#alert {
+  position: fixed;
+  right: 20px;
+  display: none;
+  top: -100px;
+}
+
 #b2t {
   display: flex;
   align-items: center;
@@ -71,43 +103,9 @@ footer ul {
   position: fixed;
   bottom: 32px;
   right: 18px;
-  z-index: 1030;
   border-radius: 50%;
   background-color: white;
   width: 64px;
   height: 64px;
-}
-
-.collapser .chevron {
-  transition: all 300ms;
-}
-.collapser[aria-expanded="false"] .chevron {
-  transform: scaleY(-1);
-}
-
-.supportBtn {
-  background-color: #FFDD00;
-  color: black;
-}
-.supportBtn:hover {
-  box-shadow: 0 0 0 4px rgba(255, 221, 0, .5);
-}
-
-.ddd {
-  margin: 2rem auto;
-  text-align: center;
-  min-height: 256px;
-}
-
-@media (min-width: 768px) {
-  .navbar-nav.ml-auto>li>a {
-    color: var(--light) !important;
-  }
-}
-
-#alert {
-  position: fixed;
-  right: 20px;
-  display: none;
-  top: -100px;
+  z-index: 1030;
 }

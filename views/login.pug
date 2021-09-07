@@ -9,21 +9,21 @@ block content
     div(class="modal-dialog" role="document")
       div(class="modal-content")
         div(class="modal-header")
-          h5(class="modal-title" id="forgotPassword") Account recovery
+          h5(class="modal-title" id="forgotPassword")= t("settings.account_recovery")
           button(type="button" class="close" data-dismiss="modal" aria-label="Close")
             span( aria-hidden="true") &times;
         div(class="modal-body")
-          p Enter the verified email address associated with your account. We will send you a new password.
-          label(for="email") Email
+          p= t("settings.account_recovery_instruction")
+          label(for="email")= t("user.email")
           input(class='form-control' type="email" id="email" name="email")
         div(class="modal-footer")
-          button(type="button" class="btn btn-secondary text-light" id="sendRecoveryEmail" onclick="sendRecoveryEmail()") Send password recovery email
+          button(type="button" class="btn btn-secondary text-light" id="sendRecoveryEmail" onclick="sendRecoveryEmail()")= t("settings.send_email")
 
   div.row
     div(class="col-12 col-lg-6 mx-auto")
-      div(class="card card-signin flex-row my-5")
+      div(class="card my-5")
         div(class="card-body")
-          h5(class="card-title text-center")= t("common.login")
+          h5(class="card-title")= t("common.login")
 
           if message != ""
             div(class="alert alert-warning text-center" role="alert") #{message}
@@ -47,14 +47,6 @@ block content
       console.error(error.msg)
 
   script.
-    function togglePass() {
-      const field = document.getElementById("password");
-      if (field.type === "password") {
-        field.type = "text";
-      } else {
-        field.type = "password";
-      }
-    }
     $(document).ready(function() {
       var username = $("input#username").val();
       $("input#username").attr('value', username);
@@ -64,6 +56,15 @@ block content
       $("input#username").on('keyup', function() { var username = $("input#username").val(); $("input#username").attr('value', username); });
       $("input#password").on('keyup', function() { var password = $("input#password").val(); $("input#password").attr('value', password); });
     });
+
+    function togglePass() {
+      const field = document.getElementById("password");
+      if (field.type === "password") {
+        field.type = "text";
+      } else {
+        field.type = "password";
+      }
+    }
 
     function sendRecoveryEmail() {
       $.ajax({

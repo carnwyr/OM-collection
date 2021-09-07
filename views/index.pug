@@ -4,33 +4,6 @@ block scripts
   link(rel="stylesheet" href="/stylesheets/homepage.css")
 
 block content
-  div(class="modal fade" id="contactLaele" tabindex="-1" role="dialog" aria-labelledby="contactLaeleLabel" aria-hidden="true")
-    div(class="modal-dialog" role="document")
-      div(class="modal-content")
-        div(class="modal-header")
-          h5(class="modal-title" id="contactLaeleLabel") Contact Laele
-          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-            span( aria-hidden="true") &times;
-        div(class="modal-body")
-          p Discord: carnwyr#6733
-          span Email:
-            |
-            |
-            a(href="mailto:carnwyr@gmail.com") carnwyr@gmail.com
-        div(class="modal-footer")
-          button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Close
-  div(class="modal fade" id="contactChar" tabindex="-1" role="dialog" aria-labelledby="contactCharLabel" aria-hidden="true")
-    div(class="modal-dialog" role="document")
-      div(class="modal-content")
-        div(class="modal-header")
-          h5(class="modal-title" id="contactCharLabel") Contact char
-          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-            span( aria-hidden="true") &times;
-        div(class="modal-body")
-          p Discord: char#9463
-        div(class="modal-footer")
-          button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Close
-
   div.row
     section.landing-page
       div.card.hovercard
@@ -40,61 +13,38 @@ block content
       div.container
         div.row(style="margin-top:140px;")
           div.col-12.mb-3.text-center
-            a(href="/cards" type="button" class="btn btn-primary m-1")= t("temp.cards")
+            a(href="/cards" type="button" class="btn btn-primary m-1")= t("common.cards")
             if !user
               a(href="/signup" type="button" class="btn btn-primary m-1")= t("common.signup")
               a(href="/login" type="button" class="btn btn-primary m-1")= t("common.login")
             else
               a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1")= t("title.my_collection")
               a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1")= t("title.my_favourites")
+              a(href="/" + user.name + "/profile" type="button" class="btn btn-primary m-1")= t("title.my_profile")
             a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
 
-        //- Share Event
-        div#ShareEvent.card.shadow.mb-3
-          div.card-body.text-center
-            h5 Get this badge!
-            img.m-2(src="/images/ShareKarasu.png" alt="Badge for sharing karasu-os.com" style="width:64px;height:64px;")
-            p.text-muted This event is temporarily on hold while we update a feature. We hope you're looking forward to it!
-            //-
-              div.d-lg-flex.justify-content-center
-                h5 Step 1:
-                p.ml-2 Share karasu-os.com on any social media platform.
-              div.d-lg-flex.justify-content-center
-                h5 Step 2:
-                p.ml-2 Mention our Twitter
-                  |
-                  |
-                  a(href="https://twitter.com/karasu_os") @karasu_os
-                  |
-                  | (make sure to include your karasu username)!
-        //- End of Event Notice
+        if (!user || !user.supportStatus.includes("adfree"))
+          div.ddd <div id="ezoic-pub-ad-placeholder-109"></div>
 
         div.row
           div.col-12.col-md-6.mb-4
-            div.card.shadow.h-100
-                div.card-body
-                  h5.card-title What's this?
-                  p.card-text Karasu OS is a website for you to record and share your cards online. It's built by fans on a completely voluntary basis. We are not associated in any way with our official developers (great job they did making the game &#x1F44F;).
-                  h5.card-title Contacts
-                  p.card-text.mb-0 Need help?
-                    ul
-                      li Link to Discord server:
-                        |
-                        |
-                        a(href="https://discord.gg/Y3KMW7U") discord.gg/Y3KMW7U
-                      li Email:
-                        |
-                        |
-                        a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
-                  div.d-flex
-                    div(data-toggle='modal' data-target="#contactLaele" style='cursor: pointer')
-                      img(class="pfp" alt="pfp" src="/images/karasu.png")
-                      span.mr-5 Laele
-                    div(data-toggle='modal' data-target="#contactChar" style='cursor: pointer')
-                      img(class="pfp" alt="pfp" src="/images/karasu.png")
-                      span char
+            div.card.h-100
+              div.card-body
+                h5.card-title What's this?
+                p.card-text Karasu OS is a website for you to record and share your cards online. It's built by fans on a completely voluntary basis. We are not associated in any way with our official developers (great job they did making the game &#x1F44F;).
+                h5.card-title Contacts
+                p.card-text.mb-0 Need help?
+                  ul
+                    li Link to Discord server:
+                      |
+                      |
+                      a(href="https://discord.gg/Y3KMW7U") discord.gg/Y3KMW7U
+                    li Email:
+                      |
+                      |
+                      a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
           div.col-12.col-md-6.mb-4
-            div#About.card.shadow.h-100
+            div#About.card.h-100
               div.card-body
                 h5.card-title How does it work?
                 div.card-text

@@ -1,5 +1,5 @@
 doctype html
-html(lang="en")
+html(lang=t("lang"))
   head
     meta(charset='utf-8')
     <!-- Google Tag Manager -->
@@ -10,23 +10,24 @@ html(lang="en")
       'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer','GTM-TQRDPDG');
     <!-- End Google Tag Manager -->
-    title= title+" | Obey Me! Resources (fan-made) | Karasu-OS.com"
+    title= title+t("header")
     meta(name='viewport' content='width=device-width, initial-scale=1')
-    meta(name="description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
-    meta(name="keywords" content="Obey Me, おべいみー, cards, tools")
+    meta(name="description" content=description?description:title+t("header"))
+    meta(name="keywords" content="Obey Me, おべいみー, cards, tools, 攻略")
     meta(property="og:title" content=title)
-    meta(property="og:description" content=description?description:title+" | Obey Me! Resources (fan-made) | Karasu-OS.com")
+    meta(property="og:description" content=description?description:title+t("header"))
     if card
       meta(property="og:image" content=`https://karasu-os.com/images/cards/S/${card.uniqueName}.jpg`)
     else
       meta(property="og:image" content="https://karasu-os.com/images/karasu.png")
-    link(rel="icon" type="image/png" href="/images/favicon.png")
+    link(rel="icon" type="image/x-icon" href="/images/favicon.ico")
     link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Kanit|Nunito:wght@200;300;400;700')
     link(rel='stylesheet' href='/stylesheets/theme.css')
     link(rel='stylesheet' href='/stylesheets/style.css')
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
+    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js')
     script(src='/javascripts/commonFunctions.js')
     <script data-ad-client="ca-pub-1710157662563352" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" onerror="document.dispatchEvent(new CustomEvent('adBlocked'));"></script>
     block scripts
@@ -35,8 +36,8 @@ html(lang="en")
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TQRDPDG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-    nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white")
-      a(class="navbar-brand" href='/' style="font-family: 'Kanit'; font-size: 1.4rem") Karasu OS&nbsp;
+    nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white" style="z-index:1032;")
+      a(class="navbar-brand" href='/' style="font-family:Kanit;font-size:1.4rem;padding-top:0.15rem;") Karasu OS&nbsp;
         span(style="font-family: 'Nunito'; font-size: 18px") Beta
       button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerMenu" aria-controls="navbarTogglerMenu" aria-expanded="false" aria-label="Toggle navigation")
         span(class="navbar-toggler-icon")
@@ -48,18 +49,21 @@ html(lang="en")
             a(class="nav-link" href='/cards')= t("common.gallery")
           if user
             li(class="nav-item dropdown")
-              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")= t("temp.my_collection")
+              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Karasu
               div(class="dropdown-menu shadow px-2" aria-labelledby="collectionDropdown")
-                a(class="dropdown-item" href='/' + user.name + '/collection')= t("common.cards")
-                a(class="dropdown-item" href='/' + user.name + '/favourites')= t("common.favourites")
+                span#overline collections
+                a(class="dropdown-item" href='/' + user.name + '/collection')= t("collection.cards")
+                a(class="dropdown-item" href='/' + user.name + '/favourites')= t("collection.favourites")
+                div(class="dropdown-divider" style="opacity:50%;")
+                a(class="dropdown-item" href='/' + user.name + '/profile')= t("common.profile")
           li(class="nav-item")
             a(class="nav-link" href='/rankings')= t("common.rankings")
           li(class="nav-item dropdown")
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.tools")
             div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
               a(class="dropdown-item" href='/SurpriseGuest')= t("common.spg")
-              a(class="dropdown-item" href='/Events')= t("common.events")
-          if user && user.isAdmin
+              a.dropdown-item(href="/calculator") Calculator
+          if user && user.type === "Admin"
             li(class="nav-item dropdown")
               a(class="nav-link dropdown-toggle" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
               div(class="dropdown-menu shadow px-2" aria-labelledby="adminDropdownButton")
@@ -75,69 +79,58 @@ html(lang="en")
               a(class="nav-link" href='/signup')= t("common.signup")
             li(class="nav-item")
               a(class="nav-link" href='/login')= t("common.login")
-          if user
+          else
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link text-white" role='button' id='accountDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.account")
+                if !user.email
+                  span(class="badge badge-pill badge-warning mx-1") !
               div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="accountDropdownButton")
-                a(class="dropdown-item" href='/user/'+user.name)= t("common.settings")
+                a(class="dropdown-item" href="/user")= t("common.settings")
                   if !user.email
-                    span(class="badge badge-warning") !
+                    span(class="badge badge-pill badge-warning ml-1") !
                 a(class="dropdown-item" href='/logout')= t("common.logout")
             li(class="nav-item d-md-none")
-              a(class="nav-link" href='/user/'+user.name)= t("common.settings")
+              a(class="nav-link" href="/user")= t("common.settings")
                 if !user.email
-                  span(class="badge badge-warning ml-1") !
+                  span(class="badge badge-pill badge-warning ml-1") !
             li(class="nav-item d-md-none")
               a(class="nav-link" href='/logout')= t("common.logout")
 
-    div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
-      div(class="toast-body")
-        span This site uses cookies to improve your experience.
-          |
-          |
-          a(href="/policies") More information
-        button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
-          span(aria-hidden="true") Got it &#x1F44D
-
-    //-
-      div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
-        div.toast-header
-          img.mr-2(src="/images/twitter.png" width="20px")
-          strong.mr-auto Karasu-OS Joined Twitter!
-          button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
-            span(aria-hidden="true") &times;
-        div.toast-body
-          | Follow us on Twitter to be the first to see our newest features!
-          a(href="https://twitter.com/karasu_os" class="btn btn-sm btn-block mt-3" style="background:#1DA1F2;color:white;" target="_blank") Follow @karasu_os
-
-    main(class='container-fluid mb-5')
+    main(class='container-fluid mb-5' style="position:relative;")
       block content
+      if (!user || !user.supportStatus.includes("adfree"))
+        div#kool-aid.container(style="margin:2rem auto;text-align:center;")
+          div.row(style="min-height:250px;")
+            div.col
+              <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="8350703474"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+            div.col
+              <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4893005895"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+            div.col
+              <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6866037896"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+
+      //- toasts
+      div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
+        div(class="toast-body")
+          span This site uses cookies to improve your experience.
+            |
+            |
+            a(href="/policies") More information
+          button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
+            span(aria-hidden="true") Got it &#x1F44D
+
+      //-
+        div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
+          div.toast-header
+            img.mr-2(src="/images/twitter.png" width="20px")
+            strong.mr-auto Karasu-OS Joined Twitter!
+            button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
+              span(aria-hidden="true") &times;
+          div.toast-body
+            | Follow us on Twitter to be the first to see our newest features!
+            a(href="https://twitter.com/karasu_os" class="btn btn-sm btn-block mt-3" style="background:#1DA1F2;color:white;" target="_blank") Follow @karasu_os
+
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
-      //-
-        if ((!user || !user.supportStatus.includes("adfree")) && title !== "Privacy Policy")
-          div.container.ddd
-            div.row
-              div.col
-                <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="8350703474"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
-              div.col
-                <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4893005895"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
-              div.col
-                <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6866037896"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
-            a(type="button" class="text-muted" data-toggle="modal" data-target="#removeAdsModal" style="display:none;") Remove Ads
-
-      //- modals
-      div(class="modal fade" id="removeAdsModal" tabindex="-1" aria-labelledby="removeAdsModalLabel" aria-hidden="true")
-        div(class="modal-dialog")
-          div(class="modal-content")
-            div(class="modal-header")
-              h5(class="modal-title" id="exampleModalLabel") Remove Ads
-              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-                span(aria-hidden="true") &times;
-            div(class="modal-body") Karasu-OS.com is supported by advertisement and donations. Show your support and browse without distraction!
-            div(class="modal-footer")
-              button(type="button" class="btn btn-secondary" data-dismiss="modal") No thanks
-              a(type="button" class="btn btn-primary" href="https://www.buymeacoffee.com/karasuos" target="_blank") Support now
 
     footer.bg-primary.text-light.mt-auto
       div.container.mt-5.mb-3
@@ -154,7 +147,7 @@ html(lang="en")
               a(href="/policies") <u>Privacy Policy</u>
               |
               | for more information.
-          div.col.pl-lg-5
+          div.col-6.col-md.text-md-center
             p(style="margin:.5rem auto;font-weight:bold;") Official Links
             ul
               li
@@ -165,28 +158,28 @@ html(lang="en")
                 a(href="https://twitter.com/ObeyMeOfficial1") Twitter
               li
                 a(href="https://www.instagram.com/obey_me_official/") Instagram
-          div.col
+          div.col-6.col-md.text-md-center
             p(style="margin:.5rem auto;font-weight:bold;") Fan Communities
             ul
               li
                 a(href="https://obey-me.fandom.com/") Fandom Wiki
               li
                 a(href="https://www.reddit.com/r/obeyme/") Subreddit
-          div.col-6.col-md.mt-md-1.text-sm-right
-            div.ml-sm-auto
-              a(href="https://twitter.com/karasu_os" style="margin-right:2rem;")
-                img(src="/images/twitter2.png" height="23px")
-              a(href="https://discord.gg/Y3KMW7U" style="margin-right:2rem;")
-                img(src="/images/discord.png" height="24px")
-              a(href="https://www.buymeacoffee.com/karasuos")
-                img(src="/images/bmc-logo.png" height="26px" style="padding-left:2px;")
-            div.mt-3
-              p.mb-2 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-globe2" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855-.143.268-.276.56-.395.872.705.157 1.472.257 2.282.287V1.077zM4.249 3.539c.142-.384.304-.744.481-1.078a6.7 6.7 0 0 1 .597-.933A7.01 7.01 0 0 0 3.051 3.05c.362.184.763.349 1.198.49zM3.509 7.5c.036-1.07.188-2.087.436-3.008a9.124 9.124 0 0 1-1.565-.667A6.964 6.964 0 0 0 1.018 7.5h2.49zm1.4-2.741a12.344 12.344 0 0 0-.4 2.741H7.5V5.091c-.91-.03-1.783-.145-2.591-.332zM8.5 5.09V7.5h2.99a12.342 12.342 0 0 0-.399-2.741c-.808.187-1.681.301-2.591.332zM4.51 8.5c.035.987.176 1.914.399 2.741A13.612 13.612 0 0 1 7.5 10.91V8.5H4.51zm3.99 0v2.409c.91.03 1.783.145 2.591.332.223-.827.364-1.754.4-2.741H8.5zm-3.282 3.696c.12.312.252.604.395.872.552 1.035 1.218 1.65 1.887 1.855V11.91c-.81.03-1.577.13-2.282.287zm.11 2.276a6.696 6.696 0 0 1-.598-.933 8.853 8.853 0 0 1-.481-1.079 8.38 8.38 0 0 0-1.198.49 7.01 7.01 0 0 0 2.276 1.522zm-1.383-2.964A13.36 13.36 0 0 1 3.508 8.5h-2.49a6.963 6.963 0 0 0 1.362 3.675c.47-.258.995-.482 1.565-.667zm6.728 2.964a7.009 7.009 0 0 0 2.275-1.521 8.376 8.376 0 0 0-1.197-.49 8.853 8.853 0 0 1-.481 1.078 6.688 6.688 0 0 1-.597.933zM8.5 11.909v3.014c.67-.204 1.335-.82 1.887-1.855.143-.268.276-.56.395-.872A12.63 12.63 0 0 0 8.5 11.91zm3.555-.401c.57.185 1.095.409 1.565.667A6.963 6.963 0 0 0 14.982 8.5h-2.49a13.36 13.36 0 0 1-.437 3.008zM14.982 7.5a6.963 6.963 0 0 0-1.362-3.675c-.47.258-.995.482-1.565.667.248.92.4 1.938.437 3.008h2.49zM11.27 2.461c.177.334.339.694.482 1.078a8.368 8.368 0 0 0 1.196-.49 7.01 7.01 0 0 0-2.275-1.52c.218.283.418.597.597.932zm-.488 1.343a7.765 7.765 0 0 0-.395-.872C9.835 1.897 9.17 1.282 8.5 1.077V4.09c.81-.03 1.577-.13 2.282-.287z"/></svg>
-                |
-                | Language
-              select#language.custom-select.border-0
-                option(value="en") English
-                option(value="ja") 日本語
-        <form style="position:relative;text-align:right;margin:-50px 0 -6px 50%;width:50%;" action="https://www.paypal.com/donate" method="post" target="_top"><input type="hidden" name="hosted_button_id" value="APPYM2QPDABRJ" /><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" /><img alt="" border="0" src="https://www.paypal.com/en_CA/i/scr/pixel.gif" width="1" height="1" /></form>
+          div.col-6.col-md.text-md-center
+            p(style="margin:.5rem auto;font-weight:bold;") Contact Us
+            ul
+              li
+                a(href="https://twitter.com/karasu_os") Twitter
+              li
+                a(href="https://discord.gg/Y3KMW7U") Discord
+
+          div.col-6.col-lg
+            p.my-2.text-right <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-globe2 mr-1" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855-.143.268-.276.56-.395.872.705.157 1.472.257 2.282.287V1.077zM4.249 3.539c.142-.384.304-.744.481-1.078a6.7 6.7 0 0 1 .597-.933A7.01 7.01 0 0 0 3.051 3.05c.362.184.763.349 1.198.49zM3.509 7.5c.036-1.07.188-2.087.436-3.008a9.124 9.124 0 0 1-1.565-.667A6.964 6.964 0 0 0 1.018 7.5h2.49zm1.4-2.741a12.344 12.344 0 0 0-.4 2.741H7.5V5.091c-.91-.03-1.783-.145-2.591-.332zM8.5 5.09V7.5h2.99a12.342 12.342 0 0 0-.399-2.741c-.808.187-1.681.301-2.591.332zM4.51 8.5c.035.987.176 1.914.399 2.741A13.612 13.612 0 0 1 7.5 10.91V8.5H4.51zm3.99 0v2.409c.91.03 1.783.145 2.591.332.223-.827.364-1.754.4-2.741H8.5zm-3.282 3.696c.12.312.252.604.395.872.552 1.035 1.218 1.65 1.887 1.855V11.91c-.81.03-1.577.13-2.282.287zm.11 2.276a6.696 6.696 0 0 1-.598-.933 8.853 8.853 0 0 1-.481-1.079 8.38 8.38 0 0 0-1.198.49 7.01 7.01 0 0 0 2.276 1.522zm-1.383-2.964A13.36 13.36 0 0 1 3.508 8.5h-2.49a6.963 6.963 0 0 0 1.362 3.675c.47-.258.995-.482 1.565-.667zm6.728 2.964a7.009 7.009 0 0 0 2.275-1.521 8.376 8.376 0 0 0-1.197-.49 8.853 8.853 0 0 1-.481 1.078 6.688 6.688 0 0 1-.597.933zM8.5 11.909v3.014c.67-.204 1.335-.82 1.887-1.855.143-.268.276-.56.395-.872A12.63 12.63 0 0 0 8.5 11.91zm3.555-.401c.57.185 1.095.409 1.565.667A6.963 6.963 0 0 0 14.982 8.5h-2.49a13.36 13.36 0 0 1-.437 3.008zM14.982 7.5a6.963 6.963 0 0 0-1.362-3.675c-.47.258-.995.482-1.565.667.248.92.4 1.938.437 3.008h2.49zM11.27 2.461c.177.334.339.694.482 1.078a8.368 8.368 0 0 0 1.196-.49 7.01 7.01 0 0 0-2.275-1.52c.218.283.418.597.597.932zm-.488 1.343a7.765 7.765 0 0 0-.395-.872C9.835 1.897 9.17 1.282 8.5 1.077V4.09c.81-.03 1.577-.13 2.282-.287z"/></svg>
+              | Language
+            select#language.custom-select.border-0
+              option(value="en" selected=t("lang")==="en"?true:false) English
+              option(value="ja" selected=t("lang")==="ja"?true:false) 日本語
         hr(style="border-color:rgba(255,255,255,.5);")
-        div.row.col.justify-content-center Made with ♥ by Laele and char
+        div.row.col.justify-content-center.align-items-center Made with
+          | <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-heart-fill mx-1" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/> </svg>
+          | by Laele and char

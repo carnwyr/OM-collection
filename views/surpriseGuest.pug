@@ -46,83 +46,90 @@ block scripts
 block content
   .container
     h1= t("common.spg")
-    .row.mb-4
-      //- settings
-      .col-12
-        .card.card-body.shadow.pb-2.pt-3
-          .lineHeader.h5.text-primary.mb-0= t("common.settings")
-          #settings.mx-auto.collapse.hide.collapsed
-            .custom-control.custom-radio.custom-control-inline
-              input.custom-control-input(type="radio" id="shortActions" name="optionsSwitch")
-              label.custom-control-label(for="shortActions")= t("spg.shortActions")
-            .custom-control.custom-radio.custom-control-inline
-              input.custom-control-input(type="radio" id="allActions" name="optionsSwitch")
-              label.custom-control-label(for="allActions")= t("spg.allActions")
-            .custom-control.custom-checkbox.mt-2.mb-1.text-md-center
-              input.custom-control-input(type="checkbox" id="useItems")
-              label.custom-control-label(for="useItems")= t("spg.use_item")
-          a(class="text-center text-secondary collapser" id="settingsCollapser" data-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings")
-            |
-            |
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-      .col-12.my-2
-        .card.card-body.shadow
-          .row
-            .col-3.d-none.d-md-block
-              .nav.flex-column.nav-pills.mb-2.big-nav(role='tablist' aria-orientation="vertical")
-                each interaction, i in interactions
-                  a.px-1.px-sm-2.px-lg-3(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'Pill' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
-                    img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='width:30px;')
-                    | #{t(interaction.chara)}
-            .col-12.d-md-none.mb-3
-              .nav.nav-pills.justify-content-center.small-nav(role='tablist')
-                each interaction, i in interactions
-                  a.p-1.mx-1.small-pill(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'PillSmall' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
-                    img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='width:40px;')
-            //- the actual table
-            .col-12.col-md-9
-              .tab-content
-                each interaction, i in interactions
-                  div(class="tab-pane fade"+(i===0?" show active":"") id=interaction.chara role='tabpanel' aria-labelledby=interaction.chara+'Pill')
-                    each meet in interaction.interactions
-                      - if (t("lang") === "en") { var dialogue = meet.phrase; } else { var dialogue = meet.ja_phrase; }
-                      table.table
-                        thead
-                          tr
-                            th.bg-secondary.text-white.py-2.py-md-3.rounded(colspan='4')
-                              .row.w-100.align-items-center.mx-0
-                                h5.col-10.text-left.px-0.mb-0.d-none.d-md-block !{dialogue}
-                                .col-2.px-0.mb-0.d-none.d-md-flex.justify-content-end
-                                  +getConditionImage(meet.condition)
-                                .col-12.mb-1.mt-0.d-flex.justify-content-center.d-md-none
-                                  +getConditionImage(meet.condition)
-                                h6.col-12.text-center.px-0.mb-0.d-md-none !{dialogue}
-                        tbody
-                          tr.text-primary
-                            each val, key in {'Action 1': 28, 'Action 2': 28, 'Action 3': 28, 'Points': 16}
-                              th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width:'+val+'%')= t(key)
-                            each i in [1, 2, 3]
-                              th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%')= t("Action "+i)
-                            th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 10%')= t("Points")
-                          tr.text-dark.moves
-                            each step in ['first', 'second', 'third']
-                              +getActions(meet.allInteractions[step])
-                            td.d-none.d-sm-table-cell +#{meet.allInteractions.points}
-                            td.small.d-sm-none +#{meet.allInteractions.points}
-                          tr.text-dark.movesShort
-                            each step in ['first', 'second', 'third']
-                              +getActions([meet.allInteractionsShort[step]])
-                            td.d-none.d-sm-table-cell +#{meet.allInteractionsShort.points}
-                            td.small.d-sm-none +#{meet.allInteractionsShort.points}
-                          if meet.itemInteractions
-                            tr.text-dark.items
-                              each step in ['first', 'second', 'third']
-                                +getActions(meet.itemInteractions[step])
-                              td.d-none.d-sm-table-cell +#{meet.itemInteractions.points}
-                              td.small.d-sm-none +#{meet.itemInteractions.points}
-                          if meet.itemInteractionsShort
-                            tr.text-dark.itemsShort
-                              each step in ['first', 'second', 'third']
-                                +getActions([meet.itemInteractionsShort[step]])
-                              td.d-none.d-sm-table-cell +#{meet.itemInteractionsShort.points}
-                              td.small.d-sm-none +#{meet.itemInteractionsShort.points}
+
+    if (!user || !user.supportStatus.includes("adfree"))
+      div.ddd
+        <div id="ezoic-pub-ad-placeholder-109"></div>
+
+    //- settings
+    .card.card-body.pb-2.pt-3.mb-3
+      .lineHeader.h5.text-primary.mb-0= t("common.settings")
+      #settings.mx-auto.collapse.hide.collapsed
+        .custom-control.custom-radio.custom-control-inline
+          input.custom-control-input(type="radio" id="shortActions" name="optionsSwitch")
+          label.custom-control-label(for="shortActions")= t("spg.shortActions")
+        .custom-control.custom-radio.custom-control-inline
+          input.custom-control-input(type="radio" id="allActions" name="optionsSwitch")
+          label.custom-control-label(for="allActions")= t("spg.allActions")
+        .custom-control.custom-checkbox.mt-2.mb-1.text-md-center
+          input.custom-control-input(type="checkbox" id="useItems")
+          label.custom-control-label(for="useItems")= t("spg.use_item")
+      a(class="text-center text-secondary collapser" id="settingsCollapser" data-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings")
+        |
+        |
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+
+    if (!user || !user.supportStatus.includes("adfree"))
+      div.ddd
+        <div id="ezoic-pub-ad-placeholder-110"></div>
+
+    .card.card-body
+      .row
+        .col-3.d-none.d-md-block
+          .nav.flex-column.nav-pills.mb-2.big-nav(role='tablist' aria-orientation="vertical")
+            each interaction, i in interactions
+              a.px-1.px-sm-2.px-lg-3(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'Pill' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
+                img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='width:30px;')
+                | #{t(interaction.chara)}
+        .col-12.d-md-none.mb-3
+          .nav.nav-pills.justify-content-center.small-nav(role='tablist')
+            each interaction, i in interactions
+              a.p-1.mx-1.small-pill(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'PillSmall' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
+                img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='width:40px;')
+        //- the actual table
+        .col-12.col-md-9
+          .tab-content
+            each interaction, i in interactions
+              div(class="tab-pane fade"+(i===0?" show active":"") id=interaction.chara role='tabpanel' aria-labelledby=interaction.chara+'Pill')
+                each meet in interaction.interactions
+                  - if (t("lang") === "en") { var dialogue = meet.phrase; } else { var dialogue = meet.ja_phrase; }
+                  table.table
+                    thead
+                      tr
+                        th.bg-secondary.text-white.py-2.py-md-3.rounded(colspan='4')
+                          .row.w-100.align-items-center.mx-0
+                            h5.col-10.text-left.px-0.mb-0.d-none.d-md-block !{dialogue}
+                            .col-2.px-0.mb-0.d-none.d-md-flex.justify-content-end
+                              +getConditionImage(meet.condition)
+                            .col-12.mb-1.mt-0.d-flex.justify-content-center.d-md-none
+                              +getConditionImage(meet.condition)
+                            h6.col-12.text-center.px-0.mb-0.d-md-none !{dialogue}
+                    tbody
+                      tr.text-primary
+                        each val, key in {'Action 1': 28, 'Action 2': 28, 'Action 3': 28, 'Points': 16}
+                          th.h6.px-0.px-sm-3.d-none.d-sm-table-cell(style='width:'+val+'%')= t(key)
+                        each i in [1, 2, 3]
+                          th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 30%')= t("Action "+i)
+                        th.h6.px-0.px-sm-3.small.d-sm-none(style='width: 10%')= t("Points")
+                      tr.text-dark.moves
+                        each step in ['first', 'second', 'third']
+                          +getActions(meet.allInteractions[step])
+                        td.d-none.d-sm-table-cell +#{meet.allInteractions.points}
+                        td.small.d-sm-none +#{meet.allInteractions.points}
+                      tr.text-dark.movesShort
+                        each step in ['first', 'second', 'third']
+                          +getActions([meet.allInteractionsShort[step]])
+                        td.d-none.d-sm-table-cell +#{meet.allInteractionsShort.points}
+                        td.small.d-sm-none +#{meet.allInteractionsShort.points}
+                      if meet.itemInteractions
+                        tr.text-dark.items
+                          each step in ['first', 'second', 'third']
+                            +getActions(meet.itemInteractions[step])
+                          td.d-none.d-sm-table-cell +#{meet.itemInteractions.points}
+                          td.small.d-sm-none +#{meet.itemInteractions.points}
+                      if meet.itemInteractionsShort
+                        tr.text-dark.itemsShort
+                          each step in ['first', 'second', 'third']
+                            +getActions([meet.itemInteractionsShort[step]])
+                          td.d-none.d-sm-table-cell +#{meet.itemInteractionsShort.points}
+                          td.small.d-sm-none +#{meet.itemInteractionsShort.points}

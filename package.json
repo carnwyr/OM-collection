@@ -7,7 +7,7 @@
     "devstart": "nodemon ./bin/www"
   },
   "dependencies": {
-    "@sentry/node": "^6.3.5",
+    "@sentry/node": "^6.8.0",
     "async": "^3.2.0",
     "bcrypt": "^5.0.1",
     "compression": "^1.7.4",
@@ -23,6 +23,7 @@
     "express-session": "^1.17.1",
     "express-validator": "^6.6.1",
     "form-data": "^4.0.0",
+    "helmet": "^4.6.0",
     "http-errors": "~1.6.3",
     "i18next": "^20.2.1",
     "i18next-fs-backend": "^1.1.1",

@@ -2,6 +2,8 @@ extends layout
 
 block scripts
   link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
+  script.
+    const i18next = { "icon_view": "#{t("cards.icon_view")}", "full_original": "#{t("cards.full_original")}", "full_bloomed": "#{t("cards.full_bloomed")}" };
   script(src="/javascripts/cardsListFunctions.js")
 
 block content
@@ -9,155 +11,212 @@ block content
   div(class="container")
     h1= title
 
-    if path === "collection"
-      include statsboard.pug
-
-    //- Card Navigation
-    div(class="card sticky-top sticky-offset mb-3 shadow")
-      div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
-        div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
-          button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
-            span(class="d-none d-sm-block")= t("cards.demon_jump_L")
-            span(class="d-sm-none")= t("cards.demon_jump")
-          div(style="border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem")
-          button(class="btn btn-md text-secondary py-0 mb-0" id="gotoMemory" href="#memoryCards")
-            span(class="d-none d-sm-block")= t("cards.memory_jump_L")
-            span(class="d-sm-none")= t("cards.memory_jump")
-        div(class='d-lg-none' style='flex-basis: 100%; height: 0;')
-        div(class="btn-group d-none mr-2" id="selectionButtons")
-          button(class="btn btn-secondary mb-md-0" id="deselectAll")= t("cards.deselect_all")
-          button(class="btn btn-secondary mb-md-0" id="selectAll")= t("cards.select_all")
-        div(class="btn-group d-none" id="manageButtons")
-          button(class="btn btn-primary mb-md-0" id="cancelManaging")= t("cards.cancel")
-          button(class="btn btn-primary mb-md-0" id="saveManaging")= t("cards.save")
-        if user && path === "list"
-          button(class="btn btn-primary btn-md mb-0" id="manageCollection")
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square mb-1" viewBox="0 0 16 16">   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/> </svg>
-            |
-            | #{t("cards.manage_collection")}
-
-    div(class="card shadow mb-3")
-      div(class="card-body d-flex flex-wrap justify-content-around p-3")
-        div(class="dropdown text-center")
-          button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-            span Icon view
-          div(class="dropdown-menu shadow" aria-labelledby="viewMenuDropdown")
-            a(id="iconViewBtn" class="dropdown-item viewBtn iconViewBtn" role='button' data-viewmode="icon")
-              span.font-weight-bold.text-primary Icon view
-            div(class="dropdown-divider")
-            a(id="originalViewBtn" class="dropdown-item viewBtn originalViewBtn" role='button' data-viewmode="original")
-              span.font-weight-normal Full original view
-            a(id="bloomedViewBtn" class="dropdown-item viewBtn bloomedViewBtn" role='button' data-viewmode="bloomed")
-              span.font-weight-normal Full bloomed view
-        form(id="searchForm" class="col-md-auto flex-grow-1 px-2 mb-3 mb-md-0")
-          div(class="input-group rounded-pill" style="background-color:rgba(219,158,251,0.2)")
-            div(class="input-group-text border-0 bg-transparent text-primary" style="z-index:3;")
-              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
-            input(type="text" class="form-control border-0 text-primary bg-transparent pl-0" id="nameFilter" placeholder=t("cards.search"))
-        button(id="filterBtn" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters" style="padding:0 1.25rem")
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16" style="margin-bottom:.125rem">   <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/> </svg>
-          |
-          | #{t("cards.filters")}
-
-    div(id="filters" class="collapse shadow")
-      div(class="card card-body" style="border-left:4px solid var(--secondary);")
-        div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;")= t("cards.filters")
-        div#resetFilters.text-right.text-black-50.mb-2(style="margin-top:-.8rem;")
-          a(type="button")= t("cards.reset")
-        if path === "list"
-          div.row
-            // add margin to align with rest of filters
-            p.col-12.col-lg-1.mb-lg-0(style="margin-left:5px")= t("temp.cards")
-            div.col
-              ul#cardsfilter
-                li(class="custom-control custom-radio")
-                  input(type="radio" class="custom-control-input" id="checkCardsAll" name="cards")
-                  label(class="custom-control-label" for="checkCardsAll") All
-                li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
-                  input(type="radio" class="custom-control-input" id="checkCardsOwned" name="cards" disabled=(user?false:true))
-                  label(class="custom-control-label" for="checkCardsOwned")= t("cards.owned")
-                li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
-                  input(type="radio" class="custom-control-input" id="checkCardsNotOwned" name="cards" disabled=(user?false:true))
-                  label(class="custom-control-label" for="checkCardsNotOwned")= t("cards.not_owned")
-                if !user
-                  li
-                    a(href="/signup")= t("common.signup")
-                    |
-                    |
-                    span.text-dark /
-                    |
-                    |
-                    a(href="/login")= t("common.login")
-          hr
-        div#general.row
-          div.col-sm-12.col-md-6
-            p= t("cards.rarity")
-            form#rarityForm
-              ul
-                li(class="custom-control custom-radio")
-                  input(type="radio" class="custom-control-input" id="checkRarityAll" name="rarity")
-                  label(class="custom-control-label" for="checkRarityAll") All
-                each rarity in ["N", "R", "SR", "SSR", "UR", "URp"]
-                  li(class="custom-control custom-checkbox")
-                    input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name="rarity" value=rarity)
-                    label(class="custom-control-label" for="checkRarity"+rarity)= rarity==="URp"?"UR+":rarity
-            hr
-            p= t("cards.attribute")
-            form#attributeForm
-              ul
-                li(class="custom-control custom-radio")
-                  input(type="radio" class="custom-control-input" id="checkAttributeAll" name="attribute")
-                  label(class="custom-control-label" for="checkAttributeAll") All
-                each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
-                  li(class="custom-control custom-checkbox")
-                    input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name="attribute" value=attribute)
-                    label(class="custom-control-label" for="checkAttribute"+attribute)= t(attribute)
-            hr.d-md-none
-          div#characterFilters.col
-            p= t("cards.character")
-            form#characterForm
-              ul
-                li(class="custom-control custom-radio")
-                  input(type="radio" class="custom-control-input" id="checkCharacterAll" name="character")
-                  label(class="custom-control-label" for="checkCharacterAll") All
-                each character in ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
-                  li(class="custom-control custom-checkbox")
-                    input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name="character" value=character)
-                    label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?t("Little D"):t(character)
-
-    div(class="row pt-3" id="demonCards")
-      div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper")= t("cards.demon_cards")
-          |
-          |
-          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-    div(class='collapse show invisible' id='demonWrapper')
-      div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
-        if cardsList.filter(card => card.type == "Demon").length != 0
-          each card in cardsList
-            if card.type == "Demon"
-              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
-                img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                figcaption= t("lang")==="en"?card.name:card.ja_name
-
     if (!user || !user.supportStatus.includes("adfree"))
-      div.container.ddd
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7371452932" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        script.
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        a(type="button" class="text-muted" data-toggle="modal" data-target="#removeAdsModal" style="display:none;") Remove Ads
+      div.ddd
+        <div id="ezoic-pub-ad-placeholder-109"></div>
 
-    div(class="row" id="memoryCards")
-      div(class="col-12")
-        h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper")= t("cards.memory_cards")
+    if path === "collection"
+      div#usernav.mb-3
+        a.btn.btn-outline-primary(type="button" href="profile") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person mb-1" viewBox="0 0 16 16">   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/> </svg>
+          span &nbsp;#{t("common.profile")}
+        a.btn.btn-primary.mx-2(type="button" href="#") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-person mb-1" viewBox="0 0 16 16">   <path d="M12 1a1 1 0 0 1 1 1v10.755S12 11 8 11s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/>   <path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/> </svg>
           |
-          |
-          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-    div(class='collapse show invisible' id='memoryWrapper')
-      div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
-        if cardsList.filter(card => card.type == "Memory").length != 0
-          each card in cardsList
-            if card.type == "Memory"
-              a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
-                img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                figcaption= t("lang")==="en"?card.name:card.ja_name
+          | #{t("collection.cards")}
+        a.btn.btn-outline-primary.mr-2(type="button" href="favourites") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill mb-1" viewBox="0 0 16 16">   <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/> </svg>
+          span &nbsp;#{t("collection.favourites")}
+        if title === t("title.my_collection")
+          button(type="button" id="shareLink" class="btn btn-outline-primary" data-toggle="modal" data-target="#openLink")
+            <svg class="bi bi-share mb-1" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
+            span &nbsp;#{t("profile.share")}
+          script(src="/javascripts/shareProfile.js")
+    else if path === "fav"
+      div#usernav.mb-3
+        a.btn.btn-outline-primary(type="button" href="profile") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person mb-1" viewBox="0 0 16 16">   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/> </svg>
+          span &nbsp;#{t("common.profile")}
+        a.btn.btn-outline-primary.mx-2(type="button" href="collection") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-person mb-1" viewBox="0 0 16 16">   <path d="M12 1a1 1 0 0 1 1 1v10.755S12 11 8 11s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/>   <path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/> </svg>
+          span &nbsp;#{t("collection.cards")}
+        a.btn.btn-primary.mr-2(type="button" href="#") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill mb-1 mr-1" viewBox="0 0 16 16">   <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/> </svg>
+          | #{t("collection.favourites")}
+        if title === t("title.my_favourites")
+          button(type="button" id="shareLink" class="btn btn-outline-primary" data-toggle="modal" data-target="#openLink")
+            <svg class="bi bi-share mb-1" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
+            span &nbsp;#{t("profile.share")}
+          script(src="/javascripts/shareProfile.js")
+
+    if isPrivate && (title !== t("title.my_collection") || title !== t("title.my_favourites"))
+      div.card.card-body
+        h5.text-muted.text-center(style="margin:5rem auto;")= t("profile.private_collection")
+    else
+      if path === "collection"
+        include collectionStats.pug
+
+      //- Card Navigation
+      div(class="card sticky-top sticky-offset mb-3")
+        div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
+          div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
+            button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
+              span(class="d-none d-sm-block")= t("cards.demon_jump_L")
+              span(class="d-sm-none")= t("cards.demon_jump")
+            div(style="border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem")
+            button(class="btn btn-md text-secondary py-0 mb-0" id="gotoMemory" href="#memoryCards")
+              span(class="d-none d-sm-block")= t("cards.memory_jump_L")
+              span(class="d-sm-none")= t("cards.memory_jump")
+          div(class='d-lg-none' style='flex-basis: 100%; height: 0;')
+          div(class="btn-group d-none mr-2" id="selectionButtons")
+            button(class="btn btn-secondary mb-md-0" id="deselectAll")= t("cards.deselect_all")
+            button(class="btn btn-secondary mb-md-0" id="selectAll")= t("cards.select_all")
+          div(class="btn-group d-none" id="manageButtons")
+            button(class="btn btn-primary mb-md-0" id="cancelManaging")= t("cards.cancel")
+            button(class="btn btn-primary mb-md-0" id="saveManaging")= t("cards.save")
+          if user && path === "list"
+            button(class="btn btn-primary btn-md mb-0" id="manageCollection")
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square mb-1" viewBox="0 0 16 16">   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/> </svg>
+              |
+              | #{t("cards.manage_collection")}
+
+      if (!user || !user.supportStatus.includes("adfree"))
+        div.ddd
+          <div id="ezoic-pub-ad-placeholder-111"></div>
+
+      //- Filters
+      div(class="card mb-3")
+        div(class="card-body d-flex flex-wrap justify-content-around p-3")
+          div(class="dropdown text-center")
+            button(class="btn dropdown-toggle text-secondary mb-0" type="button" id="viewMenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+              span= t("cards.icon_view")
+            div(class="dropdown-menu shadow" aria-labelledby="viewMenuDropdown")
+              a(id="iconViewBtn" class="dropdown-item viewBtn iconViewBtn" role='button' data-viewmode="icon")
+                span.font-weight-bold.text-primary= t("cards.icon_view")
+              div(class="dropdown-divider")
+              a(id="originalViewBtn" class="dropdown-item viewBtn originalViewBtn" role='button' data-viewmode="original")
+                span.font-weight-normal= t("cards.full_original")
+              a(id="bloomedViewBtn" class="dropdown-item viewBtn bloomedViewBtn" role='button' data-viewmode="bloomed")
+                span.font-weight-normal= t("cards.full_bloomed")
+          form(id="searchForm" class="col-md-auto flex-grow-1 px-2 mb-3 mb-md-0")
+            div(class="input-group rounded-pill" style="background-color:rgba(219,158,251,0.2)")
+              div(class="input-group-text border-0 bg-transparent text-primary" style="z-index:3;")
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
+              input(type="text" class="form-control border-0 text-primary bg-transparent pl-0" id="nameFilter" placeholder=t("cards.search"))
+          button(id="filterBtn" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters" style="padding:0 1.25rem")
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16" style="margin-bottom:.125rem">   <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/> </svg>
+            |
+            | #{t("cards.filters")}
+
+      div(id="filters" class="collapse shadow")
+        div(class="card card-body" style="border-left:4px solid var(--secondary);")
+          div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;")= t("cards.filters")
+          div#resetFilters.text-right.text-black-50.mb-2(style="margin-top:-.8rem;")
+            a(type="button")= t("cards.reset")
+          if path === "list"
+            div.row
+              // add margin to align with rest of filters
+              p.col-12.col-lg-1.mb-lg-0(style="margin-left:5px")= t("common.cards")
+              div.col
+                ul#cardsfilter
+                  li(class="custom-control custom-radio")
+                    input(type="radio" class="custom-control-input" id="checkCardsAll" name="cards")
+                    label(class="custom-control-label" for="checkCardsAll") All
+                  li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
+                    input(type="radio" class="custom-control-input" id="checkCardsOwned" name="cards" disabled=(user?false:true))
+                    label(class="custom-control-label" for="checkCardsOwned")= t("cards.owned")
+                  li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
+                    input(type="radio" class="custom-control-input" id="checkCardsNotOwned" name="cards" disabled=(user?false:true))
+                    label(class="custom-control-label" for="checkCardsNotOwned")= t("cards.not_owned")
+                  if !user
+                    li
+                      a(href="/signup")= t("common.signup")
+                      |
+                      |
+                      span.text-dark /
+                      |
+                      |
+                      a(href="/login")= t("common.login")
+            hr
+          div#general.row
+            div.col-sm-12.col-md-6
+              p= t("cards.rarity")
+              form#rarityForm
+                ul
+                  li(class="custom-control custom-radio")
+                    input(type="radio" class="custom-control-input" id="checkRarityAll" name="rarity")
+                    label(class="custom-control-label" for="checkRarityAll") All
+                  each rarity in ["N", "R", "SR", "SSR", "UR", "URp"]
+                    li(class="custom-control custom-checkbox")
+                      input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name="rarity" value=rarity)
+                      label(class="custom-control-label" for="checkRarity"+rarity)= rarity==="URp"?"UR+":rarity
+              hr
+              p= t("cards.attribute")
+              form#attributeForm
+                ul
+                  li(class="custom-control custom-radio")
+                    input(type="radio" class="custom-control-input" id="checkAttributeAll" name="attribute")
+                    label(class="custom-control-label" for="checkAttributeAll") All
+                  each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+                    li(class="custom-control custom-checkbox")
+                      input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name="attribute" value=attribute)
+                      label(class="custom-control-label" for="checkAttribute"+attribute)= t(attribute)
+              hr.d-md-none
+            div#characterFilters.col
+              p= t("cards.character")
+              form#characterForm
+                ul
+                  li(class="custom-control custom-radio")
+                    input(type="radio" class="custom-control-input" id="checkCharacterAll" name="character")
+                    label(class="custom-control-label" for="checkCharacterAll") All
+                  each character in ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
+                    li(class="custom-control custom-checkbox")
+                      input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name="character" value=character)
+                      label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?t("Little D"):t(character)
+
+      if (!user || !user.supportStatus.includes("adfree"))
+        div.text-center
+          <div id="ezoic-pub-ad-placeholder-108"></div>
+
+      div(class="row pt-3" id="demonCards")
+        div(class="col-12")
+          h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper")= t("cards.demon_cards")
+            |
+            |
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+      div(class='collapse show invisible' id='demonWrapper')
+        div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
+          if cardsList.filter(card => card.type == "Demon").length != 0
+            each card in cardsList
+              if card.type == "Demon"
+                a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
+                  img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
+                  figcaption= t("lang")==="en"?card.name:card.ja_name
+
+      if (!user || !user.supportStatus.includes("adfree"))
+        div.row.justify-content-center
+          div#ezoic-pub-ad-placeholder-105
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6006647798" data-ad-format="auto" data-full-width-responsive="true"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+
+      div(class="row mt-3" id="memoryCards")
+        div(class="col-12")
+          h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper")= t("cards.memory_cards")
+            |
+            |
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+      div(class='collapse show invisible' id='memoryWrapper')
+        div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
+          if cardsList.filter(card => card.type == "Memory").length != 0
+            each card in cardsList
+              if card.type == "Memory"
+                a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
+                  img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
+                  figcaption= t("lang")==="en"?card.name:card.ja_name
+
+      if title === t("title.my_favourites")
+        div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
+          div(class="modal-dialog" role="document")
+            div(class="modal-content")
+              div(class="modal-header")
+                h5(class="modal-title text-primary" id="openShareLink")= t("profile.share")
+                button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                  span(aria-hidden="true") &times;
+              div(class="modal-body mb-2")
+                div.input-group
+                  input(type="text" id="userLink" class="form-control" value=`https://karasu-os.com/${user.name}/favourites` name="userlink" aria-label="user's collection link" aria-describedby="user link" readonly)
+                  div.input-group-append
+                    button#copyLink.btn.btn-primary(style="border-radius:0 4px 4px 0;")= t("profile.copy")

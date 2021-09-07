@@ -27,11 +27,12 @@ router.post("/signup", usersController.signup);
 router.post("/signup/checkUsername", usersController.signupCheckUsername);
 
 // User's personal collection
-router.get("/collection/getOwnedCards", usersController.isLoggedIn(), usersController.getOwnedCards);
-router.post("/collection/modifyCollection", usersController.isLoggedIn(), usersController.modifyCollection);
-router.get("/:username/collection", cardsController.getCardsCollectionPage);
-router.post("/:username/getStatsImage", cardsController.getStatsImage);
-router.get("/:username/favourites", cardsController.getFavouritesPage);
+router.get('/collection/getOwnedCards', usersController.isLoggedIn(), usersController.getOwnedCards);
+router.post('/collection/modifyCollection', usersController.isLoggedIn(), usersController.modifyCollection);
+router.get('/:username/collection', cardsController.getCardsCollectionPage);
+router.post('/:username/getStatsImage', cardsController.getStatsImage);
+router.get('/:username/favourites', cardsController.getFavouritesPage);
+router.get('/:username/profile', cardsController.getProfilePage);
 
 // User Management
 router.get("/userpage", usersController.hasAccess("Admin"), usersController.getUserListPage);
@@ -39,6 +40,8 @@ router.post("/updateSupport", usersController.hasAccess("Admin"), usersControlle
 
 //
 router.get("/addEvent", usersController.hasAccess("Moderator"), eventsController.getEventEditPage);
+
+router.get('/getAllCards', cardsController.getAllCards);
 
 
 module.exports = router;

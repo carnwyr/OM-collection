@@ -24,7 +24,7 @@ exports.getCardsListPage = async function(req, res, next) {
 	try {
 		var cards = await Cards.find().sort({ number: -1 });
 		return res.render("cardsList", {
-			title: i18next.t("title.cards"), description: "Karasu's card library where you can view all of Obey Me's cards. This is also the place to manage your card collection.",
+			title: i18next.t("title.cards"), description: "Obey Me! Cards Database. This is also the place to manage your card collection.",
 			cardsList: cards, path: "list",
 			user: req.user
 		});
@@ -39,6 +39,19 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 		if (!username) {
 			throw createError(404, "User not found");
 		}
+
+		if (req.user && req.user.name === username) {
+			var title = i18next.t("title.my_collection");
+		} else {
+			var title = i18next.t("title.user_collection", { username: username });
+		}
+
+		var privateUser = await usersController.isPrivateUser(username);
+		if (privateUser && title !== i18next.t("title.my_collection")) {
+			return res.render("cardsList", { title: title, description: `${username}'s Collection on Karasu-OS.com`, isPrivate: true, path: "collection", user: req.user });
+		}
+
+		var ownedCards = await usersController.getCardCollection(username, "owned");
 
 		var cardStats = {
 			characters: {
@@ -79,23 +92,14 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 			}
 		};
 
-		if (req.user && req.user.name === username) {
-			var title = i18next.t("title.my_collection");
-		} else {
-			var title = i18next.t("title.user_collection", { username: username });
-		}
-
 		var ownedCards = await usersController.getCardCollection(username, "owned");
 
 		countCardsForStats(ownedCards, cardStats, "owned");
 		countCardsForStats(await Cards.find(), cardStats, "total");
 
-		var badges = await usersController.getUserBadges(username);
-
 		return res.render('cardsList', {
 			title: title, description: `${username}'s Collection on Karasu-OS.com`,
-			user: req.user, badges: badges.info.supportStatus,
-			cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
+			user: req.user, cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
 	} catch (e) {
 		return next(e);
 	}
@@ -118,7 +122,8 @@ exports.getCardDetailPage = async function(req, res, next) {
 
 		var stats = await getCardStats(req.user, card);
 		res.render('cardDetail', {
-			title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
+			title: i18next.t("lang")==="en"?cardData.name:cardData.ja_name,
+			description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 			card: cardData, isHidden: false,
 			user: req.user, stats: stats });
 	} catch (e) {
@@ -139,12 +144,16 @@ exports.getFavouritesPage = async function(req, res, next) {
 			var title = i18next.t("title.user_favourites", { username: username });
 		}
 
+		var privateUser = await usersController.isPrivateUser(username);
+		if (privateUser && title !== i18next.t("title.my_favourites")) {
+			return res.render("cardsList", { title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`, isPrivate: true, path: "fav", user: req.user });
+		}
+
 		var favedCards = await usersController.getCardCollection(username, "faved");
 
-		res.render("cardsList", {
+		return res.render("cardsList", {
 			title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`,
-			user: req.user,
-			cardsList: favedCards, path: "fav"
+			user: req.user, cardsList: favedCards, path: "fav"
 		});
 	} catch (e) {
 		return next(e);
@@ -156,6 +165,38 @@ exports.getHiddenCardsListPage = async function(req, res, next) {
 		var cards = await HiddenCards.find().sort({ number: -1 });
 		return res.render('cardsList', { title: 'Hidden Cards', cardsList: cards, user: req.user, path: 'hidden' });
 	} catch(e) {
+		return next(e);
+	}
+};
+
+exports.getProfilePage = async function(req, res, next) {
+	try {
+		var username = await usersController.userExists(req.params.username);
+		if (!username) {
+			throw createError(404, "User not found");
+		}
+
+		if (req.user && req.user.name === username) {
+			var title = i18next.t("title.my_profile");
+		} else {
+			var title = i18next.t("title.user_profile", { username: username });
+		}
+
+		var cards = {
+		  owned: (await usersController.getCardCollection(username, "owned")).slice(0, 15),
+		  faved: (await usersController.getCardCollection(username, "faved")).slice(0, 15)
+		};
+
+		var profileInfo = await usersController.getProfileInfo(username);
+		profileInfo.karasu_name = username;
+
+		res.render("profile", {
+			title: title, description: `See ${username}'s profile on Karasu-OS.com`,
+			user: req.user,
+			profileInfo: profileInfo,
+			cards: cards
+		});
+	} catch (e) {
 		return next(e);
 	}
 };
@@ -198,7 +239,12 @@ async function getUniqueName(name) {
 
 async function getLatestCardNum(rarity) {
 	try {
-		var last = await Cards.find({ rarity: rarity }).sort({ number: -1 }).limit(1);
+		var query = {};
+		if (rarity !== "UR" && rarity !== "UR+") {
+			query = { rarity: rarity };
+		}
+
+		var last = await Cards.find(query).sort({ number: -1 }).limit(1);
 		return last[0].number + 1;
 	} catch(e) {
 		return 99999;  // reserved error number
@@ -273,6 +319,21 @@ function getReplacedImages() {
 
 	return Promise.all([p1, p2, p3]);
 };
+
+exports.getAllCards = async function(req, res) {
+	try {
+		var fields = { "uniqueName": 1 };
+		if (i18next.t("lang") === "en") {
+			fields.name = 1;
+		} else {
+			fields.name = "$ja_name";
+		}
+		return res.send(await Cards.aggregate([{ $project: fields }]));
+	} catch(e) {
+		// console.error(e);
+		return res.send([]);
+	}
+}
 
 
 // Card detail functions
