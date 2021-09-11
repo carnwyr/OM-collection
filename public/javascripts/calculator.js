@@ -40,5 +40,7 @@ function recallTab() {
 
 	if (selected) {
 		$('#'+selected).tab("show");
+	} else {
+		$("#rewards>li:first-child>a").tab("show");
 	}
 }

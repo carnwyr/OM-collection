@@ -7,8 +7,21 @@ block scripts
 	script.
 		startCountdown(!{JSON.stringify(event.end)})
 		var event = !{JSON.stringify(event)};
-		console.log(!{JSON.stringify(event)});
 
+mixin resultBlock(type, dict)
+	div(class=type+"_calculation")
+		p= t("calculator."+type)
+		div.p-3
+			div
+				span= t("calculator.free")
+				span= getValue(dict.free)
+			div
+				span= t("calculator.buy")
+				span= getValue(dict.buy)
+			hr.my-2(style="border-color:var(--primary);")
+			div
+				span Total
+				span= getValue(dict.total)
 
 block content
 	-
@@ -50,7 +63,7 @@ block content
 		- var today = new Date();
 		.row
 			.col-12.col-lg-4.mb-3
-				.card.shadow.h-100(style="border-radius:8px;")
+				.card.h-100(style="border-radius:8px;")
 					div.card-body(style="display:flex;flex-wrap:wrap;justify-content:center;")
 						div
 							p.text-center.text-primary(style="letter-spacing:.25rem;")
@@ -78,7 +91,7 @@ block content
 							small.text-muted This calculator will assist you, please also use your own judgement to manage your spending in events.
 
 			.col-12.col-lg-8.mb-3
-				.card.shadow.rounded.h-100
+				.card.h-100
 					div.card-body
 						p.text-center.text-primary(style="letter-spacing:.25rem;")
 							strong REWARDS
@@ -121,33 +134,11 @@ block content
 												div.tab-pane(id=res.tag.replace(" ", "")+"-today" class="show active" role="tabpanel")
 													div.row.mx-0.mb-3
 														div.col-6.pl-0.pr-1
-															div.battles_calculation
-																p Battles
-																div.p-3
-																	div
-																		span Free
-																		span= getValue(res.todayBattlesFree)
-																	div
-																		span Buy
-																		span= getValue(res.todayBattlesToBuy)
-																	hr.my-2(style="border-color:var(--primary);")
-																	div
-																		span Total
-																		span= getValue(res.todayBattlesTotal)
+															- temp = res.battles?res.battles.today:{};  // hard code...
+															+resultBlock("battles", temp)
 														div.col-6.pl-1.pr-0
-															div.ap_calculation
-																p AP
-																div.p-3
-																	div
-																		span Free
-																		span= getValue(res.todayApFree)
-																	div
-																		span Buy
-																		span= getValue(res.todayApToBuy)
-																	hr.my-2(style="border-color:var(--primary);")
-																	div
-																		span Total
-																		span= getValue(res.todayApTotal)
+															- temp = res.ap?res.ap.today:{};
+															+resultBlock("ap", temp)
 													div.text-center
 														p.mt-3.mb-0 Today's Goal:
 														p(style="font-size:large")= getValue(res.goalToday)
@@ -157,38 +148,16 @@ block content
 												div.tab-pane(id=res.tag.replace(" ", "")+"-summary" role="tabpanel")
 													div.row.m-0
 														div.col-6.pl-0.pr-1
-															div.battles_calculation
-																p Battles
-																div.p-3
-																	div
-																		span Free
-																		span= getValue(res.totalBattlesFree)
-																	div
-																		span Buy
-																		span= getValue(res.totalBattlesToBuy)
-																	hr.my-2(style="border-color:var(--primary);")
-																	div
-																		span Total
-																		span= getValue(res.totalBattlesTotal)
+															- temp = res.ap?res.ap.today:{};
+															+resultBlock("battles", temp)
 														div.col-6.pl-1.pr-0
-															div.ap_calculation
-																p AP
-																div.p-3
-																	div
-																		span Free
-																		span= getValue(res.totalApFree)
-																	div
-																		span Buy
-																		span= getValue(res.totalApToBuy)
-																	hr.my-2(style="border-color:var(--primary);")
-																	div
-																		span Total
-																		span= getValue(res.totalApTotal)
+															- temp = res.ap?res.ap.total:{}
+															+resultBlock("ap", temp)
 													- var reward_cost = event.rewards[count++].points;
 													.progress.mt-3(style="height:9px;")
 														.progress-bar(style="width:"+getDaysLeftPercentage(event.start, event.end)+"%;height:9px;background-color:#ffbd8a;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
 													.d-flex.justify-content-between
-														small Ending in
+														small= t("calculator.endingIn")
 														- var daysLeft = getDaysLeft(event.end);
 														small= daysLeft > 1 ? daysLeft + " days" : "< " + daysLeft + " day"
 													.progress.mt-3(style="height:9px;")
@@ -198,7 +167,7 @@ block content
 														small #{(reward_cost).toLocaleString("en")} pts
 		div.row.mt-3
 			div.col-lg-8
-				div.card.card-body.shadow
+				div.card.card-body
 						h5.text-center.mb-3 Additional Info
 						div.row.m-0.text-center
 							div.col-6
@@ -219,7 +188,7 @@ block content
 										li 20 from To Do tasks
 										li All AP from reward list (?)
 			div.col-lg-4
-				div.card.card-body.shadow.h-100
+				div.card.card-body.h-100
 					div.d-flex.justify-content-center.align-items-center.h-100
 						div.text-center
 							span More tools

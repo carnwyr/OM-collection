@@ -124,9 +124,6 @@
     "thanks": "Thank you for supporting us. We hope you have been enjoying the Obey Me! resources we provide, and will continue to support Karasu-OS.com!",
     "donate": "Make a Donation"
   },
-  "temp": {
-    "share_karasu": "My Obey Me! profile and card collections on Karasu OS ↓↓↓\n\nhttps://karasu-os.com/{{username}}/profile\n\n@karasu_os\n#obeyme #おべいみー"
-  },
   "events": {
     "cards": "Cards",
     "calculator": "Event Calculator",
@@ -135,6 +132,19 @@
     "rewardTitle": "Reward",
     "pointsTitle": "Points needed",
     "battlesTitle": "Daily battles"
+  },
+  "calculator": {
+    "ppt": "Points per battle",
+    "currentPts": "Current points",
+    "goal": "Goal",
+    "stageClear": "Cleared",
+    "calculate": "Calculate!",
+    "disclaimer": "This calculator will assist you, please also use your own judgement to manage your spending in events.",
+    "battles": "Battles",
+    "free": "Free",
+    "buy": "Buy",
+    "goalToday": "Today's Goal",
+    "endingIn": "Ending in"
   },
 
   "Pride": "Pride",

@@ -85,22 +85,46 @@ function getCalculationResult(event, input) {
 
 			return {
 				tag: reward.tag,
+				battles: {
+					today: {
+						free: todayBattlesFree,
+						buy: dailyBattlesToBuy,
+						total: todayBattlesTotal
+					},
+					total: {
+						free: totalBattlesFree,
+						buy: totalBattlesToBuy,
+						total: totalBattlesTotal
+					}
+				},
+				ap: {
+					today: {
+						free: todayApFree,
+						buy: todayApTotal - todayApFree,
+						total: todayApTotal
+					},
+					total: {
+						free: totalApFree,
+						buy: apNeeded - totalApFree,
+						total: apNeeded
+					}
+				},
 
-				todayBattlesFree: todayBattlesFree,
-				todayBattlesToBuy: dailyBattlesToBuy,
-				todayBattlesTotal: todayBattlesTotal,
-				
-				todayApFree: todayApFree,
-				todayApToBuy: todayApTotal - todayApFree,
-				todayApTotal: todayApTotal,
-
-				totalBattlesFree: totalBattlesFree,
-				totalBattlesToBuy: totalBattlesToBuy,
-				totalBattlesTotal: totalBattlesTotal,
-				
-				totalApFree: totalApFree,
-				totalApToBuy: apNeeded - totalApFree,
-				totalApTotal: apNeeded,
+				// todayBattlesFree: todayBattlesFree,
+				// todayBattlesToBuy: dailyBattlesToBuy,
+				// todayBattlesTotal: todayBattlesTotal,
+				//
+				// todayApFree: todayApFree,
+				// todayApToBuy: todayApTotal - todayApFree,
+				// todayApTotal: todayApTotal,
+				//
+				// totalBattlesFree: totalBattlesFree,
+				// totalBattlesToBuy: totalBattlesToBuy,
+				// totalBattlesTotal: totalBattlesTotal,
+				//
+				// totalApFree: totalApFree,
+				// totalApToBuy: apNeeded - totalApFree,
+				// totalApTotal: apNeeded,
 
 				dailyBattles: dailyBattlesFree + dailyBattlesToBuy,
 				dailyAp: (dailyBattlesFree + dailyBattlesToBuy) * 8,
@@ -118,15 +142,15 @@ function getDailyAp(isVip) {
 function parseInput(data, event) {
 	pointsPerBattle = parseInt(data.pointsPerBattle);
 	if (!pointsPerBattle || pointsPerBattle < 120) return null;
-	
+
 	var currentPoints = parseInt(data.currentPoints);
 	if (isNaN(currentPoints) || currentPoints < 0 || currentPoints > 20000000) return null;
-	
+
 	var customGoal = parseInt(data.customGoal);
 	if (customGoal > 20000000) return null;
-	
+
 	var stagesCleared = parseInt(data.stagesCleared);
 	if (isNaN(stagesCleared) || stagesCleared < 0 || stagesCleared > event.stages) return null;
-	
+
 	return {pointsPerBattle: pointsPerBattle, currentPoints: currentPoints, customGoal: customGoal, stagesCleared: stagesCleared};
 }

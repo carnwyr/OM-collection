@@ -115,6 +115,19 @@
     "allActions": "全アクションを表示",
     "use_item": "アイテムを使う"
   },
+  "calculator": {
+    "ppt": "単回のpts",
+    "currentPts": "現在のpts",
+    "goal": "目標pts",
+    "stageClear": "Cleared",
+    "calculate": "Calculate!",
+    "disclaimer": "This calculator will assist you, please also use your own judgement to manage your spending in events.",
+    "battles": "挑戦回数",
+    "free": "無償",
+    "buy": "有償",
+    "goalToday": "今日の目標",
+    "endingIn": "あと"
+  },
   "error": {
     "invalid_char": "Karasu IDに使用できるのは半角英数小文字と ._- のみです"
   },
