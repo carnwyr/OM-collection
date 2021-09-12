@@ -92,27 +92,26 @@ block content
 
 			.col-12.col-lg-8.mb-3
 				.card.h-100
+					- var lst = (result ? result.map(x => Object.assign(x, event.rewards.find(y => y.tag === x.tag))) : event.rewards).filter(x => x.tag);
+					- if (query.customGoal) lst.find(x => x.tag === "Custom").points = parseInt(query.customGoal)
 					div.card-body
 						p.text-center.text-primary(style="letter-spacing:.25rem;")
 							strong REWARDS
 						hr(style="border-color:var(--secondary);border-width:2px;")
 						ul#rewards.nav.justify-content-around.mb-3
-							each reward in event.rewards
-								if reward.tag
-									li.nav-item
-										a.nav-link(id=reward.tag.replace(" ", "")+"-tab" href=("#"+reward.tag.replace(" ", "")) data-toggle="tab" role="tab" aria-controls=reward.tag.replace(" ", ""))
-											div.mx-auto.mb-1(style="width:4.5rem;height:4.5rem;")
-												if reward.card
-													img.img-fluid(src=`/images/cards/S/${reward.card.uniqueName.replace(/ /g, '_')}.jpg`)
-												else
-													img.img-fluid(src=`/images/${reward.tag.toLowerCase()}.png` onerror="this.src='/images/defaultReward.png';this.onerror=null;")
-											figcaption.text-dark.text-center= reward.tag
-												br
-												| #{reward.points.toLocaleString("en")}
+							each reward in lst
+								li.nav-item
+									a.nav-link(id=reward.tag.replace(" ", "")+"-tab" href=("#"+reward.tag.replace(" ", "")) data-toggle="tab" role="tab" aria-controls=reward.tag.replace(" ", ""))
+										div.mx-auto.mb-1(style="width:4.5rem;height:4.5rem;")
+											if reward.card
+												img.img-fluid(src=`/images/cards/S/${reward.card.uniqueName.replace(/ /g, '_')}.jpg`)
+											else
+												img.img-fluid(src=`/images/${reward.tag.toLowerCase()}.png` onerror="this.src='/images/defaultReward.png';this.onerror=null;")
+										figcaption.text-dark.text-center= reward.tag
+											br
+											| #{reward.points.toLocaleString("en")}
 						div.tab-content
-							- var lst = result?result:event.rewards;
-							- var count = 0;  // best practise? not so sure.
-							each res in lst.filter(x => x.tag)
+							each res in lst
 								div.tab-pane(id=res.tag.replace(" ", "") role="tabpanel")
 									div.row.px-lg-3
 										.col-lg-5.px-4
@@ -148,12 +147,11 @@ block content
 												div.tab-pane(id=res.tag.replace(" ", "")+"-summary" role="tabpanel")
 													div.row.m-0
 														div.col-6.pl-0.pr-1
-															- temp = res.ap?res.ap.today:{};
+															- temp = res.battles?res.battles.total:{};
 															+resultBlock("battles", temp)
 														div.col-6.pl-1.pr-0
 															- temp = res.ap?res.ap.total:{}
 															+resultBlock("ap", temp)
-													- var reward_cost = event.rewards[count++].points;
 													.progress.mt-3(style="height:9px;")
 														.progress-bar(style="width:"+getDaysLeftPercentage(event.start, event.end)+"%;height:9px;background-color:#ffbd8a;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
 													.d-flex.justify-content-between
@@ -161,10 +159,10 @@ block content
 														- var daysLeft = getDaysLeft(event.end);
 														small= daysLeft > 1 ? daysLeft + " days" : "< " + daysLeft + " day"
 													.progress.mt-3(style="height:9px;")
-														.progress-bar(style="width:"+Math.floor(query.currentPoints/reward_cost*100)+"%;height:9px;background-color:#9fec3e;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+														.progress-bar(style="width:"+Math.floor(query.currentPoints/res.points*100)+"%;height:9px;background-color:#9fec3e;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
 													.d-flex.justify-content-between
-														small= (query.currentPoints ? Math.floor(query.currentPoints/reward_cost*100) : 0) + "%"
-														small #{(reward_cost).toLocaleString("en")} pts
+														small= (query.currentPoints ? Math.floor(query.currentPoints/res.points*100) : 0) + "%"
+														small #{(res.points).toLocaleString("en")} pts
 		div.row.mt-3
 			div.col-lg-8
 				div.card.card-body

@@ -26,7 +26,7 @@ function getCalculationResult(event, input) {
 	var { pointsPerBattle, currentPoints, customGoal, stagesCleared } = input;
 	var isVip = false;
 
-	var rewards = event.rewards.sort();
+	var rewards = event.rewards.slice().sort();
 	if (customGoal) {
 		rewards.push({tag: "Custom", points: customGoal});
 	}
@@ -109,22 +109,6 @@ function getCalculationResult(event, input) {
 						total: apNeeded
 					}
 				},
-
-				// todayBattlesFree: todayBattlesFree,
-				// todayBattlesToBuy: dailyBattlesToBuy,
-				// todayBattlesTotal: todayBattlesTotal,
-				//
-				// todayApFree: todayApFree,
-				// todayApToBuy: todayApTotal - todayApFree,
-				// todayApTotal: todayApTotal,
-				//
-				// totalBattlesFree: totalBattlesFree,
-				// totalBattlesToBuy: totalBattlesToBuy,
-				// totalBattlesTotal: totalBattlesTotal,
-				//
-				// totalApFree: totalApFree,
-				// totalApToBuy: apNeeded - totalApFree,
-				// totalApTotal: apNeeded,
 
 				dailyBattles: dailyBattlesFree + dailyBattlesToBuy,
 				dailyAp: (dailyBattlesFree + dailyBattlesToBuy) * 8,
