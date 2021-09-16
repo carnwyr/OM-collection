@@ -97,8 +97,6 @@ html(lang=t("lang"))
               a(class="nav-link" href='/logout')= t("common.logout")
 
     main(class='container-fluid mb-5' style="position:relative;")
-      if (title !== "Karasu OS" && (!user || !user.supportStatus.includes("adfree")))
-        div.ddd <div id="ezoic-pub-ad-placeholder-120"> </div>
       block content
       if (!user || !user.supportStatus.includes("adfree"))
         div#kool-aid.container(style="margin:2rem auto;text-align:center;")

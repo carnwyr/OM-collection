@@ -6,6 +6,10 @@ block scripts
 block content
   div(class="container")
     h1= title
+
+    if (!user || !user.supportStatus.includes("adfree"))
+      div.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
+
     div.card.card-body
       h5.d-flex.justify-content-center.mb-3
         span Most Favourited Cards
