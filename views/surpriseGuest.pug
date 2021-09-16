@@ -48,8 +48,7 @@ block content
     h1= t("common.spg")
 
     if (!user || !user.supportStatus.includes("adfree"))
-      div.ddd
-        <div id="ezoic-pub-ad-placeholder-109"></div>
+      div.ddd <div id="ezoic-pub-ad-placeholder-109"></div>
 
     //- settings
     .card.card-body.pb-2.pt-3.mb-3
@@ -70,11 +69,12 @@ block content
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-up chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
 
     if (!user || !user.supportStatus.includes("adfree"))
-      div.ddd
-        <div id="ezoic-pub-ad-placeholder-110"></div>
+      div.ddd <div id="ezoic-pub-ad-placeholder-110"> </div>
 
+    //- content
     .card.card-body
       .row
+        //- nav
         .col-3.d-none.d-md-block
           .nav.flex-column.nav-pills.mb-2.big-nav(role='tablist' aria-orientation="vertical")
             each interaction, i in interactions
@@ -86,7 +86,8 @@ block content
             each interaction, i in interactions
               a.p-1.mx-1.small-pill(class='nav-item nav-link'+(i===0?' active':'') id=interaction.chara+'PillSmall' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
                 img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='width:40px;')
-        //- the actual table
+
+        //- table
         .col-12.col-md-9
           .tab-content
             each interaction, i in interactions
