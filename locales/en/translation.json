@@ -134,17 +134,22 @@
     "battlesTitle": "Daily battles"
   },
   "calculator": {
+    "calculator": "CALCULATOR",
     "ppt": "Points per battle",
     "currentPts": "Current points",
     "goal": "Goal",
-    "stageClear": "Cleared",
+    "stageClear1": "Cleared",
+    "stageClear2": "stages today",
     "calculate": "Calculate!",
     "disclaimer": "This calculator will assist you, please also use your own judgement to manage your spending in events.",
     "battles": "Battles",
+    "ap": "AP",
     "free": "Free",
     "buy": "Buy",
     "goalToday": "Today's Goal",
-    "endingIn": "Ending in"
+    "endingIn": "Ending in",
+    "today": "Today",
+    "summary": "Summary"
   },
 
   "Pride": "Pride",

@@ -67,26 +67,26 @@ block content
 					div.card-body(style="display:flex;flex-wrap:wrap;justify-content:center;")
 						div
 							p.text-center.text-primary(style="letter-spacing:.25rem;")
-								strong CALCULATOR
+								strong= t("calculator.calculator")
 							form.mb-3
 								h6 Required
 								div.form-group
-									label(for="pointsPerBattle") Points per battle
+									label(for="pointsPerBattle")= t("calculator.ppt")
 									// min=120 for now, need to change based on event type
 									input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" min="120" value=query.pointsPerBattle required)
 								div.form-group
-									label(for="currentPoints") Current points
+									label(for="currentPoints")= t("calculator.currentPts")
 									input#currentPoints.form-control(type="number" name="currentPoints" min="0" value=query.currentPoints required)
 								h6 Optional
 								div.form-group
-									label(for="customGoal") Custom goal
+									label(for="customGoal")= t("calculator.goal")
 									input#customGoal.form-control(type="number" name="customGoal" min="0" value=query.customGoal)
 								div.form-group
-									label(for="stagesCleared") Cleared
+									label(for="stagesCleared")= t("calculator.stageClear1")
 										input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
-										| stages today
+										| #{t("calculator.stageClear2")}
 									input.custom-range(type="range" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0)
-								input.btn.btn-primary.btn-block(type="submit" value="Calculate!")
+								input.btn.btn-primary.btn-block(type="submit" value=t("calculator.calculate"))
 						div
 							small.text-muted This calculator will assist you, please also use your own judgement to manage your spending in events.
 
@@ -127,9 +127,9 @@ block content
 													img(src="/images/completed.png" style="width:75%;")
 											ul#results.nav.mb-3
 												li.nav-item
-													a.nav-link.active(id=res.tag.replace(" ", "")+"-today-tab" href="#"+res.tag.replace(" ", "")+"-today" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-today" aria-selected="true") Today
+													a.nav-link.active(id=res.tag.replace(" ", "")+"-today-tab" href="#"+res.tag.replace(" ", "")+"-today" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-today" aria-selected="true")= t("calculator.today")
 												li.nav-item
-													a.nav-link(id=res.tag.replace(" ", "")+"-summary-tab" href="#"+res.tag.replace(" ", "")+"-summary" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-summary" aria-selected="false") Summary
+													a.nav-link(id=res.tag.replace(" ", "")+"-summary-tab" href="#"+res.tag.replace(" ", "")+"-summary" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-summary" aria-selected="false")= t("calculator.summary")
 											div.tab-content
 												div.tab-pane(id=res.tag.replace(" ", "")+"-today" class="show active" role="tabpanel")
 													div.row.mx-0.mb-3
@@ -140,7 +140,7 @@ block content
 															- temp = res.ap?res.ap.today:{};
 															+resultBlock("ap", temp)
 													div.text-center
-														p.mt-3.mb-0 Today's Goal:
+														p.mt-3.mb-0.text-primary= t("calculator.goalToday")
 														p(style="font-size:large")= getValue(res.goalToday)
 														p.mb-0(style="font-size:large") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16">   <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
 															span.countdown
@@ -168,7 +168,7 @@ block content
 		div.row.mt-3
 			div.col-lg-8
 				div.card.card-body
-						h5.text-center.mb-3 Additional Info
+						h5.text-center.mb-3 Notes
 						div.row.m-0.text-center
 							div.col-6
 								div.p-2.h-100(style="border-radius:16px;border:3px solid var(--info);")

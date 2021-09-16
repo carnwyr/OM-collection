@@ -116,17 +116,31 @@
     "use_item": "アイテムを使う"
   },
   "calculator": {
+    "calculator": "計算機",
     "ppt": "単回のpts",
     "currentPts": "現在のpts",
     "goal": "目標pts",
-    "stageClear": "Cleared",
-    "calculate": "Calculate!",
+    "stageClear1": "今日はもうバトル",
+    "stageClear2": "回済んだ",
+    "calculate": "計算する！",
     "disclaimer": "This calculator will assist you, please also use your own judgement to manage your spending in events.",
     "battles": "挑戦回数",
     "free": "無償",
     "buy": "有償",
     "goalToday": "今日の目標",
-    "endingIn": "あと"
+    "endingIn": "あと",
+    "today": "今日",
+    "summary": "合計",
+    "free_battles": {
+      "title": "無料挑戦回数",
+      "1": "１つのステージには挑戦回数３回ある",
+      "2": "広告で毎日挑戦回数５回回復できる"
+    },
+    "free_ap": {
+      "title": "",
+      "1": ""
+    }
+
   },
   "error": {
     "invalid_char": "Karasu IDに使用できるのは半角英数小文字と ._- のみです"
