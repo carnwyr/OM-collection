@@ -2,11 +2,8 @@ $(function() {
 	recallTab();
 	$("#rewards>li>a").click(function() { sessionStorage.setItem("selected", $(this).attr("id")); });
 
-	// sync stage cleared inputs
-	$("input#stagesCleared, input.custom-range").change(function() {
-		var val = $(this).val();
-		$("input#stagesCleared, input.custom-range").val(val);
-	});
+	$("input#stagesCleared").change(() => $("input.custom-range").prop("value", $("input#stagesCleared").prop("value")));
+	$("input.custom-range").on("input", () => $("input#stagesCleared").prop("value", $("input.custom-range").prop("value")));
 });
 
 function startCountdown(d) {
