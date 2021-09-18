@@ -33,7 +33,7 @@ function startCountdown(d) {
 function recallTab() {
 	var params = new URLSearchParams(document.location.search.substring(1));
 	var custom = params.get("customGoal");
-	var selected = custom?"Custom":sessionStorage.getItem("selected");
+	var selected = custom?"Custom-tab":sessionStorage.getItem("selected");
 
 	if (selected) {
 		$('#'+selected).tab("show");

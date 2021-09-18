@@ -67,3 +67,15 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.force-reward-display-height {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width:992px) {
+  .force-reward-display-height {
+    height: 330px;
+  }
+}

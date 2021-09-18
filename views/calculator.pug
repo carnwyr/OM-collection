@@ -55,40 +55,36 @@ block content
 		}
 
 	.container
-		h1(style="border:0;margin-bottom:0;padding-top:1rem;text-align:center;") Pop Quiz Calculator
-		p.text-center(style="margin-bottom:2rem;")
-			i On-going Pop Quiz Title
+		h1 Pop Quiz Calculator
 
 		// if (event.start <= new Date() && event.end >= new Date()))
 		- var today = new Date();
 		.row
 			.col-12.col-lg-4.mb-3
-				.card.h-100(style="border-radius:8px;")
-					div.card-body(style="display:flex;flex-wrap:wrap;justify-content:center;")
-						div
-							p.text-center.text-primary(style="letter-spacing:.25rem;")
-								strong= t("calculator.calculator")
-							form.mb-3
-								h6 Required
-								div.form-group
-									label(for="pointsPerBattle")= t("calculator.ppt")
-									// min=120 for now, need to change based on event type
-									input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" min="120" value=query.pointsPerBattle required)
-								div.form-group
-									label(for="currentPoints")= t("calculator.currentPts")
-									input#currentPoints.form-control(type="number" name="currentPoints" min="0" value=query.currentPoints required)
-								h6 Optional
-								div.form-group
-									label(for="customGoal")= t("calculator.goal")
-									input#customGoal.form-control(type="number" name="customGoal" min="0" value=query.customGoal)
-								div.form-group
-									label(for="stagesCleared")= t("calculator.stageClear1")
-										input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
-										| #{t("calculator.stageClear2")}
-									input.custom-range(type="range" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0)
-								input.btn.btn-primary.btn-block(type="submit" value=t("calculator.calculate"))
-						div
-							small.text-muted This calculator will assist you, please also use your own judgement to manage your spending in events.
+				.card.h-100
+					div.card-body
+						p.text-center.text-primary(style="letter-spacing:.25rem;")
+							strong CALCULATOR
+						form.mb-3
+							h6 Required
+							div.form-group
+								label(for="pointsPerBattle")= t("calculator.ppt")
+								// min=120 for now, need to change based on event type
+								input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" min="120" value=query.pointsPerBattle required)
+							div.form-group
+								label(for="currentPoints")= t("calculator.currentPts")
+								input#currentPoints.form-control(type="number" name="currentPoints" min="0" value=query.currentPoints required)
+							h6 Optional
+							div.form-group
+								label(for="customGoal")= t("calculator.goal")
+								input#customGoal.form-control(type="number" name="customGoal" min="0" value=query.customGoal)
+							div.form-group
+								label(for="stagesCleared")= t("calculator.stageClear1")
+									input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
+									| #{t("calculator.stageClear2")}
+								input.custom-range(type="range" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0)
+							input.btn.btn-primary.btn-block(type="submit" value=t("calculator.calculate"))
+						small.text-muted This calculator will assist you, please also use your own judgement to manage your spending in events.
 
 			.col-12.col-lg-8.mb-3
 				.card.h-100
@@ -97,33 +93,36 @@ block content
 					div.card-body
 						p.text-center.text-primary(style="letter-spacing:.25rem;")
 							strong REWARDS
-						hr(style="border-color:var(--secondary);border-width:2px;")
-						ul#rewards.nav.justify-content-around.mb-3
+						ul#rewards.nav.justify-content-around.py-2.mb-3(style="border-radius:16px;border:2px solid var(--secondary);")
 							each reward in lst
 								li.nav-item
 									a.nav-link(id=reward.tag.replace(" ", "")+"-tab" href=("#"+reward.tag.replace(" ", "")) data-toggle="tab" role="tab" aria-controls=reward.tag.replace(" ", ""))
-										div.mx-auto.mb-1(style="width:4.5rem;height:4.5rem;")
+										div.mx-auto.mb-1.d-flex.align-items-center(style="width:4.5rem;height:4.5rem;")
 											if reward.card
 												img.img-fluid(src=`/images/cards/S/${reward.card.uniqueName.replace(/ /g, '_')}.jpg`)
 											else
-												img.img-fluid(src=`/images/${reward.tag.toLowerCase()}.png` onerror="this.src='/images/defaultReward.png';this.onerror=null;")
-										figcaption.text-dark.text-center= reward.tag
-											br
-											| #{reward.points.toLocaleString("en")}
+												img.img-fluid(src=`/images/${reward.tag}.png` onerror="this.src='/images/reward_placeholder.png';")
+										figcaption.text-dark.text-center= reward.points.toLocaleString("en")
 						div.tab-content
 							each res in lst
 								div.tab-pane(id=res.tag.replace(" ", "") role="tabpanel")
-									div.row.px-lg-3
+									div.row
 										.col-lg-5.px-4
-											//img.img-fluid(src=`/images/cards/L/${reward.card.uniqueName}.jpg`)
-											//.text-center.mt-2 #{reward.card.name}
-											a(href="/")
-												img.img-fluid(src=`/images/cards/L/The_Mammon_Way.jpg`)
-												figcaption.text-center.mt-2 The Mammon Way
-										div.col-lg-7
+											div.force-reward-display-height
+												if res.card
+													div.text-center
+														a.px-3.mb-2.d-none.d-lg-block(href="/card/"+encodeURIComponent(res.card.name))
+															img.img-fluid(src=`/images/cards/L/${res.card.uniqueName}.jpg`)
+														a(href="/card/"+encodeURIComponent(res.card.name))= t("lang") === "en" ? res.card.name : res.card.ja_name
+
+												else
+													h5.text-center
+														p.text-primary= t("calculator.goal")
+														p= (res.points).toLocaleString("en")
+										.col-lg-7
 											if res.collected
 												div(style="position:absolute;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,.75);width:100%;height:100%;z-index:1;margin-left:-15px;")
-													img(src="/images/completed.png" style="width:75%;")
+													img(src="/images/completed.png")
 											ul#results.nav.mb-3
 												li.nav-item
 													a.nav-link.active(id=res.tag.replace(" ", "")+"-today-tab" href="#"+res.tag.replace(" ", "")+"-today" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-today" aria-selected="true")= t("calculator.today")
@@ -157,24 +156,24 @@ block content
 													.d-flex.justify-content-between
 														small= t("calculator.endingIn")
 														- var daysLeft = getDaysLeft(event.end);
-														small= daysLeft > 1 ? daysLeft + " days" : "< " + daysLeft + " day"
+														small= t("lang") === "ja" ? daysLeft + "日" : daysLeft > 1 ? daysLeft + " days" : "< " + daysLeft + " day"
 													.progress.mt-3(style="height:9px;")
 														.progress-bar(style="width:"+Math.floor(query.currentPoints/res.points*100)+"%;height:9px;background-color:#9fec3e;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
 													.d-flex.justify-content-between
 														small= (query.currentPoints ? Math.floor(query.currentPoints/res.points*100) : 0) + "%"
 														small #{(res.points).toLocaleString("en")} pts
 		div.row.mt-3
-			div.col-lg-8
+			div.col-lg-8.mb-3.mb-lg-0
 				div.card.card-body
 						h5.text-center.mb-3 Notes
 						div.row.m-0.text-center
-							div.col-6
+							div.col-lg-6.mb-3.mb-lg-0
 								div.p-2.h-100(style="border-radius:16px;border:3px solid var(--info);")
 									p(style="font-size:large;") Free battles
 									| 3 clears per stage
 									br
 									| 5 clears from watching ads
-							div.col-6
+							div.col-lg-6
 								div.p-2(style="border-radius:16px;border:3px solid var(--info);")
 									p(style="font-size:large;") Free AP
 									ul(style="list-style:none;padding:0;")
@@ -184,7 +183,7 @@ block content
 										li 50 from ads
 										li 20 from surprise guest
 										li 20 from To Do tasks
-										li All AP from reward list (?)
+										li All AP from reward list
 			div.col-lg-4
 				div.card.card-body.h-100
 					div.d-flex.justify-content-center.align-items-center.h-100
