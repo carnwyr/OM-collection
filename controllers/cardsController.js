@@ -22,7 +22,7 @@ exports.getCardsListPage = async function(req, res, next) {
 	try {
 		var cards = await Cards.find().sort({ number: -1 });
 		return res.render("cardsList", {
-			title: i18next.t("title.cards"), description: "Obey Me! Cards Database. This is also the place to manage your card collection.",
+			title: i18next.t("title.cards"), description: "The place to view all of Obey Me!'s cards. The largest and most complete card databse with all sorts of filters for you to find the card you want! This is also the place to manage your card collection. Create an account to access more features! ... Pride, Greed, Envy, Wrath, Lust, Gluttony, Sloth, UR+, UR, SSR, SR, N, Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon, Little D., Owned, Not owned.",
 			cardsList: cards, path: "list",
 			user: req.user
 		});
