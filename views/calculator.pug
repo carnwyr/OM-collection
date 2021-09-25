@@ -24,168 +24,163 @@ mixin resultBlock(type, dict)
 				span= getValue(dict.total)
 
 block content
-	-
-		function getValue(i) {
-			if (typeof i !== "number") return "???";
-			return i.toLocaleString("en");
-		}
-
-		function getDaysLeft(d) {
-			var today = new Date();
-			return Math.floor((d - today) / (1000 * 60 * 60 * 24));
-		}
-
-		function getDaysLeftPercentage(start, end) {
-			var duration = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-			var daysPast = duration - getDaysLeft(end);
-			return Math.floor(daysPast / duration * 100);
-		}
-
-		// if item is first in list and no custom goal, select first tab.
-		function selectsTab(isFirstInList, reward_name) {
-			// if custom in list
-			if (event.rewards.filter(x=>x.tag==="Custom").length !== 0) {
-				// and reward is not custom
-				if (reward_name !== "Custom") return false;
-				return true;
-			}
-			// if custom not in list
-			if (isFirstInList) return true;
-			return false;
-		}
-
 	.container
 		h1 Pop Quiz Calculator
 
-		// if (event.start <= new Date() && event.end >= new Date()))
-		- var today = new Date();
-		.row
-			.col-12.col-lg-4.mb-3
-				.card.h-100
-					div.card-body
-						p.text-center.text-primary(style="letter-spacing:.25rem;")
-							strong CALCULATOR
-						form.mb-3
-							h6 Required
-							div.form-group
-								label(for="pointsPerBattle")= t("calculator.ppt")
-								// min=120 for now, need to change based on event type
-								input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" min="120" value=query.pointsPerBattle required)
-							div.form-group
-								label(for="currentPoints")= t("calculator.currentPts")
-								input#currentPoints.form-control(type="number" name="currentPoints" min="0" value=query.currentPoints required)
-							h6 Optional
-							div.form-group
-								label(for="customGoal")= t("calculator.goal")
-								input#customGoal.form-control(type="number" name="customGoal" min="0" value=query.customGoal)
-							div.form-group
-								label(for="stagesCleared")= t("calculator.stageClear1")
-									input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
-									| #{t("calculator.stageClear2")}
-								input.custom-range(type="range" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0)
-							input.btn.btn-primary.btn-block(type="submit" value=t("calculator.calculate"))
-						small.text-muted This calculator will assist you, please also use your own judgement to manage your spending in events.
+		//- on-going event
+		if (event.start <= new Date() && event.end >= new Date())
+			-
+				function getValue(i) {
+					if (typeof i !== "number") return "???";
+					return i.toLocaleString("en");
+				}
 
-			.col-12.col-lg-8.mb-3
-				.card.h-100
-					- var lst = (result ? result.map(x => Object.assign(x, event.rewards.find(y => y.tag === x.tag))) : event.rewards).filter(x => x.tag);
-					- if (query.customGoal) lst.find(x => x.tag === "Custom").points = parseInt(query.customGoal)
-					div.card-body
-						p.text-center.text-primary(style="letter-spacing:.25rem;")
-							strong REWARDS
-						ul#rewards.nav.justify-content-around.py-2.mb-3(style="border-radius:16px;border:2px solid var(--secondary);")
-							each reward in lst
-								li.nav-item
-									a.nav-link(id=reward.tag.replace(" ", "")+"-tab" href=("#"+reward.tag.replace(" ", "")) data-toggle="tab" role="tab" aria-controls=reward.tag.replace(" ", ""))
-										div.mx-auto.mb-1.d-flex.align-items-center(style="width:4.5rem;height:4.5rem;")
-											if reward.card
-												img.img-fluid(src=`/images/cards/S/${reward.card.uniqueName.replace(/ /g, '_')}.jpg`)
-											else
-												img.img-fluid(src=`/images/${reward.tag}.png` onerror="this.src='/images/reward_placeholder.png';")
-										figcaption.text-dark.text-center= reward.points.toLocaleString("en")
-						div.tab-content
-							each res in lst
-								div.tab-pane(id=res.tag.replace(" ", "") role="tabpanel")
-									div.row
-										.col-lg-5.px-4
-											div.force-reward-display-height
-												if res.card
-													div.text-center
-														a.px-3.mb-2.d-none.d-lg-block(href="/card/"+encodeURIComponent(res.card.name))
-															img.img-fluid(src=`/images/cards/L/${res.card.uniqueName}.jpg`)
-														a(href="/card/"+encodeURIComponent(res.card.name))= t("lang") === "en" ? res.card.name : res.card.ja_name
+				function getDaysLeft(d) {
+					var today = new Date();
+					return Math.floor((d - today) / (1000 * 60 * 60 * 24));
+				}
 
+				function getDaysLeftPercentage(start, end) {
+					var duration = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+					var daysPast = duration - getDaysLeft(end);
+					return Math.floor(daysPast / duration * 100);
+				}
+
+				// if item is first in list and no custom goal, select first tab.
+				function selectsTab(isFirstInList, reward_name) {
+					// if custom in list
+					if (event.rewards.filter(x=>x.tag==="Custom").length !== 0) {
+						// and reward is not custom
+						if (reward_name !== "Custom") return false;
+						return true;
+					}
+					// if custom not in list
+					if (isFirstInList) return true;
+					return false;
+				}
+			.row
+				.col-12.col-lg-4.mb-3
+					.card.h-100
+						div.card-body
+							p.text-center.text-primary(style="letter-spacing:.25rem;")
+								strong CALCULATOR
+							form.mb-3
+								h6 Required
+								div.form-group
+									label(for="pointsPerBattle")= t("calculator.ppt")
+									// min=120 for now, need to change based on event type
+									input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" min="120" value=query.pointsPerBattle required)
+								div.form-group
+									label(for="currentPoints")= t("calculator.currentPts")
+									input#currentPoints.form-control(type="number" name="currentPoints" min="0" value=query.currentPoints required)
+								h6 Optional
+								div.form-group
+									label(for="customGoal")= t("calculator.goal")
+									input#customGoal.form-control(type="number" name="customGoal" min="0" value=query.customGoal)
+								div.form-group
+									label(for="stagesCleared")= t("calculator.stageClear1")
+										input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
+										| #{t("calculator.stageClear2")}
+									input.custom-range(type="range" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0)
+								input.btn.btn-primary.btn-block(type="submit" value=t("calculator.calculate"))
+							small.text-muted= t("calculator.disclaimer")
+
+				.col-12.col-lg-8.mb-3
+					.card.h-100
+						- var lst = (result ? result.map(x => Object.assign(x, event.rewards.find(y => y.tag === x.tag))) : event.rewards).filter(x => x.tag);
+						- if (query.customGoal) lst.find(x => x.tag === "Custom").points = parseInt(query.customGoal)
+						div.card-body
+							p.text-center.text-primary(style="letter-spacing:.25rem;")
+								strong REWARDS
+							ul#rewards.nav.justify-content-around.py-2.mb-3(style="border-radius:16px;border:2px solid var(--secondary);")
+								each reward in lst
+									li.nav-item
+										a.nav-link(id=reward.tag.replace(" ", "")+"-tab" href=("#"+reward.tag.replace(" ", "")) data-toggle="tab" role="tab" aria-controls=reward.tag.replace(" ", ""))
+											div.mx-auto.mb-1.d-flex.align-items-center(style="width:4.5rem;height:4.5rem;")
+												if reward.card
+													img.img-fluid(src=`/images/cards/S/${reward.card.uniqueName.replace(/ /g, '_')}.jpg`)
 												else
-													h5.text-center
-														p.text-primary= t("calculator.goal")
-														p= (res.points).toLocaleString("en")
-										.col-lg-7
-											if res.collected
-												div(style="position:absolute;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,.75);width:100%;height:100%;z-index:1;margin-left:-15px;")
-													img(src="/images/completed.png")
-											ul#results.nav.mb-3
-												li.nav-item
-													a.nav-link.active(id=res.tag.replace(" ", "")+"-today-tab" href="#"+res.tag.replace(" ", "")+"-today" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-today" aria-selected="true")= t("calculator.today")
-												li.nav-item
-													a.nav-link(id=res.tag.replace(" ", "")+"-summary-tab" href="#"+res.tag.replace(" ", "")+"-summary" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-summary" aria-selected="false")= t("calculator.summary")
-											div.tab-content
-												div.tab-pane(id=res.tag.replace(" ", "")+"-today" class="show active" role="tabpanel")
-													div.row.mx-0.mb-3
-														div.col-6.pl-0.pr-1
-															- temp = res.battles?res.battles.today:{};  // hard code...
-															+resultBlock("battles", temp)
-														div.col-6.pl-1.pr-0
-															- temp = res.ap?res.ap.today:{};
-															+resultBlock("ap", temp)
-													div.text-center
-														p.mt-3.mb-0.text-primary= t("calculator.goalToday")
-														p(style="font-size:large")= getValue(res.goalToday)
-														p.mb-0(style="font-size:large") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16">   <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
-															span.countdown
-												// if !res.collected
-												div.tab-pane(id=res.tag.replace(" ", "")+"-summary" role="tabpanel")
-													div.row.m-0
-														div.col-6.pl-0.pr-1
-															- temp = res.battles?res.battles.total:{};
-															+resultBlock("battles", temp)
-														div.col-6.pl-1.pr-0
-															- temp = res.ap?res.ap.total:{}
-															+resultBlock("ap", temp)
-													.progress.mt-3(style="height:9px;")
-														.progress-bar(style="width:"+getDaysLeftPercentage(event.start, event.end)+"%;height:9px;background-color:#ffbd8a;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
-													.d-flex.justify-content-between
-														small= t("calculator.endingIn")
-														- var daysLeft = getDaysLeft(event.end);
-														small= t("lang") === "ja" ? daysLeft + "日" : daysLeft > 1 ? daysLeft + " days" : "< " + daysLeft + " day"
-													.progress.mt-3(style="height:9px;")
-														.progress-bar(style="width:"+Math.floor(query.currentPoints/res.points*100)+"%;height:9px;background-color:#9fec3e;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
-													.d-flex.justify-content-between
-														small= (query.currentPoints ? Math.floor(query.currentPoints/res.points*100) : 0) + "%"
-														small #{(res.points).toLocaleString("en")} pts
-		div.row.mt-3
-			div.col-lg-8.mb-3.mb-lg-0
-				div.card.card-body
-					h5.text-center Notes
-					hr(style="border-color:var(--secondary);border-width:2px;margin-top:0;")
-					div.row.px-2
-						div.col-lg-6.mb-3.mb-lg-0
-							p(style="font-size:large;") Free battles
-							ul
-								li 3 clears per stage
-								li 5 clears from watching ads
-						div.col-lg-6
-							p(style="font-size:large;") Free AP
-							ul
-								li All recovered AP (1 in 5 minutes)
-								li 50 from friends
-								li Fridge mission x2 (not VIP)
-								li 50 from ads
-								li 20 from surprise guest
-								li 20 from To Do tasks
-								li All AP from reward list
-			div.col-lg-4
-				div.card.card-body.h-100
-					div.d-flex.justify-content-center.align-items-center.h-100
-						div.text-center
-							span More tools
-							h5.text-primary Coming soon...
+													img.img-fluid(src=`/images/${reward.tag}.png` onerror="this.src='/images/reward_placeholder.png';")
+											figcaption.text-dark.text-center= reward.points.toLocaleString("en")
+							div.tab-content
+								each res in lst
+									div.tab-pane(id=res.tag.replace(" ", "") role="tabpanel")
+										div.row
+											.col-lg-5.px-4
+												div.force-reward-display-height
+													if res.card
+														div.text-center
+															a.px-3.mb-2.d-none.d-lg-block(href="/card/"+encodeURIComponent(res.card.name))
+																img.img-fluid(src=`/images/cards/L/${res.card.uniqueName}.jpg`)
+															a(href="/card/"+encodeURIComponent(res.card.name))= t("lang") === "en" ? res.card.name : res.card.ja_name
+
+													else
+														h5.text-center
+															p.text-primary= t("calculator.goal")
+															p= (res.points).toLocaleString("en")
+											.col-lg-7
+												if res.collected
+													div(style="position:absolute;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,.75);width:100%;height:100%;z-index:1;margin-left:-15px;")
+														img(src="/images/completed.png")
+												ul#results.nav.mb-3
+													li.nav-item
+														a.nav-link.active(id=res.tag.replace(" ", "")+"-today-tab" href="#"+res.tag.replace(" ", "")+"-today" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-today" aria-selected="true")= t("calculator.today")
+													li.nav-item
+														a.nav-link(id=res.tag.replace(" ", "")+"-summary-tab" href="#"+res.tag.replace(" ", "")+"-summary" data-toggle="tab" role="tab" aria-controls=res.tag.replace(" ", "")+"-summary" aria-selected="false")= t("calculator.summary")
+												div.tab-content
+													div.tab-pane(id=res.tag.replace(" ", "")+"-today" class="show active" role="tabpanel")
+														div.row.mx-0.mb-3
+															div.col-6.pl-0.pr-1
+																- temp = res.battles?res.battles.today:{};  // hard code...
+																+resultBlock("battles", temp)
+															div.col-6.pl-1.pr-0
+																- temp = res.ap?res.ap.today:{};
+																+resultBlock("ap", temp)
+														div.text-center
+															p.mt-3.mb-0.text-primary= t("calculator.goalToday")
+															p(style="font-size:large")= getValue(res.goalToday)
+															p.mb-0(style="font-size:large") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16">   <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
+																span.countdown
+													div.tab-pane(id=res.tag.replace(" ", "")+"-summary" role="tabpanel")
+														div.row.m-0
+															div.col-6.pl-0.pr-1
+																- temp = res.battles?res.battles.total:{};
+																+resultBlock("battles", temp)
+															div.col-6.pl-1.pr-0
+																- temp = res.ap?res.ap.total:{}
+																+resultBlock("ap", temp)
+														.progress.mt-3(style="height:9px;")
+															.progress-bar(style="width:"+getDaysLeftPercentage(event.start, event.end)+"%;height:9px;background-color:#ffbd8a;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+														.d-flex.justify-content-between
+															small= t("calculator.endingIn")
+															- var daysLeft = getDaysLeft(event.end);
+															small= t("lang") === "ja" ? daysLeft + "日" : daysLeft > 1 ? daysLeft + " days" : "< " + daysLeft + " day"
+														.progress.mt-3(style="height:9px;")
+															.progress-bar(style="width:"+Math.floor(query.currentPoints/res.points*100)+"%;height:9px;background-color:#9fec3e;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+														.d-flex.justify-content-between
+															small= (query.currentPoints ? Math.floor(query.currentPoints/res.points*100) : 0) + "%"
+															small #{(res.points).toLocaleString("en")} pts
+			div.row.mt-3
+				div.col-lg-8.mb-3.mb-lg-0
+					div.card.card-body
+						h5.text-center Notes
+						hr(style="border-color:var(--secondary);border-width:2px;margin-top:0;")
+						div.row.px-2
+							div.col-lg-6.mb-3.mb-lg-0 !{t("calculator.FreeBattles")}
+							div.col-lg-6 !{t("calculator.FreeAP")}
+				div.col-lg-4
+					div.card.card-body.h-100
+						div.d-flex.justify-content-center.align-items-center.h-100
+							div.text-center
+								span More tools
+								h5.text-primary Coming soon...
+
+		//- event ended, no new pop quiz added
+		else if (new Date() > event.end)
+			div.card.card-body
+				p This event has ended!
+
+		//- upcoming event
+		else if (new Date() < event.start)
+			div.card.card-body
+				p Event starting in ...

@@ -123,23 +123,16 @@
     "stageClear1": "今日はもうバトル",
     "stageClear2": "回済んだ",
     "calculate": "計算する！",
-    "disclaimer": "This calculator will assist you, please also use your own judgement to manage your spending in events.",
+    "disclaimer": "計算の結果は参考だけです。APやDPを合理的に利用してください。",
     "battles": "挑戦回数",
-    "free": "無償",
-    "buy": "有償",
+    "free": "無料",
+    "buy": "有料",
     "goalToday": "今日の目標",
     "endingIn": "あと",
     "today": "今日",
     "summary": "合計",
-    "free_battles": {
-      "title": "無料挑戦回数",
-      "1": "１つのステージには挑戦回数３回ある",
-      "2": "広告で毎日挑戦回数５回回復できる"
-    },
-    "free_ap": {
-      "title": "",
-      "1": ""
-    }
+    "FreeAP": "<p style='font-size:large;'>無料AP</p><ul><li>５分に１点回復</li><li>フレンドから５０点受け取れる</li><li>冷蔵庫ミッションから６０点もらえる（非VIP）</li><li>広告報酬５０点</li><li>反省会プレゼント２０点</li><li>デイリーミッション２０点</li><li>イベントのご褒美リスト</li>",
+    "FreeBattles": "<p style='font-size:large;'>無料挑戦回数</p><ul><li>１つのステージには挑戦回数３回ある</li><li>広告で毎日挑戦回数５回回復できる</li></ul>"
 
   },
   "error": {

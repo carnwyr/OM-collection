@@ -149,7 +149,9 @@
     "goalToday": "Today's Goal",
     "endingIn": "Ending in",
     "today": "Today",
-    "summary": "Summary"
+    "summary": "Summary",
+    "FreeAP": "<p style='font-size:large;'>Free AP</p><ul><li>All recovered AP (1 in 5 minutes)</li><li>50 from friends</li><li>Fridge mission x2 (not VIP)</li><li>50 from ads</li><li>20 from surprise guest</li><li>20 from To Do tasks</li><li>All AP from reward list</li>",
+    "FreeBattles": "<p style='font-size:large;'>Free Battles</p><ul><li>3 clears per stage</li><li>5 clears from ads</li></ul>"
   },
 
   "Pride": "Pride",
