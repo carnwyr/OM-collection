@@ -10,6 +10,18 @@ block content
     if (!user || !user.supportStatus.includes("adfree"))
       div.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
 
+    -
+      function getName(dict) {
+        var lang = t("lang");
+        if (lang === "en") {
+          return dict.name;
+        } else if (lang === "ja") {
+          return dict.ja_name;
+        } else if (lang === "zh") {
+          // return dict.zh_name;
+          return dict.name;
+        }
+      }
     div.card.card-body
       h5.d-flex.justify-content-center.mb-3
         span Most Favourited Cards
@@ -20,7 +32,7 @@ block content
               img(src="/images/cards/S/"+ranking[i]._id+".jpg")
             div
               p.mb-0
-                a(href="/card/"+ranking[i]._id)= t("lang")==="en"?ranking[i].name:ranking[i].ja_name
+                a(href="/card/"+ranking[i]._id)= getName(ranking[i])
                 br
                 | #{ranking[i].total}
                 |
@@ -36,6 +48,6 @@ block content
                 a(href="card/"+ranking[i]._id)
                   img(style="width:64px;height:64px;" src="/images/cards/S/"+ranking[i]._id+".jpg")
               td
-                a(href="card/"+ranking[i]._id)= t("lang")==="en"?ranking[i].name:ranking[i].ja_name
+                a(href="card/"+ranking[i]._id)= getName(ranking[i])
               td.text-center #{ranking[i].total}&nbsp;
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffc300" class="bi bi-star-fill mb-1" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
