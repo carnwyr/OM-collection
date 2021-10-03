@@ -58,6 +58,9 @@
     "user_profile": "{{username}}'s Profile",
     "settings": "User Settings"
   },
+  "description": {
+    "cards": "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation."
+  },
   "collection": {
     "cards": "Cards",
     "favourites": "Favourites"

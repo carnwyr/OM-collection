@@ -93,7 +93,16 @@ block content
             each interaction, i in interactions
               div(class="tab-pane fade"+(i===0?" show active":"") id=interaction.chara role='tabpanel' aria-labelledby=interaction.chara+'Pill')
                 each meet in interaction.interactions
-                  - if (t("lang") === "en") { var dialogue = meet.phrase; } else { var dialogue = meet.ja_phrase; }
+                  -
+                    var lang = t("lang"), dialogue;
+                    if (lang === "en") {
+                      dialogue = meet.phrase;
+                    } else if (lang === "ja") {
+                      dialogue = meet.ja_phrase;
+                    } else if (lang === "zh") {
+                      // dialogue = meet.zh_phrase;
+                      dialogue = meet.phrase;
+                    }
                   table.table
                     thead
                       tr

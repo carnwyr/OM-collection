@@ -171,6 +171,19 @@ block content
         div.text-center
           <div id="ezoic-pub-ad-placeholder-108"></div>
 
+      -
+        function getName(d) {
+          var lang = t("lang");
+          if (lang === "en") {
+            return d.name;
+          } else if (lang === "ja") {
+            return d.ja_name;
+          } else if (lang === "zh") {
+            // return d.zh_name;
+            return d.name;
+          }
+        }
+
       div(class="row pt-3" id="demonCards")
         div(class="col-12")
           h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper")= t("cards.demon_cards")
@@ -184,7 +197,7 @@ block content
               if card.type == "Demon"
                 a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                   img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                  figcaption= t("lang")==="en"?card.name:card.ja_name
+                  figcaption= getName(card)
 
       if (!user || !user.supportStatus.includes("adfree"))
         div.row.justify-content-center
@@ -204,7 +217,7 @@ block content
               if card.type == "Memory"
                 a(class="cardPreview icon-container "+card.rarity.replace("UR+", "URp")+" "+card.attribute+" "+card.characters.map(x => x.replace(" ", "")).join(" ") href=(path==="collection"||path==="fav"?"../":"") + "card/"+encodeURIComponent(card.name.replace(/ /g, '_')))
                   img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
-                  figcaption= t("lang")==="en"?card.name:card.ja_name
+                  figcaption= getName(card)
 
       if title === t("title.my_favourites")
         div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")

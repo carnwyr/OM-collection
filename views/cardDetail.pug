@@ -66,7 +66,17 @@ block content
                   | ,
                   |
             p #[strong #{t("cards.source")}: ]
-              - var source = t("lang") === "en" ? card.source : card.ja_source;
+              //- when events are complete, use card controller to grab the right language before sending to pug. (remove if/else)
+              -
+                var lang = t("lang"), source;
+                if (lang === "en") {
+                  source = card.source;
+                } else if (lang === "ja") {
+                  source = card.ja_source;
+                } else if (lang === "zh") {
+                  // source = card.zh_source;
+                  source = card.source;
+                }
               each val, index in source.length ? source : ["???"]
                 | #{val}
                 if index < source.length - 1
