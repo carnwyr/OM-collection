@@ -23,17 +23,17 @@ exports.getEvent = async function(eventName) {
 	return event;
 }
 
-exports.getCurrentEvent = async function() {
+exports.getLatestEvent = async function() {
 	var currentTime = new Date();
 	var cachedEvent = eventCacheService.getCachedEvent();
-	if (cachedEvent && cachedEvent.start < currentTime && cachedEvent.end > currentTime) {
+	if (cachedEvent && cachedEvent.start < currentTime) {
 		return cachedEvent;
 	}
 
 	try {
-		var currentEventData = await exports.getCurrentEventData();
-		eventCacheService.setCachedEvent(currentEventData);
-		return currentEvent;
+		var latestEventData = await exports.getLatestEventData();
+		eventCacheService.setCachedEvent(latestEventData);
+		return latestEventData;
 	} catch (e) {
 		console.error(e);
 		Sentry.captureException(e);
@@ -48,6 +48,20 @@ exports.getCurrentEventData = async function() {
 
 		var currentEvent = await getFullEventData(currentEventName.name);
 		return currentEvent;
+	} catch (e) {
+		console.error(e);
+		Sentry.captureException(e);
+	}
+}
+
+exports.getLatestEventData = async function() {
+	var currentTime = new Date();
+	try {
+		var latestEvent = await Events.find({ start: { "$lte": currentTime } }).sort({ end: -1 }).limit(1);
+		if (!latestEvent[0] || !latestEvent[0].name) return;
+
+		var latestEventData = await getFullEventData(latestEvent[0].name);
+		return latestEventData;
 	} catch (e) {
 		console.error(e);
 		Sentry.captureException(e);

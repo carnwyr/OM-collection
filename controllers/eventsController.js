@@ -34,8 +34,8 @@ exports.getEventPage = async function (req, res, next) {
 
 exports.getCalculatorPage = async function (req, res, next) {
 	try {
-		var event = await eventsService.getCurrentEvent();
-		if (!event) throw createError(404, "No current event");
+		var event = await eventsService.getLatestEvent();
+		//if (!event) throw createError(404, "No event data");
 	} catch (e) {
 		return next(e);
 	}
