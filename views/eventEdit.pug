@@ -3,13 +3,6 @@ extends layout
 block scripts
 	link(rel="stylesheet" href="/stylesheets/eventEdit.css")
 	script(src="/javascripts/eventEdit.js")
-	if data.start && data.end
-		script.
-			var start = "!{data.start.toISOString()}", end = "!{data.end.toISOString()}";
-			if (navigator.userAgent.indexOf("Chrome") !== -1) {
-				$("#start").val(start.substr(0, 16));
-				$("#end").val(end.substr(0, 16));
-			}
 
 block content
 	div#alert(role="alert")
@@ -33,8 +26,8 @@ block content
 
 						div.col-4
 							div.form-group
-								label(for="start") Start date (UTC)*
-								input#start.form-control(type="datetime-local" name="start" value=data.start)
+								label(for="start") Start date (UTC)
+								input#start.form-control(type="text" name="start" value=data.start)
 							div.form-group
 								label(for="stages") Number of stages
 								input#stages.form-control(type="number" name="stages" value=data.stages)
@@ -43,8 +36,8 @@ block content
 								input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
 						div.col-4
 							div.form-group
-								label(for="end") End date (UTC)*
-								input#end.form-control(type="datetime-local" name="end" value=data.end)
+								label(for="end") End date (UTC)
+								input#end.form-control(type="text" name="end" value=data.end)
 
 							p.mb-0 Type
 							div.form-check
@@ -67,9 +60,9 @@ block content
 							div(style="display:flex;justify-content:center;align-items:center;background:aliceblue;border-radius:1rem;height:16rem;margin-top:.5rem;")
 								img#preview(style="height:85%;width:auto;" src=data.img_name?"/images/events/"+data.img_name+".jpg":"")
 
-						div.col-5.pl-5 *Notes
+						div.col-5.pl-5 Notes
 							ul
-								li (Firefox only) time format: <span style="white-space:nowrap;">YYYY-MM-DDT00:00:00.000Z</span> example: <span style="white-space:nowrap;">2021-06-15T21:05:00.000Z</span>
+								li Time format: <span style="white-space:nowrap;">YYYY-MM-DDT00:00:00.000Z</span> example: <span style="white-space:nowrap;">2021-06-15T21:05:00.000Z</span>
 								li pop quiz usually starts at 1:00am UTC, ends at... idk
 								li nightmare also starts at 1:00am UTC, ends at... idk
 				br

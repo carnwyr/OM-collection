@@ -47,11 +47,6 @@ function submitChange() {
 		data[pair[0]] = pair[1];
 	}
 
-	if (navigator.userAgent.indexOf("Chrome") !== -1) {
-		data.start += ":00.000Z";
-		data.end += ":00.000Z";
-	}
-
 	if (data.type !== "Nightmare") {
 		data.rewards = formatRewards(new FormData($("form")[1]), "card");
 		data.ap = formatRewards(new FormData($("form")[2]), "page");
