@@ -98,9 +98,9 @@ block content
 												div.force-reward-display-height
 													if res.card
 														div.text-center
-															a.px-3.mb-2.d-none.d-lg-block(href="/card/"+encodeURIComponent(res.card.name))
+															a.px-3.mb-2.d-none.d-lg-block(href="/card/"+getURL(res.card.name))
 																img.img-fluid(src=`/images/cards/L/${res.card.uniqueName}.jpg`)
-															a(href="/card/"+encodeURIComponent(res.card.name))= t("lang") === "en" ? res.card.name : res.card.ja_name
+															a(href="/card/"+getURL(res.card.name))= t("lang") === "en" ? res.card.name : res.card.ja_name
 
 													else
 														h5.text-center
