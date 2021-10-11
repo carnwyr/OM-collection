@@ -9,7 +9,7 @@ exports.getEventsPage = async function(req, res, next) {
 	// TODO: format events to be { name: __, start: __, end:__ } and remove unused variables.
 	var events = await eventsService.getEvents();
 
-	res.render('eventGallery', {
+	return res.render("eventList", {
 		title: "Events",
 		description: "A list of Obey Me events, including Nightmare and Pop Quizzes.",
 		user: req.user,
