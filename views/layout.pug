@@ -97,6 +97,7 @@ html(lang=t("lang"))
               a(class="nav-link" href='/logout')= t("common.logout")
 
     main(class='container-fluid mb-5' style="position:relative;")
+      - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
       block content
       if (!user || !user.supportStatus.includes("adfree"))
         div#kool-aid.container(style="margin:2rem auto;text-align:center;")

@@ -30,5 +30,5 @@ block content
             img.card-img-top(src="/images/events/" + event.img_name + ".jpg")
             div.card-body
               p.card-title
-                a(href="event/"+encodeURIComponent(event.name.replace(/ /g, '_')))= getEventName(event)
+                a(href="event/"+getURL(event.name))= getEventName(event)
               small.text-muted= getFormatedDate(event.start) + " - " + getFormatedDate(event.end)

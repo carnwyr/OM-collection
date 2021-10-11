@@ -7,4 +7,4 @@ block content
 			table.table
 				each event in events
 					tr.text-primary
-						a(href="event/"+encodeURIComponent(event.name.replace(/ /g, '_'))) #{event.name}
+						a(href="event/"+getURL(event.name)) #{event.name}
