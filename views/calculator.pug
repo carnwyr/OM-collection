@@ -169,13 +169,4 @@ block content
 
 		else
 			div.card.card-body
-				h5 Coming soon!
-		//- event ended, no new pop quiz added
-				else if (new Date() > event.end)
-					div.card.card-body
-						p This event has ended!
-
-		//- upcoming event
-				else if (new Date() < event.start)
-					div.card.card-body
-						p Event starting in ...
+				h5.mx-auto.my-5 Coming soon!
