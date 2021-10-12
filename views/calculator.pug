@@ -100,7 +100,7 @@ block content
 														div.text-center
 															a.px-3.mb-2.d-none.d-lg-block(href="/card/"+getURL(res.card.name))
 																img.img-fluid(src=`/images/cards/L/${res.card.uniqueName}.jpg`)
-															a(href="/card/"+getURL(res.card.name))= t("lang") === "en" ? res.card.name : res.card.ja_name
+															a(href="/card/"+getURL(res.card.name))= t("lang") === "ja" ? res.card.ja_name : res.card.name
 
 													else
 														h5.text-center
@@ -142,7 +142,7 @@ block content
 														.d-flex.justify-content-between
 															small= t("calculator.endingIn")
 															- var daysLeft = getDaysLeft(event.end);
-															small= t("lang") === "ja" ? daysLeft + "日" : daysLeft > 1 ? daysLeft + " days" : "< " + daysLeft + " day"
+															small= t("lang") === "en" ? "< " + daysLeft + " day" : daysLeft + "日" : daysLeft > 1 ? daysLeft + " days"
 														.progress.mt-3(style="height:9px;")
 															.progress-bar(style="width:"+Math.floor(query.currentPoints/res.points*100)+"%;height:9px;background-color:#9fec3e;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
 														.d-flex.justify-content-between
