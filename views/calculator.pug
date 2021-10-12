@@ -4,9 +4,12 @@ block scripts
 	link(rel="stylesheet" href="/stylesheets/calculator.css")
 	script(src="/javascripts/calculator.js")
 
-	script.
-		startCountdown(!{JSON.stringify(event.end)})
-		var event = !{JSON.stringify(event)};
+	- console.log(event)
+
+	if (event)
+		script.
+			startCountdown(!{JSON.stringify(event.end)})
+			var event = !{JSON.stringify(event)};
 
 mixin resultBlock(type, dict)
 	div(class=type+"_calculation")
@@ -27,8 +30,7 @@ block content
 	.container
 		h1 Pop Quiz Calculator
 
-		//- on-going event
-		if (event.start <= new Date() && event.end >= new Date())
+		if (event)
 			-
 				function getValue(i) {
 					if (typeof i !== "number") return "???";
@@ -155,17 +157,16 @@ block content
 						hr(style="border-color:var(--secondary);border-width:2px;margin-top:0;")
 						div.row.px-2
 							div.col-lg-6.mb-3.mb-lg-0 !{t("calculator.FreeBattles")}
-							div.col-lg-6
-								ul
-									| !{t("calculator.FreeAP")}
-									if event.ap
-										li FRee AP
-									else
-										li NAN
+							div.col-lg-6 !{t("calculator.FreeAP")}
+								if event.ap
+									style.
+										#free_ap { margin: 0; }
+									ul
+										li= t("calculator.rewards_ap")
 
 				div.col-lg-4
-					div.card.card-body.h-100
-						h5.text-primary Coming soon...
+					div.card.card-body.h-100.text-center
+						h5.text-primary.my-auto Coming soon...
 
 		else
 			div.card.card-body

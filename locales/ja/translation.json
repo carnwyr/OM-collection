@@ -131,7 +131,8 @@
     "endingIn": "あと",
     "today": "今日",
     "summary": "合計",
-    "FreeAP": "<p style='font-size:large;'>無料AP</p><ul><li>５分に１点回復</li><li>フレンドから５０点受け取れる</li><li>冷蔵庫ミッションから６０点もらえる（非VIP）</li><li>広告報酬５０点</li><li>反省会プレゼント２０点</li><li>デイリーミッション２０点</li><li>イベントのご褒美リスト</li>",
+    "FreeAP": "<p style='font-size:large;'>無料AP</p><ul id='free_ap'><li>５分に１点回復</li><li>フレンドから５０点受け取れる</li><li>冷蔵庫ミッションから６０点もらえる（非VIP）</li><li>広告報酬５０点</li><li>反省会プレゼント２０点</li><li>デイリーミッション２０点</li></ul>",
+    "rewards_ap": "イベントのご褒美リスト",
     "FreeBattles": "<p style='font-size:large;'>無料挑戦回数</p><ul><li>１つのステージには挑戦回数３回ある</li><li>広告で毎日挑戦回数５回回復できる</li></ul>"
 
   },
