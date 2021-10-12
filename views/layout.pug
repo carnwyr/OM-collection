@@ -30,7 +30,6 @@ html(lang=t("lang"))
     script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
     script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js')
     script(src='/javascripts/commonFunctions.js')
-    <script data-ad-client="ca-pub-1710157662563352" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" onerror="document.dispatchEvent(new CustomEvent('adBlocked'));"></script>
     block scripts
 
   body(class="d-flex flex-column min-vh-100")
@@ -101,9 +100,7 @@ html(lang=t("lang"))
       if (!user || !user.supportStatus.includes("adfree"))
         div#kool-aid.container(style="margin:2rem auto;text-align:center;")
           div.row(style="min-height:250px;")
-            div.col <div id="ezoic-pub-ad-placeholder-122"><ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="8350703474"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script></div>
-            div.col <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4893005895"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
-            div.col <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="6866037896"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+            div.col <div id="ezoic-pub-ad-placeholder-122"></div>
       //- toasts
       div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
         div(class="toast-body")
