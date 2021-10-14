@@ -18,7 +18,7 @@ exports.getEvents = async function(condition = {}) {
 
 exports.getEvent = async function(eventName) {
 	var event = eventCacheService.getCachedEvent(eventName);
-	if (!event)
+	if (!event || eventName != event.name)
 		event = await getFullEventData(eventName);
 	return event;
 }

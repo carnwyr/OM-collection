@@ -4,8 +4,6 @@ block scripts
 	link(rel="stylesheet" href="/stylesheets/calculator.css")
 	script(src="/javascripts/calculator.js")
 
-	- console.log(event)
-
 	if (event)
 		script.
 			startCountdown(!{JSON.stringify(event.end)})
