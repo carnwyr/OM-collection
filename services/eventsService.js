@@ -57,7 +57,10 @@ exports.getCurrentEventData = async function() {
 exports.getLatestEventData = async function() {
 	var currentTime = new Date();
 	try {
-		var latestEvent = await Events.find({ start: { "$lte": currentTime } }).sort({ end: 1 }).limit(1);
+		var latestEvent = await Events.find({
+			start: { "$lte": currentTime },
+			type: { "$ne": "Nightmare" }
+		}).sort({ end: -1 }).limit(1);
 		if (!latestEvent[0] || !latestEvent[0].name) return;
 
 		var latestEventData = await getFullEventData(latestEvent[0].name);
