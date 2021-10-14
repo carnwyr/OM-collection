@@ -5,12 +5,12 @@ const eventsService = require("../services/eventsService");
 var cachedEvent;
 
 exports.init = async function () {
-	cachedEvent = await eventsService.getCurrentEventData();
+	cachedEvent = await eventsService.getLatestEventData();
 
 	var changeStream = eventsService.getChangeStream();
 
 	changeStream.on('change', async next => {
-		cachedEvent = await eventsService.getCurrentEventData();
+		cachedEvent = await eventsService.getLatestEventData();
 	});
 }
 
