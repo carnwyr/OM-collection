@@ -4,10 +4,11 @@ block scripts
 	link(rel="stylesheet" href="/stylesheets/calculator.css")
 	script(src="/javascripts/calculator.js")
 
-	if (event)
-		script.
-			startCountdown(!{JSON.stringify(event.end)})
-			var event = !{JSON.stringify(event)};
+	- console.log(event)
+	
+	script.
+		startCountdown(!{JSON.stringify(event.end)})
+		var event = !{JSON.stringify(event)};
 
 mixin resultBlock(type, dict)
 	div(class=type+"_calculation")
@@ -28,7 +29,7 @@ block content
 	.container
 		h1 Pop Quiz Calculator
 
-		if (event)
+		if (event.end < new Date())
 			-
 				function getValue(i) {
 					if (typeof i !== "number") return "???";
@@ -56,8 +57,10 @@ block content
 								h6 Required
 								div.form-group
 									label(for="pointsPerBattle")= t("calculator.ppt")
-									// min=120 for now, need to change based on event type
-									input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" min="120" value=query.pointsPerBattle required)
+									if(event.type === "Pop Quiz") 
+										input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" min="120" value=query.pointsPerBattle required)
+									else
+										input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" value=12 disabled)
 								div.form-group
 									label(for="currentPoints")= t("calculator.currentPts")
 									input#currentPoints.form-control(type="number" name="currentPoints" min="0" value=query.currentPoints required)
@@ -168,4 +171,4 @@ block content
 
 		else
 			div.card.card-body
-				h5.mx-auto.my-5 Coming soon!
+				h5.mx-auto.my-5= t("calculator.ended", { name: t("lang") === "ja" ? event.ja_name : event.name })
