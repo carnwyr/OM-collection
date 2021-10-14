@@ -9,27 +9,28 @@ block scripts
 
 block content
 	.container
-		h1.text-dark(style="border:0;margin-bottom:0;padding-top:1rem;text-align:center;") Pop Quiz Calculator
-		p.text-center(style="margin-bottom:2rem;")
-			i On-going Pop Quiz Title
-
+		h1= title
 
 		//- Cards
-				if event.rewards.filter(r => r.card).length > 0
-					.card.shadow.px-4.py-3.mb-4
-						h5= t("events.cards")
-						.row
-							each reward in event.rewards
-								if reward.card
-									.d-none.d-md-block.col(style=`min-width: 16.5%; max-width: ${100/event.rewards.length}%`)
-										a.text-center.m-0.text-black-50(href="../card/"+getURL(reward.card.name))
-											img.img-fluid.d-none.d-md-flex(src="/images/cards/L/" + reward.card.uniqueName + ".jpg")
-											figcaption.my-1= t("lang")==="en"?reward.card.name:reward.card.ja_name
-									.d-block.d-md-none.col-4
-										a.text-center.m-0.text-black-50(href="../card/"+getURL(reward.card.name))
-											img.img-fluid.d-flex.d-md-none.w-100(src="/images/cards/S/" + reward.card.uniqueName + ".jpg" style="max-width: 110px")
-											figcaption.my-1= t("lang")==="en"?reward.card.name:reward.card.ja_name
+		div.card.card-body
+			//- each card in cards
+				
+		//-
+			if event.rewards.filter(r => r.card).length > 0
+				.card.shadow.px-4.py-3.mb-4
+					h5= t("events.cards")
+					.row
+						each reward in event.rewards
+							if reward.card
+								.d-none.d-md-block.col(style=`min-width: 16.5%; max-width: ${100/event.rewards.length}%`)
+									a.text-center.m-0.text-black-50(href="../card/"+getURL(reward.card.name))
+										img.img-fluid.d-none.d-md-flex(src="/images/cards/L/" + reward.card.uniqueName + ".jpg")
+										figcaption.my-1= t("lang")==="en"?reward.card.name:reward.card.ja_name
+								.d-block.d-md-none.col-4
+									a.text-center.m-0.text-black-50(href="../card/"+getURL(reward.card.name))
+										img.img-fluid.d-flex.d-md-none.w-100(src="/images/cards/S/" + reward.card.uniqueName + ".jpg" style="max-width: 110px")
+										figcaption.my-1= t("lang")==="en"?reward.card.name:reward.card.ja_name
 
 		// Calculator
 		// if /*event.type === "Lonely Devil" ||*/ (event.type === "Pop Quiz" && (event.start <= new Date() && event.end >= new Date()))
-		include calculator.pug
+		// include calculator.pug
