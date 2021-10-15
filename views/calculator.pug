@@ -161,7 +161,7 @@ block content
 						div.row.px-2
 							div.col-lg-6.mb-3.mb-lg-0 !{t("calculator.FreeBattles")}
 							div.col-lg-6 !{t("calculator.FreeAP")}
-								if event.ap
+								if event.ap.length !== 0
 									style.
 										#free_ap { margin: 0; }
 									ul
