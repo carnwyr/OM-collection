@@ -28,8 +28,9 @@ mixin resultBlock(type, dict)
 block content
 	.container
 		h1 Pop Quiz Calculator
+			| : #{event.name}
 
-		if (event.end < new Date())
+		if (event.end >= new Date())
 			-
 				function getValue(i) {
 					if (typeof i !== "number") return "???";
