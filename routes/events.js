@@ -9,13 +9,13 @@ const usersController = require("../controllers/usersController");
 router.post("/:event/calculate", eventsController.calculate);
 
 // Event page
+router.get("/new", usersController.hasAccess("Moderator"), eventsController.getEventEditPage);
 router.get("/:event/edit", usersController.hasAccess("Moderator"), eventsController.getEventEditPage);
-
 router.post("/updateEvent", usersController.hasAccess("Moderator"), eventsService.updateEvent);
-
 router.post("/:event/delete", usersController.hasAccess("Moderator"), eventsService.deleteEvent);
 
-router.get("/:event", eventsController.getEventPage);
+// mod access only, until page is complete
+router.get("/:event", usersController.hasAccess("Moderator"), eventsController.getEventPage);
 
 
 module.exports = router;

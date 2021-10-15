@@ -6,17 +6,20 @@ var usersController = require("../controllers/usersController");
 var miscController = require("../controllers/miscController");
 var eventsController = require("../controllers/eventsController");
 
-// Statis pages
+// Static pages
 router.get("/", cardsController.index);
 router.get("/policies", miscController.privacyPolicy);
 router.get("/surpriseGuest", miscController.surpriseGuest);
 router.get("/rankings", usersController.getRankingsPage);
-router.get("/events", eventsController.getEventsPage);
-router.get("/calculator", eventsController.getCalculatorPage);
 
-// Cards list
+// Cards lists
 router.get("/cards", cardsController.getCardsListPage);
 router.get("/hiddenCards", usersController.hasAccess("Admin"), cardsController.getHiddenCardsListPage);
+
+// Events
+// available to moderators only, until all event pages are completely finished
+router.get("/events", usersController.hasAccess("Moderator"), eventsController.getEventsPage);
+router.get("/calculator", eventsController.getCalculatorPage);
 
 // Account management
 router.get("/login", usersController.getLoginPage);
@@ -38,9 +41,7 @@ router.get('/:username/profile', cardsController.getProfilePage);
 router.get("/userpage", usersController.hasAccess("Admin"), usersController.getUserListPage);
 router.post("/updateSupport", usersController.hasAccess("Admin"), usersController.updateSupport);
 
-//
-router.get("/addEvent", usersController.hasAccess("Moderator"), eventsController.getEventEditPage);
-
+// Misc.
 router.get('/getAllCards', cardsController.getAllCards);
 
 
