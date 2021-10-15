@@ -27,8 +27,9 @@ mixin resultBlock(type, dict)
 
 block content
 	.container
-		h1 Pop Quiz Calculator
-			| : #{event.name}
+		h1 Pop Quiz Calculator:
+			|
+			| #{t("lang") === "ja" ? event.ja_name : event.name }
 
 		if (event.end >= new Date())
 			-
@@ -172,4 +173,4 @@ block content
 
 		else
 			div.card.card-body
-				h5.mx-auto.my-5= t("calculator.ended", { name: t("lang") === "ja" ? event.ja_name : event.name })
+				h5.mx-auto.my-5= t("calculator.ended")
