@@ -113,13 +113,15 @@ async function getFullEventData(eventName) {
 	}
 }
 
-exports.updateEvent = async function(req, res) {
+exports.updateEvent = async function (req, res) {
 	try {
 		let data = req.body.data;
 
 		if (!req.body.name) {
 			await Events.create(data);
-			await fileService.saveImage(req.body.img, null, data.img_name, "events");
+			if (req.body.img) {
+				await fileService.saveImage(req.body.img, null, data.uniqueName, "events");
+			}
 
 			return res.json({ err: null, message: "Event created!" });
 		}
@@ -127,7 +129,9 @@ exports.updateEvent = async function(req, res) {
 		let event = await Events.findOne({ name: decodeURI(req.body.name) });
 
 		await Events.findOneAndUpdate({ name: decodeURI(req.body.name) }, data, { runValidators: true }).exec();
-		await fileService.saveImage(req.body.img, event.img_name, data.img_name, "events");
+		if (req.body.img) {
+			await fileService.saveImage(req.body.img, event.img_name, data.uniqueName, "events");
+		}
 
 		return res.json({ err: null, message: "Event updated!" });
 	} catch(e) {

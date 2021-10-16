@@ -59,7 +59,7 @@ exports.getEventEditPage = async function(req, res, next) {
 	if (req.params.event) {
 		try {
 			let data = await eventsService.getEvent(req.params.event);
-			if (data.length === 0) throw createError(404, "Event not found");
+			if (!data) throw createError(404, "Event not found");
 
 			return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user });
 		} catch(e) {

@@ -5,6 +5,7 @@ block scripts
 	script(src="/javascripts/eventEdit.js")
 
 block content
+	include mixins/imageUpload
 	div#alert(role="alert")
 	div.container
 		h1= title
@@ -21,8 +22,8 @@ block content
 								label(for="ja_name") Japanese name
 								input#ja_name.form-control(type="text" name="ja_name" value=data.ja_name)
 							div.form-group
-								label(for="img_name") Image name
-								input#img_name.form-control(type="text" name="img_name" value=data.img_name)
+								label(for="uniqueName") Unique name
+								input#uniqueName.form-control(type="text" name="uniqueName" value=data.img_name)
 
 						div.col-4
 							div.form-group
@@ -53,14 +54,10 @@ block content
 								input#nightmare.form-check-input(type="radio" name="type" value="Nightmare" checked=data.type==="Nightmare")
 								label(for="nightmare") Nightmare
 
-						div.col-7
-							div.custom-file
-								input#img.custom-file-input(type="file" accept=".jpg")
-								label.custom-file-label(for="img")= data.img_name?data.img_name+".jpg":"Choose File (must be .jpg)"
-							div(style="display:flex;justify-content:center;align-items:center;background:aliceblue;border-radius:1rem;height:16rem;margin-top:.5rem;")
-								img#preview(style="height:85%;width:auto;" src=data.img_name?"/images/events/"+data.img_name+".jpg":"")
+						.col-8.px-3
+							+uploadImage("Event image", data ? "/images/events/" + data.img_name + ".jpg" : "#")
 
-						div.col-5.pl-5 Notes
+						div.col-4.pl-5 Notes
 							ul
 								li Time format: <span style="white-space:nowrap;">YYYY-MM-DDT00:00:00.000Z</span> example: <span style="white-space:nowrap;">2021-06-15T21:05:00.000Z</span>
 								li pop quiz usually starts at 1:00am UTC, ends at... idk

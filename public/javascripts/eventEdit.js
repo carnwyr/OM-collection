@@ -1,32 +1,16 @@
-$(document).ready(function() {
-	$("input[type=file]").on("change", loadImage);
-	$("input[name=name]").on("focusout", addImageName);
+$(document).ready(function () {
+	$('#name').on('focusout', fillUniqueName);
+
 	$("form").on("click", ".form-inline>button", removeItem);
 	$("#addReward, #addAP").on("click", addItem);
 	$("#submit").on("click", submitChange);
 });
 
-function loadImage(event) {
-	const preview = document.getElementById("preview");
-	const file = event.target.files[0];
-	const reader = new FileReader();
-
-	reader.addEventListener("load", function() {
-		preview.src = reader.result;  // convert image file to base64 string
-	}, false);
-
-	if (file) {
-		reader.readAsDataURL(file);
-	}
-
-	// change file input display name
-	var fileName = $(this).val();
-	$(this).next(".custom-file-label").text(fileName.replace("C:\\fakepath\\", ""));
-}
-
-function addImageName() {
-	var img_name = $(this).val().replace(/[\\/:*?"<>|]/g, '').replace(/ /g, '_');
-	$("input[name=img_name]").val(img_name);
+function fillUniqueName() {
+  var name = $('#name').val();
+  var uniqueName = name.replace(/[\\/:*?"<>|]/g, '');
+  uniqueName = uniqueName.replace(/ /g, '_');
+  $('#uniqueName').val(uniqueName);
 }
 
 function removeItem() {
@@ -62,15 +46,20 @@ function submitChange() {
 		}
 	}
 
-	// console.log(data);
+	var image = readImage($('#uploadImage')[0]);
+	image
+		.then(res => sendRequest(data, res))
+		.catch(err => showAlert("danger", "Can't load image: " + err.message));
+}
 
+function sendRequest(data, image) {
 	$.ajax({
 		type: "post",
 		url: "/event/updateEvent",
 		contentType: "application/json",
 		data: JSON.stringify({
 			data: data,
-			img: $("img#preview").attr("src"),
+			img: image,
 			name: location.pathname.split("/")[2]
 		})
 	}).done(function(result) {
