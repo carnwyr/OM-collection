@@ -16,7 +16,7 @@ exports.getEventsPage = async function(req, res, next) {
 		events: events });
 }
 
-exports.getEventPage = async function (req, res, next) {
+exports.getEventDetail = async function (req, res, next) {
 	try {
 		var eventName = req.params.event.replace(/_/g, ' ');
 		var event = await eventsService.getEvent(eventName);
@@ -25,7 +25,7 @@ exports.getEventPage = async function (req, res, next) {
 	} catch (e) {
 		return next(e);
 	}
-	return res.render('eventPage', {
+	return res.render("eventDetail", {
 		title: event.name,
 		description: `View "${event.name}" and other Obey Me events on Karasu-OS.com`,
 		event: event,
