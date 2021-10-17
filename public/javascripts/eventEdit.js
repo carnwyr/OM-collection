@@ -3,7 +3,7 @@ $(document).ready(function () {
 
 	$("form").on("click", ".form-inline>button", removeItem);
 	$("#addReward, #addAP").on("click", addItem);
-	$("#submit").on("click", submitChange);
+	$("#submit").on("click", saveChanges);
 });
 
 function fillUniqueName() {
@@ -21,6 +21,38 @@ function addItem() {
 	var parentForm = $(this).data("target");
 	var template = $(this).data("clone");
 	$(parentForm).append($(template).html());
+}
+
+// TODO merge with card edit functions
+// TODO fix page reload
+function saveChanges(e) {
+  e.preventDefault();
+  if (!validateFields()) {
+    return;
+  }
+  submitChange();
+}
+
+function validateFields() {
+  var uniqueName = $('#uniqueName').val();
+  if (/[\\/:*?"<>| ]/.test(uniqueName)) {
+    showAlert("danger", 'Invalid unique name');
+    return false;
+  }
+  if (!$('#name').val() || !uniqueName) {
+    showAlert("danger", 'Name and unique name must be filled');
+    return false;
+  }
+  let fileName = $('#uploadImage').val();
+	if (fileName) {
+		let parts = fileName.split('.');
+		let extension = parts[parts.length - 1];
+		if (extension !== 'jpg') {
+			showAlert("danger", 'Uploaded image must be jpg');
+			return false;
+		}
+	}
+  return true;
 }
 
 function submitChange() {
