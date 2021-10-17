@@ -7,19 +7,16 @@ $(function() {
 });
 
 function startCountdown(d) {
-	var countDownDate = new Date(d).getTime();
-	var today = new Date();
-
+	var endDate = new Date(d);
 	var x = setInterval(function() {
-	  var now = new Date().getTime();
-		var distance = countDownDate - now;
+		var now = new Date();
+		var distance = endDate - now;
 		var days = Math.floor(distance / (1000 * 60 * 60 * 24));
 
+		// if not last day of event, countdown to jst midnight (utc 3pm)
 		if (days > 0) {
-			var timezoneOffset = (today.getTimezoneOffset() + 9 * 60) * 60 * 1000;
-			var jst = new Date(now + timezoneOffset);  // get current time in jst
-
-			distance = new Date(2025, 0) - jst;
+			endDate.setUTCHours(3);
+			distance = endDate - now;
 		}
 
 	  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
