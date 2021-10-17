@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const async = require("async");
+const i18next = require("i18next");
 
 const eventsService = require("../services/eventsService");
 const eventCalculatorService = require("../services/eventCalculatorService");
