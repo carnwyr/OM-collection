@@ -57,7 +57,8 @@
     "user_favourites": "{{username}}のお気に入り",
     "my_profile": "プロフィール",
     "user_profile": "{{username}}のプロフィール",
-    "settings": "ユーザー設定"
+    "settings": "ユーザー設定",
+    "calculator": "抜き打ちテストpt計算機"
   },
   "collection": {
     "cards": "アドレス帳",

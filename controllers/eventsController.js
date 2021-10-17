@@ -40,7 +40,7 @@ exports.getCalculatorPage = async function (req, res, next) {
 		return next(e);
 	}
 
-	var locals = { title: "Pop Quiz Calculator", description: ":)", event: event, query: req.query, user: req.user };
+	var locals = { title: i18next.t("title.calculator"), description: i18next.t("description.calculator"), event: event, query: req.query, user: req.user };
 	[locals.calculationError, locals.result] = eventCalculatorService.calculate(event, req.query);
 	return res.render("calculator", locals);
 };
