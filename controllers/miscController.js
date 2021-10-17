@@ -28,7 +28,7 @@ exports.surpriseGuest = function(req, res, next) {
 		});
 		res.render("surpriseGuest", {
 			title: i18next.t("common.spg"),
-			description: "An all-in-one master guide for Obey Me surprise guest interactions, including the demon brothers and side characters.",
+			description: "An all-in-one guide for Obey Me! surprise guest interactions. Karasu's interactive guide features all characters including the demon brothers and side characters. ... Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon.",
 			user: req.user, interactions: interactions
 		});
 

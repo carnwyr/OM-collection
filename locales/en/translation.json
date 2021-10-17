@@ -63,6 +63,9 @@
   "description": {
     "calculator": "Obey Me! Pop Quiz Calculator. If you need help calculating the amount of battles to clear or the amount of AP you need to spend to get a pop quiz reward, then try Karasu-OS.com's pop quiz calculator! It will even tell you the amount of battles and AP you need to buy."
   },
+  "description": {
+    "cards": "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation."
+  },
   "collection": {
     "cards": "Cards",
     "favourites": "Favourites"

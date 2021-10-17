@@ -15,7 +15,7 @@ const usersController = require("../controllers/usersController");
 exports.index = function(req, res, next) {
 	return res.render("index", {
 		title: "Karasu OS",
-		description: "Karasu OS is a card and tool database for the game Obey Me! by NTT Solmare Corporation.",
+		description: i18next.t("description.cards"),
 		user: req.user
 	});
 };
@@ -24,7 +24,7 @@ exports.getCardsListPage = async function(req, res, next) {
 	try {
 		var cards = await Cards.find().sort({ number: -1 });
 		return res.render("cardsList", {
-			title: i18next.t("title.cards"), description: "Obey Me! Cards Database. This is also the place to manage your card collection.",
+			title: i18next.t("title.cards"), description: "The place to view all of Obey Me!'s cards. The largest and most complete card databse with all sorts of filters for you to find the card you want! This is also the place to manage your card collection. Create an account to access more features! ... Pride, Greed, Envy, Wrath, Lust, Gluttony, Sloth, UR+, UR, SSR, SR, N, Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon, Little D., Owned, Not owned.",
 			cardsList: cards, path: "list",
 			user: req.user
 		});
@@ -121,8 +121,21 @@ exports.getCardDetailPage = async function(req, res, next) {
 		}
 
 		var stats = await getCardStats(req.user, card);
-		res.render('cardDetail', {
-			title: i18next.t("lang")==="en"?cardData.name:cardData.ja_name,
+
+		var title, lang = i18next.t("lang");
+		if (lang === "en") {
+			title = cardData.name;
+		} else if (lang === "ja") {
+			title = cardData.ja_name;
+		} else if (lang === "zh") {
+			title = cardData.zh_name;
+		}
+		if (!title || title === "???") {
+			title = cardData.name;
+		}
+
+		return res.render('cardDetail', {
+			title: title,
 			description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 			card: cardData, isHidden: false,
 			user: req.user, stats: stats });
@@ -322,11 +335,13 @@ function getReplacedImages() {
 
 exports.getAllCards = async function(req, res) {
 	try {
-		var fields = { "uniqueName": 1 };
-		if (i18next.t("lang") === "en") {
-			fields.name = 1;
-		} else {
+		var fields = { "uniqueName": 1 }, lang = i18next.t("lang");
+		if (lang === "ja") {
 			fields.name = "$ja_name";
+		} /* else if (lang === "zh") {
+			fields.name = "$zh_name";
+		} */ else {
+			fields.name = 1;
 		}
 		return res.send(await Cards.aggregate([{ $project: fields }]));
 	} catch(e) {

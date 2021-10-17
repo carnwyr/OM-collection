@@ -49,8 +49,17 @@ languageDetector.addDetector({
 	name: "subdomain",
 	lookup: function(req, res, options) {
 		var subdomain = options.getHeaders(req).host.split('.')[0];
-		var lang = "en";
-		if (subdomain === "ja") { lang = "ja"; }
+		switch(subdomain) {
+			case "ja":
+				var lang = "ja";
+				break;
+			case "zh":
+				var lang = "zh";
+				break;
+			default:
+				var lang = "en";
+		}
+
 		i18next.changeLanguage(lang);
 		return lang;
 	}, cacheUserLanguage: function(req, res, lng, options) {}
@@ -66,17 +75,12 @@ i18next
 			addPath: __dirname + "/locales/{{lng}}/{{ns}}.missing.json"
 		},
 		fallbackLng: "en",
-		preload: ["en", "ja"],
+		preload: ["en", "ja", "zh"],
 		// saveMissing: true,
     detection: { order: ["subdomain"] }
 	});
 
 app.use(i18nextMiddleware.handle(i18next));
-app.use(function(req, res, next) {
-	if (req.query.lang === "ja") return res.redirect("https://ja." + process.env.DOMAIN + req.path);
-	if (req.query.lang === "en") return res.redirect("https://" + process.env.DOMAIN + req.path);
-	next();
-});
 
 app.use(compression());
 app.use(logger("dev"));
