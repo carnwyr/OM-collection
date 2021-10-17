@@ -130,7 +130,7 @@ exports.updateEvent = async function (req, res) {
 
 		await Events.findOneAndUpdate({ name: decodeURI(req.body.name) }, data, { runValidators: true }).exec();
 		if (req.body.img) {
-			await fileService.saveImage(req.body.img, event.img_name, data.uniqueName, "events");
+			await fileService.saveImage(req.body.img, event.uniqueName, data.uniqueName, "events");
 		}
 
 		return res.json({ err: null, message: "Event updated!" });
@@ -144,7 +144,7 @@ exports.updateEvent = async function (req, res) {
 exports.deleteEvent = async function (req, res) {
 	try {
 		await Events.findOneAndDelete({ name: req.params.event });
-		await fileService.deleteImage(doc.img_name, "events")
+		await fileService.deleteImage(doc.uniqueName, "events")
 	} catch (err) {
 		console.error(e);
 		Sentry.captureException(e);

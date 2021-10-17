@@ -18,7 +18,7 @@ var EventsSchema = new Schema(
 	{
 		name: { type: String, required: true },
 		ja_name: { type: String, required: true },
-		img_name: { type: String, required: true, unique: true },
+		uniqueName: { type: String, required: true, unique: true },
 		type: { type: String, required: true, enum: ["Pop Quiz", "Lonely Devil", "Birthday", "Nightmare"] },
 		start: { type: Date },
 		end: { type: Date },

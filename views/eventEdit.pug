@@ -23,7 +23,7 @@ block content
 								input#ja_name.form-control(type="text" name="ja_name" value=data.ja_name)
 							div.form-group
 								label(for="uniqueName") Unique name
-								input#uniqueName.form-control(type="text" name="uniqueName" value=data.img_name)
+								input#uniqueName.form-control(type="text" name="uniqueName" value=data.uniqueName)
 
 						div.col-4
 							div.form-group
@@ -55,7 +55,7 @@ block content
 								label(for="nightmare") Nightmare
 
 						.col-8.px-3
-							+uploadImage("Event image", data ? "/images/events/" + data.img_name + ".jpg" : "#")
+							+uploadImage("Event image", data ? "/images/events/" + data.uniqueName + ".jpg" : "#")
 
 						div.col-4.pl-5 Notes
 							ul
