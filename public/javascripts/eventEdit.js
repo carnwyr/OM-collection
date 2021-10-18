@@ -1,7 +1,7 @@
 $(document).ready(function () {
 	createMasks();
 
-	$('#name').on('focusout', fillUniqueName);
+	$('#name\\.en').on('focusout', fillUniqueName);
 
 	$("form").on("click", ".form-inline>button", removeItem);
 	$("#addReward, #addAP").on("click", addItem);
@@ -59,8 +59,8 @@ function createMasks() {
 }
 
 function fillUniqueName() {
-  var name = $('#name').val();
-  var uniqueName = name.replace(/[\\/:*?"<>|]/g, '');
+  var name = $('#name\\.en').val();
+  var uniqueName = name.replace(/[\\/:*!?"<>|]/g, '');
   uniqueName = uniqueName.replace(/ /g, '_');
   $('#uniqueName').val(uniqueName);
 }
