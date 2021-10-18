@@ -146,7 +146,7 @@ function submitChange() {
 function sendRequest(data, image) {
 	$.ajax({
 		type: "post",
-		url: "/event/updateEvent",
+		url: location.pathname,
 		contentType: "application/json",
 		data: JSON.stringify({
 			data: data,
