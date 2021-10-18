@@ -1,7 +1,7 @@
 $(document).ready(function () {
 	createMasks();
 
-	$('#name\\.en').on('focusout', fillUniqueName);
+	$('#en-name').on('focusout', fillUniqueName);
 
 	$("form").on("click", ".form-inline>button", removeItem);
 	$("#addReward, #addAP").on("click", addItem);
@@ -59,7 +59,7 @@ function createMasks() {
 }
 
 function fillUniqueName() {
-  var name = $('#name\\.en').val();
+  var name = $('#en-name').val();
   var uniqueName = name.replace(/[\\/:*!?"<>|]/g, '');
   uniqueName = uniqueName.replace(/ /g, '_');
   $('#uniqueName').val(uniqueName);
@@ -91,7 +91,7 @@ function validateFields() {
     showAlert("danger", 'Invalid unique name');
     return false;
   }
-  if (!$('#name').val() || !uniqueName) {
+  if (!$('#en-name').val() || !uniqueName) {
     showAlert("danger", 'Name and unique name must be filled');
     return false;
   }
@@ -119,6 +119,13 @@ function submitChange() {
 		data.rewards = formatRewards(new FormData($("form")[1]), "card");
 		data.ap = formatRewards(new FormData($("form")[2]), "page");
 	}
+
+	data.name = {
+		en: data["en-name"],
+		ja: data["ja-name"],
+		zh: data["zh-name"]
+	};
+	["en-name", "ja-name", "zh-name"].forEach(e => delete data[e]);
 
 	for (let key in data) {
 		if (data[key] === "") {
@@ -152,7 +159,6 @@ function sendRequest(data, image) {
 				return;
 			}
 			showAlert("success", result.message);
-			location.pathname = `/event/${encodeURIComponent($("input#name").val())}/edit`;  // temp
 		});
 }
 
