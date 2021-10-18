@@ -81,7 +81,7 @@ exports.getEventEditPage = async function(req, res, next) {
 
 	var start = dayjs.utc().startOf('day').hour(1);
 	var end = dayjs.utc().startOf('day').hour(6);
-	return res.render("eventEdit", { title: "Add Event", description: ":)", data: {start: start, end: end}, user: req.user });
+	return res.render("eventEdit", { title: "Add Event", description: ":)", data: {start: start, end: end, name: {}}, user: req.user });
 };
 
 function formatDateTime(datetime) {

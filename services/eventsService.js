@@ -123,6 +123,18 @@ async function getFullEventData(eventName) {
 	}
 }
 
+exports.addEvent = async function (req, res) {
+	try {
+		await Events.create(data);
+		await fileService.saveImage(req.body.img, null, data.uniqueName, "events");
+		return res.json({ err: null, message: "Event created!" });
+	} catch(e) {
+		console.error(e);
+		Sentry.captureException(e);
+		return res.json({ err: true, message: e.message });
+	}
+}
+
 exports.updateEvent = async function (req, res) {
 	try {
 		let data = req.body.data;
@@ -130,21 +142,8 @@ exports.updateEvent = async function (req, res) {
 		data.start = stringToDateTime(data.start);
 		data.end = stringToDateTime(data.end);
 
-		console.log(data.start)
-
-		let event = await Events.findOne({ name: decodeURI(req.body.name) });
-
-		if (!event) {
-			await Events.create(data);
-			if (req.body.img) {
-				await fileService.saveImage(req.body.img, null, data.uniqueName, "events");
-			}
-
-			return res.json({ err: null, message: "Event created!" });
-		}
-
-		await Events.findOneAndUpdate({ name: decodeURI(req.body.name) }, data, { runValidators: true }).exec();
-		await fileService.saveImage(req.body.img, event.uniqueName, data.uniqueName, "events");
+		await Events.findOneAndUpdate({ uniqueName: req.params.event }, data, { runValidators: true }).exec();
+		await fileService.saveImage(req.body.img, req.params.event, data.uniqueName, "events");
 
 		return res.json({ err: null, message: "Event updated!" });
 	} catch(e) {
