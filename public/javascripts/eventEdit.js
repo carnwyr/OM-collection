@@ -15,7 +15,7 @@ function createMasks() {
 		blocks: {
 			YYYY: {
 				mask: IMask.MaskedRange,
-				from: 2020,
+				from: 2019,
 				to: 2050
 			},
 			MM: {
