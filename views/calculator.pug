@@ -80,7 +80,6 @@ block content
 					.card.h-100
 						- var lst = (result ? result.map(x => Object.assign(x, event.rewards.find(y => y.tag === x.tag))) : event.rewards).filter(x => x.tag);
 						- if (query.customGoal) lst.find(x => x.tag === "Custom").points = parseInt(query.customGoal)
-						- console.log(lst);
 						div.card-body
 							p.text-center.text-primary(style="letter-spacing:.25rem;")
 								strong REWARDS
