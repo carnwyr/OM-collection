@@ -1,6 +1,7 @@
 const Sentry = require('@sentry/node');
 const async = require("async");
 const dayjs = require('dayjs');
+const i18next = require("i18next");
 
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 const utc = require('dayjs/plugin/utc')
@@ -173,4 +174,14 @@ exports.getChangeStream = function() {
 
 function stringToDateTime(dateString) {
 	return dayjs.tz(dateString, 'YYYY.MM.DD, HH:mm:ss', "UTC");
+}
+
+async function getUniqueName(name) {
+	try {
+		var ev = await Events.findOne({["name."+i18next.t("lang")]: {$regex: new RegExp('^'+name+'$', 'i')}});
+		return ev ? ev.uniqueName : '';
+	} catch(err) {
+		Sentry.captureException(err);
+		return '';
+	}
 }
