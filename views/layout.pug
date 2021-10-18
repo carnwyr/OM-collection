@@ -22,13 +22,14 @@ html(lang=t("lang"))
       meta(property="og:image" content="https://karasu-os.com/images/karasu.png")
     meta(name="baidu-site-verification" content="code-og1W6xXq1t")
     link(rel="icon" type="image/x-icon" href="/images/favicon.ico")
-    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous")
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Kanit|Nunito:wght@200;300;400;700')
     link(rel='stylesheet' href='/stylesheets/theme.css')
     link(rel='stylesheet' href='/stylesheets/style.css')
     script(src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous")
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
-    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js')
+    script(src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous")
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous")
+    script(src="https://unpkg.com/imask@6.2.2/dist/imask.min.js")
     script(src='/javascripts/commonFunctions.js')
     block scripts
 
@@ -63,14 +64,19 @@ html(lang=t("lang"))
             div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
               a(class="dropdown-item" href='/SurpriseGuest')= t("common.spg")
               a.dropdown-item(href="/calculator") Calculator
-          if user && user.type === "Admin"
+          // TODO use userController to check rights
+          if user && (user.type === "Admin" || user.type === "Moderator")
             li(class="nav-item dropdown")
               a(class="nav-link dropdown-toggle" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
               div(class="dropdown-menu shadow px-2" aria-labelledby="adminDropdownButton")
-                a(class="dropdown-item" href='/card/new') Add new card
-                a(class="dropdown-item" href='/hiddenCards') Hidden cards
-                a(class="dropdown-item" href='/userpage') User List
+                if user.type === "Admin"
+                  a(class="dropdown-item" href='/card/new') Add new card
+                if user.type === "Admin"
+                  a(class="dropdown-item" href='/hiddenCards') Hidden cards
+                if user.type === "Admin"
+                  a(class="dropdown-item" href='/userpage') User List
                 a(class="dropdown-item" href="/events") Events
+                a(class="dropdown-item" href="/event/new") Add new event
         ul(class="navbar-nav ml-auto")
           li(class="nav-item d-none d-md-block")
             div(class="nav-link" style="position:relative;bottom:1px") <svg width=".95em" height=".95em" viewBox="0 0 16 16" class="bi bi-person text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg>

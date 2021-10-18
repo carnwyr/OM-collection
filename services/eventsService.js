@@ -1,5 +1,14 @@
 const Sentry = require('@sentry/node');
 const async = require("async");
+const dayjs = require('dayjs');
+
+const customParseFormat = require('dayjs/plugin/customParseFormat')
+const utc = require('dayjs/plugin/utc')
+const timezone = require('dayjs/plugin/timezone')
+
+dayjs.extend(customParseFormat)
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const Events = require("../models/events");
 
@@ -117,6 +126,11 @@ exports.updateEvent = async function (req, res) {
 	try {
 		let data = req.body.data;
 
+		data.start = stringToDateTime(data.start);
+		data.end = stringToDateTime(data.end);
+
+		console.log(data.start)
+
 		let event = await Events.findOne({ name: decodeURI(req.body.name) });
 
 		if (!event) {
@@ -155,4 +169,8 @@ exports.deleteEvent = async function (req, res) {
 
 exports.getChangeStream = function() {
 	return Events.watch();
+}
+
+function stringToDateTime(dateString) {
+	return dayjs.tz(dateString, 'YYYY.MM.DD, HH:mm:ss', "UTC");
 }

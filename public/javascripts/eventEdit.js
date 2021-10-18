@@ -1,10 +1,62 @@
 $(document).ready(function () {
+	createMasks();
+
 	$('#name').on('focusout', fillUniqueName);
 
 	$("form").on("click", ".form-inline>button", removeItem);
 	$("#addReward, #addAP").on("click", addItem);
 	$("#submit").on("click", saveChanges);
 });
+
+function createMasks() {
+	var maskOptions = {
+		mask: 'YYYY.MM.DD, hh:mm:ss',
+		lazy: false,
+		blocks: {
+			YYYY: {
+				mask: IMask.MaskedRange,
+				from: 2020,
+				to: 2050
+			},
+			MM: {
+				mask: IMask.MaskedRange,
+				from: 1,
+				to: 12,
+				maxLength: 2
+			},
+			DD: {
+				mask: IMask.MaskedRange,
+				from: 1,
+				to: 31,
+				maxLength: 2
+			},
+			hh: {
+				mask: IMask.MaskedRange,
+				from: 0,
+				to: 23,
+				maxLength: 2
+			},
+			mm: {
+				mask: IMask.MaskedRange,
+				from: 0,
+				to: 60,
+				maxLength: 2
+			},
+			ss: {
+				mask: IMask.MaskedRange,
+				from: 0,
+				to: 60,
+				maxLength: 2
+			}
+		}
+	};
+	var start = document.getElementById('start');
+	var end = document.getElementById('end');
+	var maskStart = IMask(start, maskOptions);
+	var maskEnd = IMask(end, maskOptions);
+	maskStart.value = start.getAttribute('value');
+	maskEnd.value = end.getAttribute('value');
+}
 
 function fillUniqueName() {
   var name = $('#name').val();
@@ -24,7 +76,7 @@ function addItem() {
 }
 
 // TODO merge with card edit functions
-// TODO fix page reload
+// TODO fix page reload (not needed, shows old values)
 function saveChanges(e) {
   e.preventDefault();
   if (!validateFields()) {

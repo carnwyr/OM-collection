@@ -1,6 +1,15 @@
 const createError = require("http-errors");
 const async = require("async");
 const i18next = require("i18next");
+const dayjs = require("dayjs");
+
+const customParseFormat = require('dayjs/plugin/customParseFormat')
+const utc = require('dayjs/plugin/utc')
+const timezone = require('dayjs/plugin/timezone')
+
+dayjs.extend(customParseFormat)
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const eventsService = require("../services/eventsService");
 const eventCalculatorService = require("../services/eventCalculatorService");
@@ -61,10 +70,20 @@ exports.getEventEditPage = async function(req, res, next) {
 			let data = await eventsService.getEvent(req.params.event);
 			if (!data) throw createError(404, "Event not found");
 
+			data.start = formatDateTime(data.start);
+			data.end = formatDateTime(data.end);
+
 			return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user });
 		} catch(e) {
 			return next(e);
 		}
 	}
-	return res.render("eventEdit", { title: "Add Event", description: ":)", data: {}, user: req.user });
+
+	var start = dayjs.utc().startOf('day').hour(10);
+	var end = dayjs.utc().startOf('day').hour(15);
+	return res.render("eventEdit", { title: "Add Event", description: ":)", data: {start: start, end: end}, user: req.user });
 };
+
+function formatDateTime(datetime) {
+	return dayjs.tz(datetime, "UTC").format('YYYY.MM.DD, HH:mm:ss');
+}
