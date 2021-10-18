@@ -14,15 +14,13 @@ var RewardsSchema = new Schema({
 	card: { type: String }
 });
 
-var LanguageSchema = new Schema({
-	en: { type: String, required: true },
-	ja: { type: String, default: "???" },
-	zh: { type: String, default: "???" }
-})
-
 var EventsSchema = new Schema({
 	uniqueName: { type: String, required: true, unique: true },
-	name: { type: [LanguageSchema], required: true },
+	name: {
+		en: { type: String, required: true },
+		ja: { type: String, default: "???" },
+		zh: { type: String, default: "???" }
+	},
 	type: { type: String, required: true, enum: ["Pop Quiz", "Lonely Devil", "Birthday", "Nightmare"] },
 	start: { type: Date },
 	end: { type: Date },
