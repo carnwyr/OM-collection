@@ -117,7 +117,9 @@ exports.updateEvent = async function (req, res) {
 	try {
 		let data = req.body.data;
 
-		if (!req.body.name) {
+		let event = await Events.findOne({ name: decodeURI(req.body.name) });
+
+		if (!event) {
 			await Events.create(data);
 			if (req.body.img) {
 				await fileService.saveImage(req.body.img, null, data.uniqueName, "events");
@@ -126,12 +128,8 @@ exports.updateEvent = async function (req, res) {
 			return res.json({ err: null, message: "Event created!" });
 		}
 
-		let event = await Events.findOne({ name: decodeURI(req.body.name) });
-
 		await Events.findOneAndUpdate({ name: decodeURI(req.body.name) }, data, { runValidators: true }).exec();
-		if (req.body.img) {
-			await fileService.saveImage(req.body.img, event.uniqueName, data.uniqueName, "events");
-		}
+		await fileService.saveImage(req.body.img, event.uniqueName, data.uniqueName, "events");
 
 		return res.json({ err: null, message: "Event updated!" });
 	} catch(e) {
