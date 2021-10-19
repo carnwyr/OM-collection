@@ -129,8 +129,6 @@ exports.updateEvent = async function (req, res) {
 		data.start = stringToDateTime(data.start);
 		data.end = stringToDateTime(data.end);
 
-		console.log(data.start)
-
 		let event = await Events.findOne({ name: decodeURI(req.body.name) });
 
 		if (!event) {
@@ -169,6 +167,19 @@ exports.deleteEvent = async function (req, res) {
 
 exports.getChangeStream = function() {
 	return Events.watch();
+}
+
+exports.getDefaultEventData = function() {
+	var start = dayjs.utc().startOf('day').hour(1);
+	var end = dayjs.utc().startOf('day').hour(6);
+	var data = {
+		start: start,
+		end: end,
+		stages: 26,
+		type: "Pop Quiz",
+		pageCost: 100000
+	};
+	return data;
 }
 
 function stringToDateTime(dateString) {

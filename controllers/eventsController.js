@@ -79,9 +79,8 @@ exports.getEventEditPage = async function(req, res, next) {
 		}
 	}
 
-	var start = dayjs.utc().startOf('day').hour(1);
-	var end = dayjs.utc().startOf('day').hour(6);
-	return res.render("eventEdit", { title: "Add Event", description: ":)", data: {start: start, end: end}, user: req.user });
+	var data = eventsService.getDefaultEventData();
+	return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user });
 };
 
 function formatDateTime(datetime) {

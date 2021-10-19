@@ -40,21 +40,15 @@ block content
 								label(for="end") End date (UTC)
 								input#end.form-control(type="text" name="end" value=data.end)
 
-							p.mb-0 Type
-							div.form-check
-								input#popquiz.form-check-input(type="radio" name="type" value="Pop Quiz" checked=data.type==="Pop Quiz")
-								label.form-check-label(for="popquiz") Pop Quiz
-							div.form-check
-								input#lonelydevil.form-check-input(type="radio" name="type" value="Lonely Devil" checked=data.type==="Lonely Devil")
-								label.form-check-label(for="lonelydevil") Lonely Devil
-							div.form-check
-								input#birthday.form-check-input(type="radio" name="type" value="Birthday" checked=data.type==="Birthday")
-								label.form-check-label(for="birthday") Birthday
-							div.form-check
-								input#nightmare.form-check-input(type="radio" name="type" value="Nightmare" checked=data.type==="Nightmare")
-								label(for="nightmare") Nightmare
+							div.form-group
+								label(for="type") Type
+								select#eventType(class='custom-select' name="type")
+									option(value='Pop Quiz' selected=(data.type==='Pop Quiz')) Pop Quiz
+									option(value='Lonely Devil' selected=(data.type==='Lonely Devil')) Lonely Devil
+									option(value='Birthday' selected=(data.type==='Birthday')) Birthday
+									option(value='Nightmare' selected=(data.type==='Nightmare')) Nightmare
 
-						.col-8.px-3
+						.col-8.px-3.mt-4.mb-2
 							+uploadImage("Event image", data ? "/images/events/" + data.uniqueName + ".jpg" : "#")
 
 				br
