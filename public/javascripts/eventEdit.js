@@ -6,6 +6,8 @@ $(document).ready(function () {
 	$("form").on("click", ".form-inline>button", removeItem);
 	$("#addReward, #addAP").on("click", addItem);
 	$("#submit").on("click", saveChanges);
+
+	bindCustomTags();
 });
 
 function createMasks() {
@@ -72,7 +74,29 @@ function removeItem() {
 function addItem() {
 	var parentForm = $(this).data("target");
 	var template = $(this).data("clone");
-	$(parentForm).append($(template).html());
+	var newItem = $(parentForm).append($(template).html());
+	newItem.find("button").click(removeItem);
+	newItem.find("select").change(switchCustomTagDisplay);
+}
+
+function bindCustomTags() {
+	var tagDropdowns = $('#rewards select');
+	tagDropdowns.each((index, reward) => {
+		if (!$(reward).val()) {
+			$(reward).next().addClass('d-block').removeClass('d-none');
+		};
+	});
+
+	tagDropdowns.change(switchCustomTagDisplay)
+}
+
+function switchCustomTagDisplay(event) {
+	var tag = event.target;
+	if (!$(tag).val()) {
+		$(tag).next().addClass('d-block').removeClass('d-none');
+	} else {
+		$(tag).next().addClass('d-none').removeClass('d-block');
+	};
 }
 
 // TODO merge with card edit functions
@@ -110,13 +134,20 @@ function validateFields() {
 function submitChange() {
 	var data = {};
 
-	var formData = new FormData($("form")[0]);
-	for (let pair of formData.entries()) {
-		data[pair[0]] = pair[1];
-	}
+	var formData = new FormData(document.getElementById('info'));
+	formData.forEach((value, key) => data[key] = value);
 
 	if (data.type !== "Nightmare") {
-		data.rewards = formatRewards(new FormData($("form")[1]), "card");
+		data.rewards = $("#rewards form").map((index, form) => {
+			var formData = new FormData(form);
+			var reward = {};
+			formData.forEach((value, key) => reward[key] = value);
+			if (!reward.tag) {
+				reward.tag = reward.customTag;
+			}
+			delete reward.customTag;
+			return reward;
+		}).toArray();
 		data.ap = formatRewards(new FormData($("form")[2]), "page");
 	}
 

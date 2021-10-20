@@ -4,15 +4,37 @@ block scripts
 	link(rel="stylesheet" href="/stylesheets/eventEdit.css")
 	script(src="/javascripts/eventEdit.js")
 
+mixin rewardEntry(reward = {tag:null, points:null, card:null})
+	form.form-inline
+		select.custom-select.form-control(name="tag" placeholder="Reward tag")
+			each option in rewardOptions
+				option(value=option selected=checkSelectedTag(option, reward.tag))= option
+			option(value='' selected=checkSelectedTag('Custom', reward.tag)) Custom
+		input.form-control.d-none(type="text" placeholder="Custom reward tag" name="customTag" value=reward.tag)
+		input.form-control(type="number" placeholder="Reward cost" name="points" value=reward.points)
+		input.form-control(type="text" placeholder="Card (if applicable)" name="card" value=reward.card)
+		button.btn.btn-outline-secondary(type="button") Remove
+
 block content
 	include mixins/imageUpload
+	-
+		var rewardOptions = ['Demon SSR', 'Memory SSR', 'Memory UR', 'Demon UR'];
+		function checkSelectedTag(optionTag, rewardTag) {
+			if (rewardOptions.includes(rewardTag)) {
+				return rewardTag === optionTag;
+			}
+			if (!rewardTag) {
+				return optionTag === 'Demon SSR';
+			}
+			return optionTag === 'Custom';
+		}
 	div#alert(role="alert")
 	div.container
 		h1= title
 		div.card.shadow
 			div.card-body
 				h5 Event Info
-				form
+				form#info
 					div.form-row
 						div.col-4
 							div.form-group
@@ -48,28 +70,18 @@ block content
 									option(value='Birthday' selected=(data.type==='Birthday')) Birthday
 									option(value='Nightmare' selected=(data.type==='Nightmare')) Nightmare
 
-						.col-8.px-3.mt-4.mb-2
+						.col-8.px-3.mt-4.mb-3
 							+uploadImage("Event image", data ? "/images/events/" + data.uniqueName + ".jpg" : "#")
 
 				br
 				h5 Rewards
-					small.ml-2 Please remove empty rows before updating event
-				form#rewards
+				div#rewards
 					if data.rewards && data.rewards.length !== 0
 						each reward in data.rewards
-							div.form-inline
-								input.form-control(type="text" placeholder="reward name" name="tag" value=reward.tag)
-								input.form-control(type="number" placeholder="reward cost" name="points" value=reward.points)
-								input.form-control(type="text" placeholder="card name (if applicable)" name="card" value=reward.card)
-								button.btn.btn-outline-secondary(type="button") Remove
+							+rewardEntry(reward)
 					else
-						div.form-inline
-							input.form-control(type="text" placeholder="reward name" name="tag")
-							input.form-control(type="number" placeholder="reward cost" name="points")
-							input.form-control(type="text" placeholder="card name (if applicable)" name="card")
-							button.btn.btn-outline-secondary(type="button") Remove
-				hr
-				button#addReward.btn.btn-secondary(data-target="#rewards" data-clone="#rewardTemplate") Add reward
+						+rewardEntry()
+				button#addReward.btn.btn-secondary.mb-4(data-target="#rewards" data-clone="#rewardTemplate") Add reward
 				br
 				br
 				h5 AP Rewards
@@ -95,11 +107,7 @@ block content
 				button#submit.btn.btn-primary Submit Change
 
 			template#rewardTemplate
-				div.form-inline
-					input.form-control(type="text" placeholder="reward name" name="tag")
-					input.form-control(type="number" placeholder="reward cost" name="points")
-					input.form-control(type="text" placeholder="card name (if applicable)" name="card")
-					button.btn.btn-outline-secondary(type="button") Remove
+				+rewardEntry()
 
 			template#APTemplate
 				div.form-inline
