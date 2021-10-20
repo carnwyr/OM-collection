@@ -8,16 +8,17 @@ $(function() {
 
 function startCountdown(d) {
 	var endDate = new Date(d);
+	var today = new Date();
+	var daysLeft = Math.floor((endDate - today) / (1000 * 60 * 60 * 24));
+
+	// set to jst midnight if not last day of pop quiz.
+	if (daysLeft > 0) {
+		endDate.setUTCHours(15);
+	}
+
 	var x = setInterval(function() {
 		var now = new Date();
 		var distance = endDate - now;
-		var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-
-		// if not last day of event, countdown to jst midnight (utc 3pm)
-		if (days > 0) {
-			endDate.setUTCHours(3);
-			distance = endDate - now;
-		}
 
 	  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 	  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));

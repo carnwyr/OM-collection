@@ -7,7 +7,6 @@ block scripts
 		script(src="/javascripts/calculator.js")
 		script.
 			startCountdown(!{JSON.stringify(event.end)});
-			//- var event = !{JSON.stringify(event)};
 
 mixin resultBlock(type, dict)
 	div(class=type+"_calculation")
