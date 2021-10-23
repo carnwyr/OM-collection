@@ -10,8 +10,9 @@ router.post("/:event/calculate", eventsController.calculate);
 
 // Event page
 router.get("/new", usersController.hasAccess("Moderator"), eventsController.getEventEditPage);
+router.post("/new", usersController.hasAccess("Moderator"), eventsService.addEvent);
 router.get("/:event/edit", usersController.hasAccess("Moderator"), eventsController.getEventEditPage);
-router.post("/updateEvent", usersController.hasAccess("Moderator"), eventsService.updateEvent);
+router.post("/:event/edit", usersController.hasAccess("Moderator"), eventsService.updateEvent);
 router.get("/:event/delete", usersController.hasAccess("Moderator"), eventsService.deleteEvent);
 
 // mod access only, until page is complete

@@ -15,22 +15,16 @@ block content
         return `${year}年${month}月${day}日`;
       }
     }
-
-    function getEventName(e) {
-      if (t("lang") === "en") return e.name;
-      return e.ja_name;
-    }
-
+    
   div.container
     h1= title
     ul#gallery
       each event in events
         li.col-12.col-sm-6.col-lg-4.mb-3
           div.card.shadow
-            a(href="event/" + event.name + "/edit")
+            a(href="event/" + event.uniqueName + "/edit")
               img.card-img-top(src="/images/events/" + event.uniqueName + ".jpg")
             div.card-body
               p.card-title
-                // TODO proper url
-                a(href="event/" + event.name + "/edit")= getEventName(event)
+                a(href="event/" + event.uniqueName + "/edit")= event.uniqueName
               small.text-muted= getFormatedDate(event.start) + " - " + getFormatedDate(event.end)

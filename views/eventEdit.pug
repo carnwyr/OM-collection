@@ -38,30 +38,24 @@ block content
 					div.form-row
 						div.col-4
 							div.form-group
-								label(for="name") Name
-								input#name.form-control(type="text" name="name" value=data.name)
+								label(for="en-name") Name
+								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en)
 							div.form-group
-								label(for="ja_name") Japanese name
-								input#ja_name.form-control(type="text" name="ja_name" value=data.ja_name)
+								label(for="ja-name") Japanese name
+								input.form-control(id="ja-name" type="text" name="ja-name" value=data.name.ja)
+							div.form-group
+								label(for="zh-name") Chinese name
+								input.form-control(id="zh-name" type="text" name="zh-name" value=data.name.zh)
+						div.col-4
 							div.form-group
 								label(for="uniqueName") Unique name
 								input#uniqueName.form-control(type="text" name="uniqueName" value=data.uniqueName)
-
-						div.col-4
 							div.form-group
 								label(for="start") Start date (UTC)
 								input#start.form-control(type="text" name="start" value=data.start)
 							div.form-group
-								label(for="stages") Number of stages
-								input#stages.form-control(type="number" name="stages" value=data.stages)
-							div.form-group
-								label(for="pageCost") Page cost
-								input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
-						div.col-4
-							div.form-group
 								label(for="end") End date (UTC)
 								input#end.form-control(type="text" name="end" value=data.end)
-
 							div.form-group
 								label(for="type") Type
 								select#eventType(class='custom-select' name="type")
@@ -69,6 +63,14 @@ block content
 									option(value='Lonely Devil' selected=(data.type==='Lonely Devil')) Lonely Devil
 									option(value='Birthday' selected=(data.type==='Birthday')) Birthday
 									option(value='Nightmare' selected=(data.type==='Nightmare')) Nightmare
+						div.col-4
+							div.form-row
+								div.col-6.form-group
+									label(for="stages") Number of stages
+									input#stages.form-control(type="number" name="stages" value=data.stages)
+								div.col-6.form-group
+									label(for="pageCost") Page cost
+									input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
 
 						.col-8.px-3.mt-4.mb-3
 							+uploadImage("Event image", data ? "/images/events/" + data.uniqueName + ".jpg" : "#")
