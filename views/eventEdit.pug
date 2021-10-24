@@ -15,6 +15,13 @@ mixin rewardEntry(reward = {tag:null, points:null, card:null})
 		input.form-control(type="text" placeholder="Card (if applicable)" name="card" value=reward.card)
 		button.btn.btn-outline-secondary(type="button") Remove
 
+mixin apEntry(ap = {amount:null, points:null, page:null})
+	form.form-inline
+		input.form-control(type="number" placeholder="AP amount" name="amount" value=ap.amount)
+		input.form-control(type="number" placeholder="AP cost" name="points" value=ap.points)
+		input.form-control(type="number" placeholder="Part _ only" name="page" value=ap.page)
+		button.btn.btn-outline-secondary(type="button") Remove
+
 block content
 	include mixins/imageUpload
 	-
@@ -91,22 +98,13 @@ block content
 				br
 				h5 AP Rewards
 				hr.mt-0
-				form#AP
+				div#AP
 					if data.ap && data.ap.length !== 0
 						each ap in data.ap
-							div.form-inline
-								input.form-control(type="number" placeholder="AP amount" name="amount" value=ap.amount)
-								input.form-control(type="number" placeholder="AP cost" name="points" value=ap.points)
-								input.form-control(type="number" placeholder="page (if non-repeating)" name="page" value=ap.page)
-								button.btn.btn-outline-secondary(type="button") Remove
+							+apEntry(ap)
 					else
-						div.form-inline
-							input.form-control(type="number" placeholder="AP amount" name="amount")
-							input.form-control(type="number" placeholder="AP cost" name="points")
-							input.form-control(type="number" placeholder="page (if non-repeating)" name="page")
-							button.btn.btn-outline-secondary(type="button") Remove
-				hr
-				button#addAP.btn.btn-secondary(data-target="#AP" data-clone="#APTemplate") Add AP reward
+						+apEntry()
+				button#addAP.btn.btn-secondary.mb-4(data-target="#AP" data-clone="#APTemplate") Add AP reward
 				br
 				br
 				button#submit.btn.btn-primary Submit Change
@@ -115,8 +113,4 @@ block content
 				+rewardEntry()
 
 			template#APTemplate
-				div.form-inline
-					input.form-control(type="number" placeholder="AP amount" name="amount")
-					input.form-control(type="number" placeholder="AP cost" name="points")
-					input.form-control(type="number" placeholder="available page" name="page")
-					button.btn.btn-outline-secondary(type="button") Remove
+				+apEntry()

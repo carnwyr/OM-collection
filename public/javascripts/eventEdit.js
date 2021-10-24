@@ -124,17 +124,8 @@ function submitChange() {
 	formData.forEach((value, key) => data[key] = value);
 
 	if (data.type !== "Nightmare") {
-		data.rewards = $("#rewards form").map((index, form) => {
-			var formData = new FormData(form);
-			var reward = {};
-			formData.forEach((value, key) => reward[key] = value);
-			if (!reward.tag) {
-				reward.tag = reward.customTag;
-			}
-			delete reward.customTag;
-			return reward;
-		}).toArray();
-		data.ap = formatRewards(new FormData($("form")[2]), "page");
+		data.rewards = getRewards();
+		data.ap = getAP();
 	}
 
 	data.name = {
@@ -158,6 +149,36 @@ function submitChange() {
 	image
 		.then(res => sendRequest(data, res))
 		.catch(err => showAlert("danger", "Can't load image: " + err.message));
+}
+
+function getRewards() {
+	var rewards = $("#rewards form").map((index, form) => {
+		var formData = new FormData(form);
+		var reward = {};
+		formData.forEach((value, key) => reward[key] = value);
+		if (!reward.tag) {
+			reward.tag = reward.customTag;
+		}
+		delete reward.customTag;
+		return reward;
+	}).toArray();
+
+	rewards = rewards.filter(r => r.tag && r.points);
+
+	return rewards;
+}
+
+function getAP() {
+	var apRewards = $("#AP form").map((index, form) => {
+		var formData = new FormData(form);
+		var ap = {};
+		formData.forEach((value, key) => { if (value) ap[key] = value });
+		return ap;
+	}).toArray();
+
+	apRewards = apRewards.filter(r => r.amount && r.points);
+
+	return apRewards;
 }
 
 function sendRequest(data, image) {
