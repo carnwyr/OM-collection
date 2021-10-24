@@ -8,7 +8,7 @@ block content
     function getFormatedDate(d) {
       var day = d.getDate(), year = d.getFullYear();
       if (t("lang") === "en") {
-        var month = d.toLocaleString('default', { month: 'long' });
+        var month = d.toLocaleString('en', { month: 'long' });
         return `${day} ${month} ${year}`;
       } else {
         var month = d.getMonth();
@@ -21,10 +21,10 @@ block content
     ul#gallery
       each event in events
         li.col-12.col-sm-6.col-lg-4.mb-3
-          div.card.shadow
-            a(href="event/" + event.uniqueName + "/edit")
-              img.card-img-top(src="/images/events/" + event.uniqueName + ".jpg")
-            div.card-body
-              p.card-title
-                a(href="event/" + event.uniqueName + "/edit")= event.uniqueName
-              small.text-muted= getFormatedDate(event.start) + " - " + getFormatedDate(event.end)
+          // TODO remove underline 
+          a(href="event/" + encodeURIComponent(event.name.en.replace(/ /g, '_')) + "/edit")
+            div.card.shadow
+              img.card-img-top(src="/images/events/" + event.name.en + ".jpg")
+              div.card-body
+                p.card-title= event.name.en
+                small.text-muted= getFormatedDate(event.start) + " - " + getFormatedDate(event.end)

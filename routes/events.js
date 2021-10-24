@@ -9,7 +9,7 @@ const usersController = require("../controllers/usersController");
 router.post("/:event/calculate", eventsController.calculate);
 
 // Event page
-router.get("/new", usersController.hasAccess("Moderator"), eventsController.getEventEditPage);
+router.get("/new", usersController.hasAccess("Moderator"), eventsController.getEventAddPage);
 router.post("/new", usersController.hasAccess("Moderator"), eventsService.addEvent);
 router.get("/:event/edit", usersController.hasAccess("Moderator"), eventsController.getEventEditPage);
 router.post("/:event/edit", usersController.hasAccess("Moderator"), eventsService.updateEvent);

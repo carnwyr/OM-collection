@@ -26,7 +26,7 @@ mixin resultBlock(type, dict)
 block content
 	.container
 		h1= title
-			| : #{t("lang") === "ja" ? event.ja_name : event.name }
+			| : #{event.name[t("lang")] }
 
 		if (event.end >= new Date())
 			-

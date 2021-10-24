@@ -1,8 +1,6 @@
 $(document).ready(function () {
 	createMasks();
 
-	$('#en-name').on('focusout', fillUniqueName);
-
 	$("form").on("click", ".form-inline>button", removeItem);
 	$("#addReward, #addAP").on("click", addItem);
 	$("#submit").on("click", saveChanges);
@@ -60,13 +58,6 @@ function createMasks() {
 	maskEnd.value = end.getAttribute('value');
 }
 
-function fillUniqueName() {
-  var name = $('#en-name').val();
-  var uniqueName = name.replace(/[\\/:*!?"<>|]/g, '');
-  uniqueName = uniqueName.replace(/ /g, '_');
-  $('#uniqueName').val(uniqueName);
-}
-
 function removeItem() {
 	$(this).parent().remove();
 }
@@ -110,13 +101,8 @@ function saveChanges(e) {
 }
 
 function validateFields() {
-  var uniqueName = $('#uniqueName').val();
-  if (/[\\/:*?"<>| ]/.test(uniqueName)) {
-    showAlert("danger", 'Invalid unique name');
-    return false;
-  }
-  if (!$('#en-name').val() || !uniqueName) {
-    showAlert("danger", 'Name and unique name must be filled');
+    if (!$('#en-name').val()) {
+    showAlert("danger", 'English name must be filled');
     return false;
   }
   let fileName = $('#uploadImage').val();

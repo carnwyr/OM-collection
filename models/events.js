@@ -15,9 +15,8 @@ var RewardsSchema = new Schema({
 });
 
 var EventsSchema = new Schema({
-	uniqueName: { type: String, required: true, unique: true },
 	name: {
-		en: { type: String, required: true },
+		en: { type: String, required: true, unique: true },
 		ja: { type: String, default: "???" },
 		zh: { type: String, default: "???" }
 	},

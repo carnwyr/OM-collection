@@ -2,6 +2,7 @@ const Sentry = require('@sentry/node');
 const async = require("async");
 const dayjs = require('dayjs');
 const i18next = require("i18next");
+const createError = require("http-errors");
 
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 const utc = require('dayjs/plugin/utc')
@@ -27,21 +28,23 @@ exports.getEvents = async function(condition = {}) {
 }
 
 exports.getEvent = async function(eventName) {
-	var event = eventCacheService.getCachedEvent(eventName);
-	if (!event || eventName != event.name)
+	var event = eventCacheService.getCachedEvent();
+	if (!event || eventName != event.name) {
 		event = await getFullEventData(eventName);
+	}
 	return event;
 }
 
-exports.getLatestEvent = async function() {
-	var currentTime = new Date();
+exports.getLatestEvent = async function () {
+	var latestEventName = await getLatestEventName();
+
 	var cachedEvent = eventCacheService.getCachedEvent();
-	if (cachedEvent && cachedEvent.start < currentTime) {
+	if (cachedEvent && cachedEvent.name === latestEventName) {
 		return cachedEvent;
 	}
 
 	try {
-		var latestEventData = await exports.getLatestEventData();
+		var latestEventData = await getFullEventData(latestEventName);
 		eventCacheService.setCachedEvent(latestEventData);
 		return latestEventData;
 	} catch (e) {
@@ -50,21 +53,7 @@ exports.getLatestEvent = async function() {
 	}
 }
 
-exports.getCurrentEventData = async function() {
-	var currentTime = new Date();
-	try {
-		var currentEventName = await Events.findOne({ start: { "$lte": currentTime }, end: { "$gt": currentTime } }, { name: 1 });
-		if (!currentEventName || !currentEventName.name) return;
-
-		var currentEvent = await getFullEventData(currentEventName.name);
-		return currentEvent;
-	} catch (e) {
-		console.error(e);
-		Sentry.captureException(e);
-	}
-}
-
-exports.getLatestEventData = async function() {
+async function getLatestEventName() {
 	var currentTime = new Date();
 	try {
 		var latestEvent = await Events.find({
@@ -73,18 +62,25 @@ exports.getLatestEventData = async function() {
 		}).sort({ end: -1 }).limit(1);
 		if (!latestEvent[0] || !latestEvent[0].name) return;
 
-		var latestEventData = await getFullEventData(latestEvent[0].name);
-		return latestEventData;
+		return latestEvent[0].name.en;
 	} catch (e) {
 		console.error(e);
 		Sentry.captureException(e);
 	}
 }
 
+exports.getLatestEventData = async function () {
+	var latestEventName = await getLatestEventName();
+	if (!latestEventName) return;
+
+	var latestEventData = await getFullEventData(latestEventName);
+	return latestEventData;
+}
+
 async function getFullEventData(eventName) {
 	try {
 		var event = await Events.aggregate([
-			{ $match: { "name": eventName }},
+			{ $match: { "name.en": eventName }},
 			{
 				$unwind: {
 					"path": "$rewards",
@@ -125,8 +121,15 @@ async function getFullEventData(eventName) {
 
 exports.addEvent = async function (req, res) {
 	try {
+		let data = req.body.data;
+
+		let event = await Events.findOne({ "name.en": data.name.en });
+		if (event) {
+			throw createError(400, `Event with name ${data.name.en} already exists`);
+		}
+
 		await Events.create(data);
-		await fileService.saveImage(req.body.img, null, data.uniqueName, "events");
+		await fileService.saveImage(req.body.img, null, data.name.en, "events");
 		return res.json({ err: null, message: "Event created!" });
 	} catch(e) {
 		console.error(e);
@@ -138,23 +141,19 @@ exports.addEvent = async function (req, res) {
 exports.updateEvent = async function (req, res) {
 	try {
 		let data = req.body.data;
+		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 
 		data.start = stringToDateTime(data.start);
 		data.end = stringToDateTime(data.end);
 
-		let event = await Events.findOne({ name: decodeURI(req.body.name) });
+		let event = await Events.findOne({ "name.en": eventName });
 
 		if (!event) {
-			await Events.create(data);
-			if (req.body.img) {
-				await fileService.saveImage(req.body.img, null, data.uniqueName, "events");
-			}
-
-			return res.json({ err: null, message: "Event created!" });
+			throw createError(404, `Event with name ${data.name.en} doesn't exist`);
 		}
 
-		await Events.findOneAndUpdate({ uniqueName: req.params.event }, data, { runValidators: true }).exec();
-		await fileService.saveImage(req.body.img, req.params.event, data.uniqueName, "events");
+		await Events.findOneAndUpdate({ "name.en": eventName }, data, { runValidators: true }).exec();
+		await fileService.saveImage(req.body.img, eventName, data.name.en, "events");
 
 		return res.json({ err: null, message: "Event updated!" });
 	} catch(e) {
@@ -166,9 +165,10 @@ exports.updateEvent = async function (req, res) {
 
 exports.deleteEvent = async function (req, res) {
 	try {
-		var event = await Events.findOneAndRemove({ name: req.params.event });
+		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		var event = await Events.findOneAndRemove({ "name.en": eventName });
 		if (event) {
-			await fileService.deleteImage("events", event.uniqueName);
+			await fileService.deleteImage("events", event.name.en);
 		}
 		return res.redirect('/events');
 	} catch (err) {
@@ -198,14 +198,4 @@ exports.getDefaultEventData = function() {
 
 function stringToDateTime(dateString) {
 	return dayjs.tz(dateString, 'YYYY.MM.DD, HH:mm:ss', "UTC");
-}
-
-async function getUniqueName(name) {
-	try {
-		var ev = await Events.findOne({["name."+i18next.t("lang")]: {$regex: new RegExp('^'+name+'$', 'i')}});
-		return ev ? ev.uniqueName : '';
-	} catch(err) {
-		Sentry.captureException(err);
-		return '';
-	}
 }

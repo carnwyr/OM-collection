@@ -28,7 +28,7 @@ exports.getEventsPage = async function(req, res, next) {
 
 exports.getEventDetail = async function (req, res, next) {
 	try {
-		var eventName = req.params.event.replace(/_/g, ' ');
+		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		var event = await eventsService.getEvent(eventName);
 
 		if (!event) throw createError(404, "Event not found");
@@ -64,23 +64,24 @@ exports.calculate = async function(req, res) {
 	return res.json({ err: false, result: result });
 }
 
-exports.getEventEditPage = async function(req, res, next) {
-	if (req.params.event) {
-		try {
-			let data = await eventsService.getEvent(req.params.event);
-			if (!data) throw createError(404, "Event not found");
-
-			data.start = formatDateTime(data.start);
-			data.end = formatDateTime(data.end);
-
-			return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user });
-		} catch(e) {
-			return next(e);
-		}
-	}
-
+exports.getEventAddPage = async function(req, res, next) {
 	var data = eventsService.getDefaultEventData();
 	return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user });
+};
+
+exports.getEventEditPage = async function(req, res, next) {
+	try {
+		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		let data = await eventsService.getEvent(eventName);
+		if (!data) throw createError(404, "Event not found");
+
+		data.start = formatDateTime(data.start);
+		data.end = formatDateTime(data.end);
+
+		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user });
+	} catch(e) {
+		return next(e);
+	}
 };
 
 function formatDateTime(datetime) {
