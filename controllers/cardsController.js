@@ -333,20 +333,33 @@ function getReplacedImages() {
 	return Promise.all([p1, p2, p3]);
 };
 
-exports.getAllCards = async function(req, res) {
+exports.getAllCards = async function (req, res) {
+	var cards = await exports.getCards();
+	return res.send(cards);
+}
+
+// TODO move to the service
+exports.getCards = async function (condition = {}) {
 	try {
-		var fields = { "uniqueName": 1 }, lang = i18next.t("lang");
-		if (lang === "ja") {
-			fields.name = "$ja_name";
-		} /* else if (lang === "zh") {
-			fields.name = "$zh_name";
-		} */ else {
-			fields.name = 1;
+		var lang = i18next.t("lang");
+		// TODO card name translations
+		/*var query = {
+			name: `name.${lang}`
+		};*/
+		var query = {
+			name: (lang === "ja" ? "$ja_name" : "$name"),
+			createdOn: { $toDate: "$_id" }
 		}
-		return res.send(await Cards.aggregate([{ $project: fields }]));
+		var cards = await Cards.aggregate([
+			{ $match: condition },
+			{ $project: query },
+			{ $sort: { createdOn: -1 } },
+			{ $project: { name: 1, _id: 0 }}
+		]);
+		return cards;
 	} catch(e) {
-		// console.error(e);
-		return res.send([]);
+		console.error(e);
+		return [];
 	}
 }
 

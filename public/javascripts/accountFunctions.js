@@ -172,9 +172,9 @@ function searchCard(e) {
 	e.preventDefault();
 
 	var search = $("#cardSearch input").val().replace(/[.*+?^${}()|[\]\\]/g, "");
+	var reg = new RegExp(search, "i");
 	var resultList = lst.filter(el => {
 		var name = el.name.replace(/[.*+?^${}()|[\]\\]/g, "");
-		var reg = new RegExp(search, "i");
 		return reg.test(name);
 	}).slice(0, 10);
 

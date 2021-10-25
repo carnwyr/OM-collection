@@ -13,6 +13,7 @@ dayjs.extend(timezone)
 
 const eventsService = require("../services/eventsService");
 const eventCalculatorService = require("../services/eventCalculatorService");
+const cardsService = require("../controllers/cardsController"); // TODO
 
 exports.getEventsPage = async function(req, res, next) {
 	// TODO: add method to only retrieve a certain type of event
@@ -66,7 +67,9 @@ exports.calculate = async function(req, res) {
 
 exports.getEventAddPage = async function(req, res, next) {
 	var data = eventsService.getDefaultEventData();
-	return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user });
+	var cards = await cardsService.getCards();
+	var cardNames = cards.map(x => x.name);
+	return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user, cardData: cards });
 };
 
 exports.getEventEditPage = async function(req, res, next) {
@@ -78,7 +81,10 @@ exports.getEventEditPage = async function(req, res, next) {
 		data.start = formatDateTime(data.start);
 		data.end = formatDateTime(data.end);
 
-		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user });
+		var cards = await cardsService.getCards();
+		var cardNames = cards.map(x => x.name);
+
+		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames });
 	} catch(e) {
 		return next(e);
 	}

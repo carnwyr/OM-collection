@@ -1,11 +1,21 @@
+var selectPickerOptions = {
+	liveSearch: true,
+	style: '',
+	styleBase: 'form-control',
+	size: 15,
+	title: 'Card (if applicable)'
+};
+
 $(document).ready(function () {
 	createMasks();
 
-	$("form").on("click", ".form-inline>button", removeItem);
-	$("#addReward, #addAP").on("click", addItem);
+	$(".remove-button").click(removeItem);
+	$("#addReward, #addAP").click(addItem);
 	$("#submit").on("click", saveChanges);
 
 	bindCustomTags();
+
+	$('.card-select').selectpicker(selectPickerOptions);
 });
 
 function createMasks() {
@@ -66,12 +76,13 @@ function addItem() {
 	var parentForm = $(this).data("target");
 	var template = $(this).data("clone");
 	var newItem = $(parentForm).append($(template).html());
-	newItem.find("button").click(removeItem);
-	newItem.find("select").change(switchCustomTagDisplay);
+	newItem.find(".remove-button").click(removeItem);
+	newItem.find(".tag-select").change(switchCustomTagDisplay);
+	newItem.find(".card-select").selectpicker(selectPickerOptions);
 }
 
 function bindCustomTags() {
-	var tagDropdowns = $('#rewards select');
+	var tagDropdowns = $('#rewards .tag-select');
 	tagDropdowns.each((index, reward) => {
 		if (!$(reward).val()) {
 			$(reward).next().addClass('d-block').removeClass('d-none');
