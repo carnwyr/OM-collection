@@ -18,13 +18,12 @@ block content
     
   div.container
     h1= title
-    ul#gallery
+    .row#gallery
       each event in events
-        li.col-12.col-sm-6.col-lg-4.mb-3
-          // TODO remove underline 
-          a(href="event/" + encodeURIComponent(event.name.en.replace(/ /g, '_')) + "/edit")
-            div.card.shadow
-              img.card-img-top(src="/images/events/" + event.name.en + ".jpg")
-              div.card-body
+        .col-12.col-sm-6.col-lg-4.mb-3
+          div.card.shadow
+            img.card-img-top(src="/images/events/" + event.name.en + ".jpg")
+            div.card-body
+              a.stretched-link(href="event/" + encodeURIComponent(event.name.en.replace(/ /g, '_')) + "/edit")
                 p.card-title= event.name.en
-                small.text-muted= getFormatedDate(event.start) + " - " + getFormatedDate(event.end)
+              small.text-muted= getFormatedDate(event.start) + " - " + getFormatedDate(event.end)
