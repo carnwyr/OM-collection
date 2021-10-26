@@ -11,11 +11,13 @@ $(document).ready(function () {
 
 	$(".remove-button").click(removeItem);
 	$("#addReward, #addAP").click(addItem);
-	$("#submit").on("click", saveChanges);
+	$("#submit").click(saveChanges);
 
 	bindCustomTags();
 
 	$('.card-select').selectpicker(selectPickerOptions);
+
+	$('.preset').click(applyPreset);
 });
 
 function createMasks() {
@@ -75,10 +77,11 @@ function removeItem() {
 function addItem() {
 	var parentForm = $(this).data("target");
 	var template = $(this).data("clone");
-	var newItem = $(parentForm).append($(template).html());
+	var newItem = $($(template).html()).appendTo($(parentForm));
 	newItem.find(".remove-button").click(removeItem);
 	newItem.find(".tag-select").change(switchCustomTagDisplay);
 	newItem.find(".card-select").selectpicker(selectPickerOptions);
+	return newItem;
 }
 
 function bindCustomTags() {
@@ -221,4 +224,19 @@ function formatRewards(f, end) {
 		}
 	}
 	return lst;
+}
+
+function applyPreset() {
+	var presetName = $(this).val();
+	var presetData = apPresets[presetName];
+
+	$("#AP").empty();
+
+	presetData.forEach(ap => {
+		let newItem = addItem.call($("#addAP"));
+		newItem.find('[name="amount"]').val(ap.amount);
+		newItem.find('[name="points"]').val(ap.points);
+		if (ap.page)
+			newItem.find('[name="page"]').val(ap.page);
+	});
 }

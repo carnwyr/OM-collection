@@ -31,3 +31,4 @@ var EventsSchema = new Schema({
 
 
 module.exports = mongoose.model("events", EventsSchema);
+exports.APSchema = APSchema;

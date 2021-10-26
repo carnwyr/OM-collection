@@ -65,11 +65,16 @@ exports.calculate = async function(req, res) {
 	return res.json({ err: false, result: result });
 }
 
-exports.getEventAddPage = async function(req, res, next) {
-	var data = eventsService.getDefaultEventData();
-	var cards = await cardsService.getCards();
-	var cardNames = cards.map(x => x.name);
-	return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user, cardData: cards });
+exports.getEventAddPage = async function (req, res, next) {
+	try {
+		var data = eventsService.getDefaultEventData();
+		var cards = await cardsService.getCards();
+		var cardNames = cards.map(x => x.name);
+		var apPresets = await eventsService.getAPPresets();
+		return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
+	} catch(e) {
+		return next(e);
+	}
 };
 
 exports.getEventEditPage = async function(req, res, next) {
@@ -83,8 +88,10 @@ exports.getEventEditPage = async function(req, res, next) {
 
 		var cards = await cardsService.getCards();
 		var cardNames = cards.map(x => x.name);
+		
+		var apPresets = await eventsService.getAPPresets();
 
-		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames });
+		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
 	} catch(e) {
 		return next(e);
 	}

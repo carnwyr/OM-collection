@@ -13,6 +13,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 const Events = require("../models/events");
+const APPresets = require("../models/apPresets");
 
 const eventCacheService = require("../services/eventCacheService");
 const fileService = require("../services/fileService");
@@ -198,4 +199,11 @@ exports.getDefaultEventData = function() {
 
 function stringToDateTime(dateString) {
 	return dayjs.tz(dateString, 'YYYY.MM.DD, HH:mm:ss', "UTC");
+}
+
+exports.getAPPresets = async function () {
+	var apPresets = await APPresets.find({});
+	var apPresetsMap = {};
+	apPresets.forEach(x => apPresetsMap[x.name] = x.rewards);
+	return apPresetsMap;
 }
