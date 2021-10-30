@@ -1,18 +1,15 @@
 const createError = require("http-errors");
-const Cards = require("../models/cards");
-const HiddenCards = require("../models/hiddenCards.js");
 
 const async = require("async");
 const fs = require("fs");
 const nodeHtmlToImage = require("node-html-to-image");
 const i18next = require("i18next");
 
+const cardService = require("../services/cardService");
+const userService = require("../services/userService");
 const fileService = require("../services/fileService");
 
-const usersController = require("../controllers/usersController");
-
-// Functions to render pages
-exports.index = function(req, res, next) {
+exports.index = function (req, res, next) {
 	return res.render("index", {
 		title: "Karasu OS",
 		description: i18next.t("description.cards"),
@@ -22,10 +19,12 @@ exports.index = function(req, res, next) {
 
 exports.getCardsListPage = async function(req, res, next) {
 	try {
-		var cards = await Cards.find().sort({ number: -1 });
+		var cards = await cardService.getCards();
 		return res.render("cardsList", {
-			title: i18next.t("title.cards"), description: "The place to view all of Obey Me!'s cards. The largest and most complete card databse with all sorts of filters for you to find the card you want! This is also the place to manage your card collection. Create an account to access more features! ... Pride, Greed, Envy, Wrath, Lust, Gluttony, Sloth, UR+, UR, SSR, SR, N, Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon, Little D., Owned, Not owned.",
-			cardsList: cards, path: "list",
+			title: i18next.t("title.cards"),
+			description: "The place to view all of Obey Me!'s cards. The largest and most complete card databse with all sorts of filters for you to find the card you want! This is also the place to manage your card collection. Create an account to access more features! ... Pride, Greed, Envy, Wrath, Lust, Gluttony, Sloth, UR+, UR, SSR, SR, N, Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon, Little D., Owned, Not owned.",
+			cardsList: cards,
+			path: "list",
 			user: req.user
 		});
 	} catch(e) {
@@ -33,73 +32,72 @@ exports.getCardsListPage = async function(req, res, next) {
 	}
 };
 
-exports.getCardsCollectionPage = async function(req, res, next) {
+exports.getOwnedCardsPage = async function(req, res, next) {
 	try {
-		var username = await usersController.userExists(req.params.username);
-		if (!username) {
+		var user = await userService.getUser(req.params.username);
+		if (!user) {
 			throw createError(404, "User not found");
 		}
 
-		if (req.user && req.user.name === username) {
-			var title = i18next.t("title.my_collection");
-		} else {
-			var title = i18next.t("title.user_collection", { username: username });
-		}
-
-		var privateUser = await usersController.isPrivateUser(username);
-		if (privateUser && title !== i18next.t("title.my_collection")) {
-			return res.render("cardsList", { title: title, description: `${username}'s Collection on Karasu-OS.com`, isPrivate: true, path: "collection", user: req.user });
-		}
-
-		var ownedCards = await usersController.getCardCollection(username, "owned");
-
-		var cardStats = {
-			characters: {
-				Lucifer: { owned: 0, total: 0 },
-				Mammon: { owned: 0, total: 0 },
-				Leviathan: { owned: 0, total: 0 },
-				Satan: { owned: 0, total: 0 },
-				Asmodeus: { owned: 0, total: 0 },
-				Beelzebub: { owned: 0, total: 0 },
-				Belphegor: { owned: 0, total: 0 },
-				Diavolo: { owned: 0, total: 0 },
-				Barbatos: { owned: 0, total: 0 },
-				Luke: { owned: 0, total: 0 },
-				Simeon: { owned: 0, total: 0 },
-				Solomon: { owned: 0, total: 0 },
-				"Little D": { owned: 0, total: 0 }
-			},
-			rarity: {
-				N: { owned: 0, total: 0 },
-				R: { owned: 0, total: 0 },
-				SR: { owned: 0, total: 0 },
-				SSR: { owned: 0, total: 0 },
-				UR: { owned: 0, total: 0 },
-				URp: { owned: 0, total: 0 }
-			},
-			attribute: {
-				Pride: { owned: 0, total: 0 },
-				Greed: { owned: 0, total: 0 },
-				Envy: { owned: 0, total: 0 },
-				Wrath: { owned: 0, total: 0 },
-				Lust: { owned: 0, total: 0 },
-				Gluttony: { owned: 0, total: 0 },
-				Sloth: { owned: 0, total: 0 }
-			},
-			cards: {
-				Demon: { owned: 0, total: 0 },
-				Memory: { owned: 0, total: 0 }
-			}
+		var pageParams = {
+			description: `${req.params.username}'s Collection on Karasu-OS.com`,
+			path: "collection",
+			user: req.user
 		};
 
-		var ownedCards = await usersController.getCardCollection(username, "owned");
+		var isCollectionOwner = req.user && req.user.name === user.info.name;
+		pageParams.title = isCollectionOwner ? i18next.t("title.my_collection") : i18next.t("title.user_collection", { username: user.info.name });
 
-		countCardsForStats(ownedCards, cardStats, "owned");
-		countCardsForStats(await Cards.find(), cardStats, "total");
+		var isPrivate = user.profile.isPrivate && !isCollectionOwner;
+		if (isPrivate) {
+			pageParams.isPrivate = true;
+		} else {
+			var allCards = await cardService.getCards();
+			var ownedCards = await userService.getOwnedCards(user.info.name);
+			pageParams.cardsList = ownedCards;
 
-		return res.render('cardsList', {
-			title: title, description: `${username}'s Collection on Karasu-OS.com`,
-			user: req.user, cardStats: cardStats, cardsList: ownedCards, path: 'collection' });
+			pageParams.ownedStats = cardService.getCollectionStats(ownedCards);
+			pageParams.totalStats = cardService.getCollectionStats(allCards);
+
+			for (category in pageParams.totalStats) {
+				for (entry in category) {
+					pageParams.ownedStats[category][entry] = pageParams.ownedStats[category][entry] || 0;
+				}
+			}
+		}
+
+		return res.render('cardsList', pageParams);
+	} catch (e) {
+		return next(e);
+	}
+};
+
+exports.getFavouriteCardsPage = async function(req, res, next) {
+	try {
+		var user = await userService.getUser(req.params.username);
+		if (!user) {
+			throw createError(404, "User not found");
+		}
+
+		var pageParams = {
+			description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
+			path: "fav",
+			user: req.user
+		};
+
+		var isCollectionOwner = req.user && req.user.name === user.info.name;
+		pageParams.title = isCollectionOwner ? i18next.t("title.my_favourites") : i18next.t("title.user_favourites", { username: user.info.name });
+
+		var isPrivate = user.profile.isPrivate && !isCollectionOwner;
+		if (isPrivate) {
+			pageParams.isPrivate = true;
+		} else {
+
+			var favedCards = await userService.getFaveCards(user.info.name);
+			pageParams.cardsList = favedCards;
+		}
+
+		return res.render("cardsList", pageParams);
 	} catch (e) {
 		return next(e);
 	}
@@ -107,75 +105,55 @@ exports.getCardsCollectionPage = async function(req, res, next) {
 
 exports.getCardDetailPage = async function(req, res, next) {
 	try {
-		var card = await getUniqueName(req.params.card.replace(/_/g, ' '));
-		var cardData = await getCard(card);
+		var cardName = cardService.decodeCardName(req.params.card);
+		var uniqueName = await cardService.getUniqueName(cardName);
+		var cardData = await cardService.getCard(uniqueName);
 		if (!cardData) {
-			cardData = await getHiddenCard(card, req.user);
-			if (!cardData) {
-				throw createError(404, "Card not found");
-			}
-			return res.render('cardDetail', {
-				title: cardData.name, description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
-				card: cardData, isHidden: true,
-				user: req.user, hasCard: false });
+			return getHiddenCardDetailPage(req, res, next);
 		}
 
-		var stats = await getCardStats(req.user, card);
+		var stats = await cardService.getCardStats(req.user, uniqueName);
 
-		var title, lang = i18next.t("lang");
-		if (lang === "en") {
-			title = cardData.name;
-		} else if (lang === "ja") {
+		var title = cardData.name;
+		var lang = i18next.t("lang");
+		if (lang === "ja" && cardData.ja_name != "???") {
 			title = cardData.ja_name;
-		} else if (lang === "zh") {
+		} else if (lang === "zh" && cardData.zh_name != "???") {
 			title = cardData.zh_name;
-		}
-		if (!title || title === "???") {
-			title = cardData.name;
 		}
 
 		return res.render('cardDetail', {
 			title: title,
 			description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
-			card: cardData, isHidden: false,
-			user: req.user, stats: stats });
-	} catch (e) {
-		return next(e);
-	}
-};
-
-exports.getFavouritesPage = async function(req, res, next) {
-	try {
-		var username = await usersController.userExists(req.params.username);
-		if (!username) {
-			throw createError(404, "User not found");
-		}
-
-		if (req.user && req.user.name === username) {
-			var title = i18next.t("title.my_favourites");
-		} else {
-			var title = i18next.t("title.user_favourites", { username: username });
-		}
-
-		var privateUser = await usersController.isPrivateUser(username);
-		if (privateUser && title !== i18next.t("title.my_favourites")) {
-			return res.render("cardsList", { title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`, isPrivate: true, path: "fav", user: req.user });
-		}
-
-		var favedCards = await usersController.getCardCollection(username, "faved");
-
-		return res.render("cardsList", {
-			title: title, description: `${username}'s favourite Obey Me cards on Karasu-OS.com`,
-			user: req.user, cardsList: favedCards, path: "fav"
+			card: cardData,
+			isHidden: false,
+			user: req.user,
+			stats: stats
 		});
 	} catch (e) {
+		console.error(e)
 		return next(e);
 	}
 };
+
+async function getHiddenCardDetailPage(req, res, next) {
+	var cardName = req.params.card.replace(/_/g, ' ');
+	var cardData = await cardService.getHiddenCard(cardName, req.user);
+	if (!cardData) {
+		throw createError(404, "Card not found");
+	}
+	return res.render('cardDetail', {
+		title: cardData.name,
+		description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
+		card: cardData,
+		isHidden: true,
+		user: req.user
+	});
+}
 
 exports.getHiddenCardsListPage = async function(req, res, next) {
 	try {
-		var cards = await HiddenCards.find().sort({ number: -1 });
+		var cards = await cardService.getHiddenCards();
 		return res.render('cardsList', { title: 'Hidden Cards', cardsList: cards, user: req.user, path: 'hidden' });
 	} catch(e) {
 		return next(e);
@@ -184,27 +162,27 @@ exports.getHiddenCardsListPage = async function(req, res, next) {
 
 exports.getProfilePage = async function(req, res, next) {
 	try {
-		var username = await usersController.userExists(req.params.username);
-		if (!username) {
+		var user = await userService.getUser(decodeURIComponent(req.params.username));
+		if (!user) {
 			throw createError(404, "User not found");
 		}
 
-		if (req.user && req.user.name === username) {
+		if (req.user && req.user.name === user.info.name) {
 			var title = i18next.t("title.my_profile");
 		} else {
-			var title = i18next.t("title.user_profile", { username: username });
+			var title = i18next.t("title.user_profile", { username: user.info.name });
 		}
 
 		var cards = {
-		  owned: (await usersController.getCardCollection(username, "owned")).slice(0, 15),
-		  faved: (await usersController.getCardCollection(username, "faved")).slice(0, 15)
+		  owned: (await userService.getOwnedCards(user.info.name)).slice(0, 15),
+		  faved: (await userService.getFaveCards(user.info.name)).slice(0, 15)
 		};
 
-		var profileInfo = await usersController.getProfileInfo(username);
-		profileInfo.karasu_name = username;
+		var profileInfo = await userService.getProfileInfo(user.info.name);
 
 		res.render("profile", {
-			title: title, description: `See ${username}'s profile on Karasu-OS.com`,
+			title: title,
+			description: `See ${user.info.name}'s profile on Karasu-OS.com`,
 			user: req.user,
 			profileInfo: profileInfo,
 			cards: cards
@@ -214,67 +192,18 @@ exports.getProfilePage = async function(req, res, next) {
 	}
 };
 
-exports.directImage = async function(req, res, next) {
+exports.directImage = async function (req, res, next) {
 	var cardName = req.url.substring(1).replace('_b.jpg', '').replace('.jpg', '');
-	var isHidden = await HiddenCards.findOne({uniqueName: cardName});
+	cardName = cardService.decodeCardName(cardName);
+	var isHidden = await cardService.isHidden(cardName);
 	if (isHidden && (!req.user || !req.user.isAdmin)) {
 		return next(new Error('Not found'));
 	}
 	next();
 }
 
-// Common functions
-function getCard(card) {
-	return Cards.findOne({uniqueName: card});
-}
-
-function getHiddenCard(card, user) {
-	if (!user || !user.isAdmin) {
-		throw createError(404, "Card not found");
-	}
-	return HiddenCards.findOne({ uniqueName: card });
-}
-
-async function getUniqueName(name) {
-	try {
-		var uName;
-		try {
-			uName = (await Cards.findOne({ name: name }, "uniqueName")).uniqueName;
-		} catch(e) {
-			uName = (await HiddenCards.findOne({ name: name }, "uniqueName")).uniqueName;
-		} finally {
-			return uName;
-		}
-	} catch(e) {
-		console.error(e);
-	}
-}
-
-async function getLatestCardNum(rarity) {
-	try {
-		var query = {};
-		if (rarity !== "UR" && rarity !== "UR+") {
-			query = { rarity: rarity };
-		}
-
-		var last = await Cards.find(query).sort({ number: -1 }).limit(1);
-		return last[0].number + 1;
-	} catch(e) {
-		return 99999;  // reserved error number
-	}
-}
-
 
 // Collection functions
-function countCardsForStats(cards, cardStats, type) {
-	cards.forEach(card => {
-		card.characters.forEach(character => cardStats.characters[character][type]++);
-		cardStats.rarity[card.rarity.replace('+', 'p')][type]++;
-		cardStats.attribute[card.attribute][type]++;
-		cardStats.cards[card.type][type]++;
-	});
-};
-
 exports.getStatsImage = async function(req, res) {
 	try {
 		const html = req.body.html;
@@ -333,236 +262,60 @@ function getReplacedImages() {
 	return Promise.all([p1, p2, p3]);
 };
 
-exports.getAllCards = async function (req, res) {
-	var cards = await exports.getCards();
+exports.getAvailableCards = async function (req, res) {
+	var cards = await cardService.getCards();
+	var lang = i18next.t("lang");
+	cards = cards.map(card => lang === "ja" ? card.ja_name : card.name);
 	return res.send(cards);
 }
 
-// TODO move to the service
-exports.getCards = async function (condition = {}) {
-	try {
-		var lang = i18next.t("lang");
-		// TODO card name translations
-		/*var query = {
-			name: `name.${lang}`
-		};*/
-		var query = {
-			name: (lang === "ja" ? "$ja_name" : "$name"),
-			createdOn: { $toDate: "$_id" }
-		}
-		var cards = await Cards.aggregate([
-			{ $match: condition },
-			{ $project: query },
-			{ $sort: { createdOn: -1 } },
-			{ $project: { name: 1, _id: 0 }}
-		]);
-		return cards;
-	} catch(e) {
-		console.error(e);
-		return [];
-	}
-}
-
-
-// Card detail functions
-async function getCardStats(user, card) {
-	var stats = {};
-	if (user) {
-		stats.ownsCard = await usersController.ownsCard(user.name, card);
-		stats.favesCard = await usersController.favesCard(user.name, card);
-	}
-
-	var totalusers = await usersController.getNumberOfUsers();
-	var counts = await getCardCounts(card);
-	stats.ownedTotal = (counts.owned/totalusers * 100).toFixed(2);
-	stats.favedTotal = (counts.faved/totalusers * 100).toFixed(2);
-
-	return stats;
-};
-
-// If no name received return all cards
-function getCardCounts(card) {
-	var pipeline = [
-		{ $lookup: {
-			from: "users",
-			let: {"uniqueName": "$uniqueName"},
-			pipeline: [
-		        { $project: {
-		            "uniqueName": "$$uniqueName",
-		            "owned": {
-		                $cond: [ { $in: [ "$$uniqueName", "$cards.owned"] }, 1, 0 ]
-		            },
-		            "faved" : {
-		                $cond: [ { $in: [ "$$uniqueName", "$cards.faved"] }, 1, 0 ]
-		            }
-		        }},
-			    { $group: {
-			    	"_id": "$uniqueName",
-			    	"owned": { $sum: "$owned" },
-			    	"faved": { $sum: "$faved" }
-			    }}
-			],
-			as: "count"
-		}},
-		{ $project: { "_id": 0, "uniqueName": 1, "owned": { $arrayElemAt: [ "$count.owned", 0 ]}, "faved": { $arrayElemAt: [ "$count.faved", 0 ]}}}
-	];
-
-	if (card) {
-		var match = { $match: { "uniqueName": card}};
-		pipeline.splice(0, 0, match);
-	}
-
-	var promise = Cards.aggregate(pipeline).then(result => result[0]);
-
-	return promise;
-};
-
-
 // Admin card management
-exports.getEditCardPage = function(req, res, next) {
+exports.getEditCardPage = async function(req, res, next) {
 	if (!req.params.card) {
 		return res.render('cardEdit', { title: 'Add Card', user: req.user });
 	}
 
-	Cards.findOne({ uniqueName: req.params.card }, async function(err, cardData) {
-		if (err) { return next(err); }
+	try {
+		var cardData = await cardService.getCard(req.params.card);
+
 		if (!cardData) {
-			return next(new Error('Card not found'));
+			throw createError(404, "Card not found");
 		}
 
 		return res.render('cardEdit', { title: 'Edit Card', card: cardData, user: req.user });
-	});
+	} catch (e) {
+		console.error(e.message);
+		Sentry.captureException(e);
+		next(e);
+	}
 };
 
 exports.updateCard = async function(req, res, next) {
-	var data = req.body.cardData;
-	var originalUniqueName = data.originalUniqueName;
-	var newUniqueName = data.uniqueName;
+	var result = await cardService.updateCard(req.body.cardData);
+	return res.json(result);
+};
 
-	if (originalUniqueName === '') {
-		await addNewCard(data, res);
-		return;
-	}
-
-	if (originalUniqueName !== newUniqueName) {
-		var [err, nameExists] = await isNameUnique(newUniqueName);
-		if (err) {
-			return res.json({ err: true, message: err.message });
-		}
-		if (nameExists) {
-			return res.json({ err: true, message: 'Unique name is already used by another card' });
-		}
-	}
-
+exports.deleteCard = function (req, res, next) {
 	try {
-		var promiseCard = Cards.findOneAndUpdate({uniqueName: originalUniqueName}, data);
-		var promiseCollections = usersController.renameCardInCollections(originalUniqueName, newUniqueName);
-
-		var promiseL = await fileService.saveImage(data.images.L, originalUniqueName, newUniqueName, 'cards/L');
-		var promiseLB = await fileService.saveImage(data.images.LB, originalUniqueName + '_b', newUniqueName + '_b', 'cards/L');
-		var promiseS = await fileService.saveImage(data.images.S, originalUniqueName, newUniqueName, 'cards/S');
-
-		Promise.all([promiseCard, promiseCollections, promiseL, promiseLB, promiseS])
-			.then(() => { res.json({ err: null, message: 'Success' }); })
-			.catch(reason => { res.json({ err: true, message: reason.message }); });
-
-	} catch (err) {
-		console.error(err);
-		return res.json({ err: true, message: err.message });
+		var result = cardService.deleteCard(req.params.card);
+	} catch (e) {
+		console.error(e.message);
+		Sentry.captureException(e);
+		next(e);
 	}
+	if (result.err) {
+		return next(result.err);
+	}
+	res.redirect('/cards');
 };
 
-async function isNameUnique(unqiueName) {
-	var cardQuery = Cards.findOne({uniqueName: unqiueName});
+exports.makeCardPublic = function (req, res, next) {
 	try {
-		var card = await cardQuery.exec();
-	} catch (err) {
-		return [err, null];
+		var newCard = cardService.makeCardPublic(req.params.card);
+		res.redirect("/card/"+ cardService.encodeCardName(newCard.name));
+	} catch (e) {
+		console.error(e.message);
+		Sentry.captureException(e);
+		next(e);
 	}
-	var hasCard = card ? true : false;
-	return [null, hasCard];
-};
-
-async function addNewCard(cardData, res) {
-	try {
-		var {originalUniqueName, images, isHidden, ...cardProperties} = cardData;
-		if (isHidden) {
-			if (cardData.number === '') {
-				cardData.number = await HiddenCards.estimatedDocumentCount() + 1;
-			}
-			await HiddenCards.create(cardData, (err, doc) => {
-				if(err) {
-					return res.json({ err: true, message: err.message });
-				}
-			});
-		} else {
-			if (cardData.number === '') {
-				cardData.number = await getLatestCardNum(cardData.rarity);
-			}
-			await Cards.create(cardData, (err, doc) => {
-				if(err) {
-					return res.json({ err: true, message: err.message });
-				}
-			});
-		}
-
-		var promiseL = await fileService.saveImage(cardData.images.L, null, cardData.uniqueName, 'cards/L');
-		var promiseLB = await fileService.saveImage(cardData.images.LB, null, cardData.uniqueName, 'cards/L');
-		var promiseS = await fileService.saveImage(cardData.images.S, null, cardData.uniqueName, 'cards/S');
-
-		Promise.all([promiseL, promiseLB, promiseS])
-			.then(() => { res.json({ err: null, message: 'Success' }); })
-			.catch(reason => { res.json({ err: true, message: reason.message }); });
-
-	} catch (err) {
-		console.error(err);
-		return res.json({ err: true, message: err.message });
-	}
-};
-
-exports.deleteCard = function(req, res, next) {
-	var cardName = req.params.card;
-	Cards.findOneAndRemove({ uniqueName: cardName }, (err, card) => {
-		if (err) { return next(err); }
-		if (card) {
-			removeCardDependencies(cardName, res, next);
-		} else {
-			HiddenCards.findOneAndRemove({ uniqueName: cardName }, (err, card) => {
-				if (err) { return next(err); }
-				if (card) {
-					removeCardDependencies(cardName, res, next);
-				} else {
-					var err = new Error("No such card");
-					return next(err);
-				}
-			});
-		}
-	});
-};
-
-async function removeCardDependencies(cardName, res, next) {
-	var promiseCollections = usersController.deleteCardInCollections(cardName);
-	var promiseL = await fileService.deleteImage(cardName, "cards/L");
-	var promiseLB = await fileService.deleteImage(cardName+'_b', "cards/L");
-	var promiseS = await fileService.deleteImage(cardName, "cards/S");
-
-	Promise.all([promiseCollections, promiseL, promiseLB, promiseS ])
-		.catch(reason => { return next(reason); })
-		.then(() => { return res.redirect('/cards'); });
-};
-
-exports.makeCardPublic = function(req, res, next) {
-	HiddenCards.findOneAndRemove({ uniqueName: req.params.card }, async (err, card) => {
-		if (err) { return next(err); }
-		if (!card) {
-			var err = new Error("No such card");
-			return next(err);
-		}
-		var newCard = new Cards(card.toObject());
-		newCard.number = await getLatestCardNum(newCard.rarity);
-		newCard.save((err, doc) => {
-			if (err) { return next(err); }
-			res.redirect("/card/"+doc.name);
-		});
-	});
 };

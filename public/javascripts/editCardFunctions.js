@@ -136,7 +136,7 @@ function sendCardData(images) {
     contentType: 'application/json',
     data: JSON.stringify({cardData: cardData})
   })
-  .done(function(result) {
+  .done(function (result) {
     if (result.err) {
       showAlert("danger", result.message);
       return;

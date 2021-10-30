@@ -32,9 +32,9 @@ router.post("/signup/checkUsername", usersController.signupCheckUsername);
 // User's personal collection
 router.get('/collection/getOwnedCards', usersController.isLoggedIn(), usersController.getOwnedCards);
 router.post('/collection/modifyCollection', usersController.isLoggedIn(), usersController.modifyCollection);
-router.get('/:username/collection', cardsController.getCardsCollectionPage);
+router.get('/:username/collection', cardsController.getOwnedCardsPage);
 router.post('/:username/getStatsImage', cardsController.getStatsImage);
-router.get('/:username/favourites', cardsController.getFavouritesPage);
+router.get('/:username/favourites', cardsController.getFavouriteCardsPage);
 router.get('/:username/profile', cardsController.getProfilePage);
 
 // User Management
@@ -42,7 +42,7 @@ router.get("/userpage", usersController.hasAccess("Admin"), usersController.getU
 router.post("/updateSupport", usersController.hasAccess("Admin"), usersController.updateSupport);
 
 // Misc.
-router.get('/getAllCards', cardsController.getAllCards);
+router.get('/getAllCards', cardsController.getAvailableCards);
 
 
 module.exports = router;

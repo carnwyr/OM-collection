@@ -1,8 +1,8 @@
 const Sentry = require('@sentry/node');
 
 const createError = require("http-errors");
-const Users = require("../models/users.js");
 const Codes = require("../models/verificationCodes.js");
+const Users = require("../models/users.js");
 
 const bcrypt = require("bcrypt");
 const cryptoRandomString = require("crypto-random-string");
@@ -19,7 +19,9 @@ require("dotenv").config();
 const formData = require('form-data');
 const Mailgun = require('mailgun.js');
 const mailgun = new Mailgun(formData);
-const mg = mailgun.client({username: 'api', key: process.env.API_KEY});
+const mg = mailgun.client({ username: 'api', key: process.env.API_KEY });
+
+const userService = require("../services/userService");
 
 // Login and signup
 exports.getLoginPage = function(req, res, next) {
@@ -123,10 +125,7 @@ exports.signupCheckUsername = async function(req, res) {
 
 
 // User checks
-exports.userExists = async function(username) {
-	var user = await Users.findOne({"info.name": { $regex : new RegExp('^' + username + '$', "i") } });
-	return user ? user.info.name : false;
-};
+
 
 exports.isLoggedIn = function() {
 	return function (req, res, next) {
@@ -155,51 +154,17 @@ exports.isSameUser = function() {
 	}
 };
 
-exports.ownsCard = function(user, card) {
-	return Users.exists({"info.name": user, "cards.owned": card});
-};
-
-exports.favesCard = function(user, card) {
-	return Users.exists({"info.name": user, "cards.faved": card});
-};
-
-exports.isPrivateUser = async function(username) {
-  var visibility = await Users.find({ "info.name": username }, "profile.isPrivate");
-  return visibility[0].profile.isPrivate;
-};
-
-
-// Card management
-// getOwnedCards() is redundant and can be modified
-exports.getOwnedCards = async function(req, res) {
+exports.getOwnedCards = async function (req, res, next) {
 	try {
-		var ownedCards = await exports.getCardCollection(req.user.name, "owned");
+		var ownedCards = await userService.getOwnedCards(req.user.name);
 		ownedCards = ownedCards.map(card => card.uniqueName);
-
-    // console.log(ownedCards);
-
 		res.send(ownedCards);
 	} catch (e) {
-    Sentry.captureException(e);
-    return res.send([]);
+		console.error(e)
+		Sentry.captureException(e);
+		return res.send([]);
 	}
 }
-
-exports.getCardCollection = function(username, collection) {
-	return Users.aggregate([
-		{ $match: { "info.name": username } },
-		{ $unwind: `$cards.${collection}` },
-		{ $lookup: {
-			from: "cards",
-			localField: `cards.${collection}`,
-			foreignField: "uniqueName",
-			as: "cardData"
-		}},
-		{ $unwind: "$cardData" },
-		{ $replaceWith: "$cardData"},
-    { $sort: { number : -1 } }
-	]);
-};
 
 exports.modifyCollection = async function(req, res, callback) {
 	try {
@@ -275,11 +240,12 @@ exports.modifyCollectionFromDetails = async function(req, res) {
 async function updateCountOnPage(res, card, collection) {
 	try {
 		var updatedVal = await exports.countCardInCollections(card, collection);
-		var totalusers = await exports.getNumberOfUsers();
+		var totalusers = await userService.getNumberOfUsers();
 
 		return res.json({ err: false, message: "Collection updated!", updatedVal: (updatedVal/totalusers*100).toFixed(2) });
 	} catch (e) {
-		return res.json({ err: true, message: e });
+		console.error(e.message);
+		return res.json({ err: true, message: e.message });
 	}
 };
 
@@ -470,9 +436,6 @@ exports.updateSupport = function(req, res) {
 
 
 // Misc
-exports.getNumberOfUsers = function() {
-	return Users.estimatedDocumentCount();
-};
 
 exports.countCardInCollections = function(card, collection) {
 	var targetCard = {};
@@ -498,7 +461,7 @@ exports.getUserListPage = async function(req, res) {
       sort = { "_id": order };
     }
     result.users = await Users.find({},"info").sort(sort).limit(limit).skip(startIndex);
-    var totalusers = await exports.getNumberOfUsers();
+    var totalusers = await userService.getNumberOfUsers();
   } catch(e) {
     return res.status(500).json({ message: e.message });
   }
@@ -544,60 +507,6 @@ exports.getRankingsPage = async function(req, res, next) {
     return next(e);
   }
 };
-
-exports.renameCardInCollections = function(oldName, newName) {
-	if (oldName === newName) {
-		return Promise.resolve(true);
-	}
-
-	var promiseFaved = Users.updateMany(
-		{ $or: [{ "cards.owned": oldName }, { "cards.faved": oldName }]},
-		{ $push: { "cards.owned": newName, "cards.faved": newName }});
-	var promiseOwned = Users.updateMany(
-		{ },
-		{ $pull: { "cards.owned": oldName, "cards.faved": oldName }});
-
-	return promiseFaved.then(() => { return promiseOwned; });
-};
-
-exports.deleteCardInCollections = function(cardName) {
-	var promise = Users.updateMany(
-		{ },
-		{ $pull: { "cards.owned": cardName, "cards.faved": cardName }});
-
-	return promise;
-};
-
-exports.getProfileInfo = async function(username) {
-  try {
-    var user = await Users.findOne({ "info.name": username });
-    var info = { ...user.profile };
-
-    if (i18next.t("lang") === "en") {
-      info.joinKarasu = `${new Intl.DateTimeFormat("en", { month: "long" }).format(ObjectId(user._id).getTimestamp())} ${ObjectId(user._id).getTimestamp().getFullYear()}`;
-    } else {
-      info.joinKarasu = `${ObjectId(user._id).getTimestamp().getFullYear()}年${ObjectId(user._id).getTimestamp().getMonth() + 1}月`;
-    }
-
-    if (info.joined) {
-      var date = info.joined.getUTCDate(),
-          month = info.joined.getUTCMonth() + 1,
-          year = info.joined.getUTCFullYear();
-      if (i18next.t("lang") === "en") {
-        info.joined = `${date} ${new Intl.DateTimeFormat("en", { month: "long" }).format(info.joined)} ${year}`;
-      } else {
-        info.joined = `${year}年${month}月${date}日`;
-      }
-    }
-
-    info.badges = user.info.supportStatus;
-
-    return info;
-  } catch(e) {
-    Sentry.captureException(e);
-    return {};
-  }
-}
 
 exports.updateUserProfile = function(req, res) {
   var update = {};

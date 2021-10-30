@@ -41,7 +41,7 @@ function updateCollection() {
       }
       showAlert("success", data.message);
     } else {
-      showAlert("danger", "Something went wrong :(");
+      showAlert("danger", data.message);
     }
   });
 }

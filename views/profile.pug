@@ -65,8 +65,6 @@ block content
           span &nbsp;#{t("profile.share")}
         script(src="/javascripts/shareProfile.js")
     div.card.card-body.shadow.mb-3
-      if title === t("title.my_profile")
-        a#settingslink.btn.btn-outline-secondary(type="button" href="/user")= t("profile.edit")
       div.row.align-items-center
         div.col-md-5.col-lg-4.text-center.mb-3.mb-lg-auto
           img(src="/images/cards/L/" + (profileInfo.display?profileInfo.display:"The_Mammon_Way") + ".jpg" style="width:256px;height:auto;")
@@ -75,6 +73,8 @@ block content
             span.text-muted.ml-4(style="font-size:12px;letter-spacing:.4px;")
               | <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
               | #{t("profile.join_karasu", { date: profileInfo.joinKarasu })}
+              if title === t("title.my_profile")
+                a#settingslink.btn.btn-outline-secondary(type="button" href="/user")= t("profile.edit")
           if badges.length !== 0
             div.d-flex
               each badge in badges
