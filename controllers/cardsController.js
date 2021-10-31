@@ -59,8 +59,8 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 			pageParams.ownedStats = cardService.getCollectionStats(ownedCards);
 			pageParams.totalStats = cardService.getCollectionStats(allCards);
 
-			for (category in pageParams.totalStats) {
-				for (entry in category) {
+			for ([category, entries] of Object.entries(pageParams.totalStats)) {
+				for (entry in entries) {
 					pageParams.ownedStats[category][entry] = pageParams.ownedStats[category][entry] || 0;
 				}
 			}
@@ -265,7 +265,12 @@ function getReplacedImages() {
 exports.getAvailableCards = async function (req, res) {
 	var cards = await cardService.getCards();
 	var lang = i18next.t("lang");
-	cards = cards.map(card => lang === "ja" ? card.ja_name : card.name);
+	cards = cards.map(card => {
+		return {
+			name: lang === "ja" ? card.ja_name : card.name,
+			uniqueName: card.uniqueName
+		}
+	});
 	return res.send(cards);
 }
 

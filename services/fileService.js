@@ -56,7 +56,7 @@ async function renameImage(imagePath, oldName, newName) {
   var image = files.find(file => file.replace(/\.[^/.]+$/, "") === oldName);
 
   if (!image) {
-    return;
+    return Promise.resolve(true);
   }
 
   var fullPath = path.join(directory, image);

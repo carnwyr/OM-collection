@@ -65,7 +65,7 @@ exports.decodeCardName = function (cardName) {
   return decodeURIComponent(cardName.replace(/_/g, ' '));
 }
 
-exports.getLatestCardNum = async function (rarity) {
+getLatestCardNum = async function (rarity) {
 	try {
 		var query = {};
 		if (rarity !== "UR" && rarity !== "UR+") {
@@ -151,9 +151,9 @@ exports.updateCard = async function(cardData) {
 		var promiseCollections = userService.renameCardInCollections(originalUniqueName, newUniqueName);
 
     // TODO move to a separate function
-		var promiseL = await fileService.saveImage(cardData.images.L, originalUniqueName, newUniqueName, 'cards/L');
-		var promiseLB = await fileService.saveImage(cardData.images.LB, originalUniqueName + '_b', newUniqueName + '_b', 'cards/L');
-		var promiseS = await fileService.saveImage(cardData.images.S, originalUniqueName, newUniqueName, 'cards/S');
+		var promiseL = fileService.saveImage(cardData.images.L, originalUniqueName, newUniqueName, 'cards/L');
+		var promiseLB = fileService.saveImage(cardData.images.LB, originalUniqueName + '_b', newUniqueName + '_b', 'cards/L');
+		var promiseS = fileService.saveImage(cardData.images.S, originalUniqueName, newUniqueName, 'cards/S');
 
 		var result = await Promise.all([promiseCard, promiseCollections, promiseL, promiseLB, promiseS])
 			.then(() => { return { err: false, message: 'Success' } })
@@ -180,17 +180,17 @@ async function addNewCard(cardData) {
 			await Cards.create(cardData);
 		}
 
-		var promiseL = await fileService.saveImage(cardData.images.L, null, cardData.uniqueName, 'cards/L');
-		var promiseLB = await fileService.saveImage(cardData.images.LB, null, cardData.uniqueName, 'cards/L');
-		var promiseS = await fileService.saveImage(cardData.images.S, null, cardData.uniqueName, 'cards/S');
+		var promiseL = fileService.saveImage(cardData.images.L, null, cardData.uniqueName, 'cards/L');
+		var promiseLB = fileService.saveImage(cardData.images.LB, null, cardData.uniqueName + '_b', 'cards/L');
+		var promiseS = fileService.saveImage(cardData.images.S, null, cardData.uniqueName, 'cards/S');
 
-		Promise.all([promiseL, promiseLB, promiseS])
+		var result = Promise.all([promiseL, promiseLB, promiseS])
 			.then(() => { return { err: false, message: 'Success' } })
 			.catch(reason => { return { err: true, message: reason.message } });
-
+		return result;
 	} catch (err) {
 		console.error(err);
-		return res.json({ err: true, message: err.message });
+		return { err: true, message: err.message };
 	}
 };
 
