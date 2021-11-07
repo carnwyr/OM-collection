@@ -3,6 +3,11 @@ body {
   background: url("/images/background_sheep.jpg") fixed;
 }
 
+@font-face {
+  font-family: Nunito;
+  src: url("/fonts/Nunito-Regular.ttf");
+}
+
 h1, h2 {
   color: var(--primary);
   padding-bottom: .5rem;
