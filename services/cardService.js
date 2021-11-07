@@ -21,7 +21,7 @@ exports.getCard = async function (cardName) {
 
 exports.getUniqueName = async function (cardName) {
 	var card = await Cards.findOne({ name: cardName });
-	return card?.uniqueName;
+	return card ? card.uniqueName : null;
 }
 
 exports.getHiddenCard = async function (cardName, user) {
