@@ -118,7 +118,7 @@ app.use(function (req, res, next) { next(createError(404)); });
 app.use(Sentry.Handlers.errorHandler());
 
 app.use(function (err, req, res, next) {
-	console.error(err)
+	//console.error(err)
 	res.locals.message = err.message;
 	res.locals.error = req.app.get("env") === "development" ? err : {};
 

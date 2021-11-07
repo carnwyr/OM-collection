@@ -13,7 +13,7 @@ dayjs.extend(timezone)
 
 const eventsService = require("../services/eventsService");
 const eventCalculatorService = require("../services/eventCalculatorService");
-const cardsService = require("../controllers/cardsController"); // TODO
+const cardsService = require("../services/cardService");
 
 exports.getEventsPage = async function(req, res, next) {
 	// TODO: add method to only retrieve a certain type of event

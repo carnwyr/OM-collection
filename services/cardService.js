@@ -1,6 +1,7 @@
 const Cards = require("../models/cards");
 const HiddenCards = require("../models/hiddenCards.js");
 
+const Sentry = require('@sentry/node');
 const createError = require("http-errors");
 
 const fileService = require("../services/fileService");
@@ -20,7 +21,7 @@ exports.getCard = async function (cardName) {
 
 exports.getUniqueName = async function (cardName) {
 	var card = await Cards.findOne({ name: cardName });
-	return card.uniqueName;
+	return card?.uniqueName;
 }
 
 exports.getHiddenCard = async function (cardName, user) {
@@ -207,20 +208,20 @@ exports.deleteCard = async function (cardName) {
 
 async function removeCardDependencies(cardName) {
 	var promiseCollections = userService.deleteCardInCollections(cardName);
-	var promiseL = await fileService.deleteImage(cardName, "cards/L");
-	var promiseLB = await fileService.deleteImage(cardName+'_b', "cards/L");
-	var promiseS = await fileService.deleteImage(cardName, "cards/S");
+	var promiseL = await fileService.deleteImage("cards/L", cardName);
+	var promiseLB = await fileService.deleteImage("cards/L", cardName+'_b');
+	var promiseS = await fileService.deleteImage("cards/S", cardName);
 
-	Promise.all([promiseCollections, promiseL, promiseLB, promiseS ])
+	return Promise.all([promiseCollections, promiseL, promiseLB, promiseS ])
     .catch(reason => { return {error: reason} })
     .then(() => { return {} });
 };
 
 exports.makeCardPublic = async function(cardName) {
-  var card = HiddenCards.findOneAndRemove({ uniqueName: cardName });
+  var card = await HiddenCards.findOneAndRemove({ uniqueName: cardName });
   if (!card) {
     throw createError(404, "No such card");
-  }
+	}
   var newCard = new Cards(card.toObject());
   newCard.number = await getLatestCardNum(newCard.rarity);
   return await newCard.save();

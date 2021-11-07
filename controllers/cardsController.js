@@ -4,6 +4,7 @@ const async = require("async");
 const fs = require("fs");
 const nodeHtmlToImage = require("node-html-to-image");
 const i18next = require("i18next");
+const Sentry = require('@sentry/node');
 
 const cardService = require("../services/cardService");
 const userService = require("../services/userService");
@@ -109,7 +110,7 @@ exports.getCardDetailPage = async function(req, res, next) {
 		var uniqueName = await cardService.getUniqueName(cardName);
 		var cardData = await cardService.getCard(uniqueName);
 		if (!cardData) {
-			return getHiddenCardDetailPage(req, res, next);
+			return await getHiddenCardDetailPage(req, res, next);
 		}
 
 		var stats = await cardService.getCardStats(req.user, uniqueName);
@@ -131,7 +132,6 @@ exports.getCardDetailPage = async function(req, res, next) {
 			stats: stats
 		});
 	} catch (e) {
-		console.error(e)
 		return next(e);
 	}
 };
@@ -300,13 +300,13 @@ exports.updateCard = async function(req, res, next) {
 	return res.json(result);
 };
 
-exports.deleteCard = function (req, res, next) {
+exports.deleteCard = async function (req, res, next) {
 	try {
-		var result = cardService.deleteCard(req.params.card);
+		var result = await cardService.deleteCard(req.params.card);
 	} catch (e) {
 		console.error(e.message);
 		Sentry.captureException(e);
-		next(e);
+		return next(e);
 	}
 	if (result.err) {
 		return next(result.err);
@@ -314,9 +314,9 @@ exports.deleteCard = function (req, res, next) {
 	res.redirect('/cards');
 };
 
-exports.makeCardPublic = function (req, res, next) {
+exports.makeCardPublic = async function (req, res, next) {
 	try {
-		var newCard = cardService.makeCardPublic(req.params.card);
+		var newCard = await cardService.makeCardPublic(req.params.card);
 		res.redirect("/card/"+ cardService.encodeCardName(newCard.name));
 	} catch (e) {
 		console.error(e.message);
