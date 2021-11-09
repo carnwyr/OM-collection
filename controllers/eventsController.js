@@ -50,7 +50,7 @@ exports.getCalculatorPage = async function (req, res, next) {
 		return next(e);
 	}
 
-	var settings = JSON.parse(req.cookies.calculator);
+	var settings = req.cookies.calculator ? JSON.parse(req.cookies.calculator) : "";
 	// key: free battle/ap type; value: amount of free battles/ap
 	// {
 	//   adBattles: '2',			<-- 2 free battles
