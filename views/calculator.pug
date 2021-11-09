@@ -2,11 +2,11 @@ extends layout
 
 block scripts
 	link(rel="stylesheet" href="/stylesheets/calculator.css")
-	
 	if (event.end >= new Date())
 		script(src="/javascripts/calculator.js")
 		script.
-			startCountdown(!{JSON.stringify(event.end)});
+			var endDate = new Date(!{JSON.stringify(event.end)});
+			startCountdown();
 
 mixin resultBlock(type, dict)
 	div(class=type+"_calculation")
@@ -52,11 +52,11 @@ block content
 						div.card-body
 							p.text-center.text-primary(style="letter-spacing:.25rem;")
 								strong CALCULATOR
-							form.mb-3
+							form
 								h6 Required
 								div.form-group
 									label(for="pointsPerBattle")= t("calculator.ppt")
-									if(event.type === "Pop Quiz") 
+									if(event.type === "Pop Quiz")
 										input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" min="120" value=query.pointsPerBattle required)
 									else
 										input#pointsPerBattle.form-control(type="number" name="pointsPerBattle" value=12 disabled)
@@ -73,8 +73,8 @@ block content
 										| #{t("calculator.stageClear2")}
 									input.custom-range(type="range" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0)
 								input.btn.btn-primary.btn-block(type="submit" value=t("calculator.calculate"))
+							button(type="button" class="btn btn-link btn-sm btn-block mt-2 mb-1" data-toggle="modal" data-target="#settingsModal") Advanced settings
 							small.text-muted= t("calculator.disclaimer")
-
 				.col-12.col-lg-8.mb-3
 					.card.h-100
 						- var lst = (result ? result.map(x => Object.assign(x, event.rewards.find(y => y.tag === x.tag))) : event.rewards).filter(x => x.tag);
@@ -96,18 +96,18 @@ block content
 								each res in lst
 									div.tab-pane(id=res.tag.replace(" ", "") role="tabpanel")
 										div.row
-											.col-lg-5.px-4
-												div.force-reward-display-height
+											.col-lg-5.d-flex.align-items-center.justify-content-center
+												div.reward-container
 													if res.card
 														div.text-center
 															a.px-3.mb-2.d-none.d-lg-block(href="/card/"+getURL(res.card.name))
 																img.img-fluid(src=`/images/cards/L/${res.card.uniqueName}.jpg`)
 															a(href="/card/"+getURL(res.card.name))= t("lang") === "ja" ? res.card.ja_name : res.card.name
-
 													else
-														h5.text-center
-															p.text-primary= t("calculator.goal")
-															p= (res.points).toLocaleString("en")
+														div.h-100.d-flex.justify-content-center.align-items-center
+															h5.text-center
+																p.text-primary= t("calculator.goal")
+																p= (res.points).toLocaleString("en")
 											.col-lg-7
 												if res.collected
 													div(style="position:absolute;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,.75);width:100%;height:100%;z-index:1;margin-left:-15px;")
@@ -126,48 +126,117 @@ block content
 															div.col-6.pl-1.pr-0
 																- temp = res.ap?res.ap.today:{};
 																+resultBlock("ap", temp)
-														div.text-center
+														div.result-container.text-center
 															p.mt-3.mb-0.text-primary= t("calculator.goalToday")
 															p(style="font-size:large")= getValue(res.goalToday)
-															p.mb-0(style="font-size:large") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16">   <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
-																span.countdown
+															p.mt-3.mb-0.text-primary= t("calculator.timeleft")
+															p.mb-0(style="font-size:large;").countdown --h --m --s
 													div.tab-pane(id=res.tag.replace(" ", "")+"-summary" role="tabpanel")
-														div.row.m-0
+														div.row.mx-0.mb-3
 															div.col-6.pl-0.pr-1
 																- temp = res.battles?res.battles.total:{};
 																+resultBlock("battles", temp)
 															div.col-6.pl-1.pr-0
 																- temp = res.ap?res.ap.total:{}
 																+resultBlock("ap", temp)
-														.progress.mt-3(style="height:9px;")
-															.progress-bar(style="width:"+getTimeLeftPercentage(event.start, event.end)+"%;height:9px;background-color:#ffbd8a;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
-														.d-flex.justify-content-between
-															small= t("calculator.endingIn")
-															- var daysLeft = Math.ceil(getTimeLeft(event.end) / (1000 * 60 * 60 * 24));
-															small= "< " + daysLeft + ( daysLeft > 1 ? " days" : " day" )
-														.progress.mt-3(style="height:9px;")
-															.progress-bar(style="width:"+Math.floor(query.currentPoints/res.points*100)+"%;height:9px;background-color:#9fec3e;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
-														.d-flex.justify-content-between
-															small= (query.currentPoints ? Math.floor(query.currentPoints/res.points*100) : 0) + "%"
-															small #{(res.points).toLocaleString("en")} pts
-			div.row.mt-3
-				div.col-lg-8.mb-3.mb-lg-0
-					div.card.card-body
-						h5.text-center Notes
-						hr(style="border-color:var(--secondary);border-width:2px;margin-top:0;")
-						div.row.px-2
-							div.col-lg-6.mb-3.mb-lg-0 !{t("calculator.FreeBattles")}
-							div.col-lg-6 !{t("calculator.FreeAP")}
-								if event.ap.length !== 0
-									style.
-										#free_ap { margin: 0; }
-									ul
-										li= t("calculator.rewards_ap")
-
-				div.col-lg-4
-					div.card.card-body.h-100.text-center
-						h5.text-primary.my-auto Coming soon...
+														div.result-container.d-flex.align-items-center
+															div.w-100
+																.progress.mt-3(style="height:9px;")
+																	.progress-bar(style="width:"+getTimeLeftPercentage(event.start, event.end)+"%;height:9px;background-color:#ffbd8a;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+																.d-flex.justify-content-between
+																	small= t("calculator.endingIn")
+																	small.total-countdown
+																.progress.mt-3(style="height:9px;")
+																	.progress-bar(style="width:"+Math.floor(query.currentPoints/res.points*100)+"%;height:9px;background-color:#9fec3e;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+																.d-flex.justify-content-between
+																	small= (query.currentPoints ? Math.floor(query.currentPoints/res.points*100) : 0) + "%"
+																	small #{(res.points).toLocaleString("en")} pts
+			//- div.row.mt-3
+			//- 	div.col-lg-8.mb-3.mb-lg-0
+			//- 		div.card.card-body
+			//- 			h5.text-center Notes
+			//- 			hr(style="border-color:var(--secondary);border-width:2px;margin-top:0;")
+			//- 			div.row.px-2
+			//- 				div.col-lg-6.mb-3.mb-lg-0 !{t("calculator.FreeBattles")}
+			//- 				div.col-lg-6 !{t("calculator.FreeAP")}
+			//- 					if event.ap.length !== 0
+			//- 						style.
+			//- 							#free_ap { margin: 0; }
+			//- 						ul
+			//- 							li= t("calculator.rewards_ap")
+			//-
+			//- 	div.col-lg-4
+			//- 		div.card.card-body.h-100.text-center
+			//- 			h5.text-primary.my-auto Coming soon...
 
 		else
 			div.card.card-body
 				h5.mx-auto.my-5= t("calculator.ended")
+
+		div(class="modal fade" id="settingsModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true")
+			.modal-dialog.modal-lg
+				.modal-content
+					.modal-header
+						h5#settingsModalLabel.modal-title Advanced settings
+						button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+							span(aria-hidden="true") &times;
+					.modal-body
+						.row
+							.col-12
+								p The following information will be used to calculate "free" battle/ AP.
+								h5 Battles
+								div.form-group
+									label(for="adBattles") How many unclaimed/unused battles will you get from watching ads?
+									select#adBattles.form-control
+										option 0
+										option 1
+										option 2
+										option 3
+										option 4
+										option 5
+								hr
+								h5 AP
+								p How much unclaimed/unused AP will you get from...
+								div.form-row
+									div.col-lg-4.form-group
+										label(for="adAP") watching ads? (1 ad = 10 AP)
+										select#adAP.form-control
+											option 0
+											option 10
+											option 20
+											option 30
+											option 40
+											option 50
+									div.col-lg-4.form-group
+										label(for="fridgeMission") fridge missions?
+										select#fridgeMission.form-control
+											option 0
+											option 30
+											option 60
+											option 120
+									div.col-lg-4.form-group
+										label(for="spg") surprise guest?
+										select#spg.form-control
+											option 0
+											option 10
+											option 20
+								div.form-row
+									div.col-lg-6.form-group
+										label(for="friends") friends?
+										input#friends.form-control(type=number min=0 max=50 value=0)
+									div.col-lg-6.form-group
+										label(for="toDo") daily To Do?
+										select#toDo.form-control
+											option 0
+											option 10
+											option 20
+								div.form-row
+									div.col-12.form-group
+										label(for="other") Enter the amount of other AP you would like include:
+										input#other.form-control(type=number min=0 value=0)
+								div.form-check
+									input#popquiz.form-check-input(type="checkbox")
+									label.form-check-label(for="popquiz") Include all AP from pop quiz rewards
+					.modal-footer
+						button(type="button" class="btn btn-secondary" data-dismiss="modal") Cancel
+						button#apply(type="button" class="btn btn-primary") Apply

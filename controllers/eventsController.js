@@ -50,6 +50,19 @@ exports.getCalculatorPage = async function (req, res, next) {
 		return next(e);
 	}
 
+	var settings = JSON.parse(req.cookies.calculator);
+	// key: free battle/ap type; value: amount of free battles/ap
+	// {
+	//   adBattles: '2',			<-- 2 free battles
+	//   adAP: '30',					<-- 30 free AP
+	//   fridgeMission: '0',	<-- 0 free AP
+	//   spg: '0',						...
+	//   friends: '0',
+	//   toDo: '0',
+	//   other: '300',
+	//   popquiz: true				<-- include pop quiz reward AP
+	// }
+
 	var locals = { title: i18next.t("title.calculator"), description: i18next.t("description.calculator"), event: event, query: req.query, user: req.user };
 	[locals.calculationError, locals.result] = eventCalculatorService.calculate(event, req.query);
 	return res.render("calculator", locals);
@@ -88,7 +101,7 @@ exports.getEventEditPage = async function(req, res, next) {
 
 		var cards = await cardsService.getCards();
 		var cardNames = cards.map(x => x.name);
-		
+
 		var apPresets = await eventsService.getAPPresets();
 
 		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
