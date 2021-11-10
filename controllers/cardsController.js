@@ -119,8 +119,6 @@ exports.getCardDetailPage = async function(req, res, next) {
 		var lang = i18next.t("lang");
 		if (lang === "ja" && cardData.ja_name != "???") {
 			title = cardData.ja_name;
-		} else if (lang === "zh" && cardData.zh_name != "???") {
-			title = cardData.zh_name;
 		}
 
 		return res.render('cardDetail', {
