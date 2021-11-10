@@ -30,11 +30,8 @@ var ItemInteractionSubSchema = new Schema({
 
 var InteractionsSchema = new Schema({
 	character: { type: String, required: true },
-	phrase: {
-		en: { type: String, required: true },
-		ja: { type: String, required: true },
-		zh: { type: String, required: true }
-	},
+	phrase: { type: String, required: true },
+	ja_phrase: { type: String, required: true },
 	condition: { type: String },
 	order: { type: Number },
 	allInteractions: {
