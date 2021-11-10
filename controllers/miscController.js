@@ -26,7 +26,7 @@ exports.surpriseGuest = function(req, res, next) {
 			obj.interactions = interactionList.filter(int => int.character === obj.chara);
 			// TODO: obj.interactions.sort((a, b) => a.order - b.order);
 		});
-		res.render("surpriseGuest", {
+		return res.render("surpriseGuest", {
 			title: i18next.t("common.spg"),
 			description: "An all-in-one guide for Obey Me! surprise guest interactions. Karasu's interactive guide features all characters including the demon brothers and side characters. ... Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon.",
 			user: req.user, interactions: interactions
