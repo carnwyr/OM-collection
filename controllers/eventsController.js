@@ -54,6 +54,7 @@ exports.getCalculatorPage = async function (req, res, next) {
 	// key: free battle/ap type; value: amount of free battles/ap
 	// {
 	//   adBattles: '2',			<-- 2 free battles
+	//   denergy: '2'					<-- 2 d-energy, need to convert to battles
 	//   adAP: '30',					<-- 30 free AP
 	//   fridgeMission: '0',	<-- 0 free AP
 	//   spg: '0',						...

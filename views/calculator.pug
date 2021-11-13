@@ -185,15 +185,19 @@ block content
 							.col-12
 								p The following information will be used to calculate "free" battle/ AP.
 								h5 Battles
-								div.form-group
-									label(for="adBattles") How many unclaimed/unused battles will you get from watching ads?
-									select#adBattles.form-control
-										option 0
-										option 1
-										option 2
-										option 3
-										option 4
-										option 5
+								div.form-row
+									div.col-lg-6.form-group
+										label(for="adBattles") How many battles will you get from watching ads?
+										select#adBattles.form-control
+											option 0
+											option 1
+											option 2
+											option 3
+											option 4
+											option 5
+									div.col-lg-6.form-group
+										label(for="denergy") How mamy D-energies do you have?
+										input#denergy.form-control(type=number min=0)
 								hr
 								h5 AP
 								p How much unclaimed/unused AP will you get from...

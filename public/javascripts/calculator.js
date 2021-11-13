@@ -65,6 +65,7 @@ function checkAdditionalSettings() {
 function applyAdditionalSettings() {
 	settings = {
 		adBattles: $("#adBattles").val(),
+		denergy: $("#denergy").val(),
 		adAP: $("#adAP").val(),
 		fridgeMission: $("#fridgeMission").val(),
 		spg: $("#spg").val(),
