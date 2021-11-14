@@ -77,3 +77,8 @@ input[type=number] {
 .result-container {
   height: 120px;
 }
+
+.badge-success {
+  color: #fff;
+  background-color: #28a745;
+}
