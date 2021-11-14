@@ -73,7 +73,12 @@ block content
 										| #{t("calculator.stageClear2")}
 									input.custom-range(type="range" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0)
 								input.btn.btn-primary.btn-block(type="submit" value=t("calculator.calculate"))
-							button(type="button" class="btn btn-link btn-sm btn-block mt-2 mb-1" data-toggle="modal" data-target="#settingsModal") Advanced settings
+							button(type="button" class="btn btn-link btn-sm btn-block mt-2 mb-1" data-toggle="modal" data-target="#settingsModal")
+								span.mr-2 Advanced settings
+								if cookieBlocked
+									span#indicator.badge.badge-danger ERROR
+								else
+									span#indicator.badge.badge-warning OFF
 							small.text-muted= t("calculator.disclaimer")
 				.col-12.col-lg-8.mb-3
 					.card.h-100
@@ -183,6 +188,8 @@ block content
 					.modal-body
 						.row
 							.col-12
+								if cookieBlocked
+									p(style="border:2px solid rgba(255,0,0,.5);background:rgba(255,0,0,.3);border-radius:8px;padding:8px;") Advanced settings failed to load. This is because your browser/ ad-blocker blocked cookies from the website. Please enable cookies and try again.
 								p The following information will be used to calculate "free" battle/ AP.
 								h5 Battles
 								div.form-row
@@ -203,7 +210,7 @@ block content
 								p How many times will you receive AP from...
 								form#checkerbox
 									div.form-row
-										div.col-lg-3.form-group
+										div.col-lg-4.form-group
 											label(for="adAP") watching ads?
 											select#adAP.form-control
 												option 0
@@ -212,30 +219,30 @@ block content
 												option 3
 												option 4
 												option 5
-										div.col-lg-3.form-group
+										div.col-lg-4.form-group
 											label(for="spg") surprise guests?
 											select#spg.form-control
 												option 0
 												option 1
 												option 2
-										div.col-lg-3.form-group
+										div.col-lg-4.form-group
 											label(for="friends") friends?
 											input#friends.form-control(type="number" min=0 max=50 value=0)
-										div.col-lg-3.form-group
+									div.form-row
+										div.col-lg-4.form-group
 											label(for="toDo") daily To Do?
 											select#toDo.form-control
 												option 0
 												option 1
 												option 2
-									div.form-row
-										div.col-lg-3.form-group
+										div.col-lg-4.form-group
 											label(for="fridgeMission") fridge missions?
 											select#fridgeMission.form-control
 												option 0
 												option 1
 												option 2
-										div.col.form-group
-											label(for="other") Enter the amount of other AP you would like include:
+										div.col-lg-4.form-group
+											label(for="other") Other AP amount to include:
 											input#other.form-control(type="number" min=0 value=0)
 									div.form-check.form-check-inline
 										input#isVIP.form-check-input(type="checkbox")
@@ -244,5 +251,5 @@ block content
 										input#popquiz.form-check-input(type="checkbox")
 										label.form-check-label(for="popquiz") Include all AP from pop quiz rewards
 					.modal-footer
-						button(type="button" class="btn btn-secondary" data-dismiss="modal") Cancel
+						button#cancel(type="button" class="btn btn-secondary" data-dismiss="modal") Cancel
 						button#apply(type="button" class="btn btn-primary") Apply

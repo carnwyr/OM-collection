@@ -1,4 +1,5 @@
 var settings = {};
+const DEFAULT_SETTINGS = '{"adBattles":"0","denergy":"0","adAP":"0","spg":"0","friends":"0","toDo":"0","fridgeMission":{"isVIP":false,"count":"0"},"other":"0","popquiz":false}';
 $(function() {
 	recallTab();
 	$("#rewards>li>a").click(function() { sessionStorage.setItem("selected", $(this).attr("id")); });
@@ -6,7 +7,8 @@ $(function() {
 	$("input#stagesCleared").change(() => $("input.custom-range").prop("value", $("input#stagesCleared").prop("value")));
 	$("input.custom-range").on("input", () => $("input#stagesCleared").prop("value", $("input.custom-range").prop("value")));
 
-	checkAdditionalSettings();  // check for cookie and apply if cookie exists
+	checkAdditionalSettings();
+	$("button#cancel").on("click", checkAdditionalSettings);
 	$("button#apply").on("click", applyAdditionalSettings);
 });
 
@@ -50,16 +52,25 @@ function recallTab() {
 
 function checkAdditionalSettings() {
 	var cookie = getCookie("calculator");
-	if (cookie) {
+	if (cookie) {  // set values
 		settings = JSON.parse(cookie);
 		for (let key in settings) {
-			if (key !== "popquiz") {
-				$('#'+key).val(settings[key]);
-			} else {
-				$('#'+key).prop("checked", settings[key]);
+			switch (key) {
+				case "fridgeMission":
+					$("#fridgeMission").val(settings[key].count);
+					$("#isVIP").prop("checked", settings[key].isVIP);
+					break;
+				case "popquiz":
+					$('#'+key).prop("checked", settings[key]);
+					break;
+				default:
+					$('#'+key).val(settings[key]);
 			}
 		}
+	} else {
+		applyAdditionalSettings();  // set default values
 	}
+	updateIndicator();
 }
 
 function applyAdditionalSettings() {
@@ -81,6 +92,15 @@ function applyAdditionalSettings() {
 	document.cookie = `calculator=${JSON.stringify(settings)};expires=${endDate};path=/calculator;`;
 
 	$("#settingsModal").modal("hide");
+	updateIndicator();
+}
+
+function updateIndicator() {
+	if (JSON.stringify(settings) === DEFAULT_SETTINGS) {
+		$("#indicator").removeClass().addClass("badge badge-warning").text("OFF");
+	} else {
+		$("#indicator").removeClass().addClass("badge badge-success").text("ON");
+	}
 }
 
 // sourced from w3schools https://www.w3schools.com/js/js_cookies.asp
