@@ -8,7 +8,7 @@ $(function() {
 	$("input.custom-range").on("input", () => $("input#stagesCleared").prop("value", $("input.custom-range").prop("value")));
 
 	checkAdditionalSettings();
-	$("button#cancel").on("click", checkAdditionalSettings);
+	$("[data-dismiss='modal']").on("click", checkAdditionalSettings);
 	$("button#apply").on("click", applyAdditionalSettings);
 });
 
