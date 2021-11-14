@@ -197,50 +197,52 @@ block content
 											option 5
 									div.col-lg-6.form-group
 										label(for="denergy") How mamy D-energies do you have?
-										input#denergy.form-control(type=number min=0)
+										input#denergy.form-control(type="number" min=0 value=0)
 								hr
 								h5 AP
-								p How much unclaimed/unused AP will you get from...
-								div.form-row
-									div.col-lg-4.form-group
-										label(for="adAP") watching ads? (1 ad = 10 AP)
-										select#adAP.form-control
-											option 0
-											option 10
-											option 20
-											option 30
-											option 40
-											option 50
-									div.col-lg-4.form-group
-										label(for="fridgeMission") fridge missions?
-										select#fridgeMission.form-control
-											option 0
-											option 30
-											option 60
-											option 120
-									div.col-lg-4.form-group
-										label(for="spg") surprise guest?
-										select#spg.form-control
-											option 0
-											option 10
-											option 20
-								div.form-row
-									div.col-lg-6.form-group
-										label(for="friends") friends?
-										input#friends.form-control(type=number min=0 max=50 value=0)
-									div.col-lg-6.form-group
-										label(for="toDo") daily To Do?
-										select#toDo.form-control
-											option 0
-											option 10
-											option 20
-								div.form-row
-									div.col-12.form-group
-										label(for="other") Enter the amount of other AP you would like include:
-										input#other.form-control(type=number min=0 value=0)
-								div.form-check
-									input#popquiz.form-check-input(type="checkbox")
-									label.form-check-label(for="popquiz") Include all AP from pop quiz rewards
+								p How many times will you receive AP from...
+								form#checkerbox
+									div.form-row
+										div.col-lg-3.form-group
+											label(for="adAP") watching ads?
+											select#adAP.form-control
+												option 0
+												option 1
+												option 2
+												option 3
+												option 4
+												option 5
+										div.col-lg-3.form-group
+											label(for="spg") surprise guests?
+											select#spg.form-control
+												option 0
+												option 1
+												option 2
+										div.col-lg-3.form-group
+											label(for="friends") friends?
+											input#friends.form-control(type="number" min=0 max=50 value=0)
+										div.col-lg-3.form-group
+											label(for="toDo") daily To Do?
+											select#toDo.form-control
+												option 0
+												option 1
+												option 2
+									div.form-row
+										div.col-lg-3.form-group
+											label(for="fridgeMission") fridge missions?
+											select#fridgeMission.form-control
+												option 0
+												option 1
+												option 2
+										div.col.form-group
+											label(for="other") Enter the amount of other AP you would like include:
+											input#other.form-control(type="number" min=0 value=0)
+									div.form-check.form-check-inline
+										input#isVIP.form-check-input(type="checkbox")
+										label.form-check-label(for="isVIP") Include VIP bonus
+									div.form-check
+										input#popquiz.form-check-input(type="checkbox")
+										label.form-check-label(for="popquiz") Include all AP from pop quiz rewards
 					.modal-footer
 						button(type="button" class="btn btn-secondary" data-dismiss="modal") Cancel
 						button#apply(type="button" class="btn btn-primary") Apply

@@ -67,10 +67,13 @@ function applyAdditionalSettings() {
 		adBattles: $("#adBattles").val(),
 		denergy: $("#denergy").val(),
 		adAP: $("#adAP").val(),
-		fridgeMission: $("#fridgeMission").val(),
 		spg: $("#spg").val(),
 		friends: $("#friends").val(),
 		toDo: $("#toDo").val(),
+		fridgeMission: {
+			isVIP: $("#isVIP").is(":checked"),
+			count: $("#fridgeMission").val(),
+		},
 		other: $("#other").val(),
 		popquiz: $("#popquiz").is(":checked")
 	};
