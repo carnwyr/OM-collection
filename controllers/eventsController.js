@@ -50,22 +50,11 @@ exports.getCalculatorPage = async function (req, res, next) {
 		return next(e);
 	}
 
-	var settings = req.cookies.calculator ? JSON.parse(req.cookies.calculator) : "";
-	// key: free battle/ap type; value: amount of free battles/ap
-	// {
-	//   adBattles: '2',			<-- 2 free battles
-	//   denergy: '2'					<-- 2 d-energy, need to convert to battles
-	//   adAP: '30',					<-- 30 free AP
-	//   fridgeMission: '0',	<-- 0 free AP
-	//   spg: '0',						...
-	//   friends: '0',
-	//   toDo: '0',
-	//   other: '300',
-	//   popquiz: true				<-- include pop quiz reward AP
-	// }
-
+	var cookieData = req.cookies.calculator ? JSON.parse(req.cookies.calculator) : {};
+	var reqData = req.query;
+	reqData.advanced = cookieData;
 	var locals = { title: i18next.t("title.calculator"), description: i18next.t("description.calculator"), event: event, query: req.query, user: req.user };
-	[locals.calculationError, locals.result] = eventCalculatorService.calculate(event, req.query);
+	[locals.calculationError, locals.result] = eventCalculatorService.calculate(event, reqData);
 	return res.render("calculator", locals);
 };
 

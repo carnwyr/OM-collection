@@ -9,9 +9,17 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 // TODO fridge based on user's time
-const baseApPerDay = 20 + 50 + 20 + 50;  // guests + ads + to do + friends
-const baseFridgeAp = 2 * 30;
-const vipFridgeAp = 2 * 60;
+const adAPCount = 5;
+const adAPAmount = 10;
+const defaultFridgeConf = { isVip: false, count: 2 };
+const fridgeVipAP = 60;
+const fridgeNormalAP = 30;
+const spgAPCount = 2;
+const spgAPAmount = 10;
+const friendsAPAmount = 50;
+const toDoAPAmount = 20;
+const defaultAdBattles = 5;
+
 
 exports.calculate = function (event, input) {
 	var parsedInput = parseInput(input, event);
@@ -19,12 +27,16 @@ exports.calculate = function (event, input) {
 		return ["Invalid input", null];
 	}
 
+	setDefaultAdvancedSettings(parsedInput.advancedSettings);
+
 	return [null, getCalculationResult(event, parsedInput)];
 }
 
 function getCalculationResult(event, input) {
-	var { pointsPerBattle, currentPoints, customGoal, stagesCleared } = input;
-	var isVip = false;
+	var { pointsPerBattle, currentPoints, customGoal, stagesCleared, advancedSettings } = input;
+
+	var apDaily = getDailyAp(advancedSettings);
+	var apOther = advancedSettings.other;
 
 	var rewards = event.rewards.slice().sort();
 	if (customGoal) {
@@ -38,7 +50,7 @@ function getCalculationResult(event, input) {
 	var daysLeft    = endDate.diff(currentDate, "day");
 	var resetTime   = currentTime.add(1, "day").startOf("day");
 
-	var availableTriesDaily = 3 * event.stages + 5;
+	var availableTriesDaily = 3 * event.stages + advancedSettings.adBattles;
 
 	rewards = rewards.filter(reward => reward.points)
 		.map(reward => {
@@ -50,23 +62,26 @@ function getCalculationResult(event, input) {
 			var triesNeeded  = Math.ceil(pointsNeeded / pointsPerBattle);
 			var apNeeded     = triesNeeded * 8;
 
-			var triesLeftToday = (event.stages - stagesCleared) * 3 + (event.stages === stagesCleared ? 0 : 5); // if all stages cleared, ads are assumed to be watched
-			var triesLeftMin = availableTriesDaily * (daysLeft - 1) + triesLeftToday;
+			var triesLeftToday = (event.stages - stagesCleared) * 3 + (event.stages === stagesCleared ? 0 : advancedSettings.adBattles); // if all stages cleared, ads are assumed to be watched
+			var triesLeftMin = availableTriesDaily * (daysLeft - 1) + triesLeftToday + advancedSettings.denergy * 3;
 
 			var apRegen = Math.floor(endTime.diff(currentTime, "minute") / 5);
 
 			var currentPage = Math.floor(currentPoints / event.pageCost);
 			var finalPage   = Math.floor(reward.points / event.pageCost) - (reward.points % event.pageCost === 0 ? 1 : 0);
-			var apRewarded  = 0;
-			for (var i = currentPage; i <= finalPage; i++) {
-				event.ap
-					.filter(ap => !ap.page || ap.page === i + 1)
-					.map(ap => { ap.points += i * event.pageCost; return ap; })
-					.filter(ap => ap.points > currentPoints && ap.points < reward.points)
-					.forEach(ap => apRewarded += ap.amount);
+			var apRewarded = 0;
+			
+			if (advancedSettings.popquiz) {
+				for (var i = currentPage; i <= finalPage; i++) {
+					event.ap
+						.filter(ap => !ap.page || ap.page === i + 1)
+						.map(ap => { ap.points += i * event.pageCost; return ap; })
+						.filter(ap => ap.points > currentPoints && ap.points < reward.points)
+						.forEach(ap => apRewarded += ap.amount);
+				}
 			}
 
-			var totalApFree = Math.min(apRegen + apRewarded + getDailyAp(isVip) * daysLeft, apNeeded);
+			var totalApFree = Math.min(apRegen + apRewarded + apDaily * daysLeft + apOther, apNeeded);
 
 			var totalBattlesToBuy = Math.max(triesNeeded - triesLeftMin, 0);
 			var dailyBattlesFree  = totalBattlesToBuy > 0 ? availableTriesDaily : Math.ceil(triesNeeded / daysLeft);
@@ -77,7 +92,7 @@ function getCalculationResult(event, input) {
 			var todayBattlesTotal = todayBattlesFree + dailyBattlesToBuy;
 
 			var todayApTotal = todayBattlesTotal * 8;
-			var todayApFree = Math.min(Math.floor(resetTime.diff(currentTime, "minute") / 5) + getDailyAp(isVip), todayApTotal);
+			var todayApFree = Math.min(Math.floor(resetTime.diff(currentTime, "minute") / 5) + apDaily + apOther, todayApTotal);
 
 			var totalBattlesFree = todayBattlesFree + dailyBattlesFree * (daysLeft - 1);
 			var totalBattlesTotal = totalBattlesFree + totalBattlesToBuy;
@@ -120,8 +135,8 @@ function getCalculationResult(event, input) {
 	return rewards;
 }
 
-function getDailyAp(isVip) {
-	return baseApPerDay + (isVip ? vipFridgeAp : baseFridgeAp)
+function getDailyAp(advancedSettings) {
+	return advancedSettings.adAP + advancedSettings.fridgeMission + advancedSettings.spg + advancedSettings.friends + advancedSettings.toDo;
 }
 
 function parseInput(data, event) {
@@ -137,5 +152,18 @@ function parseInput(data, event) {
 	var stagesCleared = parseInt(data.stagesCleared);
 	if (isNaN(stagesCleared) || stagesCleared < 0 || stagesCleared > event.stages) return null;
 
-	return {pointsPerBattle: pointsPerBattle, currentPoints: currentPoints, customGoal: customGoal, stagesCleared: stagesCleared};
+	return {pointsPerBattle: pointsPerBattle, currentPoints: currentPoints, customGoal: customGoal, stagesCleared: stagesCleared, advancedSettings: data.advanced};
+}
+
+function setDefaultAdvancedSettings(settings) {
+	settings.adBattles = "adBattles" in settings ? settings.adBattles : defaultAdBattles;
+	settings.denergy = "denergy" in settings ? settings.denergy : 0;
+	settings.adAP = ("adAP" in settings ? settings.adAP : adAPCount) * adAPAmount;
+	var fridgeConf = "fridgeMission" in settings ? settings.fridgeMission : defaultFridgeConf;
+	settings.fridgeMission = (fridgeConf.isVip ? fridgeVipAP : fridgeNormalAP) * fridgeConf.count;
+	settings.spg = ("spg" in settings ? settings.spg : spgAPCount) * spgAPAmount;
+	settings.friends = "friends" in settings ? settings.friends : friendsAPAmount;
+	settings.toDo = "toDo" in settings ? settings.toDo : toDoAPAmount;
+	settings.other = "other" in settings ? settings.other : 0;
+	settings.popquiz = "popquiz" in settings ? settings.popquiz : true;
 }
