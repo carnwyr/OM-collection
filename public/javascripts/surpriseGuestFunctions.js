@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	const urlParams = new URLSearchParams(window.location.search);
-	var character = urlParams.get('character')?urlParams.get('character'):"Lucifer";
+	var character = urlParams.get("character")?urlParams.get("character"):"Lucifer";
 
 	updateSettingsOnLoad();
 	openCharacterTab(character);
@@ -8,7 +8,7 @@ $(document).ready(function() {
 	$("#shortActions").click(() => enableOptions(false));
 	$("#allActions").click(() => enableOptions(true));
 	$("#useItems").click(() => enableItemOptions($("#useItems").is(":checked")));
-	$('.big-nav>.nav-link, .small-nav>.nav-link').click(function() {syncButtons($(this), urlParams)});
+	$(".big-nav>.nav-link, .small-nav>.nav-link").click(function() {syncButtons($(this), urlParams);});
 	$("#settingsCollapser").click(() => {
 		localStorage.setItem("displaySettings", !$("#settings").hasClass("show"));
 	});
@@ -49,14 +49,14 @@ function enableItemOptions(allowItems) {
 }
 
 function syncButtons(button, urlParams) {
-	if (button.parent().hasClass('big-nav')) {
-		$('#'+button.attr('id')+'Small').tab('show');
-		urlParams.set('character', button.attr('id').replace('Pill', ''));
+	if (button.parent().hasClass("big-nav")) {
+		$("#"+button.attr("id")+"Small").tab("show");
+		urlParams.set("character", button.attr("id").replace("Pill", ""));
 	} else {
-		$('#'+button.attr('id').replace('Small', '')).tab('show');
-		urlParams.set('character', button.attr('id').replace('PillSmall', ''));
+		$("#"+button.attr("id").replace("Small", "")).tab("show");
+		urlParams.set("character", button.attr("id").replace("PillSmall", ""));
 	}
-	window.history.replaceState(null, null, `${window.location.pathname}${urlParams.toString()===''?'':'?'+urlParams.toString()}`);
+	window.history.replaceState(null, null, `${window.location.pathname}${urlParams.toString()===""?"":"?"+urlParams.toString()}`);
 }
 
 function updateSettingsOnLoad() {
@@ -83,11 +83,11 @@ function updateSettingsOnLoad() {
 	}
 
 	if (multipleOptions) {
-		$("#allActions").prop('checked', true);
+		$("#allActions").prop("checked", true);
 	} else {
-		$("#shortActions").prop('checked', true);
+		$("#shortActions").prop("checked", true);
 	}
-	$("#useItems").prop('checked', useItems);
+	$("#useItems").prop("checked", useItems);
 	enableOptions(multipleOptions);
 
 	if (displaySettings) {
@@ -96,5 +96,5 @@ function updateSettingsOnLoad() {
 }
 
 function openCharacterTab(character) {
-	$('#'+character+'Pill, #'+character+'PillSmall').tab('show');
+	$("#"+character+"Pill, #"+character+"PillSmall").tab("show");
 }
