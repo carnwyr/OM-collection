@@ -12,7 +12,7 @@ mixin getActions(step)
         - var i = 0;
         while i < items.length
           - imgName = itemImages[items[i]];
-          img.gift(src='/images/items/'+imgName+'.png')
+          img.gift(src='/images/items/'+imgName+'.png' alt=imgName)
           - i++;
   else
     - var i = 0;
@@ -28,13 +28,13 @@ mixin getActions(step)
 
 mixin getConditionImage(condition)
   if condition == 'Homescreen'
-    img.img-fluid(src='/images/blob.png' style='max-height:1.5em')
+    img.img-fluid(src='/images/blob.png' style='max-height:1.5em' alt=condition)
   else if condition == '3 stars'
-    img.img-fluid(src='/images/battle_star.png' style='max-height:1.5em')
-    img.img-fluid.mx-1(src='/images/battle_star.png' style='max-height:1.5em')
-    img.img-fluid(src='/images/battle_star.png' style='max-height:1.5em')
+    img.img-fluid(src='/images/battle_star.png' style='max-height:1.5em' alt=condition)
+    img.img-fluid.mx-1(src='/images/battle_star.png' style='max-height:1.5em' alt=condition)
+    img.img-fluid(src='/images/battle_star.png' style='max-height:1.5em' alt=condition)
   else if condition == '1 or 2 stars'
-    img.img-fluid(src='/images/battle_star.png' style='max-height:1.5em')
+    img.img-fluid(src='/images/battle_star.png' style='max-height:1.5em' alt=condition)
   else
     | #{condition}
 
@@ -78,13 +78,13 @@ block content
           .nav.flex-column.nav-pills.mb-2.big-nav(role='tablist' aria-orientation="vertical")
             each interaction in interactions
               a.px-1.px-sm-2.px-lg-3(class='nav-item nav-link' id=interaction.chara+'Pill' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
-                img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='width:30px;')
+                img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='width:30px;' alt=interaction.chara)
                 | #{t(interaction.chara)}
         .col-12.d-lg-none.mb-3
           .nav.nav-pills.justify-content-center.small-nav(role='tablist')
             each interaction in interactions
               a.p-1.mx-1.small-pill(class='nav-item nav-link' id=interaction.chara+'PillSmall' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
-                img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='width:40px;')
+                img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='width:40px;' alt=interaction.chara)
 
         //- table
         .col-12.col-lg-9
