@@ -97,18 +97,14 @@
 #SolomonPill.active, #SolomonPillSmall.active {
   background-color: var(--solomon);
 }
-.gift{
-    position: relative;
-    width:calc(100%/4);
-    height:calc(100%/4);
+
+.gift {
+  width: calc(100%/3);
+  height: auto;
 }
-.small-gift{
-    position: relative;
-    width:calc(100%/3);
-    height:calc(100%/4);
-}
-.gift:before, .small-gift:before{
-    content: "";
-    display: block;
-    padding-top: 100%;
+
+@media screen and (min-width: 960px) {
+  .gift {
+    width: calc(100%/4);
+  }
 }
