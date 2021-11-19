@@ -100,10 +100,10 @@
 
 .gift {
   width: calc(100%/3);
-  height: auto;
+  height: 100%;
 }
 
-@media screen and (min-width: 960px) {
+@media screen and (min-width: 720px) {
   .gift {
     width: calc(100%/4);
   }
