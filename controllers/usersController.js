@@ -70,7 +70,7 @@ exports.signup = [
 			return;
 		}
 		try {
-			var  exists = await exports.userExists(req.body.username);
+			var  exists = await userService.getUser(req.body.username);
 		} catch (e) {
 			return next(e);
 		}
@@ -103,15 +103,16 @@ exports.signup = [
 	}
 ];
 
-exports.signupCheckUsername = async function(req, res) {
+exports.signupCheckUsername = async function (req, res) {
 	let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection'];
 	if (blacklist.includes(req.body.username.toLowerCase())) {
 		res.send(true);
 		return;
 	}
 	try {
-		var exists = await exports.userExists(req.body.username);
+		var exists = await userService.getUser(req.body.username);
 	} catch (e) {
+		console.error(e);
 		res.send('error');
 		return;
 	}
