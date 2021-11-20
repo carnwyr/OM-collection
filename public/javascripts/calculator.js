@@ -31,7 +31,7 @@ function startCountdown() {
 	  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 	  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-	  $("p.countdown").text(`${hours}h ${minutes}m ${seconds}s`);
+	  $("p.countdown").text(`${hours}:${minutes}:${seconds}`);
 		$("small.total-countdown").text(`${daysLeft} ${noun} ${hours}:${minutes}:${seconds}`)
 	}, 1000);
 }
