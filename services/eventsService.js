@@ -124,6 +124,9 @@ exports.addEvent = async function (req, res) {
 	try {
 		let data = req.body.data;
 
+		data.start = stringToDateTime(data.start);
+		data.end = stringToDateTime(data.end);
+
 		let event = await Events.findOne({ "name.en": data.name.en });
 		if (event) {
 			throw createError(400, `Event with name ${data.name.en} already exists`);
