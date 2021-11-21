@@ -31,7 +31,7 @@ function getCalculationResult(event, input) {
 		rewards.push({tag: "Custom", points: customGoal});
 	}
 
-	var endTime     = dayjs(event.end).tz("Asia/Tokyo");
+	var endTime     = dayjs.utc(event.end).tz("Asia/Tokyo");
 	var endDate     = endTime.startOf("day");
 	var currentTime = dayjs().tz("Asia/Tokyo");
 	var currentDate = currentTime.startOf("day");
@@ -51,7 +51,7 @@ function getCalculationResult(event, input) {
 			var apNeeded     = triesNeeded * 8;
 
 			var triesLeftToday = (event.stages - stagesCleared) * 3 + (event.stages === stagesCleared ? 0 : 5); // if all stages cleared, ads are assumed to be watched
-			var triesLeftMin = availableTriesDaily * (daysLeft - 1) + triesLeftToday;
+			var triesLeftFree = availableTriesDaily * daysLeft + triesLeftToday;
 
 			var apRegen = Math.floor(endTime.diff(currentTime, "minute") / 5);
 
@@ -66,20 +66,19 @@ function getCalculationResult(event, input) {
 					.forEach(ap => apRewarded += ap.amount);
 			}
 
-			var totalApFree = Math.min(apRegen + apRewarded + getDailyAp(isVip) * daysLeft, apNeeded);
+			var totalApFree = Math.min(apRegen + apRewarded + getDailyAp(isVip) * (daysLeft + 1), apNeeded);
 
-			var totalBattlesToBuy = Math.max(triesNeeded - triesLeftMin, 0);
-			var dailyBattlesFree  = totalBattlesToBuy > 0 ? availableTriesDaily : Math.ceil(triesNeeded / daysLeft);
-			var todayBattlesFree  = Math.min(triesLeftToday, triesNeeded, dailyBattlesFree);
-				dailyBattlesFree = totalBattlesToBuy > 0 ? availableTriesDaily :
-					daysLeft == 1 ? 0 : Math.ceil((triesNeeded - todayBattlesFree) / (daysLeft - 1));
-			var dailyBattlesToBuy = Math.ceil(totalBattlesToBuy / daysLeft);
+			var totalBattlesToBuy = Math.max(triesNeeded - triesLeftFree, 0);
+			var todayBattlesFree = Math.min(triesLeftToday, triesNeeded);
+			triesLeftFree = Math.min(triesLeftFree, triesNeeded);
+			var dailyBattlesFree = daysLeft === 0 ? todayBattlesFree : Math.ceil((triesLeftFree - todayBattlesFree) / daysLeft);
+			var dailyBattlesToBuy = Math.ceil(totalBattlesToBuy / (daysLeft + 1));
 			var todayBattlesTotal = todayBattlesFree + dailyBattlesToBuy;
 
 			var todayApTotal = todayBattlesTotal * 8;
 			var todayApFree = Math.min(Math.floor(resetTime.diff(currentTime, "minute") / 5) + getDailyAp(isVip), todayApTotal);
 
-			var totalBattlesFree = todayBattlesFree + dailyBattlesFree * (daysLeft - 1);
+			var totalBattlesFree = todayBattlesFree + dailyBattlesFree * daysLeft;
 			var totalBattlesTotal = totalBattlesFree + totalBattlesToBuy;
 
 			var goalToday = currentPoints + todayBattlesTotal * pointsPerBattle;
