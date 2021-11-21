@@ -20,7 +20,7 @@ mixin rewardEntry(reward = {tag:null, points:null, card:null})
 		select.card-select.form-control.custom-select.mb-0(name="card" placeholder="Card (if applicable)")
 			option(value='' data-subtext='None')
 			each card in cardData
-				option(value=card selected= reward.card===card)= card
+				option(value=card selected= reward.card ? reward.card.name===card : false)= card
 		button.btn.btn-outline-secondary.remove-button(type="button") Remove
 
 mixin apEntry(ap = {amount:null, points:null, page:null})
