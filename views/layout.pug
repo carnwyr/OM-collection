@@ -102,6 +102,7 @@ html(lang=t("lang"))
 
     main(class='container-fluid mb-5' style="position:relative;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
+      - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
       block content
       if (!user || !user.supportStatus.includes("adfree"))
         div#kool-aid.container(style="margin:2rem auto;text-align:center;")
