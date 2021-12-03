@@ -28,7 +28,7 @@ function updateCollection() {
 
   $.ajax({
     type: "post",
-    url: "/card/" + cardName + "/modifyCollectionFromDetails",
+    url: "/card/" + CARD_NAME + "/modifyCollectionFromDetails",
     contentType: "application/json",
     data: JSON.stringify({ collection: collectionType, modify: updateType })
   }).done(function(data) {

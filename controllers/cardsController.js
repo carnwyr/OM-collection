@@ -300,16 +300,13 @@ exports.updateCard = async function(req, res, next) {
 
 exports.deleteCard = async function (req, res, next) {
 	try {
-		var result = await cardService.deleteCard(req.params.card);
+		var result = await cardService.deleteCard(req.body.card);
+		return res.json(result);
 	} catch (e) {
-		console.error(e.message);
+		// console.error(e.message);
 		Sentry.captureException(e);
-		return next(e);
+		return res.json({ err: e });
 	}
-	if (result.err) {
-		return next(result.err);
-	}
-	res.redirect('/cards');
 };
 
 exports.makeCardPublic = async function (req, res, next) {

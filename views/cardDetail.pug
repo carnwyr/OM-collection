@@ -12,10 +12,12 @@ block content
       div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
         div(class="modal-dialog" role="document")
           div(class="modal-content")
-            div(class="modal-body") Are you sure you want to delete this card?
+            div(class="modal-body")
+              p Are you sure you want to delete this card?
+              p#result.alert
             div(class="modal-footer")
-              a(role="button" href=card.uniqueName+"/delete" class="btn btn-danger text-light") Delete
-              button(type="button" class="btn btn-secondary text-light" data-dismiss="modal") Cancel
+              button.btn.btn-danger(onclick="deleteCard()") Delete
+              button.btn.btn-secondary(data-dismiss="modal") Cancel
   div.container
     h2= title
     div.row
@@ -117,5 +119,17 @@ block content
       }
     script(src="/javascripts/cardDetailFunctions.js")
     script.
-      var cardName = !{JSON.stringify(card.uniqueName)};
+      const CARD_NAME = !{JSON.stringify(card.uniqueName)};
       var stats = !{JSON.stringify(stats)};
+
+  if user && user.isAdmin
+    script.
+      function deleteCard() {
+        $.post("delete", { card: CARD_NAME }, function(result) {
+          if (result.success) {
+            $("#result").addClass("alert-success").text("Card deleted. Please refresh page.")
+          } else {
+            $("#result").addClass("alert-danger").text(JSON.stringify(result));
+          }
+        });
+      }
