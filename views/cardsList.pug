@@ -162,7 +162,7 @@ block content
                   li(class="custom-control custom-radio")
                     input(type="radio" class="custom-control-input" id="checkCharacterAll" name="character")
                     label(class="custom-control-label" for="checkCharacterAll") All
-                  each character in ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "LittleD"]
+                  each character in ALL_CHARACTERS
                     li(class="custom-control custom-checkbox")
                       input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name="character" value=character)
                       label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?t("Little D"):t(character)
