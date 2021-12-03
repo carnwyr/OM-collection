@@ -71,18 +71,8 @@ block content
 				div(class='form-group')
 					label(for="characters") Characters
 					select(class='custom-select' id="characters" name="characters" size=12 multiple)
-						option(value='Lucifer' selected=(card?card.characters.includes("Lucifer"):false)) Lucifer
-						option(value='Mammon' selected=(card?card.characters.includes("Mammon"):false)) Mammon
-						option(value='Leviathan' selected=(card?card.characters.includes("Leviathan"):false)) Leviathan
-						option(value='Satan' selected=(card?card.characters.includes("Satan"):false)) Satan
-						option(value='Asmodeus' selected=(card?card.characters.includes("Asmodeus"):false)) Asmodeus
-						option(value='Beelzebub' selected=(card?card.characters.includes("Beelzebub"):false)) Beelzebub
-						option(value='Belphegor' selected=(card?card.characters.includes("Belphegor"):false)) Belphegor
-						option(value='Diavolo' selected=(card?card.characters.includes("Diavolo"):false)) Diavolo
-						option(value='Barbatos' selected=(card?card.characters.includes("Barbatos"):false)) Barbatos
-						option(value='Simeon' selected=(card?card.characters.includes("Simeon"):false)) Simeon
-						option(value='Luke' selected=(card?card.characters.includes("Luke"):false)) Luke
-						option(value='Solomon' selected=(card?card.characters.includes("Solomon"):false)) Solomon
+						each character in ALL_CHARACTERS
+							option(value=character selected=(card?card.characters.includes(character):false))= character
 				div(class='form-group')
 					label(for="number") Number
 					input(class='form-control' type="text" id="number" name="number" value=card?card.number:'')
