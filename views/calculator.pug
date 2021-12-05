@@ -67,19 +67,15 @@ block content
 								div.form-group
 									label(for="customGoal")= t("calculator.goal")
 									input#customGoal.form-control(type="number" name="customGoal" min="0" value=query.customGoal)
-								div.form-group
-									label(for="stagesCleared")= t("calculator.stageClear1")
-										input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
-										| #{t("calculator.stageClear2")}
-									input.custom-range(type="range" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0)
+								button(type="button" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#settingsModal")
+									span.mr-2 Advanced settings
+									if cookieBlocked
+										span#indicator.badge.badge-danger ERROR
+									else
+										span#indicator.badge.badge-warning OFF
 								input.btn.btn-primary.btn-block(type="submit" value=t("calculator.calculate"))
-							button(type="button" class="btn btn-link btn-sm btn-block mt-2 mb-1" data-toggle="modal" data-target="#settingsModal")
-								span.mr-2 Advanced settings
-								if cookieBlocked
-									span#indicator.badge.badge-danger ERROR
-								else
-									span#indicator.badge.badge-warning OFF
 							small.text-muted= t("calculator.disclaimer")
+
 				.col-12.col-lg-8.mb-3
 					.card.h-100
 						- var lst = (result ? result.map(x => Object.assign(x, event.rewards.find(y => y.tag === x.tag))) : event.rewards).filter(x => x.tag);
@@ -190,9 +186,26 @@ block content
 							.col-12
 								if cookieBlocked
 									p(style="border:2px solid rgba(255,0,0,.5);background:rgba(255,0,0,.3);border-radius:8px;padding:8px;") Advanced settings failed to load. This is because your browser/ ad-blocker blocked cookies from the website. Please enable cookies and try again.
+								if t("lang") === "ja"
+									p.alert.alert-warning Translation help needed. Send your translation to our discord server
+										|
+										|
+										a(href="https://discord.gg/Y3KMW7U") discord.gg/Y3KMW7U
+										|
+										| or email us at
+										|
+										|
+										a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
+										| .
 								p The following information will be used to calculate "free" battle/ AP.
 								h5 Battles
 								div.form-row
+									div.col-lg-6
+										label(for="stagesCleared")= t("calculator.stageClear1")
+											input#stagesCleared.form-control.form-control-sm.mx-2(type="number" name="stagesCleared" min="0" max=event.stages value=query.stagesCleared?query.stagesCleared:0 style="display:inline;width:4rem;")
+											| #{t("calculator.stageClear2")}
+									div.col-lg-6
+										input#stagesClearedRange.custom-range(type="range" min="0" max=event.stages value=0)
 									div.col-lg-6.form-group
 										label(for="adBattles") How many battles will you get from watching ads?
 										select#adBattles.form-control

@@ -1,5 +1,5 @@
 var settings = {};
-const DEFAULT_SETTINGS = '{"adBattles":"0","denergy":"0","adAP":"0","spg":"0","friends":"0","toDo":"0","fridgeMission":{"isVIP":false,"count":"0"},"other":"0","popquiz":false}';
+const DEFAULT_SETTINGS = '{"stagesCleared":"0","adBattles":"0","denergy":"0","adAP":"0","spg":"0","friends":"0","toDo":"0","fridgeMission":{"isVIP":false,"count":"0"},"other":"0","popquiz":false}';
 $(function() {
 	recallTab();
 	$("#rewards>li>a").click(function() { sessionStorage.setItem("selected", $(this).attr("id")); });
@@ -61,7 +61,10 @@ function checkAdditionalSettings() {
 					$("#isVIP").prop("checked", settings[key].isVIP);
 					break;
 				case "popquiz":
-					$('#'+key).prop("checked", settings[key]);
+					$("#popquiz").prop("checked", settings[key]);
+					break;
+				case "stagesCleared":
+					$("#stagesCleared, #stagesClearedRange").val(settings[key]);
 					break;
 				default:
 					$('#'+key).val(settings[key]);
@@ -75,6 +78,7 @@ function checkAdditionalSettings() {
 
 function applyAdditionalSettings() {
 	settings = {
+		stagesCleared: $("#stagesCleared").val(),
 		adBattles: $("#adBattles").val(),
 		denergy: $("#denergy").val(),
 		adAP: $("#adAP").val(),
