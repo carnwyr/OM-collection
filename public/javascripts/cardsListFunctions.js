@@ -2,7 +2,6 @@ const doneTypingInterval = 500;
 var typingTimer;
 var changedCards = {};
 var selectionMode = false;
-var viewType = "icon";
 var showCards = "";
 var ownedCards = [];
 var querystr = new URLSearchParams(document.location.search.substring(1));
@@ -40,24 +39,29 @@ $(document).ready(function() {
 		resetFilters();
 		applyFilters();
 	});
+	$("#viewMenuDropdown a").click(function() {
+		if ($(this).data("viewtype") === querystr.get("view")) return;
+		querystr.set("view", $(this).data("viewtype"));
+		window.location.href = `${window.location.pathname}?${querystr.toString()}`;
+	});
 	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
 	$('.cardPreview').on('click', cardClicked);
 	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 
-	$(".viewBtn").on('click', function() { switchViewOption($(this).data('viewmode')) });
 
 	fillRank("demonSection");
 	fillRank("memorySection");
 
-	$(window).on('beforeunload', () => {if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?");});
+	$(window).on('beforeunload', () => { if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?"); });
 
-	$('#viewMenuDropdown, .dropdown-menu').hover(function() {
-		$(this).parent().find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
-	}, function() {
-		$(this).parent().find('.dropdown-menu').first().stop(true, true).delay(250).slideUp();
-	});
+	// create a single listener that controls hover effect.
+	// $('#viewMenuDropdown, .dropdown-menu').hover(function() {
+	// 	$(this).parent().find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+	// }, function() {
+	// 	$(this).parent().find('.dropdown-menu').first().stop(true, true).delay(250).slideUp();
+	// });
 });
 
 function fillRank(container) {
@@ -72,10 +76,10 @@ function fillRank(container) {
 		if (visibleCardsCount % currentCardsInRow === 0) return;
 		var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow;
 
-		if (viewType == "icon") {
-			html = '<div class="invisible placeholder icon-container w-100 m-1"></div>';
-		} else {
+		if (querystr.get("view") === "original" || querystr.get("view") === "bloomed") {
 			html = '<div class="invisible placeholder full-container w-100 m-1"></div>';
+		} else {
+			html = '<div class="invisible placeholder icon-container w-100 m-1"></div>';
 		}
 
 		for (let i = 0; i < cardsToAdd; i++) {
@@ -192,16 +196,16 @@ function updateQuery() {
 	window.history.replaceState(null, null, `${window.location.pathname}${querystr.toString()===''?'':'?'+querystr.toString()}`);
 }
 
-function updateCardDisplay(cards, view) {
+function updateCardDisplay(cards) {
 	$(".cardPreview").fadeOut(400).promise().done(function() {
-		if (view) {
-			$('.cardPreview>img').each(function() {
-				$(this).attr('src', changes[view]['srcAction'](this));
-			});
-
-			changes[view]['fullViewAction']($('.cardPreview'));
-			$('.cardPreview>img').addClass("lazy");
-		}
+		// if (view) {
+		// 	$('.cardPreview>img').each(function() {
+		// 		$(this).attr('src', changes[view]['srcAction'](this));
+		// 	});
+		//
+		// 	changes[view]['fullViewAction']($('.cardPreview'));
+		// 	$('.cardPreview>img').addClass("lazy");
+		// }
 
 		var cardHeight = $(cards[0]).height();
 		var currentCardsInRow = getRowCapacity();
@@ -401,65 +405,8 @@ function addCardsToChangedList(cardsToSwitch, select) {
 	});
 }
 
-/***/
-const removeFullImageClass = function(target) { $(target).removeClass('full-container').addClass("icon-container"); }
-const addFullImageClass = function(target) { $(target).removeClass("icon-container").addClass('full-container'); }
-const replaceSToL = function(target) { return target.replace('/S/', '/L/'); }
-const replaceLToS = function(target) { return target.replace('/L/', '/S/'); }
-const removeBloom = function(target) { return target.replace('_b.jpg', '.jpg'); }
-const makeBloomed = function(target) { return target.replace('.jpg', '_b.jpg'); }
-
-const changes = {
-	'icon': {
-		'dropdownText': i18next["icon_view"],
-		'fullViewAction': removeFullImageClass,
-		'srcAction': function (target) { return removeBloom(replaceLToS($(target).attr('src'))); }
-	},
-	'original': {
-		'dropdownText': i18next["full_original"],
-		'fullViewAction': addFullImageClass,
-		'srcAction': function (target) { return removeBloom(replaceSToL($(target).attr('src'))); }
-	},
-	'bloomed': {
-		'dropdownText': i18next["full_bloomed"],
-		'fullViewAction': addFullImageClass,
-		'srcAction': function (target) {
-			if ($(target).parent().parent().attr('id') === 'demonSection') return makeBloomed(replaceSToL($(target).attr('src')));
-			else return replaceSToL($(target).attr('src'));
-		}
-	}
-};
-/***/
-
-function switchViewOption(changeViewTo) {
-	if (viewType === changeViewTo) return;
-
-	var cardsToDisplay = $(".cardPreview:visible");
-	viewType = changeViewTo;
-	querystr.set("view", viewType);
-
-	$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);
-	for (var mode in changes) {
-		if (mode == viewType) {
-			$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
-		} else {
-			$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
-		}
-	}
-
-	updateCardDisplay($(".cardPreview:visible"), viewType);
-	updateQuery();
-}
-
 async function applyQuery() {
 	resetFilters();
-	if (querystr.toString() === '' || querystr.toString() === "view=icon") {
-		history.scrollRestoration = "auto";
-		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
-		return;
-	} else {
-		history.scrollRestoration = "manual";
-	}
 
 	for (param of querystr.keys()) {
 		var filterList = querystr.get(param).split(" ");
@@ -489,18 +436,5 @@ async function applyQuery() {
 		}
 	}
 
-	if (["bloomed", "original", "icon"].includes(querystr.get("view"))) {
-		viewType = querystr.get("view");
-	}
-
-	$("#viewMenuDropdown").text(changes[viewType]['dropdownText']);
-	for (var mode in changes) {
-		if (mode == viewType) {
-			$("." + mode + "ViewBtn>span").removeClass("font-weight-normal").addClass("font-weight-bold text-primary");
-		} else {
-			$("." + mode + "ViewBtn>span").removeClass("font-weight-bold text-primary").addClass("font-weight-normal");
-		}
-	}
-
-	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val(), ownedCards), viewType);
+	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val(), ownedCards));
 }
