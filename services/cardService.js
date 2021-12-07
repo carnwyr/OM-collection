@@ -7,8 +7,8 @@ const createError = require("http-errors");
 const fileService = require("../services/fileService");
 const userService = require("../services/userService");
 
-exports.getCards = async function () {
-  return await Cards.find().sort({ number: -1 });
+exports.getCards = async function (query = {}) {
+  return await Cards.find(query).sort({ number: -1 });
 }
 
 exports.getHiddenCards = async function () {

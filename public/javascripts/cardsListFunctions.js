@@ -7,12 +7,18 @@ var ownedCards = [];
 var querystr = new URLSearchParams(document.location.search.substring(1));
 
 $(document).ready(function() {
-	resetFilters();
-	if ('URLSearchParams' in window) {
-		applyQuery();
-	} else {
-		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
-	}
+	// resetFilters();
+	// if ('URLSearchParams' in window) {
+	// 	applyQuery();
+	// } else {
+	// 	$("#demonWrapper, #memoryWrapper").removeClass("invisible");
+	// }
+
+	$("#applyFilters").click(() => {
+		applyFilters();
+		if (querystr.toString() !== '')
+			window.location.href = `${window.location.pathname}?${querystr.toString()}`;
+	});
 
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
 	$("img.lazy").each(function() {
@@ -22,22 +28,21 @@ $(document).ready(function() {
 	});
 
 	$("form input").on('click', updateFilters);
-	$("div#filters input").on('change', applyFilters);
-	$("input#nameFilter").on('input', inputChanged);
+	// $("input#nameFilter").on('input', inputChanged);
 	$("#searchForm input").on('keypress', function(e) {
 		if (e.which == '13') {
 			e.preventDefault();
 		}
 	});
 	$("#gotoDemon, #gotoMemory").on("click", scrollToSection);
-	$("div#resetFilters>a").on("click", function(e) {
+	$("#resetFilters").on("click", function(e) {
 		for (param of querystr.keys()) {
 			if (param !== "view") {
 				querystr.delete(param);
 			}
 		}
 		resetFilters();
-		applyFilters();
+		// applyFilters();
 	});
 	$("#viewMenuDropdown a").click(function() {
 		if ($(this).data("viewtype") === querystr.get("view")) return;
@@ -91,21 +96,21 @@ function fillRank(container) {
 	}
 }
 
-function getRowCapacity() {
-	// max number of cards for xs is 4, on smaller screens it's reduced by 1 (possibly outdated)
-	var cardsInRow;
-	if (viewType === "icon") {
-		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 6, 992: 6, 1200: 7, xl: 9};
-	} else {
-		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 4, 992: 3, 1200: 4, xl: 5};
-	}
-
-	for (let [screen, cards] of Object.entries(cardsInRow)) {
-		if (screen === "xl" || $(window).width() <= screen) {
-			return cards;
-		}
-	}
-}
+// function getRowCapacity() {
+// 	// max number of cards for xs is 4, on smaller screens it's reduced by 1 (possibly outdated)
+// 	var cardsInRow;
+// 	if (viewType === "icon") {
+// 		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 6, 992: 6, 1200: 7, xl: 9};
+// 	} else {
+// 		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 4, 992: 3, 1200: 4, xl: 5};
+// 	}
+//
+// 	for (let [screen, cards] of Object.entries(cardsInRow)) {
+// 		if (screen === "xl" || $(window).width() <= screen) {
+// 			return cards;
+// 		}
+// 	}
+// }
 
 function updateFilters(e) {
 	var form = $(this).closest("form");
@@ -127,7 +132,6 @@ function updateFilters(e) {
 			});
 		}
 	}
-	applyFilters();
 }
 
 async function applyFilters() {
@@ -158,8 +162,8 @@ async function applyFilters() {
 	} else {
 		querystr.delete("cards");
 	}
-	updateQuery();
-	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), filters, search, ownedCards));
+	// updateQuery();
+	// updateCardDisplay(filterCardsToDisplay($(".cardPreview"), filters, search, ownedCards));
 }
 
 function getFiltersAsStrings() {
@@ -188,62 +192,62 @@ function getFiltersAsStrings() {
 		}
 	});
 
-	updateQuery();
+	// updateQuery();
 	return filters;
 }
 
-function updateQuery() {
-	window.history.replaceState(null, null, `${window.location.pathname}${querystr.toString()===''?'':'?'+querystr.toString()}`);
-}
+// function updateQuery() {
+// 	window.history.replaceState(null, null, `${window.location.pathname}${querystr.toString()===''?'':'?'+querystr.toString()}`);
+// }
 
-function updateCardDisplay(cards) {
-	$(".cardPreview").fadeOut(400).promise().done(function() {
-		// if (view) {
-		// 	$('.cardPreview>img').each(function() {
-		// 		$(this).attr('src', changes[view]['srcAction'](this));
-		// 	});
-		//
-		// 	changes[view]['fullViewAction']($('.cardPreview'));
-		// 	$('.cardPreview>img').addClass("lazy");
-		// }
+// function updateCardDisplay(cards) {
+// 	$(".cardPreview").fadeOut(400).promise().done(function() {
+// 		// if (view) {
+// 		// 	$('.cardPreview>img').each(function() {
+// 		// 		$(this).attr('src', changes[view]['srcAction'](this));
+// 		// 	});
+// 		//
+// 		// 	changes[view]['fullViewAction']($('.cardPreview'));
+// 		// 	$('.cardPreview>img').addClass("lazy");
+// 		// }
+//
+// 		var cardHeight = $(cards[0]).height();
+// 		var currentCardsInRow = getRowCapacity();
+// 		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
+// 		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
+//
+// 		if(cards.slice(maxVisibleCards).length > 0) {
+// 			var cardsOnDisplay = function() { $(cards.slice(maxVisibleCards)).css('display', 'block') };
+// 			applyEffectWithoutTransition($(cards.slice(maxVisibleCards)).find('img'), cardsOnDisplay);
+// 		}
+// 		$(cards.slice(0, maxVisibleCards)).fadeIn(400);
+//
+// 		fillRank("demonSection");
+// 		fillRank("memorySection");
+//
+// 		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
+// 	});
+// }
 
-		var cardHeight = $(cards[0]).height();
-		var currentCardsInRow = getRowCapacity();
-		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
-		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
-
-		if(cards.slice(maxVisibleCards).length > 0) {
-			var cardsOnDisplay = function() { $(cards.slice(maxVisibleCards)).css('display', 'block') };
-			applyEffectWithoutTransition($(cards.slice(maxVisibleCards)).find('img'), cardsOnDisplay);
-		}
-		$(cards.slice(0, maxVisibleCards)).fadeIn(400);
-
-		fillRank("demonSection");
-		fillRank("memorySection");
-
-		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
-	});
-}
-
-function filterCardsToDisplay(cards, filters, search, excludedCards) {
-	Object.keys(filters).forEach(function(key) {
-		if (filters[key] !== "") cards = $(cards).filter(filters[key]);
-	});
-	cards = $(cards).filter(function() {
-		var cardName = $(this).find("figcaption").text();
-		var isSearched = search !== "" ? cardName.toLowerCase().includes(search.toLowerCase()) : true;
-		var uniqueCardName = $("img", this).attr('src').slice(16, -4);
-		if (showCards === "Owned") {
-			var toShow = excludedCards.includes(uniqueCardName);
-		} else if (showCards === "NotOwned") {
-			var toShow = !excludedCards.includes(uniqueCardName);
-		} else {
-			var toShow = true;
-		}
-		return isSearched && toShow;
-	});
-	return cards;
-}
+// function filterCardsToDisplay(cards, filters, search, excludedCards) {
+// 	Object.keys(filters).forEach(function(key) {
+// 		if (filters[key] !== "") cards = $(cards).filter(filters[key]);
+// 	});
+// 	cards = $(cards).filter(function() {
+// 		var cardName = $(this).find("figcaption").text();
+// 		var isSearched = search !== "" ? cardName.toLowerCase().includes(search.toLowerCase()) : true;
+// 		var uniqueCardName = $("img", this).attr('src').slice(16, -4);
+// 		if (showCards === "Owned") {
+// 			var toShow = excludedCards.includes(uniqueCardName);
+// 		} else if (showCards === "NotOwned") {
+// 			var toShow = !excludedCards.includes(uniqueCardName);
+// 		} else {
+// 			var toShow = true;
+// 		}
+// 		return isSearched && toShow;
+// 	});
+// 	return cards;
+// }
 
 function applyEffectWithoutTransition(elements, effect, args) {
 	if (elements.length === 0) {
@@ -261,6 +265,8 @@ function resetFilters() {
 	$("#filters input[type=checkbox]").prop("checked", false);
 	$("#searchForm input[type=text]").val("");
 	$("#checkCardsAll").prop("checked", true);
+
+	applyFilters();
 }
 
 function inputChanged(e) {
@@ -405,36 +411,36 @@ function addCardsToChangedList(cardsToSwitch, select) {
 	});
 }
 
-async function applyQuery() {
-	resetFilters();
-
-	for (param of querystr.keys()) {
-		var filterList = querystr.get(param).split(" ");
-		var isFilter = ["character", "rarity", "attribute"].includes(param);
-
-		if (isFilter) {
-			if (filterList.length !== 0) {
-				$(`input[type=radio][name=${param}]`).prop('checked', false);
-				filterList.forEach(f => {
-					$(`input[value=${f}]`).prop("checked", true);
-				});
-			}
-		} else if (param === "search") {
-			$('input#nameFilter').val(querystr.get(param));
-		} else if (param === "cards") {
-			if (!$("#checkCardsOwned").prop("disabled")) {
-				showCards = querystr.get("cards");
-				$("#checkCards"+showCards).prop("checked", true);
-				ownedCards = await $.ajax({
-					type: 'get',
-					url: '/collection/getOwnedCards',
-					cache: false
-				});
-			} else {
-				querystr.delete("cards");
-			}
-		}
-	}
-
-	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val(), ownedCards));
-}
+// async function applyQuery() {
+// 	resetFilters();
+//
+// 	for (param of querystr.keys()) {
+// 		var filterList = querystr.get(param).split(" ");
+// 		var isFilter = ["character", "rarity", "attribute"].includes(param);
+//
+// 		if (isFilter) {
+// 			if (filterList.length !== 0) {
+// 				$(`input[type=radio][name=${param}]`).prop('checked', false);
+// 				filterList.forEach(f => {
+// 					$(`input[value=${f}]`).prop("checked", true);
+// 				});
+// 			}
+// 		} else if (param === "search") {
+// 			$('input#nameFilter').val(querystr.get(param));
+// 		} else if (param === "cards") {
+// 			if (!$("#checkCardsOwned").prop("disabled")) {
+// 				showCards = querystr.get("cards");
+// 				$("#checkCards"+showCards).prop("checked", true);
+// 				ownedCards = await $.ajax({
+// 					type: 'get',
+// 					url: '/collection/getOwnedCards',
+// 					cache: false
+// 				});
+// 			} else {
+// 				querystr.delete("cards");
+// 			}
+// 		}
+// 	}
+//
+// 	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val(), ownedCards));
+// }
