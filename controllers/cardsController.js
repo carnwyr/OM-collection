@@ -24,10 +24,11 @@ exports.getCardsListPage = async function(req, res, next) {
 
 		console.log(req.query);
 
-		for (const [key, value] of Object.entries(req.query)) {
+		for (let [key, value] of Object.entries(req.query)) {
 			if (typeof value !== "string") continue;
-			if (key === "character") query["characters"] = { $in: value.split(' ') };
-			if (["attribute", "rarity"].includes(key)) {
+			if (key === "character") key = "characters";
+			if (value === "URp") value = "UR+";
+			if (["characters", "attribute", "rarity"].includes(key)) {
 				query[key] = { $in: value.split(' ') };
 			}
 		}
