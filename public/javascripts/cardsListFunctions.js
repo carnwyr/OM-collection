@@ -15,9 +15,10 @@ $(document).ready(function() {
 	// }
 
 	$("#applyFilters").click(() => {
-		applyFilters();
-		if (querystr.toString() !== '')
-			window.location.href = `${window.location.pathname}?${querystr.toString()}`;
+		updateFilters();
+		// applyFilters();
+		// if (querystr.toString() !== '')
+		// 	window.location.href = `${window.location.pathname}?${querystr.toString()}`;
 	});
 
 	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
@@ -27,28 +28,24 @@ $(document).ready(function() {
 		}
 	});
 
-	$("form input").on('click', updateFilters);
+	// $("form input").on('click', updateFilters);
 	// $("input#nameFilter").on('input', inputChanged);
-	$("#searchForm input").on('keypress', function(e) {
-		if (e.which == '13') {
-			e.preventDefault();
-		}
-	});
+	// $("#searchForm input").on('keypress', function(e) {
+	// 	if (e.which == '13') {
+	// 		e.preventDefault();
+	// 	}
+	// });
 	$("#gotoDemon, #gotoMemory").on("click", scrollToSection);
-	$("#resetFilters").on("click", function(e) {
-		for (param of querystr.keys()) {
-			if (param !== "view") {
-				querystr.delete(param);
-			}
-		}
-		resetFilters();
-		// applyFilters();
-	});
+
+	$("#filters form input").change(updateFilters);
+	$("#resetFilters").click(resetFilters);
+
 	$("#viewMenuDropdown a").click(function() {
 		if ($(this).data("viewtype") === querystr.get("view")) return;
 		querystr.set("view", $(this).data("viewtype"));
 		window.location.href = `${window.location.pathname}?${querystr.toString()}`;
 	});
+
 	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
 	$('.cardPreview').on('click', cardClicked);
 	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
@@ -112,88 +109,27 @@ function fillRank(container) {
 // 	}
 // }
 
-function updateFilters(e) {
-	var form = $(this).closest("form");
-	var type = $(this).attr("type");
-	if (type == 'checkbox') {
-		var checkboxes = $(form).find('input[type=checkbox]:checked');
-		var radio = $(form).find('input[type=radio]');
-		if (checkboxes.length == 0) {
-			$(radio).prop('checked', true);
-		} else if ($(radio).prop('checked')) {
-			$(radio).prop('checked', false);
+function updateFilters() {
+	var name = $(this).attr("name");
+
+	if (name === "cards") return;
+
+	var checkedItems = $(`input[name=${name}][type=checkbox]:checked`);
+
+	if ($(this).attr("type") === "radio") {
+		if (name !== "characters")
+			checkedItems.prop('checked', false);
+		else
+			$("#characters label.btn").removeClass("active");
+	} else {
+		if (checkedItems.length === 0 ||
+				checkedItems.length === $(`input[name=${name}][type=checkbox]`).length) {
+			$(`input[name=${name}][type=radio]`).prop("checked", true);
+			checkedItems.prop('checked', false);
+		} else {
+			$(`input[name=${name}][type=radio]`).prop("checked", false);
 		}
 	}
-	if (type == 'radio') {
-		var checkboxes = $(form).find('input[type=checkbox]:checked');
-		if ($(this).prop('checked')) {
-			$(checkboxes).each(function() {
-				$(this).prop('checked', false);
-			});
-		}
-	}
-}
-
-async function applyFilters() {
-	var filters = getFiltersAsStrings();
-	var search = $('input#nameFilter').val();
-
-	if (search !== '') {
-		querystr.set("search", search);
-	} else {
-		querystr.delete("search");
-	}
-
-	if ($('#checkCardsNotOwned').prop('checked')) {
-		showCards = "NotOwned";
-	} else if ($('#checkCardsOwned').prop('checked')) {
-		showCards = "Owned";
-	} else {
-		showCards = '';
-	}
-
-	if (showCards !== '') {
-		querystr.set("cards", showCards);
-		ownedCards = await $.ajax({
-			type: 'get',
-			url: '/collection/getOwnedCards',
-			cache: false
-		});
-	} else {
-		querystr.delete("cards");
-	}
-	// updateQuery();
-	// updateCardDisplay(filterCardsToDisplay($(".cardPreview"), filters, search, ownedCards));
-}
-
-function getFiltersAsStrings() {
-	var filters = {};
-	$("#filters form").each(function() {
-		var formId = $(this).attr("id");
-		var param = formId.slice(0, -4);
-		var entries = "";
-		filters[formId] = "";
-
-		$(this).find("input[type=checkbox]:checked").each(function(index, obj) {
-			if (index != 0) {
-				filters[formId] += ", ";
-				entries += " ";
-			}
-			filters[formId] += "." + $(obj).attr("value");
-			entries += $(obj).attr("value");
-		});
-
-		if (entries !== '') {
-			querystr.set(param, entries);
-		} else if (param !== "search") {
-			querystr.delete(param);
-		} else if ($('input#nameFilter').val() === '') {
-			querystr.delete(param);
-		}
-	});
-
-	// updateQuery();
-	return filters;
 }
 
 // function updateQuery() {
@@ -263,15 +199,8 @@ function applyEffectWithoutTransition(elements, effect, args) {
 function resetFilters() {
 	$("#filters input[type=radio]").prop("checked", true);
 	$("#filters input[type=checkbox]").prop("checked", false);
-	$("#searchForm input[type=text]").val("");
 	$("#checkCardsAll").prop("checked", true);
-
-	applyFilters();
-}
-
-function inputChanged(e) {
-	clearTimeout(typingTimer);
-	typingTimer = setTimeout(applyFilters, doneTypingInterval);
+	$("#characters label.btn").removeClass("active");
 }
 
 function scrollToSection(e) {

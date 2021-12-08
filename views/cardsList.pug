@@ -82,14 +82,12 @@ block content
         div(class="card-body d-flex flex-wrap justify-content-around p-3")
           div#viewMenuDropdown(class="dropdown text-center")
             button(class="btn dropdown-toggle text-secondary mb-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-              case query.view
-                when "original"
-                  span= t("cards.full_original")
-                when "bloomed"
-                  span= t("cards.full_bloomed")
-                default
-                  - query.view = "icon";
-                  span= t("cards.icon_view")
+              if (!query.view || !["original", "bloomed"].includes(query.view))
+                span= t("cards.icon_view")
+              else if (query.view === "original")
+                span= t("cards.full_original")
+              else
+                span= t("cards.full_bloomed")
             - function isSelectedView(t) { return query.view === t ? "text-primary font-weight-bold" : ""; }
             div(class="dropdown-menu shadow" aria-labelledby="viewMenuDropdown")
               a(class="dropdown-item" data-viewtype="icon")
@@ -104,78 +102,85 @@ block content
               div(class="input-group-text border-0 bg-transparent text-primary" style="z-index:3;")
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-secondary" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
               input(type="text" class="form-control border-0 text-primary bg-transparent pl-0" id="nameFilter" placeholder=t("cards.search"))
-          button(id="filterBtn" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters" style="padding:0 1.25rem")
+          button(id="filterBtn" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#filters")
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16" style="margin-bottom:.125rem">   <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/> </svg>
             |
             | #{t("cards.filters")}
 
-      div(id="filters" class="collapse shadow")
-        div(class="card card-body" style="border-left:4px solid var(--secondary);")
-          div(style="position:absolute;margin:-1.25rem 0 0 -1.5rem;background-color:var(--secondary);padding:0 2rem;color:white;border-radius:4px 0;")= t("cards.filters")
-          if path === "list"
-            div.row
-              // add margin to align with rest of filters
-              p.col-12.col-lg-1.mb-lg-0(style="margin-left:5px")= t("common.cards")
-              div.col
-                ul#cardsfilter
-                  li(class="custom-control custom-radio")
-                    input(type="radio" class="custom-control-input" id="checkCardsAll" name="cards")
-                    label(class="custom-control-label" for="checkCardsAll") All
-                  li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
-                    input(type="radio" class="custom-control-input" id="checkCardsOwned" name="cards" disabled=(user?false:true))
-                    label(class="custom-control-label" for="checkCardsOwned")= t("cards.owned")
-                  li(class="custom-control custom-radio" style={opacity: (user?'1':".5")})
-                    input(type="radio" class="custom-control-input" id="checkCardsNotOwned" name="cards" disabled=(user?false:true))
-                    label(class="custom-control-label" for="checkCardsNotOwned")= t("cards.not_owned")
-                  if !user
-                    li
-                      a(href="/signup")= t("common.signup")
-                      |
-                      |
-                      span.text-dark /
-                      |
-                      |
-                      a(href="/login")= t("common.login")
-            hr
-          div#general.row
-            div.col-sm-12.col-md-6
-              p= t("cards.rarity")
-              form#rarityForm
-                ul
-                  li(class="custom-control custom-radio")
-                    input(type="radio" class="custom-control-input" id="checkRarityAll" name="rarity" checked=!query.rarity)
-                    label(class="custom-control-label" for="checkRarityAll") All
-                  each rarity in ["N", "R", "SR", "SSR", "UR", "URp"]
-                    li(class="custom-control custom-checkbox")
-                      input(type="checkbox" class="custom-control-input" id="checkRarity"+rarity name="rarity" value=rarity checked=query.rarity&&query.rarity.includes(rarity))
-                      label(class="custom-control-label" for="checkRarity"+rarity)= rarity==="URp"?"UR+":rarity
-              hr
-              p= t("cards.attribute")
-              form#attributeForm
-                ul
-                  li(class="custom-control custom-radio")
-                    input(type="radio" class="custom-control-input" id="checkAttributeAll" name="attribute" checked=!query.attribute)
-                    label(class="custom-control-label" for="checkAttributeAll") All
-                  each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
-                    li(class="custom-control custom-checkbox")
-                      input(type="checkbox" class="custom-control-input" id="checkAttribute"+attribute name="attribute" value=attribute checked=query.attribute&&query.attribute.includes(attribute))
-                      label(class="custom-control-label" for="checkAttribute"+attribute)= t(attribute)
-              hr.d-md-none
-            div#characterFilters.col
-              p= t("cards.character")
-              form#characterForm
-                ul
-                  li(class="custom-control custom-radio")
-                    input(type="radio" class="custom-control-input" id="checkCharacterAll" name="character" checked=!query.character)
-                    label(class="custom-control-label" for="checkCharacterAll") All
-                  each character in ALL_CHARACTERS
-                    li(class="custom-control custom-checkbox")
-                      input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name="character" value=character checked=query.character&&query.character.includes(character))
-                      label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?t("Little D"):t(character)
-          hr
-          div.text-right
-            button#resetFilters.btn.text-muted.mr-2= t("cards.reset")
-            button#applyFilters.btn.btn-primary Apply
+      div#filters.modal.fade(tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true")
+        div.modal-dialog.modal-lg
+          div.modal-content
+            div.modal-header
+              h5.modal-title= t("cards.filters")
+              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                span(aria-hidden="true") &times;
+            div.modal-body
+              form
+                if path === "list"
+                  div.row.mt-3
+                    p.col-lg-2.text-right= t("common.cards")
+                    div#cardsfilter.col
+                      div.custom-control.custom-radio.custom-control-inline
+                        input#checkCardsAll.custom-control-input(type="radio" name="cards")
+                        label.custom-control-label(for="checkCardsAll") All
+                      div.custom-control.custom-radio.custom-control-inline(style={opacity: (user?'1':".5")})
+                        input#checkCardsOwned.custom-control-input(type="radio" name="cards" disabled=(user?false:true))
+                        label.custom-control-label(for="checkCardsOwned")= t("cards.owned")
+                      div.custom-control.custom-radio.custom-control-inline(style={opacity: (user?'1':".5")})
+                        input#checkCardsNotOwned.custom-control-input(type="radio" name="cards" disabled=(user?false:true))
+                        label.custom-control-label(for="checkCardsNotOwned")= t("cards.not_owned")
+                      if !user
+                        div(style="display:inline;")
+                          a(href="/signup")= t("common.signup")
+                          |
+                          |
+                          span.text-dark /
+                          |
+                          |
+                          a(href="/login")= t("common.login")
+                div.row
+                  p.col-lg-2.text-right= t("cards.rarity")
+                  div#rarity.col
+                    div.custom-control.custom-radio.custom-control-inline
+                      input#checkRarityAll.custom-control-input(type="radio" name="rarity" checked=!query.rarity value="")
+                      label.custom-control-label(for="checkRarityAll") All
+                    each rarity in ["N", "R", "SR", "SSR", "UR", "UR+"]
+                      - query.rarity = [].concat(query.rarity)
+                      div.custom-control.custom-checkbox.custom-control-inline
+                        input.custom-control-input(type="checkbox" id="checkRarity"+(rarity==="UR+"?"URp":rarity) name="rarity" value=rarity checked=(query.rarity&&query.rarity.includes(rarity)?true:false))
+                        label.custom-control-label(for="checkRarity"+(rarity==="UR+"?"URp":rarity))= rarity
+
+                div.row
+                  p.col-lg-2.text-right= t("cards.attribute")
+                  div#attribute.col
+                    div.custom-control.custom-radio.custom-control-inline
+                      input#checkAttributeAll.custom-control-input(type="radio" name="attribute" checked=!query.attribute value="")
+                      label.custom-control-label(for="checkAttributeAll") All
+                    each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+                      div.custom-control.custom-checkbox.custom-control-inline
+                        input.custom-control-input(type="checkbox" id="checkAttribute"+attribute name="attribute" value=attribute checked=(query.attribute&&query.attribute.includes(attribute)?true:false))
+                        label.custom-control-label(for="checkAttribute"+attribute)= t(attribute)
+
+                div.row
+                  p.col-lg-2.text-right= t("cards.character")
+                  div#characters.col.d-flex.flex-wrap.align-items-center
+                    div.custom-control.custom-radio.custom-control-inline
+                      input#checkAllCharacters.custom-control-input(type="radio" name="characters" checked=!query.characters value="")
+                      label.custom-control-label(for="checkAllCharacters") All
+                    each character in ALL_CHARACTERS
+                      div.btn-group-toggle(data-toggle="buttons")
+                        label(for="check"+character class="btn"+(query.characters&&query.characters.includes(character)?" active":""))
+                          input(type="checkbox" id="check"+character name="characters" value=character checked=(query.characters&&query.characters.includes(character)?true:false))
+                          img(src="/images/faces/"+character+".png" style="width:32px;height:32px;" alt=t(character))
+
+                input(type="submit" value="HI")
+            div.modal-footer
+              button#resetFilters.btn.text-muted <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>   <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                |
+                | #{t("cards.reset")}
+              button(type="button" class="btn btn-secondary" data-dismiss="modal") Cancel
+              button#applyFilters(type="button" class="btn btn-primary") Save changes
+
       if (!user || !user.supportStatus.includes("adfree"))
         div.text-center
           <div id="ezoic-pub-ad-placeholder-108"></div>
@@ -193,14 +198,13 @@ block content
           }
         }
         function getImageLink(name) {
-          switch(query.view) {
-            case "original":
-              return "/images/cards/L/" + name + ".jpg";
-            case "bloomed":
-              return "/images/cards/L/" + name + "_b.jpg";
-            default:
-              return "/images/cards/S/" + name + ".jpg";
-          }
+          if (!query.view) return "/images/cards/S/" + name + ".jpg";
+          if (query.view === "original")
+            return "/images/cards/L/" + name + ".jpg";
+          else if (query.view === "bloomed")
+            return "/images/cards/L/" + name + "_b.jpg";
+          else
+            return "/images/cards/S/" + name + ".jpg";
         }
         var cardContainer = query.view === "original" || query.view === "bloomed" ? " full-container" : " icon-container";
 

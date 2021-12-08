@@ -25,11 +25,9 @@ exports.getCardsListPage = async function(req, res, next) {
 		console.log(req.query);
 
 		for (let [key, value] of Object.entries(req.query)) {
-			if (typeof value !== "string") continue;
-			if (key === "character") key = "characters";
-			if (value === "URp") value = "UR+";
+			if (value === "") continue;
 			if (["characters", "attribute", "rarity"].includes(key)) {
-				query[key] = { $in: value.split(' ') };
+				query[key] = { $in: [].concat(value) };
 			}
 		}
 
