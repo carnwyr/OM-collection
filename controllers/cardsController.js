@@ -28,12 +28,29 @@ exports.getCardsListPage = async function(req, res, next) {
 			if (value === "") continue;
 			if (["characters", "attribute", "rarity"].includes(key)) {
 				query[key] = { $in: [].concat(value) };
+			} else if (key === "search") {
+				// var lang = i18next.t("lang") === "zh" ? "en" : i18next.t("lang");
+				// query["name."+lang] = new RegExp(value, 'i');
+
+				if (i18next.t("lang") === "ja") {
+					query["ja_name"] = new RegExp(value, 'i');
+				} else {
+					query["name"] = new RegExp(value, 'i');
+				}
 			}
 		}
 
 		console.log(query);
 
 		var cards = await cardService.getCards(query);
+		if (req.user && req.query.cards) {
+			let ownedCards = await userService.getOwnedCards(req.user.name);
+			if (req.query.cards === 'owned') {
+				cards = cards.filter(card => ownedCards.includes(card.uniqueName))
+			} else if (req.query.cards === 'notowned') {
+				cards = cards.filter(card => !ownedCards.includes(card.uniqueName))
+			}
+		}
 
 		// console.log(cards);
 
