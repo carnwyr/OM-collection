@@ -1,50 +1,81 @@
-const doneTypingInterval = 500;
-var typingTimer;
 var changedCards = {};
 var selectionMode = false;
-var showCards = "";
 var ownedCards = [];
 var querystr = new URLSearchParams(document.location.search.substring(1));
+const INIT_DISPLAY_COUNT = 100;
+
+
+// TODO: strip extra data from card list.
+// TODO: create a single listener that controls all hover effects.
+// TODO: change initial display count to fill rank.
+
+// add fade effect when displaying cards
+// style load more buttons
+// add message when no card to display
+// add click x to clear search bar
+
 
 $(document).ready(function() {
-	// resetFilters();
-	// if ('URLSearchParams' in window) {
-	// 	applyQuery();
-	// } else {
-	// 	$("#demonWrapper, #memoryWrapper").removeClass("invisible");
-	// }
 
-	$("#applyFilters").click(() => {
-		updateFilters();
-		// applyFilters();
-		// if (querystr.toString() !== '')
-		// 	window.location.href = `${window.location.pathname}?${querystr.toString()}`;
+	let ias = new InfiniteAjaxScroll('#demonSection', {
+	  item: '.cardPreview',
+	  next: nextHandler,
+		trigger: {
+	    element: '#trigger1',
+			when: (pageIndex) => pageIndex >= 0
+	  }
 	});
 
-	$("img.lazy").on("load", function() { $(this).removeClass("lazy"); });
-	$("img.lazy").each(function() {
-		if (this.complete && this.naturalHeight !== 0) {
-			$(this).removeClass("lazy");
+	let ias2 = new InfiniteAjaxScroll('#memorySection', {
+	  item: '.cardPreview',
+	  next: nextHandler2,
+		trigger: {
+	    element: '#trigger2',
+			when: (pageIndex) => pageIndex >= 0
+	  }
+	});
+
+	$("#filters form").on("submit", function(e) {
+		e.preventDefault();
+
+		var filters = new FormData($("#filters form")[0]);
+		var params = new URLSearchParams();
+
+		for (let [key, value] of filters.entries()) {
+			if (value) params.append(key, value);
 		}
+
+		if (params.get("cards")) params.set("cards", $("input[name='cards']:checked").val());
+		if (querystr.get("search")) params.append('search', querystr.get("search"));
+		if (querystr.get("view")) params.append('view', querystr.get("view"));
+
+		console.log(params.toString());
+
+		window.location.href = `${window.location.pathname}?${params.toString()}`;
 	});
 
-	// $("form input").on('click', updateFilters);
-	// $("input#nameFilter").on('input', inputChanged);
-	// $("#searchForm input").on('keypress', function(e) {
-	// 	if (e.which == '13') {
-	// 		e.preventDefault();
-	// 	}
-	// });
+	$("#search").on("submit", function(e) {
+		e.preventDefault();
+
+		var search = $("input[name='search']").val();
+		if (!search) querystr.delete("search");
+		else querystr.set("search", search);
+
+		window.location.href = `${window.location.pathname}?${querystr.toString()}`;
+	});
+
+	$("#viewMenuDropdown a").click(function() {
+		if ($(this).data("viewtype") === querystr.get("view")) return;
+
+		// update view
+		querystr.set("view", $(this).data("viewtype"));
+		window.location.href = `${window.location.pathname}?${querystr.toString()}`;
+	});
+
 	$("#gotoDemon, #gotoMemory").on("click", scrollToSection);
 
 	$("#filters form input").change(updateFilters);
 	$("#resetFilters").click(resetFilters);
-
-	$("#viewMenuDropdown a").click(function() {
-		if ($(this).data("viewtype") === querystr.get("view")) return;
-		querystr.set("view", $(this).data("viewtype"));
-		window.location.href = `${window.location.pathname}?${querystr.toString()}`;
-	});
 
 	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
 	$('.cardPreview').on('click', cardClicked);
@@ -52,62 +83,71 @@ $(document).ready(function() {
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 
-
-	fillRank("demonSection");
-	fillRank("memorySection");
-
 	$(window).on('beforeunload', () => { if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?"); });
-
-	// create a single listener that controls hover effect.
-	// $('#viewMenuDropdown, .dropdown-menu').hover(function() {
-	// 	$(this).parent().find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
-	// }, function() {
-	// 	$(this).parent().find('.dropdown-menu').first().stop(true, true).delay(250).slideUp();
-	// });
 });
 
-function fillRank(container) {
-	$('#'+container).find('.placeholder').remove();
-	var visibleCardsCount = $(`#${container}>.cardPreview`).filter(function() {
-		return $(this).css("display") !== "none";
-	}).length;
+let nextHandler = function(pageIndex) {
+	var data = CARD_LIST.filter(card => card.type === "Demon");
+  var result = createCardDocuments(data, pageIndex);
 
-	var html;
-	if (visibleCardsCount > 0) {
-		var currentCardsInRow = getRowCapacity();
-		if (visibleCardsCount % currentCardsInRow === 0) return;
-		var cardsToAdd = currentCardsInRow - visibleCardsCount % currentCardsInRow;
+  return this.append(Array.from(result.frag.childNodes))
+		.then(() => result.hasNextPage);
+};
 
-		if (querystr.get("view") === "original" || querystr.get("view") === "bloomed") {
-			html = '<div class="invisible placeholder full-container w-100 m-1"></div>';
-		} else {
-			html = '<div class="invisible placeholder icon-container w-100 m-1"></div>';
-		}
+let nextHandler2 = function(pageIndex) {
+	let data = CARD_LIST.filter(card => card.type === "Memory");
+	var result = createCardDocuments(data, pageIndex);
 
-		for (let i = 0; i < cardsToAdd; i++) {
-			$('#'+container).append(html);
-		}
-	} else {
-		html = '<p class="col-12 text-muted placeholder">No matching cards</p>';
-		$('#'+container).append(html);
-	}
+  return this.append(Array.from(result.frag.childNodes))
+		.then(() => result.hasNextPage);
+};
+
+function createCardDocuments(data, pageIndex) {
+	let frag = document.createDocumentFragment();
+  let itemsPerPage = 100;
+  let totalPages = Math.ceil(data.length / itemsPerPage);
+  let offset = pageIndex * itemsPerPage;
+
+  for (let i = offset, len = offset + itemsPerPage; i < len; i++) {
+    let item = createCardElement(data[i]);
+    frag.appendChild(item);
+  }
+
+	let hasNextPage = pageIndex < totalPages - 1;
+
+	return { frag: frag, hasNextPage: hasNextPage };
 }
 
-// function getRowCapacity() {
-// 	// max number of cards for xs is 4, on smaller screens it's reduced by 1 (possibly outdated)
-// 	var cardsInRow;
-// 	if (viewType === "icon") {
-// 		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 6, 992: 6, 1200: 7, xl: 9};
-// 	} else {
-// 		cardsInRow = {576: Math.floor(($(window).width() - 100) / 100), 768: 4, 992: 3, 1200: 4, xl: 5};
-// 	}
-//
-// 	for (let [screen, cards] of Object.entries(cardsInRow)) {
-// 		if (screen === "xl" || $(window).width() <= screen) {
-// 			return cards;
-// 		}
-// 	}
-// }
+function createCardElement(card) {
+	var template, img_src;
+	if (!card) {
+		template = "<a class='cardPreview placeholder'></a>";
+	} else {
+		let size = 'S', bloomed = '', viewtype = querystr.get('view');
+		if (viewtype === 'original' || viewtype === "bloomed") {
+			size = 'L';
+		}
+		if (viewtype === 'bloomed' && card.type === "Demon") {
+			bloomed = '_b';
+		}
+		img_src = `/images/cards/${size}/${card.uniqueName}${bloomed}.jpg`;
+	  template =
+			`<a class="cardPreview" href="card/${card.uniqueName}">
+				<img loading="lazy" src="${img_src}">
+				<figcaption>${card.name}</figcaption>
+			</a>`;
+	}
+
+  let item = document.createElement('div');
+  item.innerHTML = template.trim();
+
+	if (selectionMode) {
+		// check if card is owned,
+		// add selected card/ not selected based on outcome
+	}
+
+  return item.firstChild;
+}
 
 function updateFilters() {
 	var name = $(this).attr("name");
@@ -132,58 +172,12 @@ function updateFilters() {
 	}
 }
 
-// function updateQuery() {
-// 	window.history.replaceState(null, null, `${window.location.pathname}${querystr.toString()===''?'':'?'+querystr.toString()}`);
-// }
-
-// function updateCardDisplay(cards) {
-// 	$(".cardPreview").fadeOut(400).promise().done(function() {
-// 		// if (view) {
-// 		// 	$('.cardPreview>img').each(function() {
-// 		// 		$(this).attr('src', changes[view]['srcAction'](this));
-// 		// 	});
-// 		//
-// 		// 	changes[view]['fullViewAction']($('.cardPreview'));
-// 		// 	$('.cardPreview>img').addClass("lazy");
-// 		// }
-//
-// 		var cardHeight = $(cards[0]).height();
-// 		var currentCardsInRow = getRowCapacity();
-// 		var maxRowsOnScreen = Math.ceil($(window).height() / cardHeight);
-// 		var maxVisibleCards = currentCardsInRow * maxRowsOnScreen;
-//
-// 		if(cards.slice(maxVisibleCards).length > 0) {
-// 			var cardsOnDisplay = function() { $(cards.slice(maxVisibleCards)).css('display', 'block') };
-// 			applyEffectWithoutTransition($(cards.slice(maxVisibleCards)).find('img'), cardsOnDisplay);
-// 		}
-// 		$(cards.slice(0, maxVisibleCards)).fadeIn(400);
-//
-// 		fillRank("demonSection");
-// 		fillRank("memorySection");
-//
-// 		$("#demonWrapper, #memoryWrapper").removeClass("invisible");
-// 	});
-// }
-
-// function filterCardsToDisplay(cards, filters, search, excludedCards) {
-// 	Object.keys(filters).forEach(function(key) {
-// 		if (filters[key] !== "") cards = $(cards).filter(filters[key]);
-// 	});
-// 	cards = $(cards).filter(function() {
-// 		var cardName = $(this).find("figcaption").text();
-// 		var isSearched = search !== "" ? cardName.toLowerCase().includes(search.toLowerCase()) : true;
-// 		var uniqueCardName = $("img", this).attr('src').slice(16, -4);
-// 		if (showCards === "Owned") {
-// 			var toShow = excludedCards.includes(uniqueCardName);
-// 		} else if (showCards === "NotOwned") {
-// 			var toShow = !excludedCards.includes(uniqueCardName);
-// 		} else {
-// 			var toShow = true;
-// 		}
-// 		return isSearched && toShow;
-// 	});
-// 	return cards;
-// }
+function resetFilters() {
+	$("#filters input[type=radio]").prop("checked", true);
+	$("#filters input[type=checkbox]").prop("checked", false);
+	$("#checkCardsAll").prop("checked", true);
+	$("#characters label.btn").removeClass("active");
+}
 
 function applyEffectWithoutTransition(elements, effect, args) {
 	if (elements.length === 0) {
@@ -196,13 +190,6 @@ function applyEffectWithoutTransition(elements, effect, args) {
 	elements.removeClass('no-transition');
 }
 
-function resetFilters() {
-	$("#filters input[type=radio]").prop("checked", true);
-	$("#filters input[type=checkbox]").prop("checked", false);
-	$("#checkCardsAll").prop("checked", true);
-	$("#characters label.btn").removeClass("active");
-}
-
 function scrollToSection(e) {
 	var divId = $(this).attr('href');
 	if ($(window).width() < 768)
@@ -212,6 +199,9 @@ function scrollToSection(e) {
 
 	$('html, body').animate({scrollTop:$(divId).offset().top - sectionHeaderOffset}, 500);
 }
+
+
+/* Collection Management */
 
 function switchSelectionMode() {
 	if (!selectionMode) {
@@ -309,6 +299,7 @@ function cardClicked(e) {
 }
 
 function switchSelectionAll(select) {
+	// TODO: select all cards from list instead of what's visible on page.
 	var cardsToSwitch = $('.cardPreview:visible').filter(function() { return select === $(this).find('img').hasClass('notSelectedCard'); });
 	if (cardsToSwitch.length == 0) return;
 
@@ -339,37 +330,3 @@ function addCardsToChangedList(cardsToSwitch, select) {
 		changedCards[name] = select;
 	});
 }
-
-// async function applyQuery() {
-// 	resetFilters();
-//
-// 	for (param of querystr.keys()) {
-// 		var filterList = querystr.get(param).split(" ");
-// 		var isFilter = ["character", "rarity", "attribute"].includes(param);
-//
-// 		if (isFilter) {
-// 			if (filterList.length !== 0) {
-// 				$(`input[type=radio][name=${param}]`).prop('checked', false);
-// 				filterList.forEach(f => {
-// 					$(`input[value=${f}]`).prop("checked", true);
-// 				});
-// 			}
-// 		} else if (param === "search") {
-// 			$('input#nameFilter').val(querystr.get(param));
-// 		} else if (param === "cards") {
-// 			if (!$("#checkCardsOwned").prop("disabled")) {
-// 				showCards = querystr.get("cards");
-// 				$("#checkCards"+showCards).prop("checked", true);
-// 				ownedCards = await $.ajax({
-// 					type: 'get',
-// 					url: '/collection/getOwnedCards',
-// 					cache: false
-// 				});
-// 			} else {
-// 				querystr.delete("cards");
-// 			}
-// 		}
-// 	}
-//
-// 	updateCardDisplay(filterCardsToDisplay($(".cardPreview"), getFiltersAsStrings(), $('input#nameFilter').val(), ownedCards));
-// }
