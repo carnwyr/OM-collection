@@ -11,18 +11,6 @@ img.lazy {
   color: #717982;
   width: 100%;
 }
-.icon-container {
-  max-width: 110px;
-}
-.icon-container>img {
-  height: 110px;
-}
-.full-container {
-  max-width: 180px;
-}
-.full-container>img {
-  height: 243px;
-}
 .sticky-offset {
   top: 70px;
 }
@@ -144,46 +132,26 @@ a>figcaption {
   overflow: hidden;
 }
 
-#filters ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+form#search span, input[name="search"] {
+  border: 0;
+  background: transparent;
+  height: 32px;
 }
 
-#filters #general p, #filters #general ul {
-  padding-left: 5px;  /* fix outline being cut off by previous padding: 0 */
-}
-
-#filters li {
-  float: left;
-}
-
-#rarityForm li {
-  width: 4rem;
-}
-
-#attributeForm li {
-  width: 6rem;
-}
-
-#characterForm li {
-  width: 9rem;
-}
-
-#cardsfilter li {
-  margin-right: 2rem;
-}
-
-@media screen and (min-width: 768px) {
-  #characterFilters {
-    border-left: 1px solid rgba(0,0,0,.1);
-  }
-}
-
-#searchForm input::placeholder {
+form#search input::placeholder {
   color: var(--secondary);
   opacity: .7;
+}
+
+.btn-group-toggle .active {
+  border: 1px solid var(--secondary);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.btn-group-toggle label {
+  border-radius: 8px;
+  padding: 4px;
+  margin: 4px;
 }
 
 /* collection and favourites page */
