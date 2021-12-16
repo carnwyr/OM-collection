@@ -12,7 +12,6 @@ const INIT_DISPLAY_COUNT = 100;
 // add fade effect when displaying cards
 // style load more buttons
 // add message when no card to display
-// add click x to clear search bar
 
 
 $(document).ready(function() {
@@ -35,7 +34,7 @@ $(document).ready(function() {
 	  }
 	});
 
-	$("#filters form").on("submit", function(e) {
+	$("#search").on("submit", function(e) {
 		e.preventDefault();
 
 		var filters = new FormData($("#filters form")[0]);
@@ -45,29 +44,19 @@ $(document).ready(function() {
 			if (value) params.append(key, value);
 		}
 
-		if (params.get("cards")) params.set("cards", $("input[name='cards']:checked").val());
-		if (querystr.get("search")) params.append('search', querystr.get("search"));
-		if (querystr.get("view")) params.append('view', querystr.get("view"));
-
-		console.log(params.toString());
-
-		window.location.href = `${window.location.pathname}?${params.toString()}`;
-	});
-
-	$("#search").on("submit", function(e) {
-		e.preventDefault();
+		if (params.get("cards") === "all") params.delete("cards");
 
 		var search = $("input[name='search']").val();
-		if (!search) querystr.delete("search");
-		else querystr.set("search", search);
+		if (search) params.set("search", search);
 
-		window.location.href = `${window.location.pathname}?${querystr.toString()}`;
+		if (querystr.get("view")) params.set('view', querystr.get("view"));
+
+		window.location.href = `${window.location.pathname}?${params.toString()}`;
 	});
 
 	$("#viewMenuDropdown a").click(function() {
 		if ($(this).data("viewtype") === querystr.get("view")) return;
 
-		// update view
 		querystr.set("view", $(this).data("viewtype"));
 		window.location.href = `${window.location.pathname}?${querystr.toString()}`;
 	});
@@ -177,6 +166,7 @@ function resetFilters() {
 	$("#filters input[type=checkbox]").prop("checked", false);
 	$("#checkCardsAll").prop("checked", true);
 	$("#characters label.btn").removeClass("active");
+	$("input[name='search']").val('');
 }
 
 function applyEffectWithoutTransition(elements, effect, args) {

@@ -154,6 +154,11 @@ form#search input::placeholder {
   margin: 4px;
 }
 
+#filters p {
+  text-align: center;
+  margin: 0;
+}
+
 /* collection and favourites page */
 
 #usernav span {
