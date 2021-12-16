@@ -10,28 +10,21 @@ const INIT_DISPLAY_COUNT = 100;
 // TODO: change initial display count to fill rank.
 
 // add fade effect when displaying cards
-// style load more buttons
+// update tabber view
+// add translations
 // add message when no card to display
 
 
 $(document).ready(function() {
 
-	let ias = new InfiniteAjaxScroll('#demonSection', {
+	let ias = new InfiniteAjaxScroll('#demoncards>div', {
 	  item: '.cardPreview',
-	  next: nextHandler,
-		trigger: {
-	    element: '#trigger1',
-			when: (pageIndex) => pageIndex >= 0
-	  }
+	  next: nextHandler
 	});
 
-	let ias2 = new InfiniteAjaxScroll('#memorySection', {
+	let ias2 = new InfiniteAjaxScroll('#memorycards>div', {
 	  item: '.cardPreview',
-	  next: nextHandler2,
-		trigger: {
-	    element: '#trigger2',
-			when: (pageIndex) => pageIndex >= 0
-	  }
+	  next: nextHandler2
 	});
 
 	$("#search").on("submit", function(e) {
@@ -56,12 +49,9 @@ $(document).ready(function() {
 
 	$("#viewMenuDropdown a").click(function() {
 		if ($(this).data("viewtype") === querystr.get("view")) return;
-
 		querystr.set("view", $(this).data("viewtype"));
 		window.location.href = `${window.location.pathname}?${querystr.toString()}`;
 	});
-
-	$("#gotoDemon, #gotoMemory").on("click", scrollToSection);
 
 	$("#filters form input").change(updateFilters);
 	$("#resetFilters").click(resetFilters);
@@ -110,6 +100,7 @@ function createCardDocuments(data, pageIndex) {
 function createCardElement(card) {
 	var template, img_src;
 	if (!card) {
+		// fix: added too many placeholders.
 		template = "<a class='cardPreview placeholder'></a>";
 	} else {
 		let size = 'S', bloomed = '', viewtype = querystr.get('view');
@@ -178,16 +169,6 @@ function applyEffectWithoutTransition(elements, effect, args) {
 	effect(args);
 	elements[0].offsetHeight;
 	elements.removeClass('no-transition');
-}
-
-function scrollToSection(e) {
-	var divId = $(this).attr('href');
-	if ($(window).width() < 768)
-		var sectionHeaderOffset = 175;
-	else
-		var sectionHeaderOffset = 150;
-
-	$('html, body').animate({scrollTop:$(divId).offset().top - sectionHeaderOffset}, 500);
 }
 
 

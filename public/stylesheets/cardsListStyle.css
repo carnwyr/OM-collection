@@ -10,6 +10,8 @@ img.lazy {
   margin: .25rem;
   color: #717982;
   width: 100%;
+
+  display: inline-block;
 }
 .sticky-offset {
   top: 70px;
@@ -18,7 +20,7 @@ img.lazy {
   padding: 8%;
   filter: opacity(50%);
 }
-@media screen and (max-width: 992px) {
+/* @media screen and (max-width: 992px) {
   .icon-container {
     max-width: 100px;
   }
@@ -31,7 +33,7 @@ img.lazy {
   .full-container>img {
     height: 202px;
   }
-}
+} */
 @media screen and (max-width: 768px) {
   #actionButtons .btn-primary,
   #actionButtons .btn-secondary {
@@ -44,14 +46,15 @@ img.lazy {
   -o-transition: none !important;
   transition: none !important;
 }
-#nameFilter, #filterBtn {
+
+/* #nameFilter, #filterBtn {
   height: 32px;
 }
 #nameFilter:focus,
 #gotoDemon:focus, #gotoMemory:focus {
   outline: none;
   box-shadow: none;
-}
+} */
 
 /*stat progress bars*/
 .progress {

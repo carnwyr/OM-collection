@@ -66,25 +66,26 @@ block content
       if path === "collection"
         include collectionStats.pug
 
-      //- Card Navigation
-      div(class="card sticky-top sticky-offset mb-3")
-        div(class="card-body d-flex justify-content-around flex-wrap p-3" id="actionButtons")
-          div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
-            button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
-              span(class="d-none d-sm-block")= t("cards.demon_jump_L")
-              span(class="d-sm-none")= t("cards.demon_jump")
-            div(style="border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem")
-            button(class="btn btn-md text-secondary py-0 mb-0" id="gotoMemory" href="#memoryCards")
-              span(class="d-none d-sm-block")= t("cards.memory_jump_L")
-              span(class="d-sm-none")= t("cards.memory_jump")
-          div(class='d-lg-none' style='flex-basis: 100%; height: 0;')
-          div(class="btn-group d-none mr-2" id="selectionButtons")
-            button(class="btn btn-secondary mb-md-0" id="deselectAll")= t("cards.deselect_all")
-            button(class="btn btn-secondary mb-md-0" id="selectAll")= t("cards.select_all")
-          div(class="btn-group d-none" id="manageButtons")
-            button(class="btn btn-primary mb-md-0" id="cancelManaging")= t("cards.cancel")
-            button(class="btn btn-primary mb-md-0" id="saveManaging")= t("cards.save")
-          if user && path === "list"
+      //- Manage collection
+      if user && path === "list"
+        div(class="card sticky-top sticky-offset mb-3")
+          div(class="card-body d-flex justify-content-center flex-wrap p-3" id="actionButtons")
+            //-
+              div(class="d-flex" + (user && path === "list" ? "  mb-2 mb-lg-0 mr-lg-auto" : ""))
+                button(class="btn btn-md text-secondary py-0 mb-0" id="gotoDemon" href="#demonCards")
+                  span(class="d-none d-sm-block")= t("cards.demon_jump_L")
+                  span(class="d-sm-none")= t("cards.demon_jump")
+                div(style="border-left: 3px solid; border-color: #db9efb; opacity: 50%; border-radius: 1rem")
+                button(class="btn btn-md text-secondary py-0 mb-0" id="gotoMemory" href="#memoryCards")
+                  span(class="d-none d-sm-block")= t("cards.memory_jump_L")
+                  span(class="d-sm-none")= t("cards.memory_jump")
+              div(class='d-lg-none' style='flex-basis: 100%; height: 0;')
+            div(class="btn-group d-none mr-2" id="selectionButtons")
+              button(class="btn btn-secondary mb-md-0" id="deselectAll")= t("cards.deselect_all")
+              button(class="btn btn-secondary mb-md-0" id="selectAll")= t("cards.select_all")
+            div(class="btn-group d-none" id="manageButtons")
+              button(class="btn btn-primary mb-md-0" id="cancelManaging")= t("cards.cancel")
+              button(class="btn btn-primary mb-md-0" id="saveManaging")= t("cards.save")
             button(class="btn btn-primary btn-md mb-0" id="manageCollection")
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square mb-1" viewBox="0 0 16 16">   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/> </svg>
               |
@@ -225,47 +226,16 @@ block content
             return "/images/cards/S/" + name + ".jpg";
         }
 
-      //-
-      div(class="row pt-3" id="demonCards")
-        div(class="col-12")
-          h3(class="text-dark collapser" data-toggle="collapse" href="#demonWrapper" role="button" aria-expanded="true" aria-controls="demonWrapper")= t("cards.demon_cards")
-            |
-            |
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-      div(class='collapse show' id='demonWrapper')
-        div(class="row d-flex justify-content-between mx-auto" id="demonSection" style="padding:0 8px;")
-          - const INIT_DISPLAY_COUNT = 100;
-          - var lst = cardsList.filter(card => card.type == "Demon").slice(0, INIT_DISPLAY_COUNT);
-          //-
-            if lst.length != 0
-              each card in lst
-                a(class="cardPreview" href=(path==="collection"||path==="fav"?"../":"") + "card/"+getURL(card.name))
-                  img(loading="lazy" src=getImageLink(card.uniqueName))
-                  figcaption= getName(card)
-
-        <button id="trigger1" class="trigger">Load more</button>
-      //-
-        if (!user || !user.supportStatus.includes("adfree"))
-          div.row.justify-content-center
-            div#ezoic-pub-ad-placeholder-105
-
-      div(class="row mt-3" id="memoryCards")
-        div(class="col-12")
-          h3(class="text-dark collapser" data-toggle="collapse" href="#memoryWrapper" role="button" aria-expanded="true" aria-controls="memoryWrapper")= t("cards.memory_cards")
-            |
-            |
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down chevron" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-      div(class='collapse show' id='memoryWrapper')
-        div(class="row d-flex justify-content-between mx-auto" id="memorySection" style="padding:0 8px;")
-          - lst = cardsList.filter(card => card.type == "Memory").slice(0, INIT_DISPLAY_COUNT);
-          //-
-            if lst.length != 0
-              each card in lst
-                a(class="cardPreview" href=(path==="collection"||path==="fav"?"../":"") + "card/"+getURL(card.name))
-                  img(loading="lazy" src=getImageLink(card.uniqueName))
-                  figcaption= getName(card)
-
-        <button id="trigger2" class="trigger2">Load more</button>
+      ul(class="nav nav-pills nav-fill")
+        li.nav-item
+          a#demon-tab.nav-link.active(data-toggle="tab" href="#demoncards" role="tab" aria-controls="demoncards" aria-selected="true") Demon
+        li.nav-item
+          a#memory-tab.nav-link(data-toggle="tab" href="#memorycards" role="tab" aria-controls="memorycards" aria-selected="false") Memory
+      div.tab-content
+        div#demoncards.tab-pane.active(role="tabpanel" aria-labelledby="demon-tab")
+          div.d-flex.flex-wrap.justify-content-between
+        div#memorycards.tab-pane(role="tabpanel" aria-labelledby="memory-tab")
+          div.d-flex.flex-wrap.justify-content-between
 
       //-
         if title === t("title.my_favourites")
