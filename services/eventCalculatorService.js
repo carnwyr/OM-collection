@@ -106,40 +106,7 @@ function getCalculationResult(event, input) {
 
 			let apFreeTotal = getRegeneratedAp(currentTime, endTime) + apRewarded + getDailyAp(isVip) * (daysLeft + 1);
 			let apPaidTotal = Math.max(apTotal - apFreeTotal, 0);
-
-			/*var dailyBattlesTotal = Math.ceil(triesNeeded / (daysLeft + 1));
-			var dailyBattlesToBuy = Math.max(dailyBattlesTotal - availableTriesDaily, 0);
-
-			var todayBattlesOverflow = Math.max(dailyBattlesTotal - dailyBattlesToBuy - triesLeftFree, 0);
-			var todayBattlesTotal = dailyBattlesTotal - todayBattlesOverflow;
-			dailyBattlesTotal = Math.ceil((triesNeeded - todayBattlesTotal) / daysLeft);
-
-			var totalApFree = apRegen + apRewarded + getDailyAp(isVip) * (daysLeft + 1);
-			var totalApToBuy = Math.max(apNeeded - totalApFree, 0);
-			var todayApTotal = todayBattlesTotal * 8;
-			var todayApFree = Math.floor(resetTime.diff(currentTime, "minute") / 5) + getDailyAp(isVip);
-			var todayApToBuy = todayApTotal - todayApFree;
-
-			var todayApOverflow = Math.ceil(Math.max(todayApToBuy - totalApToBuy, 0) / 8);
-			todayBattlesTotal = todayBattlesTotal - todayApOverflow;
-			dailyBattlesTotal = Math.ceil((triesNeeded - todayBattlesTotal) / daysLeft);
-			dailyBattlesToBuy = Math.max(dailyBattlesTotal - availableTriesDaily, 0);
-			todayApTotal = todayBattlesTotal * 8;
-			todayApToBuy = todayApTotal - todayApFree;
-
-			var todayBattlesFree = Math.min(triesLeftToday, todayBattlesTotal);
-			var todayBattlesToBuy = todayBattlesTotal - todayBattlesFree;
-
-			var totalBattlesToBuy = Math.max(triesNeeded - triesLeftFree, 0);
-			var totalBattlesFree = Math.min(triesNeeded, triesLeftFree);
-			var totalBattlesTotal = totalBattlesToBuy + totalBattlesFree;
-
-			todayApFree = Math.min(todayApFree, todayApTotal);
-			todayApToBuy = todayApTotal - todayApFree;
-
-			totalApFree = Math.min(totalApFree, apNeeded);
-
-			var goalToday = currentPoints + todayBattlesTotal * pointsPerBattle;*/
+			
 			var goalToday = currentPoints + battlesToday * pointsPerBattle;
 
 			return {
