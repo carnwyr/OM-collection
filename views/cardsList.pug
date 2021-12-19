@@ -233,9 +233,25 @@ block content
           a#memory-tab.nav-link(data-toggle="tab" href="#memorycards" role="tab" aria-controls="memorycards" aria-selected="false") Memory
       div.tab-content
         div#demoncards.tab-pane.active(role="tabpanel" aria-labelledby="demon-tab")
-          div.d-flex.flex-wrap.justify-content-between
+          if cardsList.filter(card => card.type === "Demon").length === 0
+            p.text-center.text-muted.my-5= t("cards.no-cards")
+          else
+            div.d-flex.flex-wrap.justify-content-between
+            script.
+              let ias = new InfiniteAjaxScroll('#demoncards>div', {
+                item: '.cardPreview',
+                next: nextHandler
+              });
         div#memorycards.tab-pane(role="tabpanel" aria-labelledby="memory-tab")
-          div.d-flex.flex-wrap.justify-content-between
+          if cardsList.filter(card => card.type === "Memory").length === 0
+            p.text-center.text-muted.my-5= t("cards.no-cards")
+          else
+            div.d-flex.flex-wrap.justify-content-between
+            script.
+              let ias2 = new InfiniteAjaxScroll('#memorycards>div', {
+                item: '.cardPreview',
+                next: nextHandler2
+              });
 
       //-
         if title === t("title.my_favourites")

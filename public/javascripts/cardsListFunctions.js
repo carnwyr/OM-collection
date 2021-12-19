@@ -12,20 +12,9 @@ const INIT_DISPLAY_COUNT = 100;
 // add fade effect when displaying cards
 // update tabber view
 // add translations
-// add message when no card to display
 
 
 $(document).ready(function() {
-
-	let ias = new InfiniteAjaxScroll('#demoncards>div', {
-	  item: '.cardPreview',
-	  next: nextHandler
-	});
-
-	let ias2 = new InfiniteAjaxScroll('#memorycards>div', {
-	  item: '.cardPreview',
-	  next: nextHandler2
-	});
 
 	$("#search").on("submit", function(e) {
 		e.preventDefault();
