@@ -13,6 +13,9 @@ const baseApPerDay = 20 + 50 + 20 + 50;  // guests + ads + to do + friends
 const baseFridgeAp = 2 * 30;
 const vipFridgeAp = 2 * 60;
 
+const apPerStage = 8;
+const minutesToRestoreAp = 5;
+
 exports.calculate = function (event, input) {
 	var parsedInput = parseInput(input, event);
 	if (!parsedInput) {
@@ -31,12 +34,15 @@ function getCalculationResult(event, input) {
 		rewards.push({tag: "Custom", points: customGoal});
 	}
 
+	let startTime = dayjs.utc(event.start).tz("Asia/Tokyo");
 	var endTime     = dayjs.utc(event.end).tz("Asia/Tokyo");
 	var endDate     = endTime.startOf("day");
 	var currentTime = dayjs().tz("Asia/Tokyo");
 	var currentDate = currentTime.startOf("day");
 	var daysLeft    = endDate.diff(currentDate, "day");
-	var resetTime   = currentTime.add(1, "day").startOf("day");
+	var resetTime = currentTime.add(1, "day").startOf("day");
+	
+	let eventLength = endTime.diff(startTime, "day");
 
 	var availableTriesDaily = 3 * event.stages + 5;
 
@@ -53,8 +59,6 @@ function getCalculationResult(event, input) {
 			var triesLeftToday = (event.stages - stagesCleared) * 3 + (event.stages === stagesCleared ? 0 : 5); // if all stages cleared, ads are assumed to be watched
 			var triesLeftFree = availableTriesDaily * daysLeft + triesLeftToday;
 
-			var apRegen = Math.floor(endTime.diff(currentTime, "minute") / 5);
-
 			var currentPage = Math.floor(currentPoints / event.pageCost);
 			var finalPage   = Math.floor(reward.points / event.pageCost) - (reward.points % event.pageCost === 0 ? 1 : 0);
 			var apRewarded  = 0;
@@ -66,69 +70,74 @@ function getCalculationResult(event, input) {
 					.forEach(ap => apRewarded += ap.amount);
 			}
 
-			var dailyBattlesTotal = Math.ceil(triesNeeded / (daysLeft + 1));
-			var dailyBattlesToBuy = Math.max(dailyBattlesTotal - availableTriesDaily, 0);
+			let [battlesFreeBase, battlesPaidBase] = calculateBase(eventLength, pointsPerBattle, reward.points, availableTriesDaily);
 
-			var todayBattlesOverflow = Math.max(dailyBattlesTotal - dailyBattlesToBuy - triesLeftFree, 0);
-			var todayBattlesTotal = dailyBattlesTotal - todayBattlesOverflow;
-			dailyBattlesTotal = Math.ceil((triesNeeded - todayBattlesTotal) / daysLeft);
+			let battlesFree = Math.min(triesNeeded, triesLeftFree);
+			let battlesPaid = triesNeeded - battlesFree;
+			let battlesTotal = battlesFree + battlesPaid;
 
-			var totalApFree = apRegen + apRewarded + getDailyAp(isVip) * (daysLeft + 1);
-			var totalApToBuy = Math.max(apNeeded - totalApFree, 0);
-			var todayApTotal = todayBattlesTotal * 8;
-			var todayApFree = Math.floor(resetTime.diff(currentTime, "minute") / 5) + getDailyAp(isVip);
-			var todayApToBuy = todayApTotal - todayApFree;
+			let battlesPaidExpected = battlesPaidBase * (daysLeft + 1);
+			let battlesDelta = battlesPaidExpected - battlesPaid;
+			let battlesPaidToday, battlesPaidDaily;
+			if (battlesDelta >= 0) {
+				battlesPaidDaily = Math.ceil(battlesPaid / daysLeft);
+				if (battlesPaidDaily <= battlesPaidBase) {
+					battlesPaidToday = 0;
+				} else {
+					battlesPaidDaily = battlesPaidBase;
+					battlesPaidToday = battlesPaid - battlesPaidDaily * daysLeft;
+				}
+			} else {
+				let averageBattles = Math.ceil(battlesPaid / (daysLeft + 1));
+				battlesPaidToday = averageBattles;
+				battlesPaidDaily = averageBattles;
+			}
 
-			var todayApOverflow = Math.ceil(Math.max(todayApToBuy - totalApToBuy, 0) / 8);
-			todayBattlesTotal = todayBattlesTotal - todayApOverflow;
-			dailyBattlesTotal = Math.ceil((triesNeeded - todayBattlesTotal) / daysLeft);
-			dailyBattlesToBuy = Math.max(dailyBattlesTotal - availableTriesDaily, 0);
-			todayApTotal = todayBattlesTotal * 8;
-			todayApToBuy = todayApTotal - todayApFree;
+			let battlesFreeToday = Math.min(triesLeftToday, battlesFree / (daysLeft + 1));
+			let battlesFreeDaily = Math.ceil((battlesFree - battlesFreeToday) / daysLeft);
 
-			var todayBattlesFree = Math.min(triesLeftToday, todayBattlesTotal);
-			var todayBattlesToBuy = todayBattlesTotal - todayBattlesFree;
+			let battlesToday = battlesFreeToday + battlesPaidToday;
 
-			var totalBattlesToBuy = Math.max(triesNeeded - triesLeftFree, 0);
-			var totalBattlesFree = Math.min(triesNeeded, triesLeftFree);
-			var totalBattlesTotal = totalBattlesToBuy + totalBattlesFree;
+			let apTotal = battlesTotal * apPerStage;
 
-			todayApFree = Math.min(todayApFree, todayApTotal);
-			todayApToBuy = todayApTotal - todayApFree;
+			let apToday = battlesToday * apPerStage;
+			let apFreeToday = Math.min(getRegeneratedAp(currentTime, resetTime) + getDailyAp(isVip), apToday);
+			let apPaidToday = apToday - apFreeToday;
 
-			totalApFree = Math.min(totalApFree, apNeeded);
-
-			var goalToday = currentPoints + todayBattlesTotal * pointsPerBattle;
+			let apFreeTotal = getRegeneratedAp(currentTime, endTime) + apRewarded + getDailyAp(isVip) * (daysLeft + 1);
+			let apPaidTotal = Math.max(apTotal - apFreeTotal, 0);
+			
+			var goalToday = currentPoints + battlesToday * pointsPerBattle;
 
 			return {
 				tag: reward.tag,
 				battles: {
 					today: {
-						free: todayBattlesFree,
-						buy: todayBattlesToBuy,
-						total: todayBattlesTotal
+						free: battlesFreeToday,
+						buy: battlesPaidToday,
+						total: battlesToday
 					},
 					total: {
-						free: totalBattlesFree,
-						buy: totalBattlesToBuy,
-						total: totalBattlesTotal
+						free: battlesFree,
+						buy: battlesPaid,
+						total: battlesTotal
 					}
 				},
 				ap: {
 					today: {
-						free: todayApFree,
-						buy: todayApToBuy,
-						total: todayApTotal
+						free: apFreeToday,
+						buy: apPaidToday,
+						total: apToday
 					},
 					total: {
-						free: totalApFree,
-						buy: totalApToBuy,
-						total: apNeeded
+						free: apFreeTotal,
+						buy: apPaidTotal,
+						total: apTotal
 					}
 				},
 
-				dailyBattles: dailyBattlesTotal,
-				dailyAp: (dailyBattlesTotal) * 8,
+				dailyBattles: battlesFreeDaily + battlesPaidDaily,
+				dailyAp: (battlesFreeDaily + battlesPaidDaily) * apPerStage,
 				goalToday: goalToday
 			};
 	});
@@ -154,4 +163,19 @@ function parseInput(data, event) {
 	if (isNaN(stagesCleared) || stagesCleared < 0 || stagesCleared > event.stages) return null;
 
 	return {pointsPerBattle: pointsPerBattle, currentPoints: currentPoints, customGoal: customGoal, stagesCleared: stagesCleared};
+}
+
+function calculateBase(eventLength, pointsPerBattle, rewardCost, freeTriesPerDay) {
+	let dailyPoints = Math.ceil(rewardCost / eventLength);
+	let dailyBattles = Math.ceil(dailyPoints / pointsPerBattle);
+
+	let dailyBattlesFree = Math.min(dailyBattles, freeTriesPerDay);
+	let dailyBattlesPaid = dailyBattles - dailyBattlesFree;
+	
+	return [dailyBattlesFree, dailyBattlesPaid];
+}
+
+function getRegeneratedAp(startTime, endTime) {
+	let minutes = endTime.diff(startTime, "minute");
+	return Math.floor(minutes / minutesToRestoreAp);
 }
