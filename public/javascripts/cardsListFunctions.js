@@ -2,8 +2,36 @@ var changedCards = {};
 var selectionMode = false;
 var ownedCards = [];
 var querystr = new URLSearchParams(document.location.search.substring(1));
+
+//#region constants
 const INIT_DISPLAY_COUNT = 100;
 
+const nextHandler = function(pageIndex) {
+	var data = CARD_LIST.filter(card => card.type === "Demon");
+  var result = createCardDocuments(data, pageIndex);
+
+  return this.append(Array.from(result.frag.childNodes))
+		.then(() => result.hasNextPage);
+};
+
+const nextHandler2 = function(pageIndex) {
+	let data = CARD_LIST.filter(card => card.type === "Memory");
+	var result = createCardDocuments(data, pageIndex);
+
+  return this.append(Array.from(result.frag.childNodes))
+		.then(() => result.hasNextPage);
+};
+
+const splitCardsByVisibility = (cards, currentCard) => {
+	let cardImage = $(currentCard).find('img');
+	if ($(currentCard).isInViewport()) {
+		cards.visible.push(cardImage);
+	} else {
+		cards.invisible.push(cardImage);
+	}
+	return cards;
+};
+//#endregion
 
 // TODO: strip extra data from card list.
 // TODO: create a single listener that controls all hover effects.
@@ -54,22 +82,6 @@ $(document).ready(function() {
 	$(window).on('beforeunload', () => { if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?"); });
 });
 
-let nextHandler = function(pageIndex) {
-	var data = CARD_LIST.filter(card => card.type === "Demon");
-  var result = createCardDocuments(data, pageIndex);
-
-  return this.append(Array.from(result.frag.childNodes))
-		.then(() => result.hasNextPage);
-};
-
-let nextHandler2 = function(pageIndex) {
-	let data = CARD_LIST.filter(card => card.type === "Memory");
-	var result = createCardDocuments(data, pageIndex);
-
-  return this.append(Array.from(result.frag.childNodes))
-		.then(() => result.hasNextPage);
-};
-
 function createCardDocuments(data, pageIndex) {
 	let frag = document.createDocumentFragment();
   let itemsPerPage = 100;
@@ -115,6 +127,15 @@ function createCardElement(card) {
 		// add selected card/ not selected based on outcome
 	}
 
+	if (selectionMode && card) {
+		let cardSelectionChanged = card.uniqueName in changedCards;
+		let cardOwned = ownedCards.includes(card.uniqueName);
+		let cardNotSelected = cardSelectionChanged == cardOwned;
+		if (cardNotSelected) {
+			$(item).find('img').addClass("notSelectedCard");
+		}
+	}
+
   return item.firstChild;
 }
 
@@ -149,13 +170,12 @@ function resetFilters() {
 	$("input[name='search']").val('');
 }
 
-function applyEffectWithoutTransition(elements, effect, args) {
+function applyEffectWithoutTransition(elements, effect) {
 	if (elements.length === 0) {
-		effect(args);
 		return;
 	}
 	elements.addClass('no-transition');
-	effect(args);
+	effect(elements);
 	elements[0].offsetHeight;
 	elements.removeClass('no-transition');
 }
@@ -170,10 +190,11 @@ function switchSelectionMode() {
 			url: '/collection/getOwnedCards',
 			cache: false
 		})
-		.done(function(cardNames) {
+		.done(function (cardNames) {
+			ownedCards = cardNames;
 			selectionMode = true;
 			switchManagementButtons();
-			switchCardsSelection(cardNames);
+			switchCardsVisualState(cardNames);
 		});
 	} else {
 		if (Object.keys(changedCards).length > 0) {
@@ -192,14 +213,14 @@ function switchSelectionMode() {
 				changedCards = {};
 				selectionMode = false;
 				switchManagementButtons();
-				switchCardsSelection();
+				switchCardsVisualState();
 				showAlert("success", "Collection updated!");
 			});
 		} else {
 			changedCards = {};
 			selectionMode = false;
 			switchManagementButtons();
-			switchCardsSelection();
+			switchCardsVisualState();
 		}
 	}
 }
@@ -216,30 +237,33 @@ function switchManagementButtons() {
 	}
 }
 
-function switchCardsSelection(cardNames) {
-	var invisibleCards = $('.cardPreview').filter(function() {
-		return !$(this).isInViewport();
-	}).find('img');
+function switchCardsVisualState(cardNames = []) {
+	let applyEffect;
+	let cardPreviews;
 
 	if (selectionMode) {
-		var selectOwnedCards = function(cardNames) {
-			$('.cardPreview').filter(function() {
-				return !cardNames.includes($("img", this).attr('src').slice(16, -4));
-			}).find('img').addClass('notSelectedCard');
-		};
-		applyEffectWithoutTransition(invisibleCards, selectOwnedCards, cardNames);
+		let notOwnedCards = $('.cardPreview:not(".placeholder")')
+			.filter(function () { return !cardNames.includes($("img", this).attr('src').slice(16, -4)) })
+			.toArray();
+		cardPreviews = notOwnedCards.reduce(splitCardsByVisibility, { visible: [], invisible: [] });
+		applyEffect = el => el.addClass('notSelectedCard');
 	} else {
-		var removeNonSelectedEffect = function() { $('.cardPreview').find('img').removeClass('notSelectedCard'); }
-		applyEffectWithoutTransition(invisibleCards, removeNonSelectedEffect);
+		cardPreviews = $('.cardPreview')
+			.toArray()
+			.reduce(splitCardsByVisibility, { visible: [], invisible: [] });
+		applyEffect = el => el.removeClass('notSelectedCard');
 	}
+	
+	cardPreviews.visible.forEach(card => applyEffect(card));
+	cardPreviews.invisible.forEach(card => applyEffectWithoutTransition($(card), applyEffect));
 }
 
 function cardClicked(e) {
 	if (!selectionMode) return;
 	if (e) e.preventDefault();
 
-	var image = $(this).find('img');
-	var cardName = $("img", this).attr('src').slice(16, -4);
+	let image = $(this).find('img');
+	let cardName = $("img", this).attr('src').slice(16, -4);
 
 	if ($(image).hasClass('notSelectedCard')) {
 		$(image).removeClass('notSelectedCard');
