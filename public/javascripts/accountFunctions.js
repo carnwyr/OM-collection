@@ -12,9 +12,19 @@ $(document).ready(function() {
 		if (lst.length === 0) {
 			$.ajax({
 				type: "get",
-				url: "/getAllCards"
+				url: "/getCards"
 			}).done(function(result) {
-				lst = result;
+				if (result.err) {
+					showAlert("danger", result.message);
+				} else {
+					var lang = document.documentElement.lang;
+					lst = result.cards.map(card => {
+						return {
+							name: lang === "ja" ? card.ja_name : card.name,
+							uniqueName: card.uniqueName
+						}
+					});
+				}
 			});
 		}
 	});

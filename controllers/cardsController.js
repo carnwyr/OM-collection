@@ -294,16 +294,14 @@ function getReplacedImages() {
 	return Promise.all([p1, p2, p3]);
 };
 
-exports.getAvailableCards = async function (req, res) {
-	var cards = await cardService.getCards();
-	var lang = i18next.t("lang");
-	cards = cards.map(card => {
-		return {
-			name: lang === "ja" ? card.ja_name : card.name,
-			uniqueName: card.uniqueName
-		}
-	});
-	return res.send(cards);
+exports.getCards = async function (req, res) {
+	try {
+		var query = getQueryString(req.query);
+		var cards = await cardService.getCards(query);
+		return res.json({ err: null, cards: cards });
+	} catch(e) {
+		return res.json({ err: true, message: e });
+	}
 }
 
 // Admin card management
@@ -353,3 +351,24 @@ exports.makeCardPublic = async function (req, res, next) {
 		next(e);
 	}
 };
+
+/* helper */
+function getQueryString(obj) {
+	var query = {};
+	for (let [key, value] of Object.entries(obj)) {
+		if (value === "") continue;
+		if (["characters", "attribute", "rarity"].includes(key)) {
+			query[key] = { $in: [].concat(value) };
+		} else if (key === "search") {
+			// var lang = i18next.t("lang") === "zh" ? "en" : i18next.t("lang");
+			// query["name."+lang] = new RegExp(value, 'i');
+
+			if (i18next.t("lang") === "ja") {
+				query["ja_name"] = new RegExp(value, 'i');
+			} else {
+				query["name"] = new RegExp(value, 'i');
+			}
+		}
+	}
+	return query;
+}

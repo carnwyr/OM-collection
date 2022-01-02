@@ -42,7 +42,7 @@ router.get("/userpage", usersController.hasAccess("Admin"), usersController.getU
 router.post("/updateSupport", usersController.hasAccess("Admin"), usersController.updateSupport);
 
 // Misc.
-router.get('/getAllCards', cardsController.getAvailableCards);
+router.get('/getCards', cardsController.getCards);
 
 
 module.exports = router;
