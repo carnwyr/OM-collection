@@ -20,29 +20,10 @@ exports.index = function (req, res, next) {
 
 exports.getCardsListPage = async function(req, res, next) {
 	try {
-		var query = {};
-
-		console.log(req.query);
-
-		for (let [key, value] of Object.entries(req.query)) {
-			if (value === "") continue;
-			if (["characters", "attribute", "rarity"].includes(key)) {
-				query[key] = { $in: [].concat(value) };
-			} else if (key === "search") {
-				// var lang = i18next.t("lang") === "zh" ? "en" : i18next.t("lang");
-				// query["name."+lang] = new RegExp(value, 'i');
-
-				if (i18next.t("lang") === "ja") {
-					query["ja_name"] = new RegExp(value, 'i');
-				} else {
-					query["name"] = new RegExp(value, 'i');
-				}
-			}
-		}
-
-		console.log(query);
-
+		var query = getCardsQuery(req.query);
 		var cards = await cardService.getCards(query);
+		cards = stripeExcessData(cards);
+
 		if (req.user && req.query.cards) {
 			let ownedCards = await userService.getOwnedCards(req.user.name);
 			if (req.query.cards === 'owned') {
@@ -51,8 +32,6 @@ exports.getCardsListPage = async function(req, res, next) {
 				cards = cards.filter(card => !ownedCards.includes(card.uniqueName))
 			}
 		}
-
-		// console.log(cards);
 
 		return res.render("cardsList", {
 			title: i18next.t("title.cards"),
@@ -296,11 +275,12 @@ function getReplacedImages() {
 
 exports.getCards = async function (req, res) {
 	try {
-		var query = getQueryString(req.query);
+		var query = getCardsQuery(req.query);
 		var cards = await cardService.getCards(query);
+		cards = stripeExcessData(cards);
 		return res.json({ err: null, cards: cards });
 	} catch(e) {
-		return res.json({ err: true, message: e });
+		return res.json({ err: true, message: e.message });
 	}
 }
 
@@ -353,7 +333,7 @@ exports.makeCardPublic = async function (req, res, next) {
 };
 
 /* helper */
-function getQueryString(obj) {
+function getCardsQuery(obj) {
 	var query = {};
 	for (let [key, value] of Object.entries(obj)) {
 		if (value === "") continue;
@@ -371,4 +351,15 @@ function getQueryString(obj) {
 		}
 	}
 	return query;
+}
+
+// better way to do this ?
+function stripeExcessData(cards) {
+	return cards.map(card => {
+		return {
+			name: i18next.t("lang") === "ja" ? card.ja_name : card.name,
+			uniqueName: card.uniqueName,
+			type: card.type
+		}
+	});
 }
