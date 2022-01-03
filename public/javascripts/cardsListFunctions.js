@@ -25,15 +25,11 @@ const splitCardsByVisibility = (cards, currentCard) => {
 $(document).ready(function() {
 	initInfiniteScroll();
 
-	$("#search").on("submit", updateCardDisplay);
+	$("#search").on("submit", applyFilters);
 	$("#filters form input").change(updateFilters);
 	$("#resetFilters").click(resetFilters);
 
-	$("#viewMenuDropdown a").click(function() {
-		if ($(this).data("viewtype") === querystr.get("view")) return;
-		querystr.set("view", $(this).data("viewtype"));
-		updateURL();
-	});
+	$("#viewMenuDropdown a").click(updateViewType);
 
 	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
 	$('.cardPreview').on('click', cardClicked);
@@ -67,16 +63,20 @@ function createCardElement(card) {
 	if (!card) {
 		template = "<a class='cardPreview placeholder'></a>";
 	} else {
-		let size = 'S', bloomed = '', viewtype = querystr.get('view');
+		let imageSize = 'S',
+				containerSize = "icon-container",
+				bloomed = '',
+				viewtype = querystr.get('view');
 		if (viewtype === 'original' || viewtype === "bloomed") {
-			size = 'L';
+			imageSize = 'L';
+			containerSize = "full-container";
 		}
 		if (viewtype === 'bloomed' && card.type === "Demon") {
 			bloomed = '_b';
 		}
-		img_src = `/images/cards/${size}/${card.uniqueName}${bloomed}.jpg`;
+		img_src = `/images/cards/${imageSize}/${card.uniqueName}${bloomed}.jpg`;
 	  template =
-			`<a class="cardPreview" href="card/${card.uniqueName}">
+			`<a class="cardPreview ${containerSize}" href="card/${card.uniqueName}">
 				<img loading="lazy" src="${img_src}">
 				<figcaption>${card.name}</figcaption>
 			</a>`;
@@ -102,7 +102,7 @@ function createCardElement(card) {
   return item.firstChild;
 }
 
-function updateCardDisplay(e) {
+function applyFilters(e) {
 	e.preventDefault();
 
 	// update url
@@ -133,10 +133,6 @@ function updateCardDisplay(e) {
 			return;
 		}
 		cardList = data.cards;
-
-		console.log(cardList);
-
-		$("#demoncards>div, #memorycards>div").html("");
 		initInfiniteScroll();
 	});
 }
@@ -145,7 +141,24 @@ function updateURL() {
 	window.history.replaceState(null, '', `${window.location.pathname}?${querystr.toString()}`);
 }
 
+function updateViewType() {
+	var currentView = querystr.get("view");
+	var newView = $(this).data("viewtype");
+	if (newView === currentView) return;
+
+	$("#viewMenuDropdown>button").text($(this).text());
+	$(`a[data-viewtype=${currentView}]`).removeClass("text-primary font-weight-bold");
+	$(this).addClass("text-primary font-weight-bold");
+
+	querystr.set("view", $(this).data("viewtype"));
+
+	initInfiniteScroll();
+	updateURL();
+}
+
 function initInfiniteScroll() {
+	$("#demoncards>div, #memorycards>div").html("");
+
 	var demonCards = cardList.filter(card => card.type === "Demon");
 	var memoryCards = cardList.filter(card => card.type === "Memory");
 

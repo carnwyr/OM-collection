@@ -3,26 +3,9 @@ extends layout
 block scripts
   link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
   script.
-    const CARD_LIST = !{JSON.stringify(cardsList)};
+    var cardList = !{JSON.stringify(cardsList)};
   script(src="/javascripts/cardsListFunctions.js")
   <script src="https://unpkg.com/@webcreate/infinite-ajax-scroll/dist/infinite-ajax-scroll.min.js"></script>
-  if (query.view === "original" || query.view === "bloomed")
-    style.
-      .cardPreview {
-        max-width: 180px;
-      }
-      .cardPreview>img {
-        height: 243px;
-      }
-  else
-    style.
-      .cardPreview {
-        max-width: 110px;
-      }
-      .cardPreview>img {
-        height: 110px;
-      }
-
 block content
   div#alert(role="alert")
   div(class="container")
@@ -109,16 +92,13 @@ block content
             -
               function isSelectedView(t) {
                 if (!query.view) query.view = "icon";
-                return query.view === t ? "text-primary font-weight-bold" : "";
+                return query.view === t ? " text-primary font-weight-bold" : "";
               }
             div(class="dropdown-menu shadow" aria-labelledby="viewMenuDropdown")
-              a(class="dropdown-item" data-viewtype="icon")
-                span(class=isSelectedView("icon"))= t("cards.icon_view")
+              a(class="dropdown-item"+isSelectedView("icon") data-viewtype="icon")= t("cards.icon_view")
               div(class="dropdown-divider")
-              a(class="dropdown-item" data-viewtype="original")
-                span(class=isSelectedView("original"))= t("cards.full_original")
-              a(class="dropdown-item" data-viewtype="bloomed")
-                span(class=isSelectedView("bloomed"))= t("cards.full_bloomed")
+              a(class="dropdown-item"+isSelectedView("original") data-viewtype="original")= t("cards.full_original")
+              a(class="dropdown-item"+isSelectedView("bloomed") data-viewtype="bloomed")= t("cards.full_bloomed")
           form#search.d-flex.flex-grow-1.mx-2
             div(class="input-group rounded-pill mr-2" style="background-color:rgba(219,158,251,0.2)")
               div.input-group-prepend
