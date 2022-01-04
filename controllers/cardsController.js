@@ -27,9 +27,9 @@ exports.getCardsListPage = async function(req, res, next) {
 		if (req.user && req.query.cards) {
 			let ownedCards = await userService.getOwnedCards(req.user.name);
 			if (req.query.cards === 'owned') {
-				cards = cards.filter(card => ownedCards.includes(card.uniqueName))
+				cards = cards.filter(card => ownedCards.includes(card.uniqueName));
 			} else if (req.query.cards === 'notowned') {
-				cards = cards.filter(card => !ownedCards.includes(card.uniqueName))
+				cards = cards.filter(card => !ownedCards.includes(card.uniqueName));
 			}
 		}
 
@@ -53,9 +53,11 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
+		var query = getCardsQuery(req.query);
 		var pageParams = {
 			description: `${req.params.username}'s Collection on Karasu-OS.com`,
 			path: "collection",
+			query: req.query,
 			user: req.user
 		};
 
@@ -66,9 +68,9 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 		if (isPrivate) {
 			pageParams.isPrivate = true;
 		} else {
+			// get collection stats
 			var allCards = await cardService.getCards();
 			var ownedCards = await userService.getOwnedCards(user.info.name);
-			pageParams.cardsList = ownedCards;
 
 			pageParams.ownedStats = cardService.getCollectionStats(ownedCards);
 			pageParams.totalStats = cardService.getCollectionStats(allCards);
@@ -78,6 +80,10 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 					pageParams.ownedStats[category][entry] = pageParams.ownedStats[category][entry] || 0;
 				}
 			}
+
+			// get cards
+			var cardList = await cardService.getCards(query);
+			pageParams.cardsList = cardList.filter(card => user.cards.owned.includes(card.uniqueName));
 		}
 
 		return res.render('cardsList', pageParams);
@@ -93,9 +99,11 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
+		var query = getCardsQuery(req.query);
 		var pageParams = {
 			description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
 			path: "fav",
+			query: req.query,
 			user: req.user
 		};
 
@@ -106,9 +114,8 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 		if (isPrivate) {
 			pageParams.isPrivate = true;
 		} else {
-
-			var favedCards = await userService.getFaveCards(user.info.name);
-			pageParams.cardsList = favedCards;
+			var favedCards = await cardService.getCards(query);
+			pageParams.cardsList = favedCards.filter(card => user.cards.faved.includes(card.uniqueName));
 		}
 
 		return res.render("cardsList", pageParams);
