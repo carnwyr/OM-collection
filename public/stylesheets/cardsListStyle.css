@@ -59,14 +59,87 @@ img.lazy {
   transition: none !important;
 }
 
-/* #nameFilter, #filterBtn {
-  height: 32px;
+#viewMenuDropdown>button {
+  padding-top: 0;
+  border-radius: 0;
 }
-#nameFilter:focus,
-#gotoDemon:focus, #gotoMemory:focus {
+@media screen and (min-width: 720px) {
+  #viewMenuDropdown>button {
+    border-bottom: 2px solid rgba(219, 158, 251, .75);
+  }
+}
+#viewMenuDropdown>button:focus {
   outline: none;
   box-shadow: none;
-} */
+}
+
+.nav-tabs .nav-link:not(.active):hover {
+  border-color: transparent;
+}
+
+a>figcaption {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+form#search span, input[name="search"] {
+  border: 0;
+  background: transparent;
+  height: 32px;
+}
+
+form#search input::placeholder {
+  color: var(--secondary);
+  opacity: .7;
+}
+
+.btn-group-toggle .active {
+  border: 1px solid var(--secondary);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.btn-group-toggle label {
+  border-radius: 8px;
+  padding: 4px;
+  margin: 4px;
+}
+
+#filters p {
+  text-align: center;
+  margin: 0;
+}
+
+#search input[type="text"]:focus {
+  box-shadow: none;
+  background: transparent;
+}
+
+/* collection and favourites page */
+
+#usernav span {
+  max-width: 0;
+  -webkit-transition: max-width 1s;
+  transition: max-width 1s;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  #usernav>.btn-outline-primary:hover>span {
+    max-width: 7rem;
+  }
+}
+
+#usernav>.btn-outline-primary {
+  color: var(--primary);
+  background-color: white;
+}
+
+
 
 /*stat progress bars*/
 .progress {
@@ -120,79 +193,4 @@ img.lazy {
 @keyframes         gradient {
     0% {background-position: 89%}
     100% {background-position: 11%}
-}
-
-#viewMenuDropdown>button {
-  padding-top: 0;
-  border-radius: 0;
-}
-@media screen and (min-width: 720px) {
-  #viewMenuDropdown>button {
-    border-bottom: 2px solid rgba(219, 158, 251, .75);
-  }
-}
-#viewMenuDropdown>button:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.nav-tabs .nav-link:not(.active):hover {
-  border-color: transparent;
-}
-
-a>figcaption {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-form#search span, input[name="search"] {
-  border: 0;
-  background: transparent;
-  height: 32px;
-}
-
-form#search input::placeholder {
-  color: var(--secondary);
-  opacity: .7;
-}
-
-.btn-group-toggle .active {
-  border: 1px solid var(--secondary);
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-}
-
-.btn-group-toggle label {
-  border-radius: 8px;
-  padding: 4px;
-  margin: 4px;
-}
-
-#filters p {
-  text-align: center;
-  margin: 0;
-}
-
-/* collection and favourites page */
-
-#usernav span {
-  max-width: 0;
-  -webkit-transition: max-width 1s;
-  transition: max-width 1s;
-  display: inline-block;
-  vertical-align: top;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-@media (min-width: 768px) {
-  #usernav>.btn-outline-primary:hover>span {
-    max-width: 7rem;
-  }
-}
-
-#usernav>.btn-outline-primary {
-  color: var(--primary);
-  background-color: white;
 }

@@ -25,10 +25,9 @@ const splitCardsByVisibility = (cards, currentCard) => {
 $(document).ready(function() {
 	initInfiniteScroll();
 
-	$("#search").on("submit", applyFilters);
+	$("#search, #filters form").on("submit", applyFilters);
 	$("#filters form input").change(updateFilters);
 	$("#resetFilters").click(resetFilters);
-
 	$("#viewMenuDropdown a").click(updateViewType);
 
 	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
