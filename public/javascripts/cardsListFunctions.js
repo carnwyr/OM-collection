@@ -126,6 +126,11 @@ function applyFilters(e) {
 	updateURL();
 
 	// request cards
+	var collectionPath = window.location.pathname.split('/').at(-1);
+	params.set("path", collectionPath);
+	if (collectionPath === "favourites" || collectionPath === "collection") {
+		params.set("user", window.location.pathname.split('/').at(-2));
+	}
 	$.get("/getCards?" + params.toString(), function(data) {
 		if (data.err) {
 			showAlert("danger", "Something went wrong");

@@ -20,7 +20,7 @@ exports.index = function (req, res, next) {
 
 exports.getCardsListPage = async function(req, res, next) {
 	try {
-		var query = getCardsQuery(req.query);
+		var query = getCardsDBQuery(req.query);
 		var cards = await cardService.getCards(query);
 		cards = stripeExcessData(cards);
 
@@ -53,7 +53,7 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
-		var query = getCardsQuery(req.query);
+		var query = getCardsDBQuery(req.query);
 		var pageParams = {
 			description: `${req.params.username}'s Collection on Karasu-OS.com`,
 			path: "collection",
@@ -99,7 +99,7 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
-		var query = getCardsQuery(req.query);
+		var query = getCardsDBQuery(req.query);
 		var pageParams = {
 			description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
 			path: "fav",
@@ -282,11 +282,36 @@ function getReplacedImages() {
 
 exports.getCards = async function (req, res) {
 	try {
-		var query = getCardsQuery(req.query);
+		var query = getCardsDBQuery(req.query);
 		var cards = await cardService.getCards(query);
+		var user;
+
+		//
+		switch (req.query.path) {
+			case "collection":
+				user = await userService.getUser(req.query.user);
+				cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+				break;
+			case "favourites":
+				user = await userService.getUser(req.query.user);
+				cards = cards.filter(card => user.cards.faved.includes(card.uniqueName));
+				break;
+			default:
+				if (req.query.cards) {
+					let type = req.query.cards;
+					user = await userService.getUser(req.params.user);
+					if (type === "owned") {
+						cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+					} else if (type === "not_owned") {
+						cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
+					}
+				}
+		}
+
 		cards = stripeExcessData(cards);
 		return res.json({ err: null, cards: cards });
 	} catch(e) {
+		console.log(e);
 		return res.json({ err: true, message: e.message });
 	}
 }
@@ -340,7 +365,7 @@ exports.makeCardPublic = async function (req, res, next) {
 };
 
 /* helper */
-function getCardsQuery(obj) {
+function getCardsDBQuery(obj) {
 	var query = {};
 	for (let [key, value] of Object.entries(obj)) {
 		if (value === "") continue;
