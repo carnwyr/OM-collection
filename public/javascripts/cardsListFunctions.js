@@ -59,17 +59,15 @@ function createCardDocuments(data, pageIndex) {
 
 function createCardElement(card) {
 	var template, img_src;
+	var imageSize = 'S', containerSize = "icon-container", viewtype = querystr.get('view');
+	if (viewtype === 'original' || viewtype === "bloomed") {
+		imageSize = 'L';
+		containerSize = "full-container";
+	}
 	if (!card) {
-		template = "<a class='cardPreview placeholder'></a>";
+		template = `<a class='cardPreview ${containerSize} placeholder'></a>`;
 	} else {
-		let imageSize = 'S',
-				containerSize = "icon-container",
-				bloomed = '',
-				viewtype = querystr.get('view');
-		if (viewtype === 'original' || viewtype === "bloomed") {
-			imageSize = 'L';
-			containerSize = "full-container";
-		}
+		let bloomed = '';
 		if (viewtype === 'bloomed' && card.type === "Demon") {
 			bloomed = '_b';
 		}
