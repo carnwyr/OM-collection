@@ -123,7 +123,7 @@ function sendCardData(images) {
     type: $('#type').val(),
     rarity: $('#rarity').val(),
     attribute: $('#attribute').val(),
-    characters: $('#characters').val(),
+    characters: getSelectedCharacters(),
     number: $('#number').val(),
     originalUniqueName: originalUniqueName,
     images: images,
@@ -143,6 +143,14 @@ function sendCardData(images) {
     }
     showAlert("success", 'Card successfully updated!');
   });
+}
+
+function getSelectedCharacters() {
+  var arr = [];
+  $('input[name="characters"]:checked').each(function() {
+    arr.push($(this).val());
+  });
+  return arr;
 }
 
 function getCardSource(src) {

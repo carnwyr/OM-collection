@@ -2,7 +2,7 @@ extends layout
 
 block scripts
 	link(rel="stylesheet" href="/stylesheets/imageUpload.css")
-	script(src="/javascripts/editCardFunctions.js")
+	script(src="/javascripts/cardEdit.js")
 	script.
 		var cardName = !{JSON.stringify(card ? card.uniqueName : '')};
 
@@ -69,10 +69,11 @@ block content
 						option(value='Gluttony' selected=(card?card.attribute==='Gluttony':false)) Gluttony
 						option(value='Sloth' selected=(card?card.attribute==='Sloth':false)) Sloth
 				div(class='form-group')
-					label(for="characters") Characters
-					select(class='custom-select' id="characters" name="characters" size=12 multiple)
-						each character in ALL_CHARACTERS
-							option(value=character selected=(card?card.characters.includes(character):false))= character
+					label Characters
+					each character in ALL_CHARACTERS
+						div.custom-control.custom-checkbox
+							input.custom-control-input(id=character type="checkbox" name="characters" value=character checked=(card?card.characters.includes(character):false))
+							label.custom-control-label(for=character)= character
 				div(class='form-group')
 					label(for="number") Number
 					input(class='form-control' type="text" id="number" name="number" value=card?card.number:'')
