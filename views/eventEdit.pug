@@ -11,24 +11,54 @@ block scripts
 
 mixin rewardEntry(reward = {tag:null, points:null, card:null})
 	form.form-inline
-		select.custom-select.form-control.tag-select(name="tag" placeholder="Reward tag")
-			each option in rewardOptions
-				option(value=option selected=checkSelectedTag(option, reward.tag))= option
-			option(value='' selected=checkSelectedTag('Custom', reward.tag)) Custom
-		input.form-control.d-none(type="text" placeholder="Custom reward tag" name="customTag" value=reward.tag)
-		input.form-control(type="number" placeholder="Reward cost" name="points" value=reward.points)
-		select.card-select.form-control.custom-select.mb-0(name="card" placeholder="Card (if applicable)")
+		//-
+			select.custom-select.form-control.tag-select(name="tag" placeholder="Reward tag")
+				each option in rewardOptions
+					option(value=option selected=checkSelectedTag(option, reward.tag))= option
+				option(value='' selected=checkSelectedTag('Custom', reward.tag)) Custom
+			input.form-control.d-none(type="text" placeholder="Custom reward tag" name="customTag" value=reward.tag)
+		select.card-select.form-control.custom-select.mb-0(name="card" placeholder="name")
 			option(value='' data-subtext='None')
 			each card in cardData
 				option(value=card selected= reward.card===card)= card
-		button.btn.btn-outline-secondary.remove-button(type="button") Remove
+		select.form-control
+			option Card
+			option Other
+		input.form-control(type="number" placeholder="cost" name="cost" value=reward.cost)
+
+		button.btn.btn-outline-secondary.remove-item(type="button") Remove
 
 mixin apEntry(ap = {amount:null, points:null, page:null})
 	form.form-inline
 		input.form-control(type="number" placeholder="AP amount" name="amount" value=ap.amount)
 		input.form-control(type="number" placeholder="AP cost" name="points" value=ap.points)
 		input.form-control(type="number" placeholder="Part _ only" name="page" value=ap.page)
-		button.btn.btn-outline-secondary.remove-button(type="button") Remove
+		button.btn.btn-outline-secondary.remove-item(type="button") Remove
+
+mixin boxEntry(box = { name: '', itemsCount: '', ultimateReward: '' })
+	form.form-inline
+		input.form-control(type="text" placeholder="box name" value=box.name)
+		input.form-control(type="text" placeholder="total items" value=box.itemsCount)
+		input.form-control(type="text" placeholder="ultimate reward" value=box.ultimateReward)
+		button.btn.btn-outline-danger.remove-item(type="button") Remove
+
+mixin boxSetEntry(set = { name: 'default name', cost: '', boxes: [] })
+	- set.name = set.name.replace(' ', '-');
+	div(data-name=set.name style="border-radius:8px;border:3px solid var(--secondary);padding:16px;")
+		div.form-group.row
+			label.col-2.col-form-label(for=set.name) Box set name:
+			div.col-3
+				input.form-control(id=set.name type="text" name="box-set-name" value=set.name)
+			label.col-2.col-form-label(for=set.cost) Individual box cost:
+			div.col-3
+				input.form-control(id=set.cost type="number" step="100")
+		button.btn.btn-secondary.mb-2.add-item(data-target=`div[data-name="${set.name}"]` data-clone="template#box") Add box
+		if set.boxes.length !== 0
+			each box in set.boxes
+				+boxEntry(box)
+		else
+			+boxEntry()
+
 
 block content
 	include mixins/imageUpload
@@ -48,83 +78,119 @@ block content
 		h1= title
 		div.card.shadow
 			div.card-body
-				h5 Event Info
-				hr.mt-0
+				h5.border-bottom Event Info
 				form#info
 					div.form-row
-						div.col-12.col-md-4
+						div.col-3
 							div.form-group
 								label(for="en-name") Name
 								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en)
-						div.col-12.col-md-4
 							div.form-group
 								label(for="ja-name") Japanese name
 								input.form-control(id="ja-name" type="text" name="ja-name" value=data.name.ja)
-						div.col-12.col-md-4
 							div.form-group
 								label(for="zh-name") Chinese name
 								input.form-control(id="zh-name" type="text" name="zh-name" value=data.name.zh)
-					div.form-row
-						div.col-12.col-md-4
+						div.col-3
 							div.form-group
 								label(for="type") Type
 								select#eventType(class='custom-select' name="type")
-									option(value='Pop Quiz' selected=(data.type==='Pop Quiz')) Pop Quiz
-									option(value='Lonely Devil' selected=(data.type==='Lonely Devil')) Lonely Devil
-									option(value='Birthday' selected=(data.type==='Birthday')) Birthday
+									option(value='PopQuiz' selected=(data.type==='PopQuiz')) Pop Quiz
 									option(value='Nightmare' selected=(data.type==='Nightmare')) Nightmare
-						div.col-12.col-md-8.col-lg-4
-							div.form-row
-								div.col-6.form-group
-									label(for="stages") Number of stages
-									input#stages.form-control(type="number" name="stages" value=data.stages)
-								div.col-6.form-group
-									label(for="pageCost") Page cost
-									input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
-					div.form-row
-						div.col-6.col-md-4.form-group
-							label(for="start") Start date (UTC)
-							input#start.form-control(type="text" name="start" value=data.start)
-						div.col-6.col-md-4.form-group
-							label(for="end") End date (UTC)
-							input#end.form-control(type="text" name="end" value=data.end)
-
-						div.col-12.col-lg-8.px-3.mt-4.mb-3
+									option(value="Other" selected=(data.type==="Other")) Other
+							div.form-group
+								label(for="start") Start date (UTC)
+								input#start.form-control(type="text" name="start" value=data.start)
+							div.form-group
+								label(for="end") End date (UTC)
+								input#end.form-control(type="text" name="end" value=data.end)
+						div.col-6
 							+uploadImage("Event image", data ? "/images/events/" + data.name.en + ".jpg" : "#")
 
-				br
-				h5 Rewards
-				hr.mt-0
-				div#rewards
-					if data.rewards && data.rewards.length !== 0
-						each reward in data.rewards
-							+rewardEntry(reward)
-					else
-						+rewardEntry()
-				button#addReward.btn.btn-secondary.mb-4(data-target="#rewards" data-clone="#rewardTemplate") Add reward
-				br
-				br
-				h5 AP Rewards
-				hr.mt-0
-				div.dropdown.mb-3
-					button.btn.btn-secondary.dropdown-toggle#APpresets(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Presets
-					div.dropdown-menu.shadow(aria-labelledby="APpresets")
-						each [key, value] of Object.entries(apPresets)
-							button.dropdown-item.preset(type="button" value=key)= key
-					small.text-muted.align-middle.ml-2.pt-2 Actual rewards often differ from the presets
-				div#AP
-					if data.ap && data.ap.length !== 0
-						each ap in data.ap
-							+apEntry(ap)
-					else
-						+apEntry()
-				button#addAP.btn.btn-secondary.mb-2(data-target="#AP" data-clone="#APTemplate") Add AP reward
-				br
-				br
-				button#submit.btn.btn-primary.float-right Submit Change
+				ul.nav.nav-tabs(role="tablist")
+					li.nav-item
+						a#popquiz-tab.nav-link.active(data-toggle="tab" href="#popquiz" role="tab" aria-controls="popquiz" aria-selected="true") Pop Quiz
+					li.nav-item
+						a#nightmare-tab.nav-link(data-toggle="tab" href="#nightmare" role="tab" aria-controls="nightmare" aria-selected="false") Nightmare
+					li.nav-item
+						a#other-tab.nav-link(data-toggle="tab" href="#other" role="tab" aria-controls="other" aria-selected="false") Other
+				div.tab-content.pt-3
+					div#popquiz.tab-pane.show.active(role="tabpanel" aria-labelledby="popquiz-tab")
+						div.form-group
+							div.form-check.form-check-inline
+								input#reward-points.form-check-input(type="radio" name="rewardtype")
+								label.form-check-label(for="reward-points") Point rewards
+							div.form-check.form-check-inline
+								input#reward-boxes.form-check-input(type="radio" name="rewardtype")
+								label.form-check-label(for="reward-boxes") Box rewards
+							div.form-check.form-check-inline
+								input#lonelydevil.form-check-input(type="checkbox")
+								label.form-check-label(for="lonelydevil") Lonely devil
+							div.form-check.form-check-inline
+								input#birthday.form-check-input(type="checkbox")
+								label.form-check-label(for="birthday") Birthday
+
+						div.form-row
+							div.col-3.form-group
+								label(for="stages") Number of stages
+								input#stages.form-control(type="number" name="stages" value=data.stages)
+
+						ul.nav.nav-tabs(role="tablist")
+							li.nav-item
+								a#points-tab.nav-link.active(data-toggle="tab" href="#points" role="tab" aria-controls="points" aria-selected="true") Point-based
+							li.nav-item
+								a#boxes-tab.nav-link(data-toggle="tab" href="#boxes" role="tab" aria-controls="boxes" aria-selected="false") Boxes
+						div.tab-content.pt-3
+							div#points.tab-pane.show.active(role="tabpanel" aria-labelledby="points-tab")
+								h5.border-bottom Rewards
+								div#rewards
+									if data.rewards && data.rewards.length !== 0
+										each reward in data.rewards
+											+rewardEntry(reward)
+									else
+										+rewardEntry()
+								button.btn.btn-secondary.mb-4.add-item(data-target="#rewards" data-clone="#rewardTemplate") Add reward
+
+								h5.border-bottom AP Rewards
+								div.form-row
+									div.col-3.form-group
+										label(for="pageCost") Page cost
+										input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
+
+								div.dropdown.mb-3
+									button.btn.btn-secondary.dropdown-toggle#APpresets(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Presets
+									div.dropdown-menu.shadow(aria-labelledby="APpresets")
+										each [key, value] of Object.entries(apPresets)
+											button.dropdown-item.preset(type="button" value=key)= key
+									small.text-muted.align-middle.ml-2.pt-2 Actual rewards often differ from the presets
+								div#AP
+									if data.ap && data.ap.length !== 0
+										each ap in data.ap
+											+apEntry(ap)
+									else
+										+apEntry()
+								button.btn.btn-secondary.mb-2.add-item(data-target="#AP" data-clone="#APTemplate") Add AP reward
+							div#boxes.tab-pane(role="tabpanel" aria-labelledby="boxes-tab")
+								button.btn.btn-secondary.mb-2.add-item(data-target="#boxes" data-clone="template#boxset") Add box set
+								if ev && ev.rewardListType === "boxes"
+									each set in ev.boxSets
+										+boxSetEntry(set)
+								else
+									+boxSetEntry()
+					div#nightmare.tab-pane(role="tabpanel" aria-labelledby="nightmare-tab")
+					div#other.tab-pane(role="tabpanel" aria-labelledby="other-tab")
+
+				hr
+				button#submit.btn.btn-primary Submit Change
 
 			template#rewardTemplate
 				+rewardEntry()
 
 			template#APTemplate
 				+apEntry()
+
+			template#box
+				+boxEntry()
+
+			template#boxset
+				+boxSetEntry()

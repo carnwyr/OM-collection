@@ -3,15 +3,17 @@ var selectPickerOptions = {
 	style: '',
 	styleBase: 'form-control',
 	size: 15,
-	title: 'Card (if applicable)'
+	title: 'Name'
 };
 
 $(document).ready(function () {
 	createMasks();
 
-	$(".remove-button").click(removeItem);
-	$("#addReward, #addAP").click(addItem);
+	$(".remove-item").click(removeItem);
+	$(".add-item").click(addItem);
 	$("#submit").click(saveChanges);
+
+	$("input[name='box-set-name']").focusout(updateBoxSetID);
 
 	bindCustomTags();
 
@@ -78,7 +80,7 @@ function addItem() {
 	var parentForm = $(this).data("target");
 	var template = $(this).data("clone");
 	var newItem = $($(template).html()).appendTo($(parentForm));
-	newItem.find(".remove-button").click(removeItem);
+	newItem.find(".remove-item").click(removeItem);
 	newItem.find(".tag-select").change(switchCustomTagDisplay);
 	newItem.find(".card-select").selectpicker(selectPickerOptions);
 	return newItem;
@@ -239,4 +241,12 @@ function applyPreset() {
 		if (ap.page)
 			newItem.find('[name="page"]').val(ap.page);
 	});
+}
+
+function updateBoxSetID() {
+	var oldContainerName = $(this).parent().data("name");
+	var newContaienrName = $(this).val();
+
+	$(this).parent().data("name", newContaienrName);
+	$(`.add-item[data-target="${oldContainerName}"]`).data("target", newContaienrName);
 }
