@@ -11,19 +11,17 @@ block scripts
 
 mixin rewardEntry(reward = {tag:null, points:null, card:null})
 	form.form-inline
-		//-
-			select.custom-select.form-control.tag-select(name="tag" placeholder="Reward tag")
-				each option in rewardOptions
-					option(value=option selected=checkSelectedTag(option, reward.tag))= option
-				option(value='' selected=checkSelectedTag('Custom', reward.tag)) Custom
-			input.form-control.d-none(type="text" placeholder="Custom reward tag" name="customTag" value=reward.tag)
-		select.card-select.form-control.custom-select.mb-0(name="card" placeholder="name")
+		select.custom-select.form-control.tag-select(name="tag" placeholder="Reward tag")
+			each option in rewardOptions
+				option(value=option selected=checkSelectedTag(option, reward.tag))= option
+			option(value='' selected=checkSelectedTag('Custom', reward.tag)) Custom
+		input.form-control.d-none(type="text" placeholder="Custom reward tag" name="customTag" value=reward.tag)
+
+		select.card-select.custom-select.form-control(name="card" placeholder="name")
 			option(value='' data-subtext='None')
 			each card in cardData
 				option(value=card selected= reward.card===card)= card
-		select.form-control
-			option Card
-			option Other
+			
 		input.form-control(type="number" placeholder="cost" name="cost" value=reward.cost)
 
 		button.btn.btn-outline-secondary.remove-item(type="button") Remove
@@ -42,23 +40,24 @@ mixin boxEntry(box = { name: '', itemsCount: '', ultimateReward: '' })
 		input.form-control(type="text" placeholder="ultimate reward" value=box.ultimateReward)
 		button.btn.btn-outline-danger.remove-item(type="button") Remove
 
-mixin boxSetEntry(set = { name: 'default name', cost: '', boxes: [] })
-	- set.name = set.name.replace(' ', '-');
-	div(data-name=set.name style="border-radius:8px;border:3px solid var(--secondary);padding:16px;")
+mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
+	div.boxset(style="border-radius:8px;border:3px solid var(--secondary);padding:16px;margin-bottom:.5rem;")
 		div.form-group.row
-			label.col-2.col-form-label(for=set.name) Box set name:
+			label.col-2.col-form-label Box set name:
 			div.col-3
-				input.form-control(id=set.name type="text" name="box-set-name" value=set.name)
-			label.col-2.col-form-label(for=set.cost) Individual box cost:
+				input.form-control(type="text" name="box-set-name" value=set.name)
+			label.col-2.col-form-label Individual box cost:
 			div.col-3
-				input.form-control(id=set.cost type="number" step="100")
-		button.btn.btn-secondary.mb-2.add-item(data-target=`div[data-name="${set.name}"]` data-clone="template#box") Add box
-		if set.boxes.length !== 0
-			each box in set.boxes
-				+boxEntry(box)
-		else
-			+boxEntry()
-
+				input.form-control(type="number" step="100")
+		div
+			div
+				if set.boxes.length !== 0
+					each box in set.boxes
+						+boxEntry(box)
+				else
+					+boxEntry()
+			button.btn.btn-secondary.mb-2.add-item(data-clone="template#box") Add box
+		button.btn.btn-outline-danger.remove-item(type="button") Remove box set
 
 block content
 	include mixins/imageUpload
@@ -139,17 +138,18 @@ block content
 							li.nav-item
 								a#points-tab.nav-link.active(data-toggle="tab" href="#points" role="tab" aria-controls="points" aria-selected="true") Point-based
 							li.nav-item
-								a#boxes-tab.nav-link(data-toggle="tab" href="#boxes" role="tab" aria-controls="boxes" aria-selected="false") Boxes
+								a#box-set-tab.nav-link(data-toggle="tab" href="#box-set" role="tab" aria-controls="box-set" aria-selected="false") Boxes
 						div.tab-content.pt-3
 							div#points.tab-pane.show.active(role="tabpanel" aria-labelledby="points-tab")
 								h5.border-bottom Rewards
-								div#rewards
-									if data.rewards && data.rewards.length !== 0
-										each reward in data.rewards
-											+rewardEntry(reward)
-									else
-										+rewardEntry()
-								button.btn.btn-secondary.mb-4.add-item(data-target="#rewards" data-clone="#rewardTemplate") Add reward
+								div
+									div#rewards
+										if data.rewards && data.rewards.length !== 0
+											each reward in data.rewards
+												+rewardEntry(reward)
+										else
+											+rewardEntry()
+									button.btn.btn-secondary.mb-4.add-item(data-clone="#rewardTemplate") Add reward
 
 								h5.border-bottom AP Rewards
 								div.form-row
@@ -169,14 +169,15 @@ block content
 											+apEntry(ap)
 									else
 										+apEntry()
-								button.btn.btn-secondary.mb-2.add-item(data-target="#AP" data-clone="#APTemplate") Add AP reward
-							div#boxes.tab-pane(role="tabpanel" aria-labelledby="boxes-tab")
-								button.btn.btn-secondary.mb-2.add-item(data-target="#boxes" data-clone="template#boxset") Add box set
-								if ev && ev.rewardListType === "boxes"
-									each set in ev.boxSets
-										+boxSetEntry(set)
-								else
-									+boxSetEntry()
+								button.btn.btn-secondary.mb-2.add-ap(data-target="#AP" data-clone="#APTemplate") Add AP reward
+							div#box-set.tab-pane(role="tabpanel" aria-labelledby="box-set-tab")
+								div
+									if ev && ev.rewardListType === "boxes"
+										each set in ev.boxSets
+											+boxSetEntry(set)
+									else
+										+boxSetEntry()
+								button.btn.btn-secondary.mb-2.add-item(data-clone="template#boxset") Add box set
 					div#nightmare.tab-pane(role="tabpanel" aria-labelledby="nightmare-tab")
 					div#other.tab-pane(role="tabpanel" aria-labelledby="other-tab")
 

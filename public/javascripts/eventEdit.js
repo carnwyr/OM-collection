@@ -1,21 +1,22 @@
 var selectPickerOptions = {
 	liveSearch: true,
 	style: '',
-	styleBase: 'form-control',
+	styleBase: 'form-control mb-0',
 	size: 15,
-	title: 'Name'
+	title: 'reward name'
 };
 
 $(document).ready(function () {
 	createMasks();
 
-	$(".remove-item").click(removeItem);
-	$(".add-item").click(addItem);
+	$(document).on("click", ".add-item", addItem);
+	$(document).on("click", ".remove-item", removeItem);
+
+	$(".add-ap").click(addAP);
+
 	$("#submit").click(saveChanges);
 
-	$("input[name='box-set-name']").focusout(updateBoxSetID);
-
-	bindCustomTags();
+	// bindCustomTags();
 
 	$('.card-select').selectpicker(selectPickerOptions);
 
@@ -77,34 +78,33 @@ function removeItem() {
 }
 
 function addItem() {
-	var parentForm = $(this).data("target");
 	var template = $(this).data("clone");
-	var newItem = $($(template).html()).appendTo($(parentForm));
-	newItem.find(".remove-item").click(removeItem);
-	newItem.find(".tag-select").change(switchCustomTagDisplay);
-	newItem.find(".card-select").selectpicker(selectPickerOptions);
-	return newItem;
+	$(this).parent().children(":first").append($(template).html());
+
+	if (template === "#rewardTemplate") {
+		$('.card-select').selectpicker(selectPickerOptions);
+	}
 }
 
-function bindCustomTags() {
-	var tagDropdowns = $('#rewards .tag-select');
-	tagDropdowns.each((index, reward) => {
-		if (!$(reward).val()) {
-			$(reward).next().addClass('d-block').removeClass('d-none');
-		};
-	});
-
-	tagDropdowns.change(switchCustomTagDisplay)
-}
-
-function switchCustomTagDisplay(event) {
-	var tag = event.target;
-	if (!$(tag).val()) {
-		$(tag).next().addClass('d-block').removeClass('d-none');
-	} else {
-		$(tag).next().addClass('d-none').removeClass('d-block');
-	};
-}
+// function bindCustomTags() {
+// 	var tagDropdowns = $('#rewards .tag-select');
+// 	tagDropdowns.each((index, reward) => {
+// 		if (!$(reward).val()) {
+// 			$(reward).next().addClass('d-block').removeClass('d-none');
+// 		};
+// 	});
+//
+// 	tagDropdowns.change(switchCustomTagDisplay)
+// }
+//
+// function switchCustomTagDisplay(event) {
+// 	var tag = event.target;
+// 	if (!$(tag).val()) {
+// 		$(tag).next().addClass('d-block').removeClass('d-none');
+// 	} else {
+// 		$(tag).next().addClass('d-none').removeClass('d-block');
+// 	};
+// }
 
 // TODO merge with card edit functions
 // TODO fix page reload (not needed, shows old values)
@@ -228,6 +228,20 @@ function formatRewards(f, end) {
 	return lst;
 }
 
+
+
+function addAP() {
+	var parentForm = $(this).data("target");
+	var template = $(this).data("clone");
+	var newItem = $($(template).html()).appendTo($(parentForm));
+
+	// newItem.find(".remove-item").click(removeItem);
+	// newItem.find(".tag-select").change(switchCustomTagDisplay);
+	// newItem.find(".card-select").selectpicker(selectPickerOptions);
+
+	return newItem;
+}
+
 function applyPreset() {
 	var presetName = $(this).val();
 	var presetData = apPresets[presetName];
@@ -235,18 +249,10 @@ function applyPreset() {
 	$("#AP").empty();
 
 	presetData.forEach(ap => {
-		let newItem = addItem.call($("#addAP"));
+		let newItem = addAP.call($("#addAP"));
 		newItem.find('[name="amount"]').val(ap.amount);
 		newItem.find('[name="points"]').val(ap.points);
 		if (ap.page)
 			newItem.find('[name="page"]').val(ap.page);
 	});
-}
-
-function updateBoxSetID() {
-	var oldContainerName = $(this).parent().data("name");
-	var newContaienrName = $(this).val();
-
-	$(this).parent().data("name", newContaienrName);
-	$(`.add-item[data-target="${oldContainerName}"]`).data("target", newContaienrName);
 }
