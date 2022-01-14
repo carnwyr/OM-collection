@@ -9,13 +9,13 @@ block scripts
 	script.
 		var apPresets = !{JSON.stringify(apPresets)};
 
-mixin rewardEntry(reward = {tag:null, points:null, card:null})
+mixin rewardEntry(reward = { tag: '', points:null, card:null })
 	form.form-inline
-		select.custom-select.form-control.tag-select(name="tag" placeholder="Reward tag")
+		select.custom-select.form-control(name="tag" placeholder="Reward tag")
 			each option in rewardOptions
 				option(value=option selected=checkSelectedTag(option, reward.tag))= option
-			option(value='' selected=checkSelectedTag('Custom', reward.tag)) Custom
-		input.form-control.d-none(type="text" placeholder="Custom reward tag" name="customTag" value=reward.tag)
+			option(value='custom' selected=checkSelectedTag('Custom', reward.tag)) Custom
+		input(class="form-control" style=(rewardOptions.includes(reward.tag)?"":"display:none;") type="text" placeholder="Custom reward tag" name="customTag" value=reward.tag)
 
 		select.card-select.custom-select.form-control(name="card" placeholder="name")
 			option(value='' data-subtext='None')
@@ -96,6 +96,8 @@ block content
 								select#eventType(class='custom-select' name="type")
 									option(value='PopQuiz' selected=(data.type==='PopQuiz')) Pop Quiz
 									option(value='Nightmare' selected=(data.type==='Nightmare')) Nightmare
+									option(value='ChargeMission' selected=(data.type==='ChargeMission')) Charge Mission
+									option(value='LoginBonus' selected=(data.type==='LoginBonus')) Login Bonus
 									option(value="Other" selected=(data.type==="Other")) Other
 							div.form-group
 								label(for="start") Start date (UTC)

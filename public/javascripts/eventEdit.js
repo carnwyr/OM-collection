@@ -16,7 +16,7 @@ $(document).ready(function () {
 
 	$("#submit").click(saveChanges);
 
-	// bindCustomTags();
+	$("select[name='tag']").change(checkIfCustom);
 
 	$('.card-select').selectpicker(selectPickerOptions);
 
@@ -86,25 +86,13 @@ function addItem() {
 	}
 }
 
-// function bindCustomTags() {
-// 	var tagDropdowns = $('#rewards .tag-select');
-// 	tagDropdowns.each((index, reward) => {
-// 		if (!$(reward).val()) {
-// 			$(reward).next().addClass('d-block').removeClass('d-none');
-// 		};
-// 	});
-//
-// 	tagDropdowns.change(switchCustomTagDisplay)
-// }
-//
-// function switchCustomTagDisplay(event) {
-// 	var tag = event.target;
-// 	if (!$(tag).val()) {
-// 		$(tag).next().addClass('d-block').removeClass('d-none');
-// 	} else {
-// 		$(tag).next().addClass('d-none').removeClass('d-block');
-// 	};
-// }
+function checkIfCustom() {
+	if ($(this).val() === "custom") {
+		$("input[name='customTag']").show();
+	} else {
+		$("input[name='customTag']").hide();
+	}
+}
 
 // TODO merge with card edit functions
 // TODO fix page reload (not needed, shows old values)
