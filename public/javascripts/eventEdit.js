@@ -105,7 +105,7 @@ function saveChanges(e) {
 }
 
 function validateFields() {
-    if (!$('#en-name').val()) {
+  if (!$('#en-name').val()) {
     showAlert("danger", 'English name must be filled');
     return false;
   }
@@ -122,32 +122,38 @@ function validateFields() {
 }
 
 function submitChange() {
-	var data = {};
-
-	var formData = new FormData(document.getElementById('info'));
-	formData.forEach((value, key) => data[key] = value);
-
-	if (data.type !== "Nightmare") {
-		data.rewards = getRewards();
-		data.ap = getAP();
-	}
-
-	data.name = {
-		en: data["en-name"],
-		ja: data["ja-name"],
-		zh: data["zh-name"]
+	var generalInfo = new FormData(document.getElementById('info'));
+	generalInfo.forEach((value, key) => generalInfo[key] = value);
+	generalInfo.name = {
+		en: generalInfo["en-name"],
+		ja: generalInfo["ja-name"],
+		zh: generalInfo["zh-name"]
 	};
-	["en-name", "ja-name", "zh-name"].forEach(e => delete data[e]);
+	["en-name", "ja-name", "zh-name"].forEach(e => delete generalInfo[e]);
 
-	for (let key in data) {
-		if (data[key] === "") {
-			if (data.type === "Nightmare" && ["stages", "pageCost"].includes(key)) {
-				continue;
-			}
-			showAlert("danger", "Please fill: "+key);
-			return;
+	var data = generalInfo;
+
+	if (generalInfo.type === "PopQuiz") {
+		let rewardType = $("input[name='rewardListType']:checked").val();
+		let popQuizData = {
+			isLonelyDevil: $("input#lonelydevil").is(":checked"),
+			isBirthday: $("input#birthday").is(":checked"),
+			rewardListType: rewardType,
+			stages: $("input#stages").val()
+		};
+
+		if (rewardType === "points") {
+			popQuizData.listRewards = getRewards();
+			popQuizData.ap = getAP();
+			popQuizData.pageCost = $("input[name='pageCost']").val();
+		} else {
+			popQuizData.boxRewards = getBoxRewards();
 		}
+
+		data = Object.assign(popQuizData, data);
 	}
+
+	console.log(data);
 
 	var image = readImage($('#uploadImage')[0]);
 	image
@@ -160,14 +166,19 @@ function getRewards() {
 		var formData = new FormData(form);
 		var reward = {};
 		formData.forEach((value, key) => reward[key] = value);
-		if (!reward.tag) {
+		if (reward.tag === "custom") {
 			reward.tag = reward.customTag;
 		}
+
+		// console.log(reward);
+
 		delete reward.customTag;
 		return reward;
 	}).toArray();
 
-	rewards = rewards.filter(r => r.tag && r.points);
+	// console.log(rewards);
+
+	// rewards = rewards.filter(r => r.tag && r.points);
 
 	return rewards;
 }
@@ -183,6 +194,29 @@ function getAP() {
 	apRewards = apRewards.filter(r => r.amount && r.points);
 
 	return apRewards;
+}
+
+function getBoxRewards() {
+	var sets = []
+
+	$("div.boxset").each(function() {
+		let set = {
+			name: $(this).find("input[name='box-set-name']").val(),
+			cost: $(this).find("input[name='box-set-cost']").val(),
+			boxes: []
+		};
+
+		$(this).find("form").each(function() {
+			var formData = new FormData(this);
+			var boxData = {};
+			formData.forEach((value, key) => boxData[key] = value);
+			set.boxes.push(boxData);
+		});
+
+		sets.push(set);
+	});
+
+	return sets;
 }
 
 function sendRequest(data, image) {

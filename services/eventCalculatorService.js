@@ -1,6 +1,6 @@
 const async = require("async");
 
-const eventsService = require("../services/eventsService");
+const eventService = require("../services/eventService");
 const dayjs         = require('dayjs');
 const utc           = require('dayjs/plugin/utc');
 const timezone      = require('dayjs/plugin/timezone');

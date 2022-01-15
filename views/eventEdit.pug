@@ -17,7 +17,7 @@ mixin rewardEntry(reward = { tag: '', points:null, card:null })
 			option(value='custom' selected=checkSelectedTag('Custom', reward.tag)) Custom
 		input(class="form-control" style=(rewardOptions.includes(reward.tag)?"":"display:none;") type="text" placeholder="Custom reward tag" name="customTag" value=reward.tag)
 
-		select.card-select.custom-select.form-control(name="card" placeholder="name")
+		select.card-select.custom-select.form-control(name="name" placeholder="name")
 			option(value='' data-subtext='None')
 			each card in cardData
 				option(value=card selected= reward.card===card)= card
@@ -35,9 +35,9 @@ mixin apEntry(ap = {amount:null, points:null, page:null})
 
 mixin boxEntry(box = { name: '', itemsCount: '', ultimateReward: '' })
 	form.form-inline
-		input.form-control(type="text" placeholder="box name" value=box.name)
-		input.form-control(type="text" placeholder="total items" value=box.itemsCount)
-		input.form-control(type="text" placeholder="ultimate reward" value=box.ultimateReward)
+		input.form-control(type="text" name="name" placeholder="box name" value=box.name)
+		input.form-control(type="text" name="itemsCount" placeholder="total items" value=box.itemsCount)
+		input.form-control(type="text" name="ultimateReward" placeholder="ultimate reward" value=box.ultimateReward)
 		button.btn.btn-outline-danger.remove-item(type="button") Remove
 
 mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
@@ -48,7 +48,7 @@ mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
 				input.form-control(type="text" name="box-set-name" value=set.name)
 			label.col-2.col-form-label Individual box cost:
 			div.col-3
-				input.form-control(type="number" step="100")
+				input.form-control(type="number" name="box-set-cost" value=set.cost step="100")
 		div
 			div
 				if set.boxes.length !== 0
@@ -119,10 +119,10 @@ block content
 					div#popquiz.tab-pane.show.active(role="tabpanel" aria-labelledby="popquiz-tab")
 						div.form-group
 							div.form-check.form-check-inline
-								input#reward-points.form-check-input(type="radio" name="rewardtype")
+								input#reward-points.form-check-input(type="radio" name="rewardListType" value="points")
 								label.form-check-label(for="reward-points") Point rewards
 							div.form-check.form-check-inline
-								input#reward-boxes.form-check-input(type="radio" name="rewardtype")
+								input#reward-boxes.form-check-input(type="radio" name="rewardListType" value="boxes")
 								label.form-check-label(for="reward-boxes") Box rewards
 							div.form-check.form-check-inline
 								input#lonelydevil.form-check-input(type="checkbox")
@@ -175,7 +175,7 @@ block content
 							div#box-set.tab-pane(role="tabpanel" aria-labelledby="box-set-tab")
 								div
 									if ev && ev.rewardListType === "boxes"
-										each set in ev.boxSets
+										each set in ev.boxRewards
 											+boxSetEntry(set)
 									else
 										+boxSetEntry()

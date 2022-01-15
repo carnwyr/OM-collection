@@ -120,22 +120,21 @@ async function getFullEventData(eventName) {
 	}
 }
 
-exports.addEvent = async function (req, res) {
+exports.addEvent = async function(data, img) {
 	try {
-		let data = req.body.data;
-
 		let event = await Events.findOne({ "name.en": data.name.en });
 		if (event) {
-			throw createError(400, `Event with name ${data.name.en} already exists`);
+			throw createError(400, `Event with name "${data.name.en}" already exists`);
 		}
 
 		await Events.create(data);
-		await fileService.saveImage(req.body.img, null, data.name.en, "events");
-		return res.json({ err: null, message: "Event created!" });
+		await fileService.saveImage(img, null, data.name.en, "events");
+
+		return { err: null, message: "Event created!" };
 	} catch(e) {
 		console.error(e);
 		Sentry.captureException(e);
-		return res.json({ err: true, message: e.message });
+		return { err: true, message: e.message };
 	}
 }
 
