@@ -13,12 +13,6 @@ const eventSchema = new Schema({
 	start: { type: Date },
 	end: { type: Date },
 	type: { type: String, required: true, enum: ["PopQuiz", "Nightmare", "ChargeMission", "LoginBonus", "Other"] }
-	// rewards: { type: [rewardSchema] }
-	// type: { type: String, required: true, enum: ["Pop Quiz", "Lonely Devil", "Birthday", "Nightmare"] },
-	// ap: { type: [APSchema], required: function() { return this.type !== "Nightmare"; } },
-	// rewards: { type: [RewardsSchema], required: function() { return this.type !== "Nightmare"; } },
-	// stages: { type: Number, required: function() { return this.type !== "Nightmare"; } },
-	// pageCost: { type: Number, required: function() { return this.type !== "Nightmare"; } }
 }, options);
 
 const Event = mongoose.model("Event", eventSchema);
@@ -53,8 +47,8 @@ const popQuizSchema = new Schema({
 	rewardListType: { type: String, required: true, enum: ["points", "boxes"] },
 	stages: { type: Number, required: true },
 	// keys: { type: Number },
-	points: { type: [rewardSchema] },
-	boxSets: { type: [boxSetSchema] },
+	boxRewards: { type: [boxSetSchema] },
+	listRewards: { type: [rewardSchema] },
 	ap: { type: [APSchema] },
 	pageCost: { type: Number }
 });

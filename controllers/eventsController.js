@@ -11,14 +11,14 @@ dayjs.extend(customParseFormat)
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const eventsService = require("../services/eventsService");
+const eventService = require("../services/eventService");
 const eventCalculatorService = require("../services/eventCalculatorService");
-const cardsService = require("../services/cardService");
+const cardService = require("../services/cardService");
 
 exports.getEventsPage = async function(req, res, next) {
 	// TODO: add method to only retrieve a certain type of event
 	// TODO: format events to be { name: __, start: __, end:__ } and remove unused variables.
-	var events = await eventsService.getEvents();
+	var events = await eventService.getEvents();
 
 	return res.render("eventList", {
 		title: "Events",
@@ -30,7 +30,7 @@ exports.getEventsPage = async function(req, res, next) {
 exports.getEventDetail = async function (req, res, next) {
 	try {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-		var event = await eventsService.getEvent(eventName);
+		var event = await eventService.getEvent(eventName);
 
 		if (!event) throw createError(404, "Event not found");
 	} catch (e) {
@@ -45,7 +45,7 @@ exports.getEventDetail = async function (req, res, next) {
 
 exports.getCalculatorPage = async function (req, res, next) {
 	try {
-		var event = await eventsService.getLatestEvent();
+		var event = await eventService.getLatestEvent();
 	} catch (e) {
 		return next(e);
 	}
@@ -60,7 +60,7 @@ exports.getCalculatorPage = async function (req, res, next) {
 
 exports.calculate = async function(req, res) {
 	var eventName = req.params.event.replace(/_/g, ' ');
-	var event = await eventsService.getEvent(eventName);
+	var event = await eventService.getEvent(eventName);
 
 	if (!event) return res.json({ err: true });
 
@@ -70,29 +70,38 @@ exports.calculate = async function(req, res) {
 
 exports.getEventAddPage = async function (req, res, next) {
 	try {
-		var data = eventsService.getDefaultEventData();
-		var cards = await cardsService.getCards();
+		var data = eventService.getDefaultEventData();
+		var cards = await cardService.getCards();
 		var cardNames = cards.map(x => x.name);
-		var apPresets = await eventsService.getAPPresets();
+		var apPresets = await eventService.getAPPresets();
 		return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
 	} catch(e) {
 		return next(e);
 	}
 };
 
+exports.addEvent = async function(req, res) {
+	try {
+		var result = await eventService.addEvent(req.body.data, req.body.img);
+		return res.json(result);
+	} catch(e) {
+		return res.json({ err: true, message: e.message });
+	}
+}
+
 exports.getEventEditPage = async function(req, res, next) {
 	try {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-		let data = await eventsService.getEvent(eventName);
+		let data = await eventService.getEvent(eventName);
 		if (!data) throw createError(404, "Event not found");
 
 		data.start = formatDateTime(data.start);
 		data.end = formatDateTime(data.end);
 
-		var cards = await cardsService.getCards();
+		var cards = await cardService.getCards();
 		var cardNames = cards.map(x => x.name);
 
-		var apPresets = await eventsService.getAPPresets();
+		var apPresets = await eventService.getAPPresets();
 
 		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
 	} catch(e) {
