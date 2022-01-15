@@ -79,7 +79,7 @@ function removeItem() {
 
 function addItem() {
 	var template = $(this).data("clone");
-	$(this).parent().children(":first").append($(template).html());
+	$(this).parent().children("div:first-of-type").append($(template).html());
 
 	if (template === "#rewardTemplate") {
 		$('.card-select').selectpicker(selectPickerOptions);
@@ -138,9 +138,17 @@ function submitChange() {
 		let popQuizData = {
 			isLonelyDevil: $("input#lonelydevil").is(":checked"),
 			isBirthday: $("input#birthday").is(":checked"),
+			hasKeys: $("input#has-keys").is(":checked"),
 			rewardListType: rewardType,
 			stages: $("input#stages").val()
 		};
+
+		if (popQuizData.hasKeys) {
+			data.lockedStages = getLockedStages();
+			data.keyDroppingStages = $("input[name='keydrops']").val().split(',').map(element => {
+				return element.trim();
+			});
+		}
 
 		if (rewardType === "points") {
 			popQuizData.listRewards = getRewards();
@@ -217,6 +225,19 @@ function getBoxRewards() {
 	});
 
 	return sets;
+}
+
+function getLockedStages() {
+	var stages = []
+
+	$("div#keys form").each(function() {
+		var formData = new FormData(this);
+		var boxData = {};
+		formData.forEach((value, key) => boxData[key] = value);
+		stages.push(boxData);
+	});
+
+	return stages;
 }
 
 function sendRequest(data, image) {

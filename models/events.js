@@ -41,12 +41,19 @@ var APSchema = new Schema({
 	page: { type: Number }
 });
 
+const lockedStageSchema = new Schema({
+	name: String,
+	requirement: Number
+});
+
 const popQuizSchema = new Schema({
 	isLonelyDevil: Boolean,
 	isBirthday: Boolean,
+	hasKeys: Boolean,
 	rewardListType: { type: String, required: true, enum: ["points", "boxes"] },
 	stages: { type: Number, required: true },
-	// keys: { type: Number },
+	lockedStages: { type: [lockedStageSchema] },
+	keyDroppingStages: { type: Array },
 	boxRewards: { type: [boxSetSchema] },
 	listRewards: { type: [rewardSchema] },
 	ap: { type: [APSchema] },
