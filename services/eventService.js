@@ -138,28 +138,24 @@ exports.addEvent = async function(data, img) {
 	}
 }
 
-exports.updateEvent = async function (req, res) {
+exports.updateEvent = async function(originalName, data, img) {
 	try {
-		let data = req.body.data;
-		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-
 		data.start = stringToDateTime(data.start);
 		data.end = stringToDateTime(data.end);
 
-		let event = await Events.findOne({ "name.en": eventName });
+		let event = await Events.findOne({ "name.en": originalName });
 
 		if (!event) {
-			throw createError(404, `Event with name ${data.name.en} doesn't exist`);
+			throw createError(404, `Event with name ${originalName} doesn't exist`);
 		}
 
-		await Events.findOneAndUpdate({ "name.en": eventName }, data, { runValidators: true }).exec();
-		await fileService.saveImage(req.body.img, eventName, data.name.en, "events");
+		await Events.findOneAndUpdate({ "name.en": originalName }, data, { runValidators: true }).exec();
+		await fileService.saveImage(img, originalName, data.name.en, "events");
 
-		return res.json({ err: null, message: "Event updated!" });
+		return { err: null, message: "Event updated!" };
 	} catch(e) {
-		console.error(e);
 		Sentry.captureException(e);
-		return res.json({ err: true, message: e.message });
+		return { err: true, message: e.message };
 	}
 }
 

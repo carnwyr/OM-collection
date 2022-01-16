@@ -99,6 +99,17 @@ exports.deleteEvent = async function (req, res, next) {
 	}
 }
 
+exports.updateEvent = async function (req, res) {
+	try {
+		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		let result = await eventService.updateEvent(eventName, req.body.data, req.body.img);
+		return res.json(result);
+	} catch(e) {
+		Sentry.captureException(e);
+		return res.json({ err: true, message: e.message });
+	}
+}
+
 exports.getEventEditPage = async function(req, res, next) {
 	try {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
