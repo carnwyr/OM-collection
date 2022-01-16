@@ -3,7 +3,7 @@ var selectPickerOptions = {
 	style: '',
 	styleBase: 'form-control mb-0',
 	size: 15,
-	title: 'reward name'
+	title: 'card name'
 };
 
 $(document).ready(function () {
@@ -16,7 +16,7 @@ $(document).ready(function () {
 
 	$("#submit").click(saveChanges);
 
-	$("select[name='tag']").change(checkIfCustom);
+	// $("select[name='tag']").change(checkIfCustom);
 
 	$('.card-select').selectpicker(selectPickerOptions);
 
@@ -146,7 +146,7 @@ function submitChange() {
 		if (popQuizData.hasKeys) {
 			data.lockedStages = getLockedStages();
 			data.keyDroppingStages = $("input[name='keydrops']").val().split(',').map(element => {
-				return element.trim();
+				element.trim();
 			});
 		}
 
@@ -160,8 +160,6 @@ function submitChange() {
 
 		data = Object.assign(popQuizData, data);
 	}
-
-	console.log(data);
 
 	var image = readImage($('#uploadImage')[0]);
 	image
@@ -178,15 +176,11 @@ function getRewards() {
 			reward.tag = reward.customTag;
 		}
 
-		// console.log(reward);
-
 		delete reward.customTag;
 		return reward;
 	}).toArray();
 
-	// console.log(rewards);
-
-	// rewards = rewards.filter(r => r.tag && r.points);
+	rewards = rewards.filter(r => r.name && r.cost);
 
 	return rewards;
 }
@@ -224,6 +218,8 @@ function getBoxRewards() {
 		sets.push(set);
 	});
 
+	sets = sets.filter(r => r.name && r.cost);
+
 	return sets;
 }
 
@@ -236,6 +232,8 @@ function getLockedStages() {
 		formData.forEach((value, key) => boxData[key] = value);
 		stages.push(boxData);
 	});
+
+	stages = stages.filter(r => r.name && r.requirement);
 
 	return stages;
 }

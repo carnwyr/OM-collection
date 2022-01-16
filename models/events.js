@@ -47,9 +47,9 @@ const lockedStageSchema = new Schema({
 });
 
 const popQuizSchema = new Schema({
-	isLonelyDevil: Boolean,
-	isBirthday: Boolean,
-	hasKeys: Boolean,
+	isLonelyDevil: { type: Boolean, required: true },
+	isBirthday: { type: Boolean, required: true },
+	hasKeys:{ type: Boolean, required: true },
 	rewardListType: { type: String, required: true, enum: ["points", "boxes"] },
 	stages: { type: Number, required: true },
 	lockedStages: { type: [lockedStageSchema] },

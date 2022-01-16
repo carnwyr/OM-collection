@@ -23,7 +23,6 @@ exports.getEvents = async function(condition = {}) {
 		return await Events.find(condition);
 	} catch (e) {
 		Sentry.captureException(e);
-		console.error(e);
 		return [];
 	}
 }
@@ -33,6 +32,7 @@ exports.getEvent = async function(eventName) {
 	if (!event || eventName != event.name) {
 		event = await getFullEventData(eventName);
 	}
+
 	return event;
 }
 
@@ -132,7 +132,6 @@ exports.addEvent = async function(data, img) {
 
 		return { err: null, message: "Event created!" };
 	} catch(e) {
-		console.error(e);
 		Sentry.captureException(e);
 		return { err: true, message: e.message };
 	}
@@ -140,8 +139,9 @@ exports.addEvent = async function(data, img) {
 
 exports.updateEvent = async function(originalName, data, img) {
 	try {
-		data.start = stringToDateTime(data.start);
-		data.end = stringToDateTime(data.end);
+
+		// data.start = stringToDateTime(data.start);
+		// data.end = stringToDateTime(data.end);
 
 		let event = await Events.findOne({ "name.en": originalName });
 
@@ -149,7 +149,7 @@ exports.updateEvent = async function(originalName, data, img) {
 			throw createError(404, `Event with name ${originalName} doesn't exist`);
 		}
 
-		await Events.findOneAndUpdate({ "name.en": originalName }, data, { runValidators: true }).exec();
+		await Events.replaceOne({ "name.en": originalName }, data);
 		await fileService.saveImage(img, originalName, data.name.en, "events");
 
 		return { err: null, message: "Event updated!" };
@@ -167,7 +167,6 @@ exports.deleteEvent = async function(eventName) {
 		}
 		return { err: null, message: "Event deleted!" };
 	} catch (err) {
-		console.error(err);
 		Sentry.captureException(err);
 		return { err: true, message: err.message };
 	}
