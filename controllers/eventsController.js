@@ -32,15 +32,22 @@ exports.getEventDetail = async function (req, res, next) {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		var event = await eventService.getEvent(eventName);
 
+		console.log(event);
+
 		if (!event) throw createError(404, "Event not found");
+
+		var cards = await cardService.getCards({ source: { $in: [ eventName ] } });
+
+		return res.render("eventDetail", {
+			title: event.name.en,
+			description: `View "${event.name.en}" and other Obey Me events on Karasu-OS.com`,
+			event: event,
+			cards: cards,
+			user: req.user });
+
 	} catch (e) {
 		return next(e);
 	}
-	return res.render("eventDetail", {
-		title: event.name,
-		description: `View "${event.name}" and other Obey Me events on Karasu-OS.com`,
-		event: event,
-		user: req.user });
 }
 
 exports.getCalculatorPage = async function (req, res, next) {

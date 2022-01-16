@@ -66,22 +66,14 @@ block content
                   | ,
                   |
             p #[strong #{t("cards.source")}: ]
-              //- when events are complete, use card controller to grab the right language before sending to pug. (remove if/else)
-              -
-                var lang = t("lang"), source;
-                if (lang === "en") {
-                  source = card.source;
-                } else if (lang === "ja") {
-                  source = card.ja_source;
-                } else if (lang === "zh") {
-                  // source = card.zh_source;
-                  source = card.source;
-                }
-              each val, index in source.length ? source : ["???"]
-                | #{val}
-                if index < source.length - 1
-                  | ,
-                  |
+              each val, index in card.source.length ? card.source : ["???"]
+                if val !== "???"
+                  a(href="/event/"+card.source_link[index])= val
+                  if index < card.source.length - 1
+                    | ,
+                    |
+                else
+                  | ???
             hr
             if !isHidden
               p.ownedCount= t("cards.collected_count", { percentage: stats.ownedTotal })

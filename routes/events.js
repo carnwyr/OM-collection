@@ -15,7 +15,7 @@ router.post("/:event/edit", usersController.hasAccess("Moderator"), eventsContro
 router.post("/:event/delete", usersController.hasAccess("Moderator"), eventsController.deleteEvent);
 
 // mod access only, until page is complete
-router.get("/:event", usersController.hasAccess("Moderator"), eventsController.getEventDetail);
+router.get("/:event", eventsController.getEventDetail);
 
 
 module.exports = router;
