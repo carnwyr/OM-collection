@@ -1,4 +1,3 @@
-var adBlock;
 $(document).ready(function() {
 	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
 	$("head").append(`<link rel="alternate" hreflang="${$("select#language").val()}" href="${window.location.href}">`);
@@ -36,14 +35,13 @@ $(document).ready(function() {
 	});
 
 	$("#b2t").on("click", () => { $("html, body").animate({scrollTop:0}, 500); });
-});
 
-$(document).on("adBlocked", () => { adBlock = true; });
-$(window).on("load", () => {
-	if (adBlock === true) {
-		$("#kool-aid>.row").hide();
-		$("#kool-aid").append(`<div class="card shadow-none" style="background:rgba(255,255,255,.8)"><div class="card-body col-md-8 mx-auto" style="border-radius:1rem;"><h5 class="card-title">Using an ad-blocker?</h5><img style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png"><p>Advertisements help us cover the cost to keep karasu-os online.</p><p>Please consider whitelisting karasu-os.com to keep the website free for everyone!</p></div></div>`);
-	}
+	setTimeout(() => {
+		if ($(".ezoic-ad.adtester-container div").height() === 0) {
+			$("#kool-aid>.row").hide();
+			$("#kool-aid").append(`<div class="card shadow-none" style="background:rgba(255,255,255,.8)"><div class="card-body col-md-8 mx-auto" style="border-radius:1rem;"><h5 class="card-title">Using an ad-blocker?</h5><img style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png"><p>Advertisements help us cover the cost to keep karasu-os online.</p><p>Please consider whitelisting karasu-os.com to keep the website free for everyone!</p></div></div>`);
+		}
+	}, 1000);
 });
 
 $(window).on("scroll", () => {

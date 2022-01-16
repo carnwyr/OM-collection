@@ -1,6 +1,11 @@
 $(document).ready(function() {
 	const urlParams = new URLSearchParams(window.location.search);
-	var character = urlParams.get("character")?urlParams.get("character"):"Lucifer";
+	var character = urlParams.get("character");
+	if (character) {
+		character = character.charAt(0).toUpperCase() + character.slice(1).toLowerCase();
+	} else {
+		character = "Lucifer";
+	}
 
 	updateSettingsOnLoad();
 	openCharacterTab(character);

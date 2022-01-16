@@ -198,9 +198,9 @@ async function addNewCard(cardData) {
 exports.deleteCard = async function (cardName) {
   var card = await Cards.findOneAndRemove({ uniqueName: cardName });
   if (!card) {
-    card = HiddenCards.findOneAndRemove({ uniqueName: cardName });
+    card = await HiddenCards.findOneAndRemove({ uniqueName: cardName });
     if (!card) {
-      throw createError(404, "No such card");
+      return createError("Card not found");
     }
   }
   return removeCardDependencies(cardName);
@@ -212,9 +212,9 @@ async function removeCardDependencies(cardName) {
 	var promiseLB = await fileService.deleteImage("cards/L", cardName+'_b');
 	var promiseS = await fileService.deleteImage("cards/S", cardName);
 
-	return Promise.all([promiseCollections, promiseL, promiseLB, promiseS ])
-    .catch(reason => { return {error: reason} })
-    .then(() => { return {} });
+	return Promise.all([promiseCollections, promiseL, promiseLB, promiseS])
+    .catch(reason => { return { success: false, error: reason } })
+    .then(() => { return { success: true } });
 };
 
 exports.makeCardPublic = async function(cardName) {
