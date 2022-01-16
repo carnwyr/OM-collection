@@ -4,7 +4,7 @@ var router = express.Router();
 var cardsController = require("../controllers/cardsController");
 var usersController = require("../controllers/usersController");
 var miscController = require("../controllers/miscController");
-// var eventsController = require("../controllers/eventsController");
+var eventsController = require("../controllers/eventsController");
 
 // Static pages
 router.get("/", cardsController.index);
@@ -18,7 +18,7 @@ router.get("/hiddenCards", usersController.hasAccess("Admin"), cardsController.g
 
 // Events
 // available to moderators only, until all event pages are completely finished
-// router.get("/events", usersController.hasAccess("Moderator"), eventsController.getEventsPage);
+router.get("/events", usersController.hasAccess("Moderator"), eventsController.getEventsPage);
 // router.get("/calculator", eventsController.getCalculatorPage);
 
 // Account management

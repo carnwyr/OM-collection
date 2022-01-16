@@ -61,6 +61,10 @@ const popQuizSchema = new Schema({
 });
 
 const PopQuiz = Event.discriminator("PopQuiz", popQuizSchema);
+const Nightmare = Event.discriminator("Nightmare", new mongoose.Schema({}));
+const ChargeMission = Event.discriminator("ChargeMission", new mongoose.Schema({}));
+const LoginBonus = Event.discriminator("LoginBonus", new mongoose.Schema({}));
+const Other = Event.discriminator("Other", new mongoose.Schema({}));
 
 
 module.exports = Event;

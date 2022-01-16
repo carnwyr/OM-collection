@@ -21,7 +21,7 @@ block scripts
 		.dcard-container img {
 		  height: 243px;
 		}
-		p {
+		p.card-section-title {
 			text-align: center;
 			font-weight: 600;
 			text-transform: uppercase;
@@ -34,7 +34,7 @@ block content
 	.container
 		h1= title
 		if t("lang") === "ja"
-			div.alert.alert-info(role="alert") 
+			div.alert.alert-info(style="z-index:0!important;" role="alert") 
 				strong Translators needed!
 				|
 				| Our website is missing many translations. If you would like to become our translator, please email
@@ -43,10 +43,10 @@ block content
 				|
 				| or
 				|
-				a(href="https://discord.gg/Y3KMW7U") join our discord server
+				a(href="https://discord.gg/Y3KMW7U" target="_blank") join our discord server
 				| .
 		div.card.card-body
-			p Demon cards
+			p.card-section-title= t("cards.demon_cards")
 			div.row.justify-content-center.mb-4
 				each card in cards.filter(card => card.type === "Demon")
 					div.dcard-container
@@ -56,7 +56,7 @@ block content
 								img.img-fluid.ml-md-2(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
 							//- figurecaption= card.name
 
-			p Memory cards
+			p.card-section-title= t("cards.memory_cards")
 			div.row.justify-content-center
 				each card in cards.filter(card => card.type === "Memory")
 					div.mcard-container

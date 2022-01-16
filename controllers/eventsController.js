@@ -38,8 +38,12 @@ exports.getEventDetail = async function (req, res, next) {
 
 		var cards = await cardService.getCards({ source: { $in: [ eventName ] } });
 
+		if (i18next.t("lang") === "ja" && event.name.ja !== '') {
+			var title = event.name.ja;
+		}
+
 		return res.render("eventDetail", {
-			title: event.name.en,
+			title: title?title:event.name.en,
 			description: `View "${event.name.en}" and other Obey Me events on Karasu-OS.com`,
 			event: event,
 			cards: cards,

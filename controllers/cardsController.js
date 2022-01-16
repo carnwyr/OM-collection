@@ -122,11 +122,12 @@ exports.getCardDetailPage = async function(req, res, next) {
 			title = cardData.ja_name;
 		}
 
-    if (lang === "ja") {
-      cardData.source = cardData.ja_source;
-    }
-
 		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g,'_')));
+
+		// TODO: if lang === "ja"; then, grab japanese name from event data
+		if (lang === "ja" && cardData.ja_source.length > 0 && cardData.ja_source[0] !== "???") {
+			cardData.source = cardData.ja_source;
+		}
 
 		return res.render('cardDetail', {
 			title: title,

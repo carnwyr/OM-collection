@@ -154,7 +154,7 @@ block content
 								h5.border-bottom Rewards
 								div
 									div#rewards
-										if data.rewards && data.rewards.length !== 0
+										if data.listRewards && data.listRewards.length !== 0
 											each reward in data.listRewards
 												+rewardEntry(reward)
 										else
