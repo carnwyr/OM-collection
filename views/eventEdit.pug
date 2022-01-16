@@ -9,13 +9,13 @@ block scripts
 	script.
 		var apPresets = !{JSON.stringify(apPresets)};
 
-mixin rewardEntry(reward = { tag: '', cost: '', name: '' })
+mixin rewardEntry(reward = { tag: '', points: '', card: '' })
 	form.form-inline
-		select.card-select.custom-select.form-control(name="name" placeholder="name")
+		select.card-select.custom-select.form-control(name="card" placeholder="card name")
 			option(value='' data-subtext='None')
 			each card in cardData
-				option(value=card selected=(reward.name===card))= card
-		input.form-control(type="number" placeholder="cost" name="cost" value=reward.cost)
+				option(value=card selected=(reward.card===card))= card
+		input.form-control(type="number" placeholder="points required" name="points" value=reward.points)
 		select.custom-select.form-control(name="tag" placeholder="Reward tag")
 			each option in rewardOptions
 				option(value=option selected=checkSelectedTag(option, reward.tag))= option

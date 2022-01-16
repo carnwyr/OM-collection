@@ -180,7 +180,7 @@ function getRewards() {
 		return reward;
 	}).toArray();
 
-	rewards = rewards.filter(r => r.name && r.cost);
+	rewards = rewards.filter(r => r.card && r.points);
 
 	return rewards;
 }

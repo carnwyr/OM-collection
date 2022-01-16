@@ -18,8 +18,8 @@ const eventSchema = new Schema({
 const Event = mongoose.model("Event", eventSchema);
 
 const rewardSchema = new Schema({
-	name: { type: String, required: true },
-	cost: { type: String },
+	card: { type: String, required: true },
+	points: { type: String },
 	tag: { type: String }
 });
 
