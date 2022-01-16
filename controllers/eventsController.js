@@ -89,6 +89,16 @@ exports.addEvent = async function(req, res) {
 	}
 }
 
+exports.deleteEvent = async function (req, res, next) {
+	try {
+		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		return res.json(await eventService.deleteEvent(eventName));
+	} catch (err) {
+		Sentry.captureException(err);
+		return res.json({ err: true, message: err.message });
+	}
+}
+
 exports.getEventEditPage = async function(req, res, next) {
 	try {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));

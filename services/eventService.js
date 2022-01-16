@@ -163,18 +163,17 @@ exports.updateEvent = async function (req, res) {
 	}
 }
 
-exports.deleteEvent = async function (req, res) {
+exports.deleteEvent = async function(eventName) {
 	try {
-		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		var event = await Events.findOneAndRemove({ "name.en": eventName });
 		if (event) {
 			await fileService.deleteImage("events", event.name.en);
 		}
-		return res.redirect('/events');
+		return { err: null, message: "Event deleted!" };
 	} catch (err) {
 		console.error(err);
 		Sentry.captureException(err);
-		return next(err);
+		return { err: true, message: err.message };
 	}
 }
 
