@@ -17,8 +17,7 @@ router.get("/cards", cardsController.getCardsListPage);
 router.get("/hiddenCards", usersController.hasAccess("Admin"), cardsController.getHiddenCardsListPage);
 
 // Events
-// available to moderators only, until all event pages are completely finished
-router.get("/events", usersController.hasAccess("Moderator"), eventsController.getEventsPage);
+router.get("/events", eventsController.getEventsPage);
 // router.get("/calculator", eventsController.getCalculatorPage);
 
 // Account management
