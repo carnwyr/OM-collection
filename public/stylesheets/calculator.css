@@ -68,14 +68,17 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-.force-reward-display-height {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 @media (min-width:992px) {
-  .force-reward-display-height {
+  .reward-container {
     height: 330px;
   }
+}
+
+.result-container {
+  height: 120px;
+}
+
+.badge-success {
+  color: #fff;
+  background-color: #28a745;
 }

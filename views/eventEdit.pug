@@ -9,26 +9,58 @@ block scripts
 	script.
 		var apPresets = !{JSON.stringify(apPresets)};
 
-mixin rewardEntry(reward = {tag:null, points:null, card:null})
+mixin rewardEntry(reward = { tag: '', points: '', card: '' })
 	form.form-inline
-		select.custom-select.form-control.tag-select(name="tag" placeholder="Reward tag")
-			each option in rewardOptions
-				option(value=option selected=checkSelectedTag(option, reward.tag))= option
-			option(value='' selected=checkSelectedTag('Custom', reward.tag)) Custom
-		input.form-control.d-none(type="text" placeholder="Custom reward tag" name="customTag" value=reward.tag)
-		input.form-control(type="number" placeholder="Reward cost" name="points" value=reward.points)
-		select.card-select.form-control.custom-select.mb-0(name="card" placeholder="Card (if applicable)")
+		select.card-select.custom-select.form-control(name="card" placeholder="card name")
 			option(value='' data-subtext='None')
 			each card in cardData
-				option(value=card selected= reward.card ? reward.card.name===card : false)= card
-		button.btn.btn-outline-secondary.remove-button(type="button") Remove
+				option(value=card selected=(reward.card===card))= card
+		input.form-control(type="number" placeholder="points required" name="points" value=reward.points)
+		select.custom-select.form-control(name="tag" placeholder="Reward tag")
+			each option in rewardOptions
+				option(value=option selected=checkSelectedTag(option, reward.tag))= option
+			option(value='custom' selected=checkSelectedTag('Custom', reward.tag)) Custom
+		input.form-control(type="text" placeholder="Custom tag (if applicable)" name="customTag" value=(rewardOptions.includes(reward.tag)?"":reward.tag))
+		button.btn.btn-outline-secondary.remove-item(type="button") Remove
 
 mixin apEntry(ap = {amount:null, points:null, page:null})
 	form.form-inline
 		input.form-control(type="number" placeholder="AP amount" name="amount" value=ap.amount)
 		input.form-control(type="number" placeholder="AP cost" name="points" value=ap.points)
 		input.form-control(type="number" placeholder="Part _ only" name="page" value=ap.page)
-		button.btn.btn-outline-secondary.remove-button(type="button") Remove
+		button.btn.btn-outline-secondary.remove-item(type="button") Remove
+
+mixin boxEntry(box = { name: '', itemsCount: '', ultimateReward: '' })
+	form.form-inline
+		input.form-control(type="text" name="name" placeholder="box name" value=box.name)
+		input.form-control(type="text" name="itemsCount" placeholder="total items" value=box.itemsCount)
+		input.form-control(type="text" name="ultimateReward" placeholder="ultimate reward" value=box.ultimateReward)
+		button.btn.btn-outline-danger.remove-item(type="button") Remove
+
+mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
+	div.boxset(style="border-radius:8px;border:3px solid var(--secondary);padding:16px;margin-bottom:.5rem;")
+		div.form-group.row
+			label.col-2.col-form-label Box set name:
+			div.col-3
+				input.form-control(type="text" name="box-set-name" value=set.name)
+			label.col-2.col-form-label Individual box cost:
+			div.col-3
+				input.form-control(type="number" name="box-set-cost" value=set.cost step="100")
+		div
+			div
+				if set.boxes.length !== 0
+					each box in set.boxes
+						+boxEntry(box)
+				else
+					+boxEntry()
+			button.btn.btn-secondary.mb-2.add-item(data-clone="template#box") Add box
+		button.btn.btn-outline-danger.remove-item(type="button") Remove box set
+
+mixin lockedStageEntry(stage = { name: '', requirement: '' })
+	form.form-inline
+		input.form-control(type="text" name="name" placeholder="stage name" value=stage.name)
+		input.form-control(type="number" name="requirement" placeholder="requirement" value=stage.requirement)
+		button.btn.btn-outline-danger.remove-item(type="button") Remove
 
 block content
 	include mixins/imageUpload
@@ -48,83 +80,143 @@ block content
 		h1= title
 		div.card.shadow
 			div.card-body
-				h5 Event Info
-				hr.mt-0
+				h5.border-bottom Event Info
 				form#info
 					div.form-row
-						div.col-12.col-md-4
+						div.col-3
 							div.form-group
 								label(for="en-name") Name
 								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en)
-						div.col-12.col-md-4
 							div.form-group
 								label(for="ja-name") Japanese name
 								input.form-control(id="ja-name" type="text" name="ja-name" value=data.name.ja)
-						div.col-12.col-md-4
 							div.form-group
 								label(for="zh-name") Chinese name
 								input.form-control(id="zh-name" type="text" name="zh-name" value=data.name.zh)
-					div.form-row
-						div.col-12.col-md-4
+						div.col-3
 							div.form-group
 								label(for="type") Type
 								select#eventType(class='custom-select' name="type")
-									option(value='Pop Quiz' selected=(data.type==='Pop Quiz')) Pop Quiz
-									option(value='Lonely Devil' selected=(data.type==='Lonely Devil')) Lonely Devil
-									option(value='Birthday' selected=(data.type==='Birthday')) Birthday
+									option(value='PopQuiz' selected=(data.type==='PopQuiz')) Pop Quiz
 									option(value='Nightmare' selected=(data.type==='Nightmare')) Nightmare
-						div.col-12.col-md-8.col-lg-4
-							div.form-row
-								div.col-6.form-group
-									label(for="stages") Number of stages
-									input#stages.form-control(type="number" name="stages" value=data.stages)
-								div.col-6.form-group
-									label(for="pageCost") Page cost
-									input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
-					div.form-row
-						div.col-6.col-md-4.form-group
-							label(for="start") Start date (UTC)
-							input#start.form-control(type="text" name="start" value=data.start)
-						div.col-6.col-md-4.form-group
-							label(for="end") End date (UTC)
-							input#end.form-control(type="text" name="end" value=data.end)
-
-						div.col-12.col-lg-8.px-3.mt-4.mb-3
+									option(value='ChargeMission' selected=(data.type==='ChargeMission')) Charge Mission
+									option(value='LoginBonus' selected=(data.type==='LoginBonus')) Login Bonus
+									option(value="Other" selected=(data.type==="Other")) Other
+							div.form-group
+								label(for="start") Start date (UTC)
+								input#start.form-control(type="text" name="start" value=data.start)
+							div.form-group
+								label(for="end") End date (UTC)
+								input#end.form-control(type="text" name="end" value=data.end)
+						div.col-6
 							+uploadImage("Event image", data ? "/images/events/" + data.name.en + ".jpg" : "#")
 
-				br
-				h5 Rewards
-				hr.mt-0
-				div#rewards
-					if data.rewards && data.rewards.length !== 0
-						each reward in data.rewards
-							+rewardEntry(reward)
-					else
-						+rewardEntry()
-				button#addReward.btn.btn-secondary.mb-4(data-target="#rewards" data-clone="#rewardTemplate") Add reward
-				br
-				br
-				h5 AP Rewards
-				hr.mt-0
-				div.dropdown.mb-3
-					button.btn.btn-secondary.dropdown-toggle#APpresets(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Presets
-					div.dropdown-menu.shadow(aria-labelledby="APpresets")
-						each [key, value] of Object.entries(apPresets)
-							button.dropdown-item.preset(type="button" value=key)= key
-					small.text-muted.align-middle.ml-2.pt-2 Actual rewards often differ from the presets
-				div#AP
-					if data.ap && data.ap.length !== 0
-						each ap in data.ap
-							+apEntry(ap)
-					else
-						+apEntry()
-				button#addAP.btn.btn-secondary.mb-2(data-target="#AP" data-clone="#APTemplate") Add AP reward
-				br
-				br
-				button#submit.btn.btn-primary.float-right Submit Change
+				ul.nav.nav-tabs(role="tablist")
+					li.nav-item
+						a#popquiz-tab.nav-link.active(data-toggle="tab" href="#popquiz" role="tab" aria-controls="popquiz" aria-selected="true") Pop Quiz
+					li.nav-item
+						a#nightmare-tab.nav-link(data-toggle="tab" href="#nightmare" role="tab" aria-controls="nightmare" aria-selected="false") Nightmare
+					li.nav-item
+						a#other-tab.nav-link(data-toggle="tab" href="#other" role="tab" aria-controls="other" aria-selected="false") Other
+				div.tab-content.pt-3
+					div#popquiz.tab-pane.show.active(role="tabpanel" aria-labelledby="popquiz-tab")
+						div.form-group
+							div.form-check.form-check-inline
+								input#reward-points.form-check-input(type="radio" name="rewardListType" value="points" checked=(data.rewardListType!=="boxes"))
+								label.form-check-label(for="reward-points") Point rewards
+							div.form-check.form-check-inline
+								input#reward-boxes.form-check-input(type="radio" name="rewardListType" value="boxes" checked=(data.rewardListType==="boxes"))
+								label.form-check-label(for="reward-boxes") Box rewards
+							div.form-check.form-check-inline
+								input#has-keys.form-check-input(type="checkbox" checked=(data&&data.hasKeys))
+								label.form-check-label(for="has-keys") Has keys
+							div.form-check.form-check-inline
+								input#lonelydevil.form-check-input(type="checkbox" checked=(data&&data.isLonelyDevil))
+								label.form-check-label(for="lonelydevil") Lonely devil
+							div.form-check.form-check-inline
+								input#birthday.form-check-input(type="checkbox" checked=(data&&data.isBirthday))
+								label.form-check-label(for="birthday") Birthday
+
+						div.form-row
+							div.col-3.form-group
+								label(for="stages") Number of stages
+								input#stages.form-control(type="number" name="stages" value=data.stages)
+
+						ul.nav.nav-tabs(role="tablist")
+							li.nav-item
+								a#points-tab.nav-link.active(data-toggle="tab" href="#points" role="tab" aria-controls="points" aria-selected="true") Point-based
+							li.nav-item
+								a#box-set-tab.nav-link(data-toggle="tab" href="#box-set" role="tab" aria-controls="box-set" aria-selected="false") Boxes
+							li.nav-item
+								a#key-tab.nav-link(data-toggle="tab" href="#keys" role="tab" aria-controls="keys" aria-selected="false") Keys
+						div.tab-content.pt-3
+							div#points.tab-pane.show.active(role="tabpanel" aria-labelledby="points-tab")
+								h5.border-bottom Rewards
+								div
+									div#rewards
+										if data.listRewards && data.listRewards.length !== 0
+											each reward in data.listRewards
+												+rewardEntry(reward)
+										else
+											+rewardEntry()
+									button.btn.btn-secondary.mb-4.add-item(data-clone="#rewardTemplate") Add reward
+
+								h5.border-bottom AP Rewards
+								div.form-row
+									div.col-3.form-group
+										label(for="pageCost") Page cost
+										input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
+
+								div.dropdown.mb-3
+									button.btn.btn-secondary.dropdown-toggle#APpresets(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Presets
+									div.dropdown-menu.shadow(aria-labelledby="APpresets")
+										each [key, value] of Object.entries(apPresets)
+											button.dropdown-item.preset(type="button" value=key)= key
+									small.text-muted.align-middle.ml-2.pt-2 Actual rewards often differ from the presets
+								div#AP
+									if data.ap && data.ap.length !== 0
+										each ap in data.ap
+											+apEntry(ap)
+									else
+										+apEntry()
+								button.btn.btn-secondary.mb-2.add-ap(data-target="#AP" data-clone="#APTemplate") Add AP reward
+							div#box-set.tab-pane(role="tabpanel" aria-labelledby="box-set-tab")
+								div
+									if data && data.rewardListType === "boxes"
+										each set in data.boxRewards
+											+boxSetEntry(set)
+									else
+										+boxSetEntry()
+								button.btn.btn-secondary.mb-2.add-item(data-clone="template#boxset") Add box set
+							div#keys.tab-pane(role="tabpanel" aria-labelledby="key-tab")
+								input.form-control.mb-3(type="text" name="keydrops" value=data&&data.lockedStages?data.lockedStages.toString():'' placeholder="Key dropping stages, separated by comma. i.e. 1-1, 1-2, 1-3")
+								h5.border-bottom Locked stages
+								if data && data.hasKeys
+									div
+										each stage in data.lockedStages
+											+lockedStageEntry(stage)
+								else
+									div
+										+lockedStageEntry()
+								button.btn.btn-secondary.mb-2.add-item(data-clone="template#locked-stages") Add locked stage
+					
+					div#nightmare.tab-pane(role="tabpanel" aria-labelledby="nightmare-tab")
+					div#other.tab-pane(role="tabpanel" aria-labelledby="other-tab")
+
+				hr
+				button#submit.btn.btn-primary Submit Change
 
 			template#rewardTemplate
 				+rewardEntry()
 
 			template#APTemplate
 				+apEntry()
+
+			template#box
+				+boxEntry()
+
+			template#boxset
+				+boxSetEntry()
+				
+			template#locked-stages
+				+lockedStageEntry()

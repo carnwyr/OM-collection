@@ -1,6 +1,6 @@
 const async = require("async");
 
-const eventsService = require("../services/eventsService");
+const eventService = require("../services/eventService");
 const dayjs         = require('dayjs');
 const utc           = require('dayjs/plugin/utc');
 const timezone      = require('dayjs/plugin/timezone');
@@ -9,9 +9,17 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 // TODO fridge based on user's time
-const baseApPerDay = 20 + 50 + 20 + 50;  // guests + ads + to do + friends
-const baseFridgeAp = 2 * 30;
-const vipFridgeAp = 2 * 60;
+const adAPCount = 5;
+const adAPAmount = 10;
+const defaultFridgeConf = { isVip: false, count: 2 };
+const fridgeVipAP = 60;
+const fridgeNormalAP = 30;
+const spgAPCount = 2;
+const spgAPAmount = 10;
+const friendsAPAmount = 50;
+const toDoAPAmount = 20;
+const defaultAdBattles = 5;
+
 
 const apPerStage = 8;
 const minutesToRestoreAp = 5;
@@ -22,12 +30,16 @@ exports.calculate = function (event, input) {
 		return ["Invalid input", null];
 	}
 
+	setDefaultAdvancedSettings(parsedInput.advancedSettings);
+
 	return [null, getCalculationResult(event, parsedInput)];
 }
 
 function getCalculationResult(event, input) {
-	var { pointsPerBattle, currentPoints, customGoal, stagesCleared } = input;
-	var isVip = false;
+	var { pointsPerBattle, currentPoints, customGoal, stagesCleared, advancedSettings } = input;
+
+	var apDaily = getDailyAp(advancedSettings);
+	var apOther = advancedSettings.other;
 
 	var rewards = event.rewards.slice().sort();
 	if (customGoal) {
@@ -41,10 +53,10 @@ function getCalculationResult(event, input) {
 	var currentDate = currentTime.startOf("day");
 	var daysLeft    = endDate.diff(currentDate, "day");
 	var resetTime = currentTime.add(1, "day").startOf("day");
-	
+
 	let eventLength = endTime.diff(startTime, "day");
 
-	var availableTriesDaily = 3 * event.stages + 5;
+	var availableTriesDaily = 3 * event.stages + advancedSettings.adBattles;
 
 	rewards = rewards.filter(reward => reward.points)
 		.map(reward => {
@@ -61,13 +73,16 @@ function getCalculationResult(event, input) {
 
 			var currentPage = Math.floor(currentPoints / event.pageCost);
 			var finalPage   = Math.floor(reward.points / event.pageCost) - (reward.points % event.pageCost === 0 ? 1 : 0);
-			var apRewarded  = 0;
-			for (var i = currentPage; i <= finalPage; i++) {
-				event.ap
-					.filter(ap => !ap.page || ap.page === i + 1)
-					.map(ap => { ap.points += i * event.pageCost; return ap; })
-					.filter(ap => ap.points > currentPoints && ap.points < reward.points)
-					.forEach(ap => apRewarded += ap.amount);
+			var apRewarded = 0;
+
+			if (advancedSettings.popquiz) {
+				for (var i = currentPage; i <= finalPage; i++) {
+					event.ap
+						.filter(ap => !ap.page || ap.page === i + 1)
+						.map(ap => { ap.points += i * event.pageCost; return ap; })
+						.filter(ap => ap.points > currentPoints && ap.points < reward.points)
+						.forEach(ap => apRewarded += ap.amount);
+				}
 			}
 
 			let [battlesFreeBase, battlesPaidBase] = calculateBase(eventLength, pointsPerBattle, reward.points, availableTriesDaily);
@@ -106,7 +121,7 @@ function getCalculationResult(event, input) {
 
 			let apFreeTotal = getRegeneratedAp(currentTime, endTime) + apRewarded + getDailyAp(isVip) * (daysLeft + 1);
 			let apPaidTotal = Math.max(apTotal - apFreeTotal, 0);
-			
+
 			var goalToday = currentPoints + battlesToday * pointsPerBattle;
 
 			return {
@@ -145,8 +160,8 @@ function getCalculationResult(event, input) {
 	return rewards;
 }
 
-function getDailyAp(isVip) {
-	return baseApPerDay + (isVip ? vipFridgeAp : baseFridgeAp)
+function getDailyAp(advancedSettings) {
+	return advancedSettings.adAP + advancedSettings.fridgeMission + advancedSettings.spg + advancedSettings.friends + advancedSettings.toDo;
 }
 
 function parseInput(data, event) {
@@ -162,7 +177,7 @@ function parseInput(data, event) {
 	var stagesCleared = parseInt(data.stagesCleared);
 	if (isNaN(stagesCleared) || stagesCleared < 0 || stagesCleared > event.stages) return null;
 
-	return {pointsPerBattle: pointsPerBattle, currentPoints: currentPoints, customGoal: customGoal, stagesCleared: stagesCleared};
+	return {pointsPerBattle: pointsPerBattle, currentPoints: currentPoints, customGoal: customGoal, stagesCleared: stagesCleared, advancedSettings: data.advanced};
 }
 
 function calculateBase(eventLength, pointsPerBattle, rewardCost, freeTriesPerDay) {
@@ -171,7 +186,7 @@ function calculateBase(eventLength, pointsPerBattle, rewardCost, freeTriesPerDay
 
 	let dailyBattlesFree = Math.min(dailyBattles, freeTriesPerDay);
 	let dailyBattlesPaid = dailyBattles - dailyBattlesFree;
-	
+
 	return [dailyBattlesFree, dailyBattlesPaid];
 }
 

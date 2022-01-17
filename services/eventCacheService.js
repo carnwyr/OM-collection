@@ -1,16 +1,16 @@
 const async = require("async");
 
-const eventsService = require("../services/eventsService");
+const eventService = require("../services/eventService");
 
 var cachedEvent;
 
 exports.init = async function () {
-	cachedEvent = await eventsService.getLatestEventData();
+	cachedEvent = await eventService.getLatestEventData();
 
-	var changeStream = eventsService.getChangeStream();
+	var changeStream = eventService.getChangeStream();
 
 	changeStream.on('change', async next => {
-		cachedEvent = await eventsService.getLatestEventData();
+		cachedEvent = await eventService.getLatestEventData();
 	});
 }
 

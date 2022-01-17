@@ -18,7 +18,7 @@ var cardsController = require("./controllers/cardsController");
 var indexRouter = require("./routes/index");
 var cardsRouter = require("./routes/cards");
 var userRouter = require("./routes/user");
-// var eventsRouter = require("./routes/events");
+var eventsRouter = require("./routes/events");
 
 const app = express();
 
@@ -35,8 +35,8 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// const eventCacheService = require("./services/eventCacheService");
-// eventCacheService.init();
+const eventCacheService = require("./services/eventCacheService");
+eventCacheService.init();
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -111,7 +111,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/card", cardsRouter);
 app.use("/user", userRouter);
-// app.use("/event", eventsRouter);
+app.use("/event", eventsRouter);
 
 app.use(function (req, res, next) { next(createError(404)); });
 
