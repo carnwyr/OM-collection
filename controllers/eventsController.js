@@ -32,8 +32,6 @@ exports.getEventDetail = async function (req, res, next) {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		var event = await eventService.getEvent(eventName);
 
-		console.log(event);
-
 		if (!event) throw createError(404, "Event not found");
 
 		var cards = await cardService.getCards({ source: { $in: [ eventName ] } });

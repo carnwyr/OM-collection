@@ -56,11 +56,13 @@ block content
 								img.img-fluid.ml-md-2(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
 							//- figurecaption= card.name
 
-			p.card-section-title= t("cards.memory_cards")
-			div.row.justify-content-center
-				each card in cards.filter(card => card.type === "Memory")
-					div.mcard-container
-						a(href="../" + "card/" + getURL(card.name))
-							img.img-fluid(src="/images/cards/L/" + card.uniqueName + ".jpg")
-							//- figurecaption= card.name
+			//- need to change for Chapter A, M, G
+			if event.type === "PopQuiz"
+				p.card-section-title= t("cards.memory_cards")
+				div.row.justify-content-center
+					each card in cards.filter(card => card.type === "Memory")
+						div.mcard-container
+							a(href="../" + "card/" + getURL(card.name))
+								img.img-fluid(src="/images/cards/L/" + card.uniqueName + ".jpg")
+								//- figurecaption= card.name
 	
