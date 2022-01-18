@@ -27,7 +27,11 @@ exports.getEvents = async function(condition = {}) {
 	}
 }
 
-exports.getEvent = async function(eventName) {
+exports.getEvent = async function(query = {}) {
+	return await Events.findOne(query);
+}
+
+exports.getCalculatorEvent = async function(eventName) {
 	var event = eventCacheService.getCachedEvent();
 	if (!event || eventName != event.name) {
 		event = await getFullEventData(eventName);

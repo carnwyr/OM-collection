@@ -7,6 +7,7 @@ const i18next = require("i18next");
 const Sentry = require('@sentry/node');
 
 const cardService = require("../services/cardService");
+const eventService = require("../services/eventService");
 const userService = require("../services/userService");
 const fileService = require("../services/fileService");
 
@@ -115,18 +116,17 @@ exports.getCardDetailPage = async function(req, res, next) {
 
 		var stats = await cardService.getCardStats(req.user, uniqueName);
 
+		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g,'_')));
+
 		var title = cardData.name;
 		var lang = i18next.t("lang");
 
-		if (lang === "ja" && cardData.ja_name != "???") {
-			title = cardData.ja_name;
-		}
+		if (lang === "ja") {
+			if (cardData.ja_name !== "???") {
+				title = cardData.ja_name;
+			}
 
-		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g,'_')));
-
-		// TODO: if lang === "ja"; then, grab japanese name from event data
-		if (lang === "ja" && cardData.ja_source.length > 0 && cardData.ja_source[0] !== "???") {
-			cardData.source = cardData.ja_source;
+			cardData.source = await getSourceInLanguage(cardData.source, "ja");
 		}
 
 		return res.render('cardDetail', {
@@ -141,6 +141,17 @@ exports.getCardDetailPage = async function(req, res, next) {
 		return next(e);
 	}
 };
+
+async function getSourceInLanguage(sources, lng) {
+	var arr = [];
+	for (const source of sources) {
+		let relatedEvent = await eventService.getEvent({ "name.en": source });
+		if (relatedEvent.name[lng] !== "???" && relatedEvent.type !== "Other") {
+			arr.push(relatedEvent.name.ja);
+		}
+	}
+	return arr;
+}
 
 async function getHiddenCardDetailPage(req, res, next) {
 	var cardName = req.params.card.replace(/_/g, ' ');
