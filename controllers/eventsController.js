@@ -17,14 +17,36 @@ const cardService = require("../services/cardService");
 
 exports.getEventsPage = async function(req, res, next) {
 	// TODO: add method to only retrieve a certain type of event
-	// TODO: format events to be { name: __, start: __, end:__ } and remove unused variables.
-	var events = await eventService.getEvents();
+	var doc = await eventService.getEvents();  // why can't we directly modify returned mongo doc?
+	var events = [];
+
+	doc.reverse().forEach((item, i) => {
+		events[i] = {
+			name: item.name,
+			type: item.type,
+			start: getFormatedDate(item.start),
+			end: getFormatedDate(item.end)
+		};
+	});
 
 	return res.render("eventList", {
 		title: "Events",
 		description: "A list of Obey Me events, including Nightmare and Pop Quizzes.",
 		user: req.user,
 		events: events });
+}
+
+function getFormatedDate(d) {
+	if (!d) return "???";
+
+	var day = d.getDate(), year = d.getFullYear();
+	if (i18next.t("lang") === "en") {
+		let month = d.toLocaleString('en', { month: 'long' });
+		return `${day} ${month} ${year}`;
+	} else {
+		let month = d.getMonth();
+		return `${year}年${month}月${day}日`;
+	}
 }
 
 exports.getEventDetail = async function (req, res, next) {
