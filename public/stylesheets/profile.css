@@ -90,3 +90,14 @@ li.placeholder {
     max-width: 7rem;
   }
 }
+
+#settingslink {
+  margin: 0 auto 1.25rem;
+}
+
+@media (min-width: 992px) {
+  #settingslink {
+    position: absolute;
+    right: 1rem;
+  }
+}
