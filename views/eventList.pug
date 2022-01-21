@@ -2,16 +2,13 @@ extends layout
 
 block scripts
   //- link(rel="stylesheet" href="/stylesheets/eventList.css")
-  style.
-    .tab-pane .card img {
-      min-height: 183px;
-    }
 
 mixin section(events) 
   div.row
     each event in events
       .col-12.col-sm-6.col-lg-4.mb-3
         div.card.shadow
+          //- Todo: figure out way to hold image size before load
           img.card-img-top(src="/images/events/" + event.name.en + ".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
           div.card-body
             a.stretched-link(href="event/" + encodeURIComponent(event.name.en.replace(/ /g, '_')))
@@ -22,9 +19,9 @@ block content
   div.container
     h1= title
     div.card.card-body.p-5.text-center.mb-3
-      h5 Karasu-OS.com needs help! 
-      p.my-4 Please help us complete events data by adding to our database. 
-      a.h5(href="https://drive.google.com/drive/folders/1lpIwYjeZLMaHr-7wTMuAdOYMn8lFQZct?usp=sharing" target="_blank") Click here access database.
+      h5.mb-4 Karasu-OS.com needs your help! 
+      p.mb-4 Please help us complete events data by adding to our database.
+      span: a.h5.mb-0(href="https://drive.google.com/drive/folders/1lpIwYjeZLMaHr-7wTMuAdOYMn8lFQZct?usp=sharing" target="_blank") Click here to access database.
     
     ul#category.nav.nav-pills.nav-fill.mb-2.shadow-sm(style="background:white;border-radius:4px;" role="tablist")
       li.nav-item
