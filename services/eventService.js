@@ -18,9 +18,9 @@ const APPresets = require("../models/apPresets");
 const eventCacheService = require("../services/eventCacheService");
 const fileService = require("../services/fileService");
 
-exports.getEvents = async function(condition = {}) {
+exports.getEvents = async function(condition = {}, sort = { start: 1 }) {
 	try {
-		return await Events.find(condition);
+		return await Events.find(condition).sort(sort);
 	} catch (e) {
 		Sentry.captureException(e);
 		return [];
