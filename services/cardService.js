@@ -15,13 +15,8 @@ exports.getHiddenCards = async function () {
   return await HiddenCards.find().sort({ number: -1 });
 }
 
-exports.getCard = async function (cardName) {
-  return await Cards.findOne({uniqueName: cardName});
-}
-
-exports.getUniqueName = async function (cardName) {
-	var card = await Cards.findOne({ name: cardName });
-	return card ? card.uniqueName : null;
+exports.getCard = async function(query = {}) {
+  return await Cards.findOne(query);
 }
 
 exports.getHiddenCard = async function (cardName, user) {

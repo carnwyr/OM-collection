@@ -107,16 +107,16 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 
 exports.getCardDetailPage = async function(req, res, next) {
 	try {
-		var cardName = cardService.decodeCardName(req.params.card);
-		var uniqueName = await cardService.getUniqueName(cardName);
-		var cardData = await cardService.getCard(uniqueName);
+		var cardData = await cardService.getCard({ "name": req.params.card.replace(/_/g, ' ') });
 		if (!cardData) {
 			return await getHiddenCardDetailPage(req, res, next);
 		}
 
-		var stats = await cardService.getCardStats(req.user, uniqueName);
+		console.log(cardData);
 
-		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g,'_')));
+		var stats = await cardService.getCardStats(req.user, cardData.uniqueName);
+
+		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g, '_')));
 
 		var title = cardData.name;
 		var lang = i18next.t("lang");
@@ -138,6 +138,7 @@ exports.getCardDetailPage = async function(req, res, next) {
 			stats: stats
 		});
 	} catch (e) {
+		console.error(e);
 		return next(e);
 	}
 };
@@ -145,9 +146,24 @@ exports.getCardDetailPage = async function(req, res, next) {
 async function getSourceInLanguage(sources, lng) {
 	var arr = [];
 	for (const source of sources) {
-		let relatedEvent = await eventService.getEvent({ "name.en": source });
-		if (relatedEvent.name[lng] !== "???" && relatedEvent.type !== "Other") {
-			arr.push(relatedEvent.name.ja);
+		// temporary exceptions
+		switch (source) {
+			case "Chapter M":
+				arr.push("Mの章");
+				break;
+			case "Chapter A":
+				arr.push("Aの章")
+				break;
+			case "Chapter G":
+				arr.push("Gの章");
+				break;
+			default:
+				let relatedEvent = await eventService.getEvent({ "name.en": source });
+				if (!relatedEvent) {
+					arr.push(source);
+				} else if (relatedEvent.name[lng] !== "???" && relatedEvent.name[lng] !== '') {
+					arr.push(relatedEvent.name.ja);
+				}
 		}
 	}
 	return arr;
@@ -298,7 +314,7 @@ exports.getEditCardPage = async function(req, res, next) {
 	}
 
 	try {
-		var cardData = await cardService.getCard(req.params.card);
+		var cardData = await cardService.getCard({ uniqueName: req.params.card });
 
 		if (!cardData) {
 			throw createError(404, "Card not found");
