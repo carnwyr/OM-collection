@@ -112,8 +112,6 @@ exports.getCardDetailPage = async function(req, res, next) {
 			return await getHiddenCardDetailPage(req, res, next);
 		}
 
-		console.log(cardData);
-
 		var stats = await cardService.getCardStats(req.user, cardData.uniqueName);
 
 		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g, '_')));
@@ -138,7 +136,6 @@ exports.getCardDetailPage = async function(req, res, next) {
 			stats: stats
 		});
 	} catch (e) {
-		console.error(e);
 		return next(e);
 	}
 };
