@@ -341,34 +341,40 @@ function cardClicked(e) {
 }
 
 function switchSelectionAll(select) {
-	// TODO: select all cards from list instead of what's visible on page.
-	var cardsToSwitch = $('.cardPreview:visible').filter(function() { return select === $(this).find('img').hasClass('notSelectedCard'); });
-	if (cardsToSwitch.length == 0) return;
+	let cardOwned = card => ownedCards.includes(card.uniqueName);
+	let cardChanged = card => Object.keys(changedCards).includes(card.uniqueName);
+	let cardsToSelect = cardList.filter(x => (!cardOwned(x) && cardChanged(x) !== select) || (cardOwned(x) && cardChanged(x) === select)).map(x => x.uniqueName);
+	if (cardsToSelect.length == 0) return;
 
-	var cardImages = $(cardsToSwitch).filter(function() {
-		return !$(this).isInViewport();
-	}).find('img');
-
+	//TODO remove slice
+	let visibleCards = $('.cardPreview:visible')
+		.filter((idx, el) => $(el).isInViewport())
+		.filter((idx, el) => cardsToSelect.includes($(el).find('img').attr('src').slice(16, -4)));
+	
+	let invisibleCards = $('.cardPreview:visible')
+		.filter((idx, el) => !$(el).isInViewport())
+		.filter((idx, el) => cardsToSelect.includes($(el).find('img').attr('src').slice(16, -4)));
+	
+	let changeSelection;
 	if (select) {
-		var changeSelection = function() { $(cardsToSwitch).find('img').removeClass('notSelectedCard'); }
+		changeSelection = x => $(x).find('img').removeClass('notSelectedCard');
 	} else {
-		var changeSelection = function() { $(cardsToSwitch).find('img').addClass('notSelectedCard'); }
+		changeSelection = x => $(x).find('img').addClass('notSelectedCard');
 	}
-
-	applyEffectWithoutTransition(cardImages, changeSelection);
-	addCardsToChangedList(cardsToSwitch, select);
+	
+	addCardsToChangedList(cardsToSelect, select);
+	changeSelection(visibleCards);
+	applyEffectWithoutTransition(invisibleCards, () => changeSelection(invisibleCards));
 }
 
 function addCardsToChangedList(cardsToSwitch, select) {
-	var cardNames = [];
-	for (var i=0; typeof(cardsToSwitch[i])!='undefined'; cardNames.push(cardsToSwitch[i++].childNodes[0].getAttribute('src').slice(16, -4)));
-	for (const [key, value] of Object.entries(changedCards)) {
-		if (cardNames.includes(key)) {
-			delete changedCards[key];
-			cardNames.splice(cardNames.indexOf(key), 1);
+	var cardsToAdd = [];
+	cardsToSwitch.forEach(uniqueName => {
+		if (Object.keys(changedCards).includes(uniqueName)) {
+			delete changedCards[uniqueName];
+		} else {
+			cardsToAdd.push(uniqueName);
 		}
-	}
-	cardNames.forEach(function(name) {
-		changedCards[name] = select;
 	});
+	cardsToAdd.forEach(uniqueName => changedCards[uniqueName] = select);
 }
