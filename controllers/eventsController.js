@@ -44,7 +44,7 @@ function getFormatedDate(d) {
 		let month = d.toLocaleString('en', { month: 'long' });
 		return `${day} ${month} ${year}`;
 	} else {
-		let month = d.getMonth();
+		let month = d.getMonth() + 1;
 		return `${year}年${month}月${day}日`;
 	}
 }
