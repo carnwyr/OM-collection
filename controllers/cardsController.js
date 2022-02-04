@@ -325,17 +325,26 @@ exports.getEditCardPage = async function(req, res, next) {
 	}
 };
 
-exports.updateCard = async function(req, res, next) {
-	var result = await cardService.updateCard(req.body.cardData);
+exports.addNewCard = async function(req, res) {
+	var result = await cardService.addNewCard(req.body.cardData, req.body.images);
 	return res.json(result);
 };
 
-exports.deleteCard = async function (req, res, next) {
+exports.updateCard = async function(req, res) {
+	var data = {
+		originalUniqueName: req.params.card.replace(/_/g, ' '),
+		cardData: req.body.cardData,
+		images: req.body.images
+	};
+	var result = await cardService.updateCard(data);
+	return res.json(result);
+};
+
+exports.deleteCard = async function (req, res) {
 	try {
 		var result = await cardService.deleteCard(req.body.card);
 		return res.json(result);
 	} catch (e) {
-		// console.error(e.message);
 		Sentry.captureException(e);
 		return res.json({ err: e });
 	}

@@ -1,20 +1,17 @@
-var originalUniqueName = '';
-
 $(document).ready(function() {
-  originalUniqueName = $('#uniqueName').val() ? $('#uniqueName').val() : '';
-
   $('#name').on('focusout', fillUniqueName);
 
   $("#uploadL").on('change', {extra: '#imageResultL'}, imageUploaded);
   $("#uploadLB").on('change', {extra: '#imageResultLB'}, imageUploaded);
   $("#uploadS").on('change', {extra: '#imageResultS'}, imageUploaded);
 
-  $('.image-area button').on('click', removeImage);
+  // ".image-area button" is commented out in pug file. Work in progress?
+  // $('.image-area button').on('click', removeImage);
 
-  $('#save').on('click', saveChanges);
+  $('form#data').on('submit', submitChange);  // function is in pug file
 
-  $("#addEvent, #ja_addEvent").on("click", addEvent);
-  $("#removeEvent, #ja_removeEvent").on("click", removeEvent);
+  $("#addEvent").on("click", addEvent);
+  $("#removeEvent").on("click", removeEvent);
 });
 
 function fillUniqueName() {
@@ -27,8 +24,8 @@ function fillUniqueName() {
 function imageUploaded(e) {
   if (this.files && this.files[0]) {
     var reader = new FileReader();
-
     var imageArea = e.data.extra;
+
     reader.onload = function (e) {
       $(imageArea).attr('src', e.target.result);
       $(imageArea).siblings('button').show();
@@ -37,22 +34,14 @@ function imageUploaded(e) {
   }
 }
 
-function removeImage(e) {
-  e.preventDefault();
-  $(this).siblings('img').attr('src', '');
-  $(this).hide();
-
-  var uploadId = '#upload' + $(this).siblings('img').attr('id').replace('imageResult', '');
-  $(uploadId).val('');
-}
-
-function saveChanges(e) {
-  e.preventDefault();
-  if (!validateFields()) {
-    return;
-  }
-  updateCard();
-}
+// function removeImage(e) {
+//   e.preventDefault();
+//   $(this).siblings('img').attr('src', '');
+//   $(this).hide();
+//
+//   var uploadId = '#upload' + $(this).siblings('img').attr('id').replace('imageResult', '');
+//   $(uploadId).val('');
+// }
 
 function validateFields() {
   var uniqueName = $('#uniqueName').val();
@@ -79,70 +68,19 @@ function validateFields() {
   return true;
 }
 
-function updateCard() {
-  var images = {};
-  var readL = readImage($('#uploadL')[0]);
-  var readLB = readImage($('#uploadLB')[0]);
-  var readS = readImage($('#uploadS')[0]);
-
-  Promise.all([readL, readLB, readS]).then(values => {
-    if (values[0]) images.L = values[0];
-    if (values[1]) images.LB = values[1];
-    if (values[2]) images.S = values[2];
-    sendCardData(images);
-  }, reason => {
-    showAlert("danger", "Can't load images\n" + reason.message);
-  });
-}
-
-function readImage(upload) {
-  return new Promise((resolve, reject) => {
-    if (upload.files && upload.files[0]) {
-      let reader = new FileReader();
-      reader.onloadend = function (e) {
-        resolve(e.target.result);
-      };
-      try {
-        reader.readAsDataURL(upload.files[0]);
-      } catch(err) {
-        reject(err);
-      }
-    } else {
-      resolve('');
-    }
-  });
-}
-
-function sendCardData(images) {
-  var cardData = {
+function getCardData() {
+  return {
     name: $('#name').val(),
     uniqueName: $('#uniqueName').val(),
     ja_name: $("#ja_name").val(),
     source: getCardSource("#source"),
-    ja_source: getCardSource("#ja_source"),
     type: $('#type').val(),
     rarity: $('#rarity').val(),
     attribute: $('#attribute').val(),
     characters: getSelectedCharacters(),
     number: $('#number').val(),
-    originalUniqueName: originalUniqueName,
-    images: images,
     isHidden: $('#isHidden')?$('#isHidden').prop('checked'):false
   };
-
-  $.ajax({
-    type: 'post',
-    url: '/card/updateCard',
-    contentType: 'application/json',
-    data: JSON.stringify({cardData: cardData})
-  })
-  .done(function (result) {
-    if (result.err) {
-      showAlert("danger", result.message);
-      return;
-    }
-    showAlert("success", 'Card successfully updated!');
-  });
 }
 
 function getSelectedCharacters() {

@@ -127,65 +127,62 @@ function getCardCounts(card) {
 	return promise;
 };
 
-exports.updateCard = async function(cardData) {
-	var originalUniqueName = cardData.originalUniqueName;
-	var newUniqueName = cardData.uniqueName;
+exports.updateCard = async function(data) {
+  try {
+    var originalUniqueName = data.originalUniqueName;
+    var newUniqueName = data.cardData.uniqueName;
+    var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData);
+    var promiseList = [promiseCard];
 
-	if (originalUniqueName === '') {
-		return await addNewCard(cardData);
-	}
-
-	try {
-    if (originalUniqueName !== newUniqueName) {
-      var existingCard = await Cards.findOne({uniqueName: unqiueName});
-      if (existingCard) {
-        return { err: true, message: 'Unique name is already used by another card' };
-      }
+    if (newUniqueName !== originalUniqueName) {
+      var promiseCollections = userService.renameCardInCollections(originalUniqueName, newUniqueName);
+      promiseList.push(promiseCollections);
     }
 
-		var promiseCard = Cards.findOneAndUpdate({uniqueName: originalUniqueName}, cardData);
-		var promiseCollections = userService.renameCardInCollections(originalUniqueName, newUniqueName);
+    if (data.images) {
+  		var promiseL = fileService.saveImage(data.images.L, originalUniqueName, newUniqueName, 'cards/L');
+  		var promiseLB = fileService.saveImage(data.images.LB, originalUniqueName + '_b', newUniqueName + '_b', 'cards/L');
+  		var promiseS = fileService.saveImage(data.images.S, originalUniqueName, newUniqueName, 'cards/S');
+      promiseList.push(promiseL, promiseLB, promiseS);
+		}
 
-    // TODO move to a separate function
-		var promiseL = fileService.saveImage(cardData.images.L, originalUniqueName, newUniqueName, 'cards/L');
-		var promiseLB = fileService.saveImage(cardData.images.LB, originalUniqueName + '_b', newUniqueName + '_b', 'cards/L');
-		var promiseS = fileService.saveImage(cardData.images.S, originalUniqueName, newUniqueName, 'cards/S');
-
-		var result = await Promise.all([promiseCard, promiseCollections, promiseL, promiseLB, promiseS])
-			.then(() => { return { err: false, message: 'Success' } })
+    return await Promise.all(promiseList)
+			.then(() => { return { err: false, message: "Card successfully updated!" } })
 			.catch(reason => { return { err: true, message: reason.message } });
-		return result;
-	} catch (e) {
-		console.error(e);
-		return { err: true, message: e.message };
-	}
+  } catch(e) {
+    Sentry.captureException(e);
+    return { err: true, message: e.message };
+  }
 };
 
-async function addNewCard(cardData) {
+exports.addNewCard = async function(cardData, images = '') {
 	try {
-		var {originalUniqueName, images, isHidden, ...cardProperties} = cardData;
-		if (isHidden) {
+    var promiseList = [];
+
+    if (cardData.isHidden == "true") {
 			if (cardData.number === '') {
 				cardData.number = await HiddenCards.estimatedDocumentCount() + 1;
 			}
-      await HiddenCards.create(cardData);
+      promiseList.push(HiddenCards.create(cardData));
 		} else {
 			if (cardData.number === '') {
 				cardData.number = await getLatestCardNum(cardData.rarity);
 			}
-			await Cards.create(cardData);
+			promiseList.push(Cards.create(cardData));
 		}
 
-		var promiseL = fileService.saveImage(cardData.images.L, null, cardData.uniqueName, 'cards/L');
-		var promiseLB = fileService.saveImage(cardData.images.LB, null, cardData.uniqueName + '_b', 'cards/L');
-		var promiseS = fileService.saveImage(cardData.images.S, null, cardData.uniqueName, 'cards/S');
+    if (images) {
+      var promiseL = fileService.saveImage(cardData.images.L, null, cardData.uniqueName, 'cards/L');
+  		var promiseLB = fileService.saveImage(cardData.images.LB, null, cardData.uniqueName + '_b', 'cards/L');
+  		var promiseS = fileService.saveImage(cardData.images.S, null, cardData.uniqueName, 'cards/S');
+      promiseList.push(promiseL, promiseLB, promiseS);
+    }
 
-		var result = Promise.all([promiseL, promiseLB, promiseS])
-			.then(() => { return { err: false, message: 'Success' } })
-			.catch(reason => { return { err: true, message: reason.message } });
-		return result;
+		return await Promise.all([promiseL, promiseLB, promiseS])
+      .then(() => { return { err: false, message: "Card added!" } })
+      .catch(reason => { return { err: true, message: reason.message } });
 	} catch (err) {
-		console.error(err);
+		// console.error(err);
 		return { err: true, message: err.message };
 	}
 };
