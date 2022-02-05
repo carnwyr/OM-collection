@@ -172,17 +172,17 @@ exports.addNewCard = async function(cardData, images = "") {
 		}
 
 		if (images) {
-			var promiseL = fileService.saveImage(cardData.images.L, null, cardData.uniqueName, "cards/L");
-			var promiseLB = fileService.saveImage(cardData.images.LB, null, cardData.uniqueName + "_b", "cards/L");
-			var promiseS = fileService.saveImage(cardData.images.S, null, cardData.uniqueName, "cards/S");
+			var promiseL = fileService.saveImage(images.L, null, cardData.uniqueName, "cards/L");
+			var promiseLB = fileService.saveImage(images.LB, null, cardData.uniqueName + "_b", "cards/L");
+			var promiseS = fileService.saveImage(images.S, null, cardData.uniqueName, "cards/S");
 			promiseList.push(promiseL, promiseLB, promiseS);
 		}
 
-		return await Promise.all([promiseL, promiseLB, promiseS])
+		return await Promise.all(promiseList)
 			.then(() => { return { err: false, message: "Card added!" }; })
 			.catch(reason => { return { err: true, message: reason.message }; });
 	} catch (err) {
-		// console.error(err);
+		Sentry.captureException(err);
 		return { err: true, message: err.message };
 	}
 };
