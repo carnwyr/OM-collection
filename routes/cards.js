@@ -12,7 +12,8 @@ router.get('/new', usersController.hasAccess("Admin"), cardsController.getEditCa
 router.get('/:card/edit', usersController.hasAccess("Admin"), cardsController.getEditCardPage);
 
 // Edit or add card
-router.post('/updateCard', usersController.hasAccess("Admin"), cardsController.updateCard);
+router.post('/new', usersController.hasAccess("Admin"), cardsController.addNewCard);
+router.post('/:card/edit', usersController.hasAccess("Admin"), cardsController.updateCard);
 
 // Make hidden card available to everyone
 router.get('/:card/makePublic', usersController.hasAccess("Admin"), cardsController.makeCardPublic);
