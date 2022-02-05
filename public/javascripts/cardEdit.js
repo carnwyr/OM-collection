@@ -1,95 +1,95 @@
 $(document).ready(function() {
-  $('#name').on('focusout', fillUniqueName);
+	$("#name").on("focusout", fillUniqueName);
 
-  $("#uploadL").on('change', {extra: '#imageResultL'}, imageUploaded);
-  $("#uploadLB").on('change', {extra: '#imageResultLB'}, imageUploaded);
-  $("#uploadS").on('change', {extra: '#imageResultS'}, imageUploaded);
+	$("#uploadL").on("change", {extra: "#imageResultL"}, imageUploaded);
+	$("#uploadLB").on("change", {extra: "#imageResultLB"}, imageUploaded);
+	$("#uploadS").on("change", {extra: "#imageResultS"}, imageUploaded);
 
-  $('form#data').on('submit', submitChange);  // function is in pug file
+	$("form#data").on("submit", submitChange);  // function is in pug file
 
-  $("#addEvent").on("click", addEvent);
-  $("#removeEvent").on("click", removeEvent);
+	$("#addEvent").on("click", addEvent);
+	$("#removeEvent").on("click", removeEvent);
 });
 
 function fillUniqueName() {
-  var name = $('#name').val();
-  var uniqueName = name.replace(/[\\/:*?"<>|]/g, '');
-  uniqueName = uniqueName.replace(/ /g, '_');
-  $('#uniqueName').val(uniqueName);
+	var name = $("#name").val();
+	var uniqueName = name.replace(/[\\/:*?"<>|]/g, "");
+	uniqueName = uniqueName.replace(/ /g, "_");
+	$("#uniqueName").val(uniqueName);
 }
 
 function imageUploaded(e) {
-  if (this.files && this.files[0]) {
-    var reader = new FileReader();
-    var imageArea = e.data.extra;
+	if (this.files && this.files[0]) {
+		var reader = new FileReader();
+		var imageArea = e.data.extra;
 
-    reader.onload = function (e) {
-      $(imageArea).attr('src', e.target.result);
-      $(imageArea).siblings('button').show();
-    };
-    reader.readAsDataURL(this.files[0]);
-  }
+		reader.onload = function (e) {
+			$(imageArea).attr("src", e.target.result);
+			$(imageArea).siblings("button").show();
+		};
+		reader.readAsDataURL(this.files[0]);
+	}
 }
 
 function validateFields() {
-  var uniqueName = $('#uniqueName').val();
-  if (/[\\/:*?"<>| ]/.test(uniqueName)) {
-    showAlert("danger", 'Invalid unique name');
-    return false;
-  }
-  if (!$('#name').val() || !uniqueName) {
-    showAlert("danger", 'Name and unique name must be filled');
-    return false;
-  }
-  var images = $('.upload');
-  for (let image of images) {
-    let fileName = $(image).val();
-    if (fileName) {
-      let parts = fileName.split('.');
-      let extension = parts[parts.length - 1];
-      if (extension !== 'jpg') {
-        showAlert("danger", 'All uploaded images must be jpg');
-        return false;
-      }
-    }
-  }
-  return true;
+	var uniqueName = $("#uniqueName").val();
+	if (/[\\/:*?"<>| ]/.test(uniqueName)) {
+		showAlert("danger", "Invalid unique name");
+		return false;
+	}
+	if (!$("#name").val() || !uniqueName) {
+		showAlert("danger", "Name and unique name must be filled");
+		return false;
+	}
+	var images = $(".upload");
+	for (let image of images) {
+		let fileName = $(image).val();
+		if (fileName) {
+			let parts = fileName.split(".");
+			let extension = parts[parts.length - 1];
+			if (extension !== "jpg") {
+				showAlert("danger", "All uploaded images must be jpg");
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 function getCardData() {
-  return {
-    name: $('#name').val(),
-    uniqueName: $('#uniqueName').val(),
-    ja_name: $("#ja_name").val(),
-    source: getCardSource("#source"),
-    type: $('#type').val(),
-    rarity: $('#rarity').val(),
-    attribute: $('#attribute').val(),
-    characters: getSelectedCharacters(),
-    number: $('#number').val(),
-    isHidden: $('#isHidden')?$('#isHidden').prop('checked'):false
-  };
+	return {
+		name: $("#name").val(),
+		uniqueName: $("#uniqueName").val(),
+		ja_name: $("#ja_name").val(),
+		source: getCardSource("#source"),
+		type: $("#type").val(),
+		rarity: $("#rarity").val(),
+		attribute: $("#attribute").val(),
+		characters: getSelectedCharacters(),
+		number: $("#number").val(),
+		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
+	};
 }
 
 function getSelectedCharacters() {
-  var arr = [];
-  $('input[name="characters"]:checked').each(function() {
-    arr.push($(this).val());
-  });
-  return arr;
+	var arr = [];
+	$("input[name=\"characters\"]:checked").each(function() {
+		arr.push($(this).val());
+	});
+	return arr;
 }
 
 function getCardSource(src) {
-  var list = $.map($(src).children(), input => $(input).val()).filter(x => x !== "");
-  return list;
+	var list = $.map($(src).children(), input => $(input).val()).filter(x => x !== "");
+	return list;
 }
 
 function addEvent() {
-  var target = $(this).data("target");
-  $(target).append(`<input class="form-control" type="text">`);
+	var target = $(this).data("target");
+	$(target).append("<input class=\"form-control\" type=\"text\">");
 }
 
 function removeEvent() {
-  var target = $(this).data("target");
-  $(target + " input:last-child").remove();
+	var target = $(this).data("target");
+	$(target + " input:last-child").remove();
 }
