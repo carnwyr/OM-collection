@@ -5,9 +5,6 @@ $(document).ready(function() {
   $("#uploadLB").on('change', {extra: '#imageResultLB'}, imageUploaded);
   $("#uploadS").on('change', {extra: '#imageResultS'}, imageUploaded);
 
-  // ".image-area button" is commented out in pug file. Work in progress?
-  // $('.image-area button').on('click', removeImage);
-
   $('form#data').on('submit', submitChange);  // function is in pug file
 
   $("#addEvent").on("click", addEvent);
@@ -33,15 +30,6 @@ function imageUploaded(e) {
     reader.readAsDataURL(this.files[0]);
   }
 }
-
-// function removeImage(e) {
-//   e.preventDefault();
-//   $(this).siblings('img').attr('src', '');
-//   $(this).hide();
-//
-//   var uploadId = '#upload' + $(this).siblings('img').attr('id').replace('imageResult', '');
-//   $(uploadId).val('');
-// }
 
 function validateFields() {
   var uniqueName = $('#uniqueName').val();
