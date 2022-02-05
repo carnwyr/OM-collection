@@ -44,7 +44,7 @@ function getFormatedDate(d) {
 		let month = d.toLocaleString('en', { month: 'long' });
 		return `${day} ${month} ${year}`;
 	} else {
-		let month = d.getMonth();
+		let month = d.getMonth() + 1;
 		return `${year}年${month}月${day}日`;
 	}
 }
@@ -52,7 +52,7 @@ function getFormatedDate(d) {
 exports.getEventDetail = async function (req, res, next) {
 	try {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-		var event = await eventService.getEvent(eventName);
+		var event = await eventService.getEvent({ "name.en": eventName });
 
 		if (!event) throw createError(404, "Event not found");
 
@@ -91,7 +91,7 @@ exports.getCalculatorPage = async function (req, res, next) {
 
 exports.calculate = async function(req, res) {
 	var eventName = req.params.event.replace(/_/g, ' ');
-	var event = await eventService.getEvent(eventName);
+	var event = await eventService.getCalculatorEvent(eventName);
 
 	if (!event) return res.json({ err: true });
 
@@ -144,7 +144,7 @@ exports.updateEvent = async function (req, res) {
 exports.getEventEditPage = async function(req, res, next) {
 	try {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-		let data = await eventService.getEvent(eventName);
+		let data = await eventService.getEvent({ "name.en": eventName });
 		if (!data) throw createError(404, "Event not found");
 
 		data.start = formatDateTime(data.start);

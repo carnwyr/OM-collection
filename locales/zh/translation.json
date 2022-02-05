@@ -87,6 +87,9 @@
     "allActions": "顯示所有COMBO",
     "use_item": "使用禮品"
   },
+  "profile": {
+    "join_karasu": "已加入{{date}}"
+  },
 
   "Pride": "傲慢",
   "Greed": "貪婪",

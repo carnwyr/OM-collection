@@ -4,9 +4,10 @@ const async = require("async");
 const fs = require("fs");
 const nodeHtmlToImage = require("node-html-to-image");
 const i18next = require("i18next");
-const Sentry = require('@sentry/node');
+const Sentry = require("@sentry/node");
 
 const cardService = require("../services/cardService");
+const eventService = require("../services/eventService");
 const userService = require("../services/userService");
 const fileService = require("../services/fileService");
 
@@ -67,7 +68,7 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 			}
 		}
 
-		return res.render('cardsList', pageParams);
+		return res.render("cardsList", pageParams);
 	} catch (e) {
 		return next(e);
 	}
@@ -106,30 +107,27 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 
 exports.getCardDetailPage = async function(req, res, next) {
 	try {
-		var cardName = cardService.decodeCardName(req.params.card);
-		var uniqueName = await cardService.getUniqueName(cardName);
-		var cardData = await cardService.getCard(uniqueName);
+		var cardData = await cardService.getCard({ "name": req.params.card.replace(/_/g, " ") });
 		if (!cardData) {
 			return await getHiddenCardDetailPage(req, res, next);
 		}
 
-		var stats = await cardService.getCardStats(req.user, uniqueName);
+		var stats = await cardService.getCardStats(req.user, cardData.uniqueName);
+
+		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g, "_")));
 
 		var title = cardData.name;
 		var lang = i18next.t("lang");
 
-		if (lang === "ja" && cardData.ja_name != "???") {
-			title = cardData.ja_name;
+		if (lang === "ja") {
+			if (cardData.ja_name !== "???") {
+				title = cardData.ja_name;
+			}
+
+			cardData.source = await getSourceInLanguage(cardData.source, "ja");
 		}
 
-		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g,'_')));
-
-		// TODO: if lang === "ja"; then, grab japanese name from event data
-		if (lang === "ja" && cardData.ja_source.length > 0 && cardData.ja_source[0] !== "???") {
-			cardData.source = cardData.ja_source;
-		}
-
-		return res.render('cardDetail', {
+		return res.render("cardDetail", {
 			title: title,
 			description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 			card: cardData,
@@ -142,13 +140,40 @@ exports.getCardDetailPage = async function(req, res, next) {
 	}
 };
 
+async function getSourceInLanguage(sources, lng) {
+	var arr = [];
+	for (const source of sources) {
+		// temporary exceptions
+		switch (source) {
+			case "Chapter M":
+				arr.push("Mの章");
+				break;
+			case "Chapter A":
+				arr.push("Aの章");
+				break;
+			case "Chapter G":
+				arr.push("Gの章");
+				break;
+			default: {
+				let relatedEvent = await eventService.getEvent({ "name.en": source });
+				if (!relatedEvent) {
+					arr.push(source);
+				} else if (relatedEvent.name[lng] !== "???" && relatedEvent.name[lng] !== "") {
+					arr.push(relatedEvent.name.ja);
+				}
+			}
+		}
+	}
+	return arr;
+}
+
 async function getHiddenCardDetailPage(req, res, next) {
-	var cardName = req.params.card.replace(/_/g, ' ');
+	var cardName = req.params.card.replace(/_/g, " ");
 	var cardData = await cardService.getHiddenCard(cardName, req.user);
 	if (!cardData) {
 		throw createError(404, "Card not found");
 	}
-	return res.render('cardDetail', {
+	return res.render("cardDetail", {
 		title: cardData.name,
 		description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 		card: cardData,
@@ -160,7 +185,7 @@ async function getHiddenCardDetailPage(req, res, next) {
 exports.getHiddenCardsListPage = async function(req, res, next) {
 	try {
 		var cards = await cardService.getHiddenCards();
-		return res.render('cardsList', { title: 'Hidden Cards', cardsList: cards, user: req.user, path: 'hidden' });
+		return res.render("cardsList", { title: "Hidden Cards", cardsList: cards, user: req.user, path: "hidden" });
 	} catch(e) {
 		return next(e);
 	}
@@ -173,15 +198,16 @@ exports.getProfilePage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
+		var title;
 		if (req.user && req.user.name === user.info.name) {
-			var title = i18next.t("title.my_profile");
+			title = i18next.t("title.my_profile");
 		} else {
-			var title = i18next.t("title.user_profile", { username: user.info.name });
+			title = i18next.t("title.user_profile", { username: user.info.name });
 		}
 
 		var cards = {
-		  owned: (await userService.getOwnedCards(user.info.name)).slice(0, 15),
-		  faved: (await userService.getFaveCards(user.info.name)).slice(0, 15)
+			owned: (await userService.getOwnedCards(user.info.name)).slice(0, 15),
+			faved: (await userService.getFaveCards(user.info.name)).slice(0, 15)
 		};
 
 		var profileInfo = await userService.getProfileInfo(user.info.name);
@@ -199,21 +225,21 @@ exports.getProfilePage = async function(req, res, next) {
 };
 
 exports.directImage = async function (req, res, next) {
-	var cardName = req.url.substring(1).replace('_b.jpg', '').replace('.jpg', '');
+	var cardName = req.url.substring(1).replace("_b.jpg", "").replace(".jpg", "");
 	cardName = cardService.decodeCardName(cardName);
 	var isHidden = await cardService.isHidden(cardName);
 	if (isHidden && (!req.user || !req.user.isAdmin)) {
-		return next(new Error('Not found'));
+		return next(new Error("Not found"));
 	}
 	next();
-}
+};
 
 
 // Collection functions
 exports.getStatsImage = async function(req, res) {
 	try {
 		const html = req.body.html;
-		var result = await getBigStatsImage(['#statsTotal', '#charNav', '#sideCharNav', '#rarityNav'], html);
+		var result = await getBigStatsImage(["#statsTotal", "#charNav", "#sideCharNav", "#rarityNav"], html);
 		res.send(result);
 	} catch (err) {
 		res.send(null);
@@ -224,49 +250,49 @@ async function getBigStatsImage(ids, html) {
 	try {
 		var statsHTML = replaceImageNames(html);
 		var imageData = await getReplacedImages();
-		imageData = imageData.map(img => new Buffer.from(img).toString('base64'));
-		imageData = imageData.map(base64 => 'data:image/png;base64,' + base64);
-		imageData = {star: imageData[0], demon: imageData[1], memory: imageData[2]}
+		imageData = imageData.map(img => new Buffer.from(img).toString("base64"));
+		imageData = imageData.map(base64 => "data:image/png;base64," + base64);
+		imageData = {star: imageData[0], demon: imageData[1], memory: imageData[2]};
 
 		var image = await nodeHtmlToImage({
 			html: statsHTML,
 			content: imageData
 		});
-		image = 'data:image/png;base64,' + Buffer.from(image, 'binary').toString('base64');
+		image = "data:image/png;base64," + Buffer.from(image, "binary").toString("base64");
 		return image;
 	} catch (err) {
 		return null;
 	}
-};
+}
 
 function replaceImageNames(html) {
-	return html.replace(/\/images\/completion_star\.png/g, '{{star}}')
-		.replace(/\/images\/demon_card\.png/g, '{{demon}}')
-		.replace(/\/images\/memory_card\.png/g, '{{memory}}');
-};
+	return html.replace(/\/images\/completion_star\.png/g, "{{star}}")
+		.replace(/\/images\/demon_card\.png/g, "{{demon}}")
+		.replace(/\/images\/memory_card\.png/g, "{{memory}}");
+}
 
 function getReplacedImages() {
 	const p1 = new Promise((resolve, reject) => {
-		fs.readFile('./public/images/completion_star.png', (err,img) => {
+		fs.readFile("./public/images/completion_star.png", (err,img) => {
 			if (err) reject(err);
-					resolve(img);
+			resolve(img);
 		});
 	});
 	const p2 = new Promise((resolve, reject) => {
-		fs.readFile('./public/images/demon_card.png', (err,img) => {
+		fs.readFile("./public/images/demon_card.png", (err,img) => {
 			if (err) reject(err);
-					resolve(img);
+			resolve(img);
 		});
 	});
 	const p3 = new Promise((resolve, reject) => {
-		fs.readFile('./public/images/memory_card.png', (err,img) => {
+		fs.readFile("./public/images/memory_card.png", (err,img) => {
 			if (err) reject(err);
-					resolve(img);
+			resolve(img);
 		});
 	});
 
 	return Promise.all([p1, p2, p3]);
-};
+}
 
 exports.getAvailableCards = async function (req, res) {
 	var cards = await cardService.getCards();
@@ -275,25 +301,25 @@ exports.getAvailableCards = async function (req, res) {
 		return {
 			name: lang === "ja" ? card.ja_name : card.name,
 			uniqueName: card.uniqueName
-		}
+		};
 	});
 	return res.send(cards);
-}
+};
 
 // Admin card management
 exports.getEditCardPage = async function(req, res, next) {
 	if (!req.params.card) {
-		return res.render('cardEdit', { title: 'Add Card', user: req.user });
+		return res.render("cardEdit", { title: "Add Card", user: req.user });
 	}
 
 	try {
-		var cardData = await cardService.getCard(req.params.card);
+		var cardData = await cardService.getCard({ uniqueName: req.params.card });
 
 		if (!cardData) {
 			throw createError(404, "Card not found");
 		}
 
-		return res.render('cardEdit', { title: 'Edit Card', card: cardData, user: req.user });
+		return res.render("cardEdit", { title: "Edit Card", card: cardData, user: req.user });
 	} catch (e) {
 		console.error(e.message);
 		Sentry.captureException(e);
@@ -301,17 +327,26 @@ exports.getEditCardPage = async function(req, res, next) {
 	}
 };
 
-exports.updateCard = async function(req, res, next) {
-	var result = await cardService.updateCard(req.body.cardData);
+exports.addNewCard = async function(req, res) {
+	var result = await cardService.addNewCard(req.body.cardData, req.body.images);
 	return res.json(result);
 };
 
-exports.deleteCard = async function (req, res, next) {
+exports.updateCard = async function(req, res) {
+	var data = {
+		originalUniqueName: req.params.card.replace(/_/g, " "),
+		cardData: req.body.cardData,
+		images: req.body.images
+	};
+	var result = await cardService.updateCard(data);
+	return res.json(result);
+};
+
+exports.deleteCard = async function (req, res) {
 	try {
 		var result = await cardService.deleteCard(req.body.card);
 		return res.json(result);
 	} catch (e) {
-		// console.error(e.message);
 		Sentry.captureException(e);
 		return res.json({ err: e });
 	}

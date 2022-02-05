@@ -1,72 +1,67 @@
 const Cards = require("../models/cards");
 const HiddenCards = require("../models/hiddenCards.js");
 
-const Sentry = require('@sentry/node');
+const Sentry = require("@sentry/node");
 const createError = require("http-errors");
 
 const fileService = require("../services/fileService");
 const userService = require("../services/userService");
 
 exports.getCards = async function (query = {}) {
-  return await Cards.find(query).sort({ number: -1 });
-}
+	return await Cards.find(query).sort({ number: -1 });
+};
 
 exports.getHiddenCards = async function () {
-  return await HiddenCards.find().sort({ number: -1 });
-}
+	return await HiddenCards.find().sort({ number: -1 });
+};
 
-exports.getCard = async function (cardName) {
-  return await Cards.findOne({uniqueName: cardName});
-}
-
-exports.getUniqueName = async function (cardName) {
-	var card = await Cards.findOne({ name: cardName });
-	return card ? card.uniqueName : null;
-}
+exports.getCard = async function(query = {}) {
+	return await Cards.findOne(query);
+};
 
 exports.getHiddenCard = async function (cardName, user) {
-  if (!user || !user.isAdmin) {
+	if (!user || !user.isAdmin) {
 		throw createError(404, "Card not found");
 	}
-  return await HiddenCards.findOne({name: cardName});
-}
+	return await HiddenCards.findOne({name: cardName});
+};
 
 exports.isHidden = async function (cardName) {
 	var card = await HiddenCards.findOne({ name: cardName });
 	return Boolean(card);
-}
+};
 
 exports.getCollectionStats = function (cards) {
-  var stats = {
-    characters: {},
-    rarity: {},
-    attribute: {},
-    cards: {}
-  };
+	var stats = {
+		characters: {},
+		rarity: {},
+		attribute: {},
+		cards: {}
+	};
 
 	cards.forEach(card => {
-    card.characters.forEach(character => incrementOrInit(stats, "characters", character));
-    incrementOrInit(stats, "rarity", card.rarity);
-    incrementOrInit(stats, "attribute", card.attribute);
-    incrementOrInit(stats, "cards", card.type);
-  });
+		card.characters.forEach(character => incrementOrInit(stats, "characters", character));
+		incrementOrInit(stats, "rarity", card.rarity);
+		incrementOrInit(stats, "attribute", card.attribute);
+		incrementOrInit(stats, "cards", card.type);
+	});
 
-  return stats;
+	return stats;
 };
 
 function incrementOrInit(stats, type, key) {
-  stats[type][key] = (stats[type][key] || 0) + 1;
+	stats[type][key] = (stats[type][key] || 0) + 1;
 }
 
 exports.encodeCardName = function (cardName) {
-  return encodeURIComponent(cardName.replace(/ /g, '_'));
-}
+	return encodeURIComponent(cardName.replace(/ /g, "_"));
+};
 
 exports.decodeCardName = function (cardName) {
-  return decodeURIComponent(cardName.replace(/_/g, ' '));
-}
+	return decodeURIComponent(cardName.replace(/_/g, " "));
+};
 
-getLatestCardNum = async function (rarity) {
+async function getLatestCardNum(rarity) {
 	try {
 		var query = {};
 		if (rarity !== "UR" && rarity !== "UR+") {
@@ -102,20 +97,20 @@ function getCardCounts(card) {
 			from: "users",
 			let: {"uniqueName": "$uniqueName"},
 			pipeline: [
-		        { $project: {
-		            "uniqueName": "$$uniqueName",
-		            "owned": {
-		                $cond: [ { $in: [ "$$uniqueName", "$cards.owned"] }, 1, 0 ]
-		            },
-		            "faved" : {
-		                $cond: [ { $in: [ "$$uniqueName", "$cards.faved"] }, 1, 0 ]
-		            }
-		        }},
-			    { $group: {
-			    	"_id": "$uniqueName",
-			    	"owned": { $sum: "$owned" },
-			    	"faved": { $sum: "$faved" }
-			    }}
+				{ $project: {
+					"uniqueName": "$$uniqueName",
+					"owned": {
+						$cond: [ { $in: [ "$$uniqueName", "$cards.owned"] }, 1, 0 ]
+					},
+					"faved" : {
+						$cond: [ { $in: [ "$$uniqueName", "$cards.faved"] }, 1, 0 ]
+					}
+				}},
+				{ $group: {
+					"_id": "$uniqueName",
+					"owned": { $sum: "$owned" },
+					"faved": { $sum: "$faved" }
+				}}
 			],
 			as: "count"
 		}},
@@ -130,99 +125,96 @@ function getCardCounts(card) {
 	var promise = Cards.aggregate(pipeline).then(result => result[0]);
 
 	return promise;
-};
+}
 
-exports.updateCard = async function(cardData) {
-	var originalUniqueName = cardData.originalUniqueName;
-	var newUniqueName = cardData.uniqueName;
-
-	if (originalUniqueName === '') {
-		return await addNewCard(cardData);
-	}
-
+exports.updateCard = async function(data) {
 	try {
-    if (originalUniqueName !== newUniqueName) {
-      var existingCard = await Cards.findOne({uniqueName: unqiueName});
-      if (existingCard) {
-        return { err: true, message: 'Unique name is already used by another card' };
-      }
-    }
+		var originalUniqueName = data.originalUniqueName;
+		var newUniqueName = data.cardData.uniqueName;
+		var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData);
+		var promiseList = [promiseCard];
 
-		var promiseCard = Cards.findOneAndUpdate({uniqueName: originalUniqueName}, cardData);
-		var promiseCollections = userService.renameCardInCollections(originalUniqueName, newUniqueName);
+		if (newUniqueName !== originalUniqueName) {
+			var promiseCollections = userService.renameCardInCollections(originalUniqueName, newUniqueName);
+			promiseList.push(promiseCollections);
+		}
 
-    // TODO move to a separate function
-		var promiseL = fileService.saveImage(cardData.images.L, originalUniqueName, newUniqueName, 'cards/L');
-		var promiseLB = fileService.saveImage(cardData.images.LB, originalUniqueName + '_b', newUniqueName + '_b', 'cards/L');
-		var promiseS = fileService.saveImage(cardData.images.S, originalUniqueName, newUniqueName, 'cards/S');
+		if (data.images) {
+			var promiseL = fileService.saveImage(data.images.L, originalUniqueName, newUniqueName, "cards/L");
+			var promiseLB = fileService.saveImage(data.images.LB, originalUniqueName + "_b", newUniqueName + "_b", "cards/L");
+			var promiseS = fileService.saveImage(data.images.S, originalUniqueName, newUniqueName, "cards/S");
+			promiseList.push(promiseL, promiseLB, promiseS);
+		}
 
-		var result = await Promise.all([promiseCard, promiseCollections, promiseL, promiseLB, promiseS])
-			.then(() => { return { err: false, message: 'Success' } })
-			.catch(reason => { return { err: true, message: reason.message } });
-		return result;
-	} catch (e) {
-		console.error(e);
+		return await Promise.all(promiseList)
+			.then(() => { return { err: false, message: "Card successfully updated!" }; })
+			.catch(reason => { return { err: true, message: reason.message }; });
+	} catch(e) {
+		Sentry.captureException(e);
 		return { err: true, message: e.message };
 	}
 };
 
-async function addNewCard(cardData) {
+exports.addNewCard = async function(cardData, images = "") {
 	try {
-		var {originalUniqueName, images, isHidden, ...cardProperties} = cardData;
-		if (isHidden) {
-			if (cardData.number === '') {
+		var promiseList = [];
+
+		if (cardData.isHidden == "true") {
+			if (cardData.number === "") {
 				cardData.number = await HiddenCards.estimatedDocumentCount() + 1;
 			}
-      await HiddenCards.create(cardData);
+			promiseList.push(HiddenCards.create(cardData));
 		} else {
-			if (cardData.number === '') {
+			if (cardData.number === "") {
 				cardData.number = await getLatestCardNum(cardData.rarity);
 			}
-			await Cards.create(cardData);
+			promiseList.push(Cards.create(cardData));
 		}
 
-		var promiseL = fileService.saveImage(cardData.images.L, null, cardData.uniqueName, 'cards/L');
-		var promiseLB = fileService.saveImage(cardData.images.LB, null, cardData.uniqueName + '_b', 'cards/L');
-		var promiseS = fileService.saveImage(cardData.images.S, null, cardData.uniqueName, 'cards/S');
+		if (images) {
+			var promiseL = fileService.saveImage(images.L, null, cardData.uniqueName, "cards/L");
+			var promiseLB = fileService.saveImage(images.LB, null, cardData.uniqueName + "_b", "cards/L");
+			var promiseS = fileService.saveImage(images.S, null, cardData.uniqueName, "cards/S");
+			promiseList.push(promiseL, promiseLB, promiseS);
+		}
 
-		var result = Promise.all([promiseL, promiseLB, promiseS])
-			.then(() => { return { err: false, message: 'Success' } })
-			.catch(reason => { return { err: true, message: reason.message } });
-		return result;
+		return await Promise.all(promiseList)
+			.then(() => { return { err: false, message: "Card added!" }; })
+			.catch(reason => { return { err: true, message: reason.message }; });
 	} catch (err) {
-		console.error(err);
+		Sentry.captureException(err);
 		return { err: true, message: err.message };
 	}
 };
 
 exports.deleteCard = async function (cardName) {
-  var card = await Cards.findOneAndRemove({ uniqueName: cardName });
-  if (!card) {
-    card = await HiddenCards.findOneAndRemove({ uniqueName: cardName });
-    if (!card) {
-      return createError("Card not found");
-    }
-  }
-  return removeCardDependencies(cardName);
+	var card = await Cards.findOneAndRemove({ uniqueName: cardName });
+	if (!card) {
+		card = await HiddenCards.findOneAndRemove({ uniqueName: cardName });
+		if (!card) {
+			return createError("Card not found");
+		}
+	}
+	return removeCardDependencies(cardName);
 };
 
 async function removeCardDependencies(cardName) {
 	var promiseCollections = userService.deleteCardInCollections(cardName);
 	var promiseL = await fileService.deleteImage("cards/L", cardName);
-	var promiseLB = await fileService.deleteImage("cards/L", cardName+'_b');
+	var promiseLB = await fileService.deleteImage("cards/L", cardName+"_b");
 	var promiseS = await fileService.deleteImage("cards/S", cardName);
 
 	return Promise.all([promiseCollections, promiseL, promiseLB, promiseS])
-    .catch(reason => { return { success: false, error: reason } })
-    .then(() => { return { success: true } });
-};
+		.catch(reason => { return { success: false, error: reason }; })
+		.then(() => { return { success: true }; });
+}
 
 exports.makeCardPublic = async function(cardName) {
-  var card = await HiddenCards.findOneAndRemove({ uniqueName: cardName });
-  if (!card) {
-    throw createError(404, "No such card");
+	var card = await HiddenCards.findOneAndRemove({ uniqueName: cardName });
+	if (!card) {
+		throw createError(404, "No such card");
 	}
-  var newCard = new Cards(card.toObject());
-  newCard.number = await getLatestCardNum(newCard.rarity);
-  return await newCard.save();
+	var newCard = new Cards(card.toObject());
+	newCard.number = await getLatestCardNum(newCard.rarity);
+	return await newCard.save();
 };
