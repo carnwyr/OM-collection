@@ -112,8 +112,7 @@
     "account_recovery_instruction": "Enter the verified email address associated with your account. We will send you a new password.",
     "collection_visibility": "Collection visibility",
     "public": "Public",
-    "private": "Private",
-    "privacy_note": "Private collections are only visible to yourself. However, visitors can still see part of your collection from your profile page's collection preview section."
+    "private": "Private"
   },
   "spg": {
     "shortActions": "Show one option for each action",

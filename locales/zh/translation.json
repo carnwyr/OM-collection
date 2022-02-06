@@ -79,8 +79,7 @@
     "email_confirmation": "綁定郵箱",
     "account_recovery": "找回帳號信息",
     "public": "公開",
-    "private": "僅自己可見",
-    "privacy_note": "部分卡片仍在用戶主頁可見。"
+    "private": "僅自己可見"
   },
   "spg": {
     "shortActions": "顯示單個COMBO",

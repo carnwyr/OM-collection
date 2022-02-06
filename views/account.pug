@@ -133,11 +133,6 @@ block content
 									div(class="form-check")
 										input(class="form-check-input" type="radio" name="isPrivate" id="privateProfileRadio" value="true" checked=(user.profile.isPrivate?true:false))
 										label(class="form-check-label" for="privateProfileRadio")= t("settings.private")
-											sup *
-								br
-								p.text-muted
-									sup *
-									| #{t("settings.privacy_note")}
 								br
 								input#updatePrivacy.btn.btn-primary(type="submit" value=t("settings.update"))
 				//-
