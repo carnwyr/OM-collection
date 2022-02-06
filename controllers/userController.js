@@ -571,6 +571,9 @@ passport.deserializeUser(function(id, next) {
     if (user.info.type === "Admin") {
     	userInfo.isAdmin = true;
     }
+    if (userInfo.supportStatus && userInfo.supportStatus.length > 0) {
+      userInfo.isSupporter = userInfo.supportStatus.some(badge => badge.name === "adfree");
+    }
     return next(err, userInfo);
   });
 });

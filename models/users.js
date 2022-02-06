@@ -1,14 +1,19 @@
 var mongoose = require("mongoose");
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-var UsersSchema = new Schema({
+const badgeSchema = new Schema({
+	name: String,
+	level: Number
+});
+
+const userSchema = new Schema({
 	info: {
 		name: { type: String, required: true, unique: true },
 		password: { type: String, required: true, unique: true },
-		type: { type: String, required: true, enum: ["Admin", "User"] },
+		type: { type: String, required: true, enum: ["Admin", "Moderator", "User"] },
 		email: { type: String },
-		supportStatus: { type: Array }
+		supportStatus: { type: [badgeSchema] }
 	},
 	profile: {
 		name: { type: String },
@@ -26,4 +31,4 @@ var UsersSchema = new Schema({
 });
 
 
-module.exports = mongoose.model("users", UsersSchema);
+module.exports = mongoose.model("User", userSchema);

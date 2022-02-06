@@ -8,49 +8,10 @@ block content
   div(class="container")
     h1= title
 
-    if (!user || !user.supportStatus.includes("adfree"))
+    if (!user || !user.isSupporter)
       div.ddd
         <div id="ezoic-pub-ad-placeholder-109"></div>
 
-    - var badges = profileInfo.badges;
-
-    if badges.length !== 0
-      include badgeDescriptions.pug
-      if badges.includes("adfree")
-        - var level = badges.find((el) => el.startsWith("Lv"));
-        style.
-          #supportBadge>div {
-            width: 100%;
-            color: white;
-            font-size: small;
-            text-align: center;
-            transform: translateY(-115%);
-          }
-      each badge in badges
-        if badge === "adfree"
-          div(id="supporterBadgeModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="supporterBadgeModelTitle" aria-hidden="true")
-            div(class="modal-dialog" role="document")
-              div(class="modal-content")
-                div(class="modal-header")
-                  h5(class="modal-title text-primary" id="supporterBadgeModelTitle")= level + " Supporter"
-                  button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-                    span(aria-hidden="true") &times;
-                div(class="modal-body") Proud supporter of Karasu-OS! Unlock by making a donation to keep Karasu alive. (This is a limited-time badge that is no longer obtainable.)
-                div(class="modal-footer")
-                  button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
-        else if (badge.startsWith("Lv") || badge === '')
-          //- do nothing
-        else
-          div(id=badge+"Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby=badge+"Title" aria-hidden="true")
-            div(class="modal-dialog" role="document")
-              div(class="modal-content")
-                div(class="modal-header")
-                  h5(class="modal-title text-primary" id=badge+"Title")= list[badge].title
-                  button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-                    span(aria-hidden="true") &times;
-                div(class="modal-body") !{list[badge].description}
-                div(class="modal-footer")
-                  button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
     div#usernav.mb-3
       a.btn.btn-primary(type="button" href="#") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person mb-1" viewBox="0 0 16 16">   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/> </svg>
         |
@@ -69,24 +30,30 @@ block content
         a#settingslink.btn.btn-outline-secondary(type="button" href="/user")= t("profile.edit")
       div.row.align-items-center
         div.col-md-5.col-lg-4.text-center.mb-3.mb-lg-auto
-          img(src="/images/cards/L/" + (profileInfo.display?profileInfo.display:"The_Mammon_Way") + ".jpg" style="width:256px;height:auto;")
+          img(src="/images/cards/L/" + (profileInfo.display?profileInfo.display:"The_Mammon_Way") + ".jpg" style="max-width:100%;width:256px;height:auto;")
         div.col
           h5= profileInfo.karasu_name
             span.text-muted.ml-4(style="font-size:12px;letter-spacing:.4px;")
               | <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
               | #{t("profile.join_karasu", { date: profileInfo.joinKarasu })}
-          if badges.length !== 0
+          if profileInfo.badges.length > 0
             div.d-flex
-              each badge in badges
-                if badge === "adfree"
-                  div#supportBadge.mr-2(type="button" data-toggle="modal" data-target="#supporterBadgeModel" style="width:auto;height:32px;")
+              each badge in profileInfo.badges
+                if badge.name === "adfree"
+                  style.
+                    [data-target="#adfreeModal"]>div {
+                      width: 100%;
+                      color: white;
+                      font-size: small;
+                      text-align: center;
+                      transform: translateY(-115%);
+                    } 
+                  div.mr-2(type="button" data-toggle="modal" data-target="#adfreeModal" style="width:auto;height:32px;")
                     img(src="/images/SupporterBadge.png" alt="supporter badge" style="width:auto;height:32px;")
-                    div= level.substring(2)
-                else if (badge.startsWith("Lv") || badge === '')
-                  //- do nothing
+                    div= badge.level
                 else
-                  div.mr-2.my-auto(type="button" data-toggle="modal" data-target=`#${badge}Modal`)
-                    img(src="/images/"+badge+".png" alt=badge style="width:auto;height:28px;")
+                  div.mr-2.my-auto(type="button" data-toggle="modal" data-target=`#${badge.name}Modal`)
+                    img(src="/images/"+badge.name+".png" alt=badge.name style="width:auto;height:28px;")
           br
           div#profile.row.mt-3
             div.col-lg-6
@@ -150,6 +117,20 @@ block content
               div.view_all
                 a(type="button" href="favourites" class="btn btn-primary")= t("profile.view_all")
 
+  // modals
+  if profileInfo.badges.length > 0
+    include badgeDescriptions.pug
+    each badge in profileInfo.badges
+      div(id=badge.name+"Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby=badge.name+"Title" aria-hidden="true")
+        div(class="modal-dialog" role="document")
+          div(class="modal-content")
+            div(class="modal-header")
+              h5(class="modal-title text-primary" id=badge.name+"Title")!= list[badge.name].title
+              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                span(aria-hidden="true") &times;
+            div(class="modal-body")!= list[badge.name].description
+            div(class="modal-footer")
+              button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
   if title === t("title.my_profile")
     div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
       div(class="modal-dialog" role="document")

@@ -148,8 +148,8 @@ block content
 							h5.card-title Supporter Perks
 							div#perks.col-12
 								div(class="custom-control custom-switch")
-									input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+									input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.isSupporter?true:false) disabled)
 									label(class="custom-control-label" for="adFreeStatus")= t("donation.ad-free")
 								div(class="custom-control custom-switch")
-									input(type="checkbox" class="custom-control-input" id="specialBadge" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+									input(type="checkbox" class="custom-control-input" id="specialBadge" checked=(user.isSupporter?true:false) disabled)
 									label(class="custom-control-label" for="specialBadge")= t("donation.badge")

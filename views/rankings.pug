@@ -7,7 +7,7 @@ block content
   div(class="container")
     h1= title
 
-    if (!user || !user.supportStatus.includes("adfree"))
+    if (!user || !user.isSupporter)
       div.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
 
     -
