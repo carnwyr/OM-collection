@@ -118,3 +118,12 @@ exports.deleteCardInCollections = function(cardName) {
 
 	return promise;
 };
+
+exports.updateSupport = async function(user, status) {
+  try {
+    return await Users.updateOne({ "info.name": user }, { $set: { "info.supportStatus": status }});
+  } catch(e) {
+    return { err: true, message: e.message };
+  }
+};
+
