@@ -46,6 +46,9 @@ block content
 												div.form-check
 													input(type="radio" class="form-check-input" id="japanese" name="language" value="jp" checked=(user.profile.language==="jp"?true:false))
 													label(for="japanese" class="form-check-label") 日本語
+												div.form-check
+													input(type="radio" class="form-check-input" id="chinese" name="language" value="zh" checked=(user.profile.language==="zh"?true:false))
+													label(for="chinese" class="form-check-label") 繁體中文
 
 										p.my-2= t("profile.favourite_chara")
 										p.text-muted= t("settings.fav_char_instruction")
