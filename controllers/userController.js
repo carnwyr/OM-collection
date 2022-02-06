@@ -270,7 +270,7 @@ exports.getAccountPage = function(req, res, next) {
       u.profile.isPrivate = false;
     }
 
-    return res.render("account", { title: i18next.t("title.settings"), user: u });
+    return res.render("account", { title: i18next.t("title.settings"), user: Object.assign(req.user, u) });
   });
 };
 
@@ -566,11 +566,11 @@ passport.serializeUser(function(user, next) {
 
 passport.deserializeUser(function(id, next) {
   Users.findById(id, function(err, user) {
-    var userInfo = user.info;
+    let userInfo = user.info;
     userInfo.id = user._id;
     if (user.info.type === "Admin") {
     	userInfo.isAdmin = true;
     }
-    next(err, userInfo);
+    return next(err, userInfo);
   });
 });
