@@ -101,18 +101,20 @@ html(lang=t("lang"))
     main(class='container-fluid mb-5' style="position:relative;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
       - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
-      if t("lang") === "ja"
-        div.alert.alert-info(style="z-index:0!important;" role="alert") 
-          strong Translators needed!
-          |
-          | Our website is missing many translations. If you would like to become our translator, please email
-          |
-          a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
-          |
-          | or
-          |
-          a(href="https://discord.gg/Y3KMW7U" target="_blank") join our discord server
-          | .
+      if t("lang") === "ja" && title !== "Karasu OS"
+        div.container
+          div.alert.alert-info.text-center(style="z-index:0!important;" role="alert") 
+            strong Translators needed!
+            p.mb-0 Our website is missing many translations. If you would like to become our translator, please email
+              |
+              |
+              a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
+              |
+              | or
+              |
+              a(href="https://discord.gg/Y3KMW7U" target="_blank") join our discord server
+              | .
+      
       block content
       if (!user || !user.supportStatus.includes("adfree"))
         div#kool-aid.container(style="margin:2rem auto;text-align:center;")
