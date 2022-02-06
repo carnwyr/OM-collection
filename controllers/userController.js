@@ -25,7 +25,7 @@ const userService = require("../services/userService");
 
 // Login and signup
 exports.getLoginPage = function(req, res, next) {
-  res.render('login', { title: i18next.t("common.login"), message: req.flash('message'), user: req.user });
+  return res.render('login', { title: i18next.t("common.login"), message: req.flash('message'), user: req.user });
 };
 
 exports.login = passport.authenticate('local', {
@@ -532,6 +532,10 @@ exports.updateUserProfile = function(req, res) {
     }
   );
 }
+
+// exports.issueBan = async function(req, res) {
+//   return res.json(await userService.banUser(req.body.name));
+// }
 
 
 // Authentication
