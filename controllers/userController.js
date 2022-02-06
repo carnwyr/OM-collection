@@ -533,9 +533,9 @@ exports.updateUserProfile = function(req, res) {
   );
 }
 
-exports.issueBan = async function(req, res) {
-  return res.json(await userService.banUser(req.body.name));
-}
+// exports.issueBan = async function(req, res) {
+//   return res.json(await userService.banUser(req.body.name));
+// }
 
 
 // Authentication
