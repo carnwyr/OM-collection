@@ -417,22 +417,14 @@ exports.restorePassword = function(req, res, next) {
 	});
 };
 
-exports.updateSupport = function(req, res) {
-  const user = req.body.supportstatus.user;
-  const newstatus = req.body.supportstatus.newstatus;
-
-  Users.updateOne({ "info.name": user }, { "info.supportStatus": newstatus }, function(err, result) {
-    if (err) {
-      Sentry.captureException(err);
-      return res.json({ err: true, message: err });
-    }
-
-    if (result.nModified === 1) {
-      return res.json({ err: null, message: user + "'s support status updated!"});
-    } else {
-      return res.json({ err: true, message: "Update failed. Refresh the page and try again." });
-    }
-  });
+exports.updateSupport = async function(req, res) {
+  try {
+    let user = req.body.user;
+    let newstatus = JSON.parse(req.body.newstatus);
+    return res.json(await userService.updateSupport(user, newstatus));
+  } catch(e) {
+    return res.send(e.message);
+  }
 };
 
 
@@ -533,7 +525,7 @@ exports.updateUserProfile = function(req, res) {
   );
 }
 
-// exports.issueBan = async function(req, res) {
+// exports.banUser = async function(req, res) {
 //   return res.json(await userService.banUser(req.body.name));
 // }
 
@@ -570,6 +562,9 @@ passport.deserializeUser(function(id, next) {
     userInfo.id = user._id;
     if (user.info.type === "Admin") {
     	userInfo.isAdmin = true;
+    }
+    if (userInfo.supportStatus && userInfo.supportStatus.length > 0) {
+      userInfo.isSupporter = userInfo.supportStatus.some(badge => badge.name === "adfree");
     }
     return next(err, userInfo);
   });

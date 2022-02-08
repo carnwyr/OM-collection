@@ -7,13 +7,7 @@ block content
   div.container
     h1= title
     div.card.card-body
-      div.d-md-none
-        h5.card-title try to find a device with larger screen, or one with console
-        hr
-      p.mb-0 Notes
-      ul
-        li multiple elements example ["do","this"] must be "," no space <strike>["not", "this"]</strike>
-        li supporter level badge needs to be "Lv"+number (e.g. "Lv5") with the number being the amount of "whip of love" they donated (total donation / 2)
+      p Updating supporter status? Might as well use MongoDB Compass.<br>- Or -<br>Format the support status as JSON.
       form.form-inline.mb-3
         select.custom-select.mr-3(name="sortby")
           option(value="") registration date
@@ -39,9 +33,9 @@ block content
               td #{u.info.name}
               td #{u.info.email}
               td(id=u.info.name)
-                input(class="form-control" type="text" value=u.info.supportStatus)
+                input(class="form-control" type="text" name="support" value=u.info.supportStatus)
       nav(aria-label="user table navigation")
-        ul(class="pagination justify-content-center")
+        ul(class="pagination justify-content-center flex-wrap")
 
   script.
     const tableData = !{JSON.stringify(userList)};

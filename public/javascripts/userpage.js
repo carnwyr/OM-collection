@@ -1,6 +1,6 @@
 var page, sortby, order;
 $(document).ready(function() {
-  $(".form-control").focusout(updateSupportStatus);
+  $(".form-control[name='support']").focusout(updateSupportStatus);
 
   if ('URLSearchParams' in window) {
     const params = new URLSearchParams(document.location.search.substring(1));
@@ -41,22 +41,10 @@ function paginate(tableData) {
 }
 
 function updateSupportStatus() {
-  var supportstatus = new Object();
-  var str = $(this).val();
-  supportstatus.user = $(this).parent().attr("id");
-  supportstatus.newstatus = str.substring(2, str.length - 2).split('","');
-
-  $.ajax({
-    type: "post",
-    url: "/updateSupport",
-    contentType: "application/json",
-    data: JSON.stringify({ supportstatus: supportstatus })
+  $.post("/updateSupport", {
+    user: $(this).parent().attr("id"),
+    newstatus: $(this).val()
   }).done(function(result) {
-    if (result.err) {
-      console.error(result.message);
-      return;
-    } else {
-      console.log(result.message);
-    }
+    alert(JSON.stringify(result));
   });
 }

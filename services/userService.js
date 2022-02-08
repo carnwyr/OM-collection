@@ -66,7 +66,7 @@ exports.getProfileInfo = async function(username) {
       }
     }
 
-    info.badges = user.info.supportStatus;
+    info.badges = sortObjArrayByKey(user.info.supportStatus, "name");
     info.karasu_name = user.info.name;
 
     return info;
@@ -75,6 +75,13 @@ exports.getProfileInfo = async function(username) {
     Sentry.captureException(e);
     return {};
   }
+}
+
+function sortObjArrayByKey(array, key) {
+  return array.sort(function(a, b) {
+    var x = a[key], y = b[key];
+    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+  });
 }
 
 exports.ownsCard = function(user, card) {
@@ -111,3 +118,12 @@ exports.deleteCardInCollections = function(cardName) {
 
 	return promise;
 };
+
+exports.updateSupport = async function(user, status) {
+  try {
+    return await Users.updateOne({ "info.name": user }, { $set: { "info.supportStatus": status }});
+  } catch(e) {
+    return { err: true, message: e.message };
+  }
+};
+
