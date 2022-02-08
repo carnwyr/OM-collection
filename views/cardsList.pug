@@ -11,7 +11,7 @@ block content
   div(class="container")
     h1= title
 
-    if (!user || !user.supportStatus.includes("adfree"))
+    if (!user || !user.isSupporter)
       div.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
 
     if path === "collection"
@@ -73,7 +73,7 @@ block content
               |
               | #{t("cards.manage_collection")}
 
-      if (!user || !user.supportStatus.includes("adfree"))
+      if (!user || !user.isSupporter)
         div.ddd
           <div id="ezoic-pub-ad-placeholder-111"></div>
 
@@ -167,7 +167,7 @@ block content
                       input(type="checkbox" class="custom-control-input" id="checkCharacter"+character name="character" value=character)
                       label(class="custom-control-label" for="checkCharacter"+character)= character==="LittleD"?t("Little D"):t(character)
 
-      if (!user || !user.supportStatus.includes("adfree"))
+      if (!user || !user.isSupporter)
         div.text-center
           <div id="ezoic-pub-ad-placeholder-108"></div>
 
@@ -199,7 +199,7 @@ block content
                   img(class="lazy" loading="lazy" src="/images/cards/S/" + card.uniqueName + ".jpg")
                   figcaption= getName(card)
 
-      if (!user || !user.supportStatus.includes("adfree"))
+      if (!user || !user.isSupporter)
         div.row.justify-content-center
           div#ezoic-pub-ad-placeholder-105
 

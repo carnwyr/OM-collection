@@ -116,7 +116,7 @@ html(lang=t("lang"))
               | .
       
       block content
-      if (!user || !user.supportStatus.includes("adfree"))
+      if (!user || !user.isSupporter)
         div#kool-aid.container(style="margin:2rem auto;text-align:center;")
           div.row(style="min-height:250px;")
             div.col <div id="ezoic-pub-ad-placeholder-122"></div>

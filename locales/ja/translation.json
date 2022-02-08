@@ -108,8 +108,7 @@
     "account_recovery_instruction": "メールアドレスを入力してください。アカウントと連携した場合、新しいパスワードはメールで送信されます。",
     "collection_visibility": "アドレス帳・お気に入り",
     "public": "全体公開",
-    "private": "非公開",
-    "privacy_note": "一部のカードはプロフィールページで見ることができます。"
+    "private": "非公開"
   },
   "spg": {
     "shortActions": "アクションを１つだけ表示",
