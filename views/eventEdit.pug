@@ -83,17 +83,19 @@ block content
 				h5.border-bottom Event Info
 				form#info
 					div.form-row
-						div.col-3
+						div.col-4
 							div.form-group
 								label(for="en-name") Name
 								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en)
+						div.col-4
 							div.form-group
 								label(for="ja-name") Japanese name
 								input.form-control(id="ja-name" type="text" name="ja-name" value=data.name.ja)
+						div.col-4
 							div.form-group
 								label(for="zh-name") Chinese name
 								input.form-control(id="zh-name" type="text" name="zh-name" value=data.name.zh)
-						div.col-3
+						div.col-4
 							div.form-group
 								label(for="type") Type
 								select#eventType(class='custom-select' name="type")
@@ -102,15 +104,14 @@ block content
 									option(value='ChargeMission' selected=(data.type==='ChargeMission')) Charge Mission
 									option(value='LoginBonus' selected=(data.type==='LoginBonus')) Login Bonus
 									option(value="Other" selected=(data.type==="Other")) Other
+						div.col-4
 							div.form-group
 								label(for="start") Start date (UTC)
 								input#start.form-control(type="text" name="start" value=data.start)
+						div.col-4
 							div.form-group
 								label(for="end") End date (UTC)
 								input#end.form-control(type="text" name="end" value=data.end)
-						div.col-6
-							+uploadImage("Event image", data ? "/images/events/" + data.name.en + ".jpg" : "#")
-
 				ul.nav.nav-tabs(role="tablist")
 					li.nav-item
 						a#popquiz-tab.nav-link.active(data-toggle="tab" href="#popquiz" role="tab" aria-controls="popquiz" aria-selected="true") Pop Quiz
@@ -202,7 +203,13 @@ block content
 					
 					div#nightmare.tab-pane(role="tabpanel" aria-labelledby="nightmare-tab")
 					div#other.tab-pane(role="tabpanel" aria-labelledby="other-tab")
-
+				if user.type === "Admin"
+					hr
+					style.
+						#imageResult {
+							max-height: 360px;
+						}
+					+uploadImage("Event image", data ? "/images/events/" + data.name.en + ".jpg" : "#")
 				hr
 				button#submit.btn.btn-primary Submit Change
 
