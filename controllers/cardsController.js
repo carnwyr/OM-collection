@@ -334,7 +334,7 @@ exports.addNewCard = async function(req, res) {
 
 exports.updateCard = async function(req, res) {
 	var data = {
-		originalUniqueName: req.params.card.replace(/_/g, " "),
+		originalUniqueName: req.params.card,
 		cardData: req.body.cardData,
 		images: req.body.images
 	};

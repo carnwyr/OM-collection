@@ -141,11 +141,11 @@ exports.addEvent = async function(data, img) {
 	}
 }
 
-exports.updateEvent = async function(originalName, data, img) {
+exports.updateEvent = async function(originalName, data, img = null) {
 	try {
 
-		// data.start = stringToDateTime(data.start);
-		// data.end = stringToDateTime(data.end);
+		data.start = stringToDateTime(data.start);
+		data.end = stringToDateTime(data.end);
 
 		let event = await Events.findOne({ "name.en": originalName });
 
@@ -154,7 +154,10 @@ exports.updateEvent = async function(originalName, data, img) {
 		}
 
 		await Events.replaceOne({ "name.en": originalName }, data);
-		await fileService.saveImage(img, originalName, data.name.en, "events");
+
+		if (img) {
+			await fileService.saveImage(img, originalName, data.name.en, "events");
+		}
 
 		return { err: null, message: "Event updated!" };
 	} catch(e) {
@@ -195,7 +198,7 @@ exports.getDefaultEventData = function() {
 }
 
 function stringToDateTime(dateString) {
-	return dayjs.tz(dateString, 'YYYY.MM.DD, HH:mm:ss', "UTC");
+	return dayjs(dateString).format('YYYY-MM-DDTHH:mm:ss.000+00:00');
 }
 
 exports.getAPPresets = async function () {

@@ -200,7 +200,7 @@ block content
 									div
 										+lockedStageEntry()
 								button.btn.btn-secondary.mb-2.add-item(data-clone="template#locked-stages") Add locked stage
-					
+
 					div#nightmare.tab-pane(role="tabpanel" aria-labelledby="nightmare-tab")
 					div#other.tab-pane(role="tabpanel" aria-labelledby="other-tab")
 				if user.type === "Admin"
@@ -224,6 +224,72 @@ block content
 
 			template#boxset
 				+boxSetEntry()
-				
+
 			template#locked-stages
 				+lockedStageEntry()
+	if user.type === "Admin"
+		script.
+			function prepareImageData() {
+				let image = readImage($('#uploadImage')[0]);
+				image
+					.then(res => sendRequest(res))
+					.catch(err => showAlert("danger", "Can't load image: " + err.message));
+			}
+			function saveChanges(e) {
+				e.preventDefault();
+				if (!validateFields()) {
+					return;
+				}
+				prepareImageData();
+			}
+			function sendRequest(imageData) {
+				$.post(location.pathname, { data: prepareEventData(), img: imageData },
+					function(result) {
+						if (result.err) {
+							showAlert("danger", result.message);
+							return;
+						}
+						showAlert("success", result.message);
+					}
+				);
+			}
+	else
+		<div class="modal fade" id="suggestionModal" tabindex="-1" aria-labelledby="suggestionModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="suggestionModalLabel">Suggestion submitted :)</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					div.modal-body
+						p Thank you for your edit!
+						p We have received your edit and will review it soon. If you would like to know the status of your suggestion, please check our
+							|
+							|
+							a(href="/suggestion") suggestion page
+							| . We will usually approve it within 72 hours.
+						h5 IMPORTANT:
+						p If you make a new suggestion on the same page, only the most recent one will be reviewed! So, make sure your put all your suggestions in a single edit!
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		script.
+			function saveChanges(e) {
+				e.preventDefault();
+				$.post("/suggestion/add", {
+					data: JSON.stringify(prepareEventData()),
+					page: location.pathname.replace("/edit", '')
+				}, function(result) {
+						if (result.err) {
+							showAlert("danger", result.message);
+							return;
+						}
+						$("#suggestionModal").modal("show");
+					}
+				);
+			}

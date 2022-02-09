@@ -14,7 +14,7 @@ $(document).ready(function () {
 
 	$(".add-ap").click(addAP);
 
-	$("#submit").click(saveChanges);
+	$("#submit").click(saveChanges);  // function is in pug file
 
 	// $("select[name='tag']").change(checkIfCustom);
 
@@ -94,16 +94,6 @@ function checkIfCustom() {
 	}
 }
 
-// TODO merge with card edit functions
-// TODO fix page reload (not needed, shows old values)
-function saveChanges(e) {
-  e.preventDefault();
-  if (!validateFields()) {
-    return;
-  }
-  submitChange();
-}
-
 function validateFields() {
   if (!$('#en-name').val()) {
     showAlert("danger", 'English name must be filled');
@@ -121,7 +111,7 @@ function validateFields() {
   return true;
 }
 
-function submitChange() {
+function prepareEventData() {
 	var generalInfo = new FormData(document.getElementById('info'));
 	generalInfo.forEach((value, key) => generalInfo[key] = value);
 	generalInfo.name = {
@@ -161,10 +151,7 @@ function submitChange() {
 		data = Object.assign(popQuizData, data);
 	}
 
-	var image = readImage($('#uploadImage')[0]);
-	image
-		.then(res => sendRequest(data, res))
-		.catch(err => showAlert("danger", "Can't load image: " + err.message));
+	return data;
 }
 
 function getRewards() {

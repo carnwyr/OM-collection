@@ -7,7 +7,7 @@ block scripts
 block content
 	div#alert(role="alert")
 	div(class="container")
-		h1= title 
+		h1= title
 
 		form#data.card.mb-4
 			div(class='card-body mx-4')
@@ -133,8 +133,9 @@ block content
 										img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm d-block" style='max-width: 120px;' src="/images/cards/S/" + card.uniqueName + ".jpg")
 									else
 										img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" style='max-width: 120px;' src="#")
+				hr
 				button.btn.btn-primary(type="submit") Save
-				
+
 	if user.type === "Admin"
 		script.
 			function readImage(upload) {
@@ -155,48 +156,73 @@ block content
 				});
 			}
 			function prepareCardImages() {
-			  var images = {};
-			  var readL = readImage($('#uploadL')[0]);
-			  var readLB = readImage($('#uploadLB')[0]);
-			  var readS = readImage($('#uploadS')[0]);
+				var images = {};
+				var readL = readImage($('#uploadL')[0]);
+				var readLB = readImage($('#uploadLB')[0]);
+				var readS = readImage($('#uploadS')[0]);
 
-			  Promise.all([readL, readLB, readS]).then(values => {
-			    if (values[0]) images.L = values[0];
-			    if (values[1]) images.LB = values[1];
-			    if (values[2]) images.S = values[2];
-			    sendRequest(images);
-			  }, reason => {
-			    showAlert("danger", "Can't load images\n" + reason.message);
-			  });
+				Promise.all([readL, readLB, readS]).then(values => {
+					if (values[0]) images.L = values[0];
+					if (values[1]) images.LB = values[1];
+					if (values[2]) images.S = values[2];
+					sendRequest(images);
+				}, reason => {
+					showAlert("danger", "Can't load images\n" + reason.message);
+				});
 			}
 			function submitChange(e) {
-			  e.preventDefault();
-			  if (!validateFields()) {
-			    return;
-			  }
-			  prepareCardImages();
+				e.preventDefault();
+				if (!validateFields()) {
+					return;
+				}
+				prepareCardImages();
 			}
 			function sendRequest(images) {
-				$.post(location.path, { cardData: getCardData(), images: images }, function(result) { 
+				$.post(location.pathname, { cardData: getCardData(), images: images }, function(result) {
 					if (result.err) {
 						showAlert("danger", result.message);
 						return;
 					}
 					showAlert("success", result.message);
-				});	
+				});
 			}
-			
+
 	else
+		<div class="modal fade" id="suggestionModal" tabindex="-1" aria-labelledby="suggestionModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="suggestionModalLabel">Suggestion submitted :)</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					div.modal-body
+						p Thank you for your edit!
+						p We have received your edit and will review it soon. If you would like to know the status of your suggestion, please check our
+							|
+							|
+							a(href="/suggestion") suggestion page
+							| . We will usually approve it within 72 hours.
+						h5 IMPORTANT:
+						p If you make a new suggestion on the same page, only the most recent one will be reviewed! So, make sure your put all your suggestions in a single edit!
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		script.
 			function submitChange(e) {
 				e.preventDefault();
-				showAlert("danger", "How did you get to this function...");
-				return;
-				//- $.post("/suggestion/submitSuggestion", { data: getCardData() }, function(result) { 
-				//- 	if (result.err) {
-				//- 		showAlert("danger", result.message);
-				//- 		return;
-				//- 	}
-				//- 	showAlert("success", result.message);
-				//- });				
+				$.post("/suggestion/add", {
+					page: location.pathname.replace("/edit", ''),
+					data: JSON.stringify(getCardData())
+				}, function(result) {
+					if (result.err) {
+						showAlert("danger", result.message);
+						return;
+					}
+					$("#suggestionModal").modal("show");
+				});
 			}

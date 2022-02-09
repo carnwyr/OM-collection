@@ -19,6 +19,7 @@ var indexRouter = require("./routes/index");
 var cardsRouter = require("./routes/cards");
 var userRouter = require("./routes/user");
 var eventsRouter = require("./routes/events");
+var suggestionRouter = require("./routes/suggestions");
 
 const app = express();
 
@@ -112,6 +113,7 @@ app.use("/", indexRouter);
 app.use("/card", cardsRouter);
 app.use("/user", userRouter);
 app.use("/event", eventsRouter);
+app.use("/suggestion", suggestionRouter);
 
 app.use(function (req, res, next) { next(createError(404)); });
 

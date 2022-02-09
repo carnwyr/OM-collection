@@ -9,7 +9,7 @@ var userController = require('../controllers/userController');
 
 // Get card edit page
 router.get('/new', userController.hasAccess("Admin"), cardsController.getEditCardPage);
-router.get('/:card/edit', userController.hasAccess("Admin"), cardsController.getEditCardPage);
+router.get('/:card/edit', userController.canEdit(), cardsController.getEditCardPage);
 
 // Edit or add card
 router.post('/new', userController.hasAccess("Admin"), cardsController.addNewCard);

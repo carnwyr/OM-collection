@@ -2,6 +2,7 @@ const Sentry = require('@sentry/node');
 const i18next = require("i18next");
 const ObjectId = require("mongodb").ObjectID;
 
+const suggestionService = require("../services/suggestionService");
 const Users = require("../models/users.js");
 
 exports.getUser = async function (username) {
@@ -127,3 +128,13 @@ exports.updateSupport = async function(user, status) {
   }
 };
 
+exports.banUser = async function(name) {
+  try {
+    let banResult = await Users.findOneAndUpdate({ "info.name": name }, { $push: { "info.supportStatus": { 'name': 'bannedFromMakingSuggestions' } }});
+    let deleteSuggestionResult = await suggestionService.refuseSuggestionsFrom({ user: name });
+    if (banResult.err || deleteSuggestionResult.err) throw "Something went wrong.";
+    return { err: null, message: "User banned."};
+  } catch(e) {
+    return { err: true, message: e.message };
+  }
+};

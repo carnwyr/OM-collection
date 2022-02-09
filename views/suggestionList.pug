@@ -1,0 +1,16 @@
+extends layout
+
+block scripts
+
+
+block content
+	div.container
+		h1 Pending suggestions
+		div.card.card-body
+			ol
+				each suggestion in suggestions
+					li
+						if user && user.type === "Admin"
+							a(href="/suggestion/" + suggestion._id) #{suggestion.user}: #{suggestion.page}
+						else
+							| #{suggestion.user}: #{suggestion.page}
