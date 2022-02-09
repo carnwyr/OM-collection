@@ -8,9 +8,15 @@ block content
 	div#alert(role="alert")
 	div(class="container")
 		h1= title
-
 		form#data.card.mb-4
 			div(class='card-body mx-4')
+				if !user.isAdmin
+					h5.text-center Please upload images to
+						|
+						|
+						a(href="https://drive.google.com/drive/folders/1Tbo6bPrpp0aYb_YCMotNmQXVychxBseI" target="_blank") our google drive folder
+						| .
+					hr
 				div(class='form-group')
 					label(for="name") Name
 					input(class='form-control' type="text" id="name" name="name" value=card?card.name:'')

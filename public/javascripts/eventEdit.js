@@ -112,18 +112,17 @@ function validateFields() {
 }
 
 function prepareEventData() {
-	var generalInfo = new FormData(document.getElementById('info'));
-	generalInfo.forEach((value, key) => generalInfo[key] = value);
-	generalInfo.name = {
-		en: generalInfo["en-name"],
-		ja: generalInfo["ja-name"],
-		zh: generalInfo["zh-name"]
+	let data = {};
+	let formData = new FormData(document.getElementById('info'));
+	formData.forEach((value, key) => data[key] = value);
+	data.name = {
+		en: data["en-name"],
+		ja: data["ja-name"],
+		zh: data["zh-name"]
 	};
-	["en-name", "ja-name", "zh-name"].forEach(e => delete generalInfo[e]);
+	["en-name", "ja-name", "zh-name"].forEach(e => delete data[e]);
 
-	var data = generalInfo;
-
-	if (generalInfo.type === "PopQuiz") {
+	if (data.type === "PopQuiz") {
 		let rewardType = $("input[name='rewardListType']:checked").val();
 		let popQuizData = {
 			isLonelyDevil: $("input#lonelydevil").is(":checked"),
@@ -225,24 +224,24 @@ function getLockedStages() {
 	return stages;
 }
 
-function sendRequest(data, image) {
-	$.ajax({
-		type: "post",
-		url: location.pathname,
-		contentType: "application/json",
-		data: JSON.stringify({
-			data: data,
-			img: image,
-			name: location.pathname.split("/")[2]
-		})
-	}).done(function(result) {
-			if (result.err) {
-				showAlert("danger", result.message);
-				return;
-			}
-			showAlert("success", result.message);
-		});
-}
+// function sendRequest(data, image) {
+// 	$.ajax({
+// 		type: "post",
+// 		url: location.pathname,
+// 		contentType: "application/json",
+// 		data: JSON.stringify({
+// 			data: data,
+// 			img: image,
+// 			name: location.pathname.split("/")[2]
+// 		})
+// 	}).done(function(result) {
+// 			if (result.err) {
+// 				showAlert("danger", result.message);
+// 				return;
+// 			}
+// 			showAlert("success", result.message);
+// 		});
+// }
 
 function formatRewards(f, end) {
 	var temp = {}, lst = [];

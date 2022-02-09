@@ -80,6 +80,13 @@ block content
 		h1= title
 		div.card.shadow
 			div.card-body
+				if user.type !== "Admin"
+					h5.text-center Please upload images to
+						|
+						|
+						a(href="https://drive.google.com/drive/folders/1Tbo6bPrpp0aYb_YCMotNmQXVychxBseI" target="_blank") our google drive folder
+						| .
+					hr
 				h5.border-bottom Event Info
 				form#info
 					div.form-row
@@ -243,7 +250,7 @@ block content
 				prepareImageData();
 			}
 			function sendRequest(imageData) {
-				$.post(location.pathname, { data: prepareEventData(), img: imageData },
+				$.post(location.pathname, { data: prepareEventData(), img: imageData }).done(
 					function(result) {
 						if (result.err) {
 							showAlert("danger", result.message);
