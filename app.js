@@ -49,26 +49,19 @@ var languageDetector = new i18nextMiddleware.LanguageDetector();
 languageDetector.addDetector({
 	name: "subdomain",
 	lookup: function(req, res, options) {
-		var subdomain = options.getHeaders(req).host.split('.')[0];
-		switch(subdomain) {
-			case "ja":
-				var lang = "ja";
-				break;
-			case "zh":
-				var lang = "zh";
-				break;
-			default:
-				var lang = "en";
+		let lang = "en";
+		let subdomain = options.getHeaders(req).host.split('.')[0];
+		if (subdomain === "ja" || subdomain === "zh") {
+			lang = subdomain;
 		}
-
 		i18next.changeLanguage(lang);
 		return lang;
-	}, cacheUserLanguage: function(req, res, lng, options) {}
+	}
 });
 
 i18next
-	.use(Backend)
 	.use(languageDetector)
+	.use(Backend)
 	.init({
 		// debug: true,
 		backend: {
