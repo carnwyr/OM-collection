@@ -69,14 +69,11 @@ block content
                   | ,
                   |
             p #[strong #{t("cards.source")}: ]
-              each val, index in (card.source.length ? card.source : ["???"])
-                if val !== "???"
-                  a(href="/event/"+card.source_link[index])= val
-                  if index < card.source.length - 1
-                    | ,
-                    |
-                else
-                  | ???
+              each val, index in card.source
+                a(href="/event/"+card.source_link[index])= val
+                if index < card.source.length - 1
+                  | ,
+                  |
             hr
             if !isHidden
               p.ownedCount= t("cards.collected_count", { percentage: stats.ownedTotal })
