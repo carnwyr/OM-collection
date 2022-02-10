@@ -1,0 +1,23 @@
+{
+  "background_color": "#ffffff",
+  "description": "Karasu-OS.com is a fan-made database website for the game Obey Me! by NTT Solmare Corporation.",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "karasu-os",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "karasu-os",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/images/favicon.ico",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "images/karasu.png",
+      "type": "image/png",
+      "sizes": "173x174"
+    }
+  ]
+}
