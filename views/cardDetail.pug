@@ -69,7 +69,7 @@ block content
                   | ,
                   |
             p #[strong #{t("cards.source")}: ]
-              each val, index in card.source.length ? card.source : ["???"]
+              each val, index in (card.source.length ? card.source : ["???"])
                 if val !== "???"
                   a(href="/event/"+card.source_link[index])= val
                   if index < card.source.length - 1
