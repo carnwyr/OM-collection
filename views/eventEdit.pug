@@ -40,11 +40,11 @@ mixin boxEntry(box = { name: '', itemsCount: '', ultimateReward: '' })
 mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
 	div.boxset(style="border-radius:8px;border:3px solid var(--secondary);padding:16px;margin-bottom:.5rem;")
 		div.form-group.row
-			label.col-2.col-form-label Box set name:
-			div.col-3
+			label.col-12.col-md-2.col-form-label Box set name:
+			div.col-12.col-md-3
 				input.form-control(type="text" name="box-set-name" value=set.name)
-			label.col-2.col-form-label Individual box cost:
-			div.col-3
+			label.col-12.col-md-2.col-form-label Individual box cost:
+			div.col-12.col-md-3
 				input.form-control(type="number" name="box-set-cost" value=set.cost step="100")
 		div
 			div
@@ -78,6 +78,19 @@ block content
 	div#alert(role="alert")
 	div.container
 		h1= title
+		style.
+			@media screen and (max-width: 720px) {
+				body {
+					background: rgb(255,254,255) !important;
+				}
+				.card {
+					box-shadow: none !important;
+					background: transparent !important;
+				}
+				.card-body {
+					padding: 0 !important;
+				}
+			}
 		div.card.shadow
 			div.card-body
 				if user.type !== "Admin"
@@ -90,19 +103,19 @@ block content
 				h5.border-bottom Event Info
 				form#info
 					div.form-row
-						div.col-4
+						div.col-12.col-md-4
 							div.form-group
 								label(for="en-name") Name
 								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en)
-						div.col-4
+						div.col-12.col-md-4
 							div.form-group
 								label(for="ja-name") Japanese name
 								input.form-control(id="ja-name" type="text" name="ja-name" value=data.name.ja)
-						div.col-4
+						div.col-12.col-md-4
 							div.form-group
 								label(for="zh-name") Chinese name
 								input.form-control(id="zh-name" type="text" name="zh-name" value=data.name.zh)
-						div.col-4
+						div.col-12.col-md-4
 							div.form-group
 								label(for="type") Type
 								select#eventType(class='custom-select' name="type")
@@ -111,11 +124,11 @@ block content
 									option(value='ChargeMission' selected=(data.type==='ChargeMission')) Charge Mission
 									option(value='LoginBonus' selected=(data.type==='LoginBonus')) Login Bonus
 									option(value="Other" selected=(data.type==="Other")) Other
-						div.col-4
+						div.col-12.col-md-4
 							div.form-group
 								label(for="start") Start date (UTC)
 								input#start.form-control(type="text" name="start" value=data.start)
-						div.col-4
+						div.col-12.col-md-4
 							div.form-group
 								label(for="end") End date (UTC)
 								input#end.form-control(type="text" name="end" value=data.end)
@@ -146,7 +159,7 @@ block content
 								label.form-check-label(for="birthday") Birthday
 
 						div.form-row
-							div.col-3.form-group
+							div.col-12.col-md-3.form-group
 								label(for="stages") Number of stages
 								input#stages.form-control(type="number" name="stages" value=data.stages)
 
@@ -171,7 +184,7 @@ block content
 
 								h5.border-bottom AP Rewards
 								div.form-row
-									div.col-3.form-group
+									div.col-12.col-md-3.form-group
 										label(for="pageCost") Page cost
 										input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
 
