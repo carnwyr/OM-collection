@@ -2,14 +2,14 @@ extends layout
 
 block scripts
   //- link(rel="stylesheet" href="/stylesheets/eventList.css")
+  script(src="/javascripts/lazyload.js")
 
 mixin section(events) 
   div.row
     each event in events
       .col-12.col-sm-6.col-lg-4.mb-3
         div.card.shadow
-          //- Todo: figure out way to hold image size before load
-          img.card-img-top(src="/images/events/" + event.name.en + ".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
+          img.card-img-top.lazy(src="/images/event_placeholder.jpg" data-src="/images/events/" + event.name.en + ".jpg")
           div.card-body
             a.stretched-link(href="event/" + encodeURIComponent(event.name.en.replace(/ /g, '_')))
               p.card-title= event.name[t("lang")]
