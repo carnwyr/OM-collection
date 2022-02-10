@@ -15,7 +15,7 @@ dayjs.extend(timezone)
 const Events = require("../models/events");
 const APPresets = require("../models/apPresets");
 
-const eventCacheService = require("../services/eventCacheService");
+const cacheService = require("../services/cacheService");
 const fileService = require("../services/fileService");
 
 exports.getEvents = async function(condition = {}, sort = { start: 1 }) {
@@ -32,7 +32,7 @@ exports.getEvent = async function(query = {}) {
 }
 
 exports.getCalculatorEvent = async function(eventName) {
-	var event = eventCacheService.getCachedEvent();
+	var event = cacheService.getCachedEvent();
 	if (!event || eventName != event.name) {
 		event = await getFullEventData(eventName);
 	}
@@ -43,18 +43,19 @@ exports.getCalculatorEvent = async function(eventName) {
 exports.getLatestEvent = async function () {
 	var latestEventName = await getLatestEventName();
 
-	var cachedEvent = eventCacheService.getCachedEvent();
+	var cachedEvent = cacheService.getCachedEvent();
 	if (cachedEvent && cachedEvent.name === latestEventName) {
 		return cachedEvent;
 	}
 
 	try {
 		var latestEventData = await getFullEventData(latestEventName);
-		eventCacheService.setCachedEvent(latestEventData);
+		cacheService.setCachedEvent(latestEventData);
 		return latestEventData;
 	} catch (e) {
-		console.error(e);
+		// console.error(e);
 		Sentry.captureException(e);
+		return {};
 	}
 }
 
