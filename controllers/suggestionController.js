@@ -1,11 +1,12 @@
 const suggestionService = require("../services/suggestionService");
 const cardService = require("../services/cardService");
 const eventService = require("../services/eventService");
+const Sentry = require("@sentry/node");
 
 exports.getSuggestionPage = async function(req, res, next) {
 	try {
 		var suggestion = await suggestionService.getSuggestion({ _id: req.params.id });
-		var originalFile = await getOriginalFile(suggestion.page.split('/'));
+		var originalFile = await getOriginalFile(suggestion.page.split("/"));
 		return res.render("suggestionDetail", {
 			title: req.params.id ,
 			originalFile: originalFile,
@@ -15,7 +16,7 @@ exports.getSuggestionPage = async function(req, res, next) {
 	} catch(e) {
 		return next(e);
 	}
-}
+};
 
 async function getOriginalFile(path) {
 	try {
@@ -43,6 +44,7 @@ exports.getSuggestionList = async function(req, res, next) {
 };
 
 exports.addSuggestion = async function(req, res) {
+	notifyAdmin(`New suggestion from __${req.user.name}__ on __${req.body.page}__.`);
 	return res.json(await suggestionService.addSuggestion({
 		user: req.user.name,
 		page: req.body.page,
@@ -54,8 +56,8 @@ exports.addSuggestion = async function(req, res) {
 exports.approveSuggestion = async function(req, res) {
 	try {
 		let suggestion = await suggestionService.getSuggestion({ _id: req.body._id });
-		let db = suggestion.page.split('/')[1];
-		let docName = suggestion.page.split('/')[2];
+		let db = suggestion.page.split("/")[1];
+		let docName = suggestion.page.split("/")[2];
 		let data = JSON.parse(req.body.data);
 
 		if (db === "card") {
@@ -79,3 +81,27 @@ exports.approveSuggestion = async function(req, res) {
 exports.refuseSuggestion = async function(req, res) {
 	return res.json(await suggestionService.updateSuggestionStatus(req.body._id, "refused"));
 };
+
+function notifyAdmin(message) {
+	const https = require("https");
+	const data = JSON.stringify({ content: message });
+	const options = {
+		hostname: "discord.com",
+		port: 443,
+		path: process.env.WEBHOOK,
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Content-Length": data.length
+		}
+	};
+
+	const r = https.request(options);
+
+	r.on("error", error => {
+		Sentry.captureException(error);
+	});
+
+	r.write(data);
+	r.end();
+}

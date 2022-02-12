@@ -9,7 +9,7 @@ mixin section(events)
     each event in events
       .col-12.col-sm-6.col-lg-4.mb-3
         div.card.shadow
-          img.card-img-top.lazy(src="/images/event_placeholder.jpg" data-src="/images/events/" + event.name.en + ".jpg")
+          img.card-img-top.lazy(src="/images/event_placeholder.jpg" data-src="/images/events/" + encodeURIComponent(event.name.en) + ".jpg")
           div.card-body
             a.stretched-link(href="event/" + encodeURIComponent(event.name.en.replace(/ /g, '_')))
               p.card-title= event.name[t("lang")]
