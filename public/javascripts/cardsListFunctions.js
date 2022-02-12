@@ -343,7 +343,10 @@ function cardClicked(e) {
 function switchSelectionAll(select) {
 	let cardOwned = card => ownedCards.includes(card.uniqueName);
 	let cardChanged = card => Object.keys(changedCards).includes(card.uniqueName);
-	let cardsToSelect = cardList.filter(x => (!cardOwned(x) && cardChanged(x) !== select) || (cardOwned(x) && cardChanged(x) === select)).map(x => x.uniqueName);
+	let demonTabSelected = $("#demon-tab").hasClass("active");
+	let cardsToSelect = cardList.filter(x => (x.type === "Demon") === demonTabSelected);
+	cardsToSelect = cardsToSelect.filter(x => (!cardOwned(x) && cardChanged(x) !== select) || (cardOwned(x) && cardChanged(x) === select)).map(x => x.uniqueName);
+	console.log(cardsToSelect.length)
 	if (cardsToSelect.length == 0) return;
 
 	//TODO remove slice
