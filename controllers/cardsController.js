@@ -173,6 +173,7 @@ async function getHiddenCardDetailPage(req, res, next) {
 	if (!cardData) {
 		throw createError(404, "Card not found");
 	}
+	cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g, "_")));
 	return res.render("cardDetail", {
 		title: cardData.name,
 		description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
