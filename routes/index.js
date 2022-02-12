@@ -32,7 +32,6 @@ router.post("/signup/checkUsername", userController.signupCheckUsername);
 router.get('/collection/getOwnedCards', userController.isLoggedIn(), userController.getOwnedCards);
 router.post('/collection/modifyCollection', userController.isLoggedIn(), userController.modifyCollection);
 router.get('/:username/collection', cardsController.getOwnedCardsPage);
-router.post('/:username/getStatsImage', cardsController.getStatsImage);
 router.get('/:username/favourites', cardsController.getFavouriteCardsPage);
 router.get('/:username/profile', cardsController.getProfilePage);
 

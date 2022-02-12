@@ -98,7 +98,7 @@ html(lang=t("lang"))
             li(class="nav-item d-md-none")
               a(class="nav-link" href='/logout')= t("common.logout")
 
-    main(class='container-fluid mb-5' style="position:relative;")
+    main.mb-5(style="position:relative;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
       - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
       if t("lang") === "ja" && title !== "Karasu OS"
