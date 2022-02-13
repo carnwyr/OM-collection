@@ -40,11 +40,11 @@ mixin boxEntry(box = { name: '', itemsCount: '', ultimateReward: '' })
 mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
 	div.boxset(style="border-radius:8px;border:3px solid var(--secondary);padding:16px;margin-bottom:.5rem;")
 		div.form-group.row
-			label.col-2.col-form-label Box set name:
-			div.col-3
+			label.col-12.col-md-2.col-form-label Box set name:
+			div.col-12.col-md-3
 				input.form-control(type="text" name="box-set-name" value=set.name)
-			label.col-2.col-form-label Individual box cost:
-			div.col-3
+			label.col-12.col-md-2.col-form-label Individual box cost:
+			div.col-12.col-md-3
 				input.form-control(type="number" name="box-set-cost" value=set.cost step="100")
 		div
 			div
@@ -78,22 +78,44 @@ block content
 	div#alert(role="alert")
 	div.container
 		h1= title
+		style.
+			@media screen and (max-width: 720px) {
+				body {
+					background: rgb(255,254,255) !important;
+				}
+				.card {
+					box-shadow: none !important;
+					background: transparent !important;
+				}
+				.card-body {
+					padding: 0 !important;
+				}
+			}
 		div.card.shadow
 			div.card-body
+				if user.type !== "Admin"
+					h5.text-center Please upload images to
+						|
+						|
+						a(href="https://drive.google.com/drive/folders/1Tbo6bPrpp0aYb_YCMotNmQXVychxBseI" target="_blank") our google drive folder
+						| .
+					hr
 				h5.border-bottom Event Info
 				form#info
 					div.form-row
-						div.col-3
+						div.col-12.col-md-4
 							div.form-group
 								label(for="en-name") Name
 								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en)
+						div.col-12.col-md-4
 							div.form-group
 								label(for="ja-name") Japanese name
 								input.form-control(id="ja-name" type="text" name="ja-name" value=data.name.ja)
+						div.col-12.col-md-4
 							div.form-group
 								label(for="zh-name") Chinese name
 								input.form-control(id="zh-name" type="text" name="zh-name" value=data.name.zh)
-						div.col-3
+						div.col-12.col-md-4
 							div.form-group
 								label(for="type") Type
 								select#eventType(class='custom-select' name="type")
@@ -102,15 +124,14 @@ block content
 									option(value='ChargeMission' selected=(data.type==='ChargeMission')) Charge Mission
 									option(value='LoginBonus' selected=(data.type==='LoginBonus')) Login Bonus
 									option(value="Other" selected=(data.type==="Other")) Other
+						div.col-12.col-md-4
 							div.form-group
 								label(for="start") Start date (UTC)
 								input#start.form-control(type="text" name="start" value=data.start)
+						div.col-12.col-md-4
 							div.form-group
 								label(for="end") End date (UTC)
 								input#end.form-control(type="text" name="end" value=data.end)
-						div.col-6
-							+uploadImage("Event image", data ? "/images/events/" + data.name.en + ".jpg" : "#")
-
 				ul.nav.nav-tabs(role="tablist")
 					li.nav-item
 						a#popquiz-tab.nav-link.active(data-toggle="tab" href="#popquiz" role="tab" aria-controls="popquiz" aria-selected="true") Pop Quiz
@@ -138,7 +159,7 @@ block content
 								label.form-check-label(for="birthday") Birthday
 
 						div.form-row
-							div.col-3.form-group
+							div.col-12.col-md-3.form-group
 								label(for="stages") Number of stages
 								input#stages.form-control(type="number" name="stages" value=data.stages)
 
@@ -163,7 +184,7 @@ block content
 
 								h5.border-bottom AP Rewards
 								div.form-row
-									div.col-3.form-group
+									div.col-12.col-md-3.form-group
 										label(for="pageCost") Page cost
 										input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
 
@@ -199,10 +220,16 @@ block content
 									div
 										+lockedStageEntry()
 								button.btn.btn-secondary.mb-2.add-item(data-clone="template#locked-stages") Add locked stage
-					
+
 					div#nightmare.tab-pane(role="tabpanel" aria-labelledby="nightmare-tab")
 					div#other.tab-pane(role="tabpanel" aria-labelledby="other-tab")
-
+				if user.type === "Admin"
+					hr
+					style.
+						#imageResult {
+							max-height: 360px;
+						}
+					+uploadImage("Event image", data ? "/images/events/" + data.name.en + ".jpg" : "#")
 				hr
 				button#submit.btn.btn-primary Submit Change
 
@@ -217,6 +244,72 @@ block content
 
 			template#boxset
 				+boxSetEntry()
-				
+
 			template#locked-stages
 				+lockedStageEntry()
+	if user.type === "Admin"
+		script.
+			function prepareImageData() {
+				let image = readImage($('#uploadImage')[0]);
+				image
+					.then(res => sendRequest(res))
+					.catch(err => showAlert("danger", "Can't load image: " + err.message));
+			}
+			function saveChanges(e) {
+				e.preventDefault();
+				if (!validateFields()) {
+					return;
+				}
+				prepareImageData();
+			}
+			function sendRequest(imageData) {
+				$.post(location.pathname, { data: prepareEventData(), img: imageData }).done(
+					function(result) {
+						if (result.err) {
+							showAlert("danger", result.message);
+							return;
+						}
+						showAlert("success", result.message);
+					}
+				);
+			}
+	else
+		<div class="modal fade" id="suggestionModal" tabindex="-1" aria-labelledby="suggestionModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="suggestionModalLabel">Suggestion submitted :)</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					div.modal-body
+						p Thank you for your edit!
+						p We have received your edit and will review it soon. If you would like to know the status of your suggestion, please check our
+							|
+							|
+							a(href="/suggestion") suggestion page
+							| . We will usually approve it within 72 hours.
+						h5 IMPORTANT:
+						p If you make a new suggestion on the same page, only the most recent one will be reviewed! So, make sure your put all your suggestions in a single edit!
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		script.
+			function saveChanges(e) {
+				e.preventDefault();
+				$.post("/suggestion/add", {
+					data: JSON.stringify(prepareEventData()),
+					page: location.pathname.replace("/edit", '')
+				}, function(result) {
+						if (result.err) {
+							showAlert("danger", result.message);
+							return;
+						}
+						$("#suggestionModal").modal("show");
+					}
+				);
+			}

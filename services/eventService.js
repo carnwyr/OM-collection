@@ -15,7 +15,7 @@ dayjs.extend(timezone)
 const Events = require("../models/events");
 const APPresets = require("../models/apPresets");
 
-const eventCacheService = require("../services/eventCacheService");
+const cacheService = require("../services/cacheService");
 const fileService = require("../services/fileService");
 
 exports.getEvents = async function(condition = {}, sort = { start: 1 }) {
@@ -32,7 +32,7 @@ exports.getEvent = async function(query = {}) {
 }
 
 exports.getCalculatorEvent = async function(eventName) {
-	var event = eventCacheService.getCachedEvent();
+	var event = cacheService.getCachedEvent();
 	if (!event || eventName != event.name) {
 		event = await getFullEventData(eventName);
 	}
@@ -43,18 +43,19 @@ exports.getCalculatorEvent = async function(eventName) {
 exports.getLatestEvent = async function () {
 	var latestEventName = await getLatestEventName();
 
-	var cachedEvent = eventCacheService.getCachedEvent();
+	var cachedEvent = cacheService.getCachedEvent();
 	if (cachedEvent && cachedEvent.name === latestEventName) {
 		return cachedEvent;
 	}
 
 	try {
 		var latestEventData = await getFullEventData(latestEventName);
-		eventCacheService.setCachedEvent(latestEventData);
+		cacheService.setCachedEvent(latestEventData);
 		return latestEventData;
 	} catch (e) {
-		console.error(e);
+		// console.error(e);
 		Sentry.captureException(e);
+		return {};
 	}
 }
 
@@ -141,11 +142,11 @@ exports.addEvent = async function(data, img) {
 	}
 }
 
-exports.updateEvent = async function(originalName, data, img) {
+exports.updateEvent = async function(originalName, data, img = null) {
 	try {
 
-		// data.start = stringToDateTime(data.start);
-		// data.end = stringToDateTime(data.end);
+		data.start = stringToDateTime(data.start);
+		data.end = stringToDateTime(data.end);
 
 		let event = await Events.findOne({ "name.en": originalName });
 
@@ -154,7 +155,10 @@ exports.updateEvent = async function(originalName, data, img) {
 		}
 
 		await Events.replaceOne({ "name.en": originalName }, data);
-		await fileService.saveImage(img, originalName, data.name.en, "events");
+
+		if (img) {
+			await fileService.saveImage(img, originalName, data.name.en, "events");
+		}
 
 		return { err: null, message: "Event updated!" };
 	} catch(e) {
@@ -195,7 +199,7 @@ exports.getDefaultEventData = function() {
 }
 
 function stringToDateTime(dateString) {
-	return dayjs.tz(dateString, 'YYYY.MM.DD, HH:mm:ss', "UTC");
+	return dayjs(dateString).format('YYYY-MM-DDTHH:mm:ss.000+00:00');
 }
 
 exports.getAPPresets = async function () {

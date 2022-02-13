@@ -1,0 +1,50 @@
+extends layout
+
+block scripts
+  style.
+    #display > div.col-6 > div {
+      padding: .5rem;
+      border: 2px solid var(--secondary);
+      border-radius: 8px;
+      height: 100%;
+    }
+  script(src="/javascripts/suggestionDetail.js")
+  script.
+    const PATH = !{JSON.stringify(suggestion.page.split('/'))};
+
+block content
+  div#alert(role="alert")
+  div.container
+    h1 Suggestion: #{title}
+    div.card.mb-3
+      div.card-body
+        p User: #{suggestion.user}
+        p Page: #{suggestion.page}
+        p Status: #{suggestion.status}
+        p.text-center Note: not 100% accurate. Use
+          |
+          |
+          a(href="https://jsoncompare.org/" target="_blank") https://jsoncompare.org/
+          |
+          | for detailed comparison.
+        div#display.row.mb-3
+          div.col-6
+            div
+              p.text-center.mb-0 Original
+              pre#left= JSON.stringify(originalFile, undefined, 2)
+          div.col-6
+            div
+              p.text-center.mb-0 Suggestion
+              pre#right= JSON.stringify(JSON.parse(suggestion.stringifiedJSON), undefined, 2)
+
+        textarea#final.form-control.mb-3(style="min-height:260px;")= JSON.stringify(JSON.parse(suggestion.stringifiedJSON), undefined, 2)
+
+        button#ban.mr-2(data-name=suggestion.user) Ban user
+        button#delete.mr-2 Delete suggestion
+        button#save Save changes
+
+  script(src="/javascripts/jdd.js")
+  script.
+    leftBlockId = $('#left').attr('id');
+    rightBlockId = $('#right').attr('id');
+    $(document).jdd(leftBlockId, rightBlockId);

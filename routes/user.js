@@ -13,11 +13,13 @@ router.get('/:name/confirmEmail/:code', userController.isSameUser(), userControl
 // Password change
 router.post('/:name/changePassword', userController.isSameUser(), userController.changePassword);
 
-// Account settings page
-router.get('/', userController.isSameUser(), userController.getAccountPage);
-
 // update profile
 router.post('/:name/updateUserProfile', userController.isSameUser(), userController.updateUserProfile);
+
+router.post("/issueBan", userController.hasAccess("Admin"), userController.banUser);
+
+// Account settings page
+router.get('/', userController.isSameUser(), userController.getAccountPage);
 
 
 module.exports = router;

@@ -13,7 +13,8 @@
     "logout": "退出帳號",
     "settings": "設置",
     "account": "用戶",
-    "events": "活動"
+    "events": "活動",
+    "days": "日"
   },
   "cards": {
     "source": "獲得方法",

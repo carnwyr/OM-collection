@@ -14,7 +14,8 @@
     "logout": "Logout",
     "settings": "Settings",
     "account": "Account",
-    "events": "Events"
+    "events": "Events",
+    "days": "days"
   },
   "cards": {
     "source": "How to get",

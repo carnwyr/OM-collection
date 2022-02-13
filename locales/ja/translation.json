@@ -14,7 +14,8 @@
     "logout": "ログアウト",
     "settings": "設定",
     "account": "アカウント",
-    "events": "Events"
+    "events": "Events",
+    "days": "日"
   },
   "cards": {
     "source": "入手方法",

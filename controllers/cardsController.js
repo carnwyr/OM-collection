@@ -1,8 +1,6 @@
 const createError = require("http-errors");
-
 const async = require("async");
 const fs = require("fs");
-const nodeHtmlToImage = require("node-html-to-image");
 const i18next = require("i18next");
 const Sentry = require("@sentry/node");
 
@@ -237,64 +235,6 @@ exports.directImage = async function (req, res, next) {
 
 
 // Collection functions
-exports.getStatsImage = async function(req, res) {
-	try {
-		const html = req.body.html;
-		var result = await getBigStatsImage(["#statsTotal", "#charNav", "#sideCharNav", "#rarityNav"], html);
-		res.send(result);
-	} catch (err) {
-		res.send(null);
-	}
-};
-
-async function getBigStatsImage(ids, html) {
-	try {
-		var statsHTML = replaceImageNames(html);
-		var imageData = await getReplacedImages();
-		imageData = imageData.map(img => new Buffer.from(img).toString("base64"));
-		imageData = imageData.map(base64 => "data:image/png;base64," + base64);
-		imageData = {star: imageData[0], demon: imageData[1], memory: imageData[2]};
-
-		var image = await nodeHtmlToImage({
-			html: statsHTML,
-			content: imageData
-		});
-		image = "data:image/png;base64," + Buffer.from(image, "binary").toString("base64");
-		return image;
-	} catch (err) {
-		return null;
-	}
-}
-
-function replaceImageNames(html) {
-	return html.replace(/\/images\/completion_star\.png/g, "{{star}}")
-		.replace(/\/images\/demon_card\.png/g, "{{demon}}")
-		.replace(/\/images\/memory_card\.png/g, "{{memory}}");
-}
-
-function getReplacedImages() {
-	const p1 = new Promise((resolve, reject) => {
-		fs.readFile("./public/images/completion_star.png", (err,img) => {
-			if (err) reject(err);
-			resolve(img);
-		});
-	});
-	const p2 = new Promise((resolve, reject) => {
-		fs.readFile("./public/images/demon_card.png", (err,img) => {
-			if (err) reject(err);
-			resolve(img);
-		});
-	});
-	const p3 = new Promise((resolve, reject) => {
-		fs.readFile("./public/images/memory_card.png", (err,img) => {
-			if (err) reject(err);
-			resolve(img);
-		});
-	});
-
-	return Promise.all([p1, p2, p3]);
-}
-
 exports.getAvailableCards = async function (req, res) {
 	var cards = await cardService.getCards();
 	var lang = i18next.t("lang");
@@ -335,7 +275,7 @@ exports.addNewCard = async function(req, res) {
 
 exports.updateCard = async function(req, res) {
 	var data = {
-		originalUniqueName: req.params.card.replace(/_/g, " "),
+		originalUniqueName: req.params.card,
 		cardData: req.body.cardData,
 		images: req.body.images
 	};

@@ -9,8 +9,9 @@ router.post("/:event/calculate", eventsController.calculate);
 
 // Event page
 router.get("/new", userController.hasAccess("Moderator"), eventsController.getEventAddPage);
+router.get("/:event/edit", userController.canEdit(), eventsController.getEventEditPage);
+
 router.post("/new", userController.hasAccess("Moderator"), eventsController.addEvent);
-router.get("/:event/edit", userController.hasAccess("Moderator"), eventsController.getEventEditPage);
 router.post("/:event/edit", userController.hasAccess("Moderator"), eventsController.updateEvent);
 router.post("/:event/delete", userController.hasAccess("Moderator"), eventsController.deleteEvent);
 
