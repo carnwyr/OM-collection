@@ -20,7 +20,7 @@ block content
 				div(class='form-group')
 					label(for="name") Name
 					input(class='form-control' type="text" id="name" name="name" value=card?card.name:'')
-				div(class='form-group')
+				div(class='form-group'+(user.isAdmin?'':" d-none"))
 					label(for="uniqueName") Unique name
 					input(class='form-control' type="text" id="uniqueName" name="uniqueName" value=card?card.uniqueName:'')
 					small(class='form-text text-muted') Must use underscore instead of spaces, can't use \/:*?"<>|
@@ -78,11 +78,11 @@ block content
 						div.custom-control.custom-checkbox
 							input.custom-control-input(id=character type="checkbox" name="characters" value=character checked=(card?card.characters.includes(character):false))
 							label.custom-control-label(for=character)= character
-				div(class='form-group')
+				div(class='form-group'+(user.isAdmin?'':" d-none"))
 					label(for="number") Number
 					input(class='form-control' type="text" id="number" name="number" value=card?card.number:'')
 				if !card
-					div(class='custom-control custom-checkbox')
+					div(class='custom-control custom-checkbox'+(user.isAdmin?'':" d-none"))
 						input(class='custom-control-input' type="checkbox" id="isHidden" name="isHidden")
 						label(class='custom-control-label' for="isHidden") Hidden card
 				if user.type === "Admin"
@@ -140,7 +140,8 @@ block content
 									else
 										img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" style='max-width: 120px;' src="#")
 				hr
-				button.btn.btn-primary(type="submit") Save
+				button.btn.btn-primary.mr-2(type="submit") Save
+				span#cd
 
 	if user.type === "Admin"
 		script.
