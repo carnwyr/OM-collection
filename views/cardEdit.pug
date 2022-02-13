@@ -221,6 +221,16 @@ block content
 		script.
 			function submitChange(e) {
 				e.preventDefault();
+				$("form#data button[type='submit']").prop("disabled", true);
+				let countdown = 60;
+				let cd = setInterval(() => {
+					$("span#cd").text(--countdown + 's');
+					if (countdown === 0) {
+						clearInterval(cd);
+						$("span#cd").text('');
+						$("form#data button[type='submit']").prop("disabled", false);
+					}
+				}, 1000);
 				$.post("/suggestion/add", {
 					page: location.pathname.replace("/edit", ''),
 					data: JSON.stringify(getCardData())
