@@ -9,8 +9,16 @@ block content
 		div.card.card-body
 			ol
 				each suggestion in suggestions
-					li
+					li(style="line-height:2;")
 						if user && user.type === "Admin"
 							a(href="/suggestion/" + suggestion._id) #{suggestion.user}: #{suggestion.page}
 						else
-							| #{suggestion.user}: #{suggestion.page}
+							| #{getDateFromObjectID(suggestion._id)}
+							|
+							a(href=suggestion.page)= suggestion.page
+							|
+							| by #{suggestion.user}
+	-
+		function getDateFromObjectID(id) {
+			return (new Date(parseInt(id.toString().substring(0, 8), 16) * 1000)).toString().substring(4, 24);
+		}
