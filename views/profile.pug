@@ -78,7 +78,7 @@ block content
                 else
                   each character in profileInfo.characters
                     img(src="/images/faces/"+ character + ".png" style="width:32px;height:32px;")
-    if profileInfo.isPrivate && user.name !== profileInfo.karasu_name
+    if profileInfo.isPrivate && (!user || user.name !== profileInfo.karasu_name)
       div.card.card-body
         p.my-5.text-center.text-muted= t("profile.private_collection")
     else
