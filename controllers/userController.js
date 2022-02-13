@@ -423,7 +423,7 @@ exports.updateSupport = async function(req, res) {
     let newstatus = JSON.parse(req.body.newstatus);
     return res.json(await userService.updateSupport(user, newstatus));
   } catch(e) {
-    return res.send(e.message);
+    return res.json({ err: true, message: e.message });
   }
 };
 

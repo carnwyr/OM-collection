@@ -3,13 +3,15 @@ $(document).ready(function() {
   $("#ban").on("click", function() {
     $.post("/user/issueBan", { name: $(this).data("name") })
       .done(function(result) {
-        alert(JSON.stringify(result));
+        let status = result.err?"danger":"success";
+        showAlert(status, result.message);
       });
   });
   $("#delete").on("click", () => {
     $.post("/suggestion/refuse", { _id: suggestion_id })
       .done(function(result) {
-        alert(JSON.stringify(result));
+        let status = result.err?"danger":"success";
+        showAlert(status, result.message);
       });
   });
   $("#save").on("click", () => {
@@ -17,7 +19,8 @@ $(document).ready(function() {
       _id: suggestion_id,
       data: $("textarea#final").val()
     }).done(function(result) {
-      alert(JSON.stringify(result));
+      let status = result.err?"danger":"success";
+      showAlert(status, result.message);
     });
   });
 });

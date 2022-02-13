@@ -45,6 +45,7 @@ function updateSupportStatus() {
     user: $(this).parent().attr("id"),
     newstatus: $(this).val()
   }).done(function(result) {
-    alert(JSON.stringify(result));
+    let status = result.err?"danger":"success";
+    showAlert(status, result.message);
   });
 }
