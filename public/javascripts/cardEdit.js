@@ -1,4 +1,6 @@
 $(document).ready(function() {
+	originalData = JSON.stringify(getCardData());
+
 	$("#name").on("focusout", fillUniqueName);
 
 	$("#uploadL").on("change", {extra: "#imageResultL"}, imageUploaded);

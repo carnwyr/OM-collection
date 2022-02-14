@@ -220,10 +220,8 @@ block content
 			</div>
 		</div>
 		script.
-			function submitChange(e) {
-				e.preventDefault();
+			function setCD(countdown) {
 				$("form#data button[type='submit']").prop("disabled", true);
-				let countdown = 60;
 				let cd = setInterval(() => {
 					$("span#cd").text(--countdown + 's');
 					if (countdown === 0) {
@@ -232,9 +230,19 @@ block content
 						$("form#data button[type='submit']").prop("disabled", false);
 					}
 				}, 1000);
+			}
+			function submitChange(e) {
+				e.preventDefault();
+				let newData = JSON.stringify(getCardData());
+				if (newData === originalData) {
+					setCD(20);
+					showAlert("warning", "You didn't make any change.")
+					return;
+				}
+				setCD(60);
 				$.post("/suggestion/add", {
 					page: location.pathname.replace("/edit", ''),
-					data: JSON.stringify(getCardData())
+					data: newData
 				}, function(result) {
 					if (result.err) {
 						showAlert("danger", result.message);

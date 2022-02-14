@@ -147,9 +147,6 @@ exports.getEventEditPage = async function(req, res, next) {
 		let data = await eventService.getEvent({ "name.en": eventName });
 		if (!data) throw createError(404, "Event not found");
 
-		data.start = formatDateTime(data.start);
-		data.end = formatDateTime(data.end);
-
 		var cards = await cardService.getCards();
 		var cardNames = cards.map(x => x.name);
 
@@ -160,7 +157,3 @@ exports.getEventEditPage = async function(req, res, next) {
 		return next(e);
 	}
 };
-
-function formatDateTime(datetime) {
-	return dayjs.tz(datetime, "UTC").format('YYYY.MM.DD, HH:mm:ss');
-}

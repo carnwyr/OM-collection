@@ -231,7 +231,8 @@ block content
 						}
 					+uploadImage("Event image", data ? "/images/events/" + data.name.en + ".jpg" : "#")
 				hr
-				button#submit.btn.btn-primary Submit Change
+				button#submit.btn.btn-primary.mr-2 Submit Change
+				span#cd
 
 			template#rewardTemplate
 				+rewardEntry()
@@ -299,10 +300,28 @@ block content
 			</div>
 		</div>
 		script.
+			function setCD(countdown) {
+				$("button#submit").prop("disabled", true);
+				let cd = setInterval(() => {
+					$("span#cd").text(--countdown + 's');
+					if (countdown === 0) {
+						clearInterval(cd);
+						$("span#cd").text('');
+						$("button#submit").prop("disabled", false);
+					}
+				}, 1000);
+			}
 			function saveChanges(e) {
 				e.preventDefault();
+				let newData = JSON.stringify(prepareEventData());
+				if (newData === originalData) {
+					setCD(20);
+					showAlert("warning", "You didn't make any change.")
+					return;
+				}
+				setCD(60);
 				$.post("/suggestion/add", {
-					data: JSON.stringify(prepareEventData()),
+					data: newData,
 					page: location.pathname.replace("/edit", '')
 				}, function(result) {
 						if (result.err) {

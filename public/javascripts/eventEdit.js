@@ -9,6 +9,8 @@ var selectPickerOptions = {
 $(document).ready(function () {
 	createMasks();
 
+	originalData = JSON.stringify(prepareEventData());
+
 	$(document).on("click", ".add-item", addItem);
 	$(document).on("click", ".remove-item", removeItem);
 
