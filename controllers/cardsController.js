@@ -228,7 +228,7 @@ exports.directImage = async function (req, res, next) {
 	cardName = cardService.decodeCardName(cardName);
 	var isHidden = await cardService.isHidden(cardName);
 	if (isHidden && (!req.user || !req.user.isAdmin)) {
-		return next(new Error("Not found"));
+		return next(createError(404));
 	}
 	next();
 };

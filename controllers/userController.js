@@ -151,7 +151,7 @@ exports.isSameUser = function() {
 		if (req.user && (req.user.name == req.params.name || exports.hasAccess("Admin"))) {
 			return next();
 		}
-		return next(createError(404, "Please log in and try again!"));
+		return next(createError(401, "Please log in and try again!"));
 	}
 };
 
@@ -328,8 +328,7 @@ exports.verifyEmail = function(req, res, next) {
 			return next(err);
 		}
 		if (!record) {
-			var err = new Error('Invalid link');
-			return next(err);
+			return next(createError(404, "Invalid link."));
 		}
 		var setEmail = Users.updateOne({"info.name": req.user.name}, {"info.email": record.email}, (err) => {
 			if (err) {
@@ -533,7 +532,7 @@ exports.canEdit = function() {
   return function(req, res, next) {
     if (!req.user ||
         req.user.supportStatus.some(badge => badge.name === "bannedFromMakingSuggestions")) {
-      return next(new Error("Please log in to access this page."));
+      return next(createError(401, "Please log in to access this page."));
     }
     return next();
   }
