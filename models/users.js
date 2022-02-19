@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const badgeSchema = new Schema({
 	name: String,
 	level: Number
-});
+}, { _id: false });
 
 const userSchema = new Schema({
 	info: {

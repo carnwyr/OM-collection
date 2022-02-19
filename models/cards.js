@@ -6,7 +6,7 @@ const strengthSchema = new Schema({
 	min: Number,
 	max: Number,
 	fdt: Number
-});
+}, { _id: false });
 
 const cardSchema = new mongoose.Schema({
 	name: { type: String, required: true, unique: true },
