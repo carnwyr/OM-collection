@@ -7,7 +7,7 @@ $(document).ready(function() {
 	$("#uploadLB").on("change", {extra: "#imageResultLB"}, imageUploaded);
 	$("#uploadS").on("change", {extra: "#imageResultS"}, imageUploaded);
 
-	$("form#data").on("submit", submitChange);  // function is in pug file
+	$("#submit").on("click", submitChange);  // function is in pug file
 
 	$("#addEvent").on("click", addEvent);
 	$("#removeEvent").on("click", removeEvent);
@@ -64,6 +64,7 @@ function getCardData() {
 		uniqueName: $("#uniqueName").val(),
 		ja_name: $("#ja_name").val(),
 		source: getCardSource("#source"),
+		strength: getCardStrength(),
 		type: $("#type").val(),
 		rarity: $("#rarity").val(),
 		attribute: $("#attribute").val(),
@@ -71,6 +72,33 @@ function getCardData() {
 		number: $("#number").val(),
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};
+}
+
+function getCardStrength() {
+	let formData = new FormData($("div#strength>form")[0]);
+	let data = {
+		pride: [],
+		greed: [],
+		envy: [],
+		wrath: [],
+		lust: [],
+		gluttony: [],
+		sloth: []
+	};
+
+	for (var pair of formData.entries()) {
+		data[pair[0]].push(pair[1]);
+	}
+
+	for (const key in data) {
+		data[key] = {
+			min: data[key][0],
+			max: data[key][1],
+			fdt: data[key][2]
+		}
+	}
+
+	return data;
 }
 
 function getSelectedCharacters() {

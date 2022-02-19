@@ -20,12 +20,11 @@ exports.getSuggestionPage = async function(req, res, next) {
 
 async function getOriginalFile(path) {
 	try {
-		let db = path[path.length - 2], doc = path[path.length - 1].replace(/_/g, " ");
+		let db = path[path.length - 2];
 		if (db === "card") {
-			let a = await cardService.getCard({ name: doc });
-			return a;
+			return await cardService.getCard({ uniqueName: path[path.length - 1] });;
 		} else if (db === "event") {
-			return await eventService.getEvent({ "name.en": doc });
+			return await eventService.getEvent({ "name.en": path[path.length - 1].replace(/_/g, " ") });
 		} else {
 			return { error: "Something went wrong." };
 		}
