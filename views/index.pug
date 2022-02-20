@@ -4,51 +4,48 @@ block scripts
   link(rel="stylesheet" href="/stylesheets/homepage.css")
 
 block content
-  div.row
-    section.landing-page
-      div.card.hovercard
-        div.cardheader
-        div.avatar
-          img(alt="pfp" src="/images/karasu.png")
-      div.container
-        div.row(style="margin-top:140px;")
-          div.col-12.mb-3.text-center
-            a(href="/cards" type="button" class="btn btn-primary m-1")= t("common.cards")
-            if !user
-              a(href="/signup" type="button" class="btn btn-primary m-1")= t("common.signup")
-              a(href="/login" type="button" class="btn btn-primary m-1")= t("common.login")
-            else
-              a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1")= t("title.my_collection")
-              a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1")= t("title.my_favourites")
-              a(href="/" + user.name + "/profile" type="button" class="btn btn-primary m-1")= t("title.my_profile")
-            a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
+  div.hovercard
+    div.cardheader
+    div.avatar
+      img(alt="karasu_profile" src="/images/karasu.png")
+  div.container
+    div.row
+      div.col-12.mb-3.text-center
+        a(href="/cards" type="button" class="btn btn-primary m-1")= t("common.cards")
+        if !user
+          a(href="/signup" type="button" class="btn btn-primary m-1")= t("common.signup")
+          a(href="/login" type="button" class="btn btn-primary m-1")= t("common.login")
+        else
+          a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1")= t("title.my_collection")
+          a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1")= t("title.my_favourites")
+          a(href="/" + user.name + "/profile" type="button" class="btn btn-primary m-1")= t("title.my_profile")
+        a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
 
-        if (!user || !user.isSupporter)
-          div.ddd <div id="ezoic-pub-ad-placeholder-109"></div>
+      if (!user || !user.isSupporter)
+        div.ddd <div id="ezoic-pub-ad-placeholder-109"></div>
 
-        div.row
-          div.col-12.col-md-6.mb-4
-            div.card.h-100
-              div.card-body
-                h5.card-title What's this?
-                p.card-text Karasu OS is a website for you to record and share your cards online. It's built by fans on a completely voluntary basis. We are not associated in any way with our official developers (great job they did making the game &#x1F44F;).
-                h5.card-title Contacts
-                p.card-text.mb-0 Need help?
-                  ul
-                    li Link to Discord server:
-                      |
-                      |
-                      a(href="https://discord.gg/Y3KMW7U") discord.gg/Y3KMW7U
-                    li Email:
-                      |
-                      |
-                      a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
-          div.col-12.col-md-6.mb-4
-            div#About.card.h-100
-              div.card-body
-                h5.card-title How does it work?
-                div.card-text
-                  p You can browse the card gallery without creating an account.
-                  p To track your cards online you'll need to create an account. Log in to your account and head to Gallery. Click "Manage Collection" and select your cards.
-                  p Pressing Select All with filters applied will select only the cards that are displayed.
-                  p After saving you can check your cards in My collection. You can copy the link to that page and share it with other players, they'll be able to see your cards as well.
+      div.col-12.col-md-6.mb-4
+        div.card.h-100
+          div.card-body
+            h5.card-title What's this?
+            p.card-text Karasu OS is a website for you to record and share your cards online. It's built by fans on a completely voluntary basis. We are not associated in any way with our official developers (great job they did making the game &#x1F44F;).
+            h5.card-title Contacts
+            p.card-text.mb-0 Need help?
+              ul
+                li Link to Discord server:
+                  |
+                  |
+                  a(href="https://discord.gg/Y3KMW7U") discord.gg/Y3KMW7U
+                li Email:
+                  |
+                  |
+                  a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
+      div.col-12.col-md-6.mb-4
+        div#About.card.h-100
+          div.card-body
+            h5.card-title How does it work?
+            div.card-text
+              p You can browse the card gallery without creating an account.
+              p To track your cards online you'll need to create an account. Log in to your account and head to Gallery. Click "Manage Collection" and select your cards.
+              p Pressing Select All with filters applied will select only the cards that are displayed.
+              p After saving you can check your cards in My collection. You can copy the link to that page and share it with other players, they'll be able to see your cards as well.
