@@ -8,129 +8,170 @@ block content
 	div#alert(role="alert")
 	div(class="container")
 		h1= title
-		form#data.card.mb-4
-			div(class='card-body mx-4')
-				if !user.isAdmin
-					h5.text-center Please upload images to
-						|
-						|
-						a(href="https://drive.google.com/drive/folders/1Tbo6bPrpp0aYb_YCMotNmQXVychxBseI" target="_blank") our google drive folder
-						| .
-					hr
-				div(class='form-group')
-					label(for="name") Name
-					input(class='form-control' type="text" id="name" name="name" value=card?card.name:'')
-				div(class='form-group'+(user.isAdmin?'':" d-none"))
-					label(for="uniqueName") Unique name
-					input(class='form-control' type="text" id="uniqueName" name="uniqueName" value=card?card.uniqueName:'')
-					small(class='form-text text-muted') Must use underscore instead of spaces, can't use \/:*?"<>|
-				div(class='form-group')
-					label(for="ja_name") Japanese Name
-					input(class='form-control' type="text" id="ja_name" name="ja_name" value=card?card.ja_name:'???')
-				span How to get
-				div.form-inline.mb-2
-					div#source
-						if card && card.source.length !== 0
-							each i in card.source
-								input(class="form-control" type="text" value=i)
-						else
-							input(class="form-control" type="text" value="???")
-					button#removeEvent.btn.text-primary(type="button" data-target="#source") &minus;
-					button#addEvent.btn.text-primary(type="button" data-target="#source") &plus;
-				p.small.text-muted Example lesson source: Hard (3-13, 3-14, 3-15)
-				div(class='form-group')
-					label(for="type") Type
-					select(class='custom-select' id="type" name="type")
-						option(value='Demon' selected=(card?card.type==='Demon':true)) Demon
-						option(value='Memory' selected=(card?card.type==='Memory':false)) Memory
-				div(class='form-group')
-					label(for="rarity") Rarity
-					select(class='custom-select' id="rarity" name="rarity")
-						option(value='N' selected=(card?card.rarity==='N':true)) N
-						option(value='R' selected=(card?card.rarity==='R':false)) R
-						option(value='SR' selected=(card?card.rarity==='SR':false)) SR
-						option(value='SSR' selected=(card?card.rarity==='SSR':false)) SSR
-						option(value='UR' selected=(card?card.rarity==='UR':false)) UR
-						option(value='UR+' selected=(card?card.rarity==='UR+':false)) UR+
-				div(class='form-group')
-					label(for="attribute") Attribute
-					select(class='custom-select' id="attribute" name="attribute")
-						option(value='Pride' selected=(card?card.attribute==='Pride':true)) Pride
-						option(value='Greed' selected=(card?card.attribute==='Greed':false)) Greed
-						option(value='Envy' selected=(card?card.attribute==='Envy':false)) Envy
-						option(value='Wrath' selected=(card?card.attribute==='Wrath':false)) Wrath
-						option(value='Lust' selected=(card?card.attribute==='Lust':false)) Lust
-						option(value='Gluttony' selected=(card?card.attribute==='Gluttony':false)) Gluttony
-						option(value='Sloth' selected=(card?card.attribute==='Sloth':false)) Sloth
-				div(class='form-group')
-					label Characters
-					each character in ALL_CHARACTERS
-						div.custom-control.custom-checkbox
-							input.custom-control-input(id=character type="checkbox" name="characters" value=character checked=(card?card.characters.includes(character):false))
-							label.custom-control-label(for=character)= character
-				div(class='form-group'+(user.isAdmin?'':" d-none"))
-					label(for="number") Number
-					input(class='form-control' type="text" id="number" name="number" value=card?card.number:'')
-				if !card
-					div(class='custom-control custom-checkbox'+(user.isAdmin?'':" d-none"))
-						input(class='custom-control-input' type="checkbox" id="isHidden" name="isHidden")
-						label(class='custom-control-label' for="isHidden") Hidden card
-				if user.type === "Admin"
-					div(class='row mx-0 mt-3')
-						div.col-12.col-md-4
-							div(class='input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary')
-								input(id="uploadL" type="file" class="form-control border-0 upload" accept=".jpg")
-								label(for="uploadL" class="font-weight-light text-muted uploadLabel") Original image
-								div(class="input-group-append")
-									label(for="uploadL" class="btn btn-light m-0 rounded-pill px-4")
-										svg(width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-cloud-upload" fill="#4e5761" xmlns="http://www.w3.org/2000/svg" style='position: relative; right: 4px;')
-											path(fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z")
-											path(fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z")
-										small(class="text-uppercase font-weight-bold text-muted") Choose file
-						div.col-12.col-md-4
-							div(class="input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
-								input(id="uploadLB" type="file" class="form-control border-0 upload" accept=".jpg")
-								label(for="uploadLB" class="font-weight-light text-muted uploadLabel") Bloomed image
-								div(class="input-group-append")
-									label(for="uploadLB" class="btn btn-light m-0 rounded-pill px-4")
-										svg(width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-cloud-upload" fill="#4e5761" xmlns="http://www.w3.org/2000/svg" style='position: relative; right: 4px;')
-											path(fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z")
-											path(fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z")
-										small(class="text-uppercase font-weight-bold text-muted") Choose file
-						div.col-12.col-md-4
-							div(class="input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
-								input(id="uploadS" type="file" class="form-control border-0 upload" accept=".jpg")
-								label(for="uploadS" class="font-weight-light text-muted uploadLabel") Preview image
-								div(class="input-group-append")
-									label(for="uploadS" class="btn btn-light m-0 rounded-pill px-4")
-										svg(width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-cloud-upload" fill="#4e5761" xmlns="http://www.w3.org/2000/svg" style='position: relative; right: 4px;')
-											path(fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z")
-											path(fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z")
-										small(class="text-uppercase font-weight-bold text-muted") Choose file
-					div(class='row mx-0 mb-4')
-						div.col-12.col-md-4
-							div(class="image-area mt-2 h-100")
-								div(style='position: relative')
-									if card
-										img(id="imageResultL" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + ".jpg")
-									else
-										img(id="imageResultL" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="#")
-						div.col-12.col-md-4
-							div(class="image-area mt-2 h-100")
-								div(style='position: relative')
-									if card
-										img(id="imageResultLB" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + "_b.jpg")
-									else
-										img(id="imageResultLB" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="#")
-						div.col-12.col-md-4
-							div(class="image-area mt-2 h-100 d-flex")
-								div(class=' mx-auto align-self-center' style='position: relative')
-									if card
-										img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm d-block" style='max-width: 120px;' src="/images/cards/S/" + card.uniqueName + ".jpg")
-									else
-										img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" style='max-width: 120px;' src="#")
+		div.card.mb-4
+			div.card-body
+				<ul class="nav nav-tabs" id="cardTab" role="tablist">
+					<li class="nav-item" role="presentation">
+						<a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General info</a>
+					</li>
+					<li class="nav-item" role="presentation">
+						<a class="nav-link" id="strength-tab" data-toggle="tab" href="#strength" role="tab" aria-controls="strength" aria-selected="false">Strength</a>
+					</li>
+					<li class="nav-item" role="presentation">
+						<a class="nav-link" id="skills-tab" data-toggle="tab" href="#skills" role="tab" aria-controls="skills" aria-selected="false">Skills</a>
+					</li>
+				</ul>
+				<div class="tab-content py-3 px-md-3" id="cardTabContent">
+					div#general.tab-pane.fade.show.active(role="tabpanel" aria-labelledby="general-tab")
+						form.form-row
+							if !user.isAdmin
+								div.col-12.text-center
+									h5 Please upload images to
+										|
+										|
+										a(href="https://drive.google.com/drive/folders/1Tbo6bPrpp0aYb_YCMotNmQXVychxBseI" target="_blank") our google drive folder
+										| .
+									hr
+							div.form-group.col-12.col-md-6
+								label(for="name") Name
+								input(class='form-control' type="text" id="name" name="name" value=card?card.name:'')
+							div.form-group.col-12.col-md-6
+								label(for="ja_name") Japanese Name
+								input(class='form-control' type="text" id="ja_name" name="ja_name" value=card?card.ja_name:'???')
+							div(class='form-group col-12'+(user.isAdmin?'':" d-none"))
+								label(for="uniqueName") Unique name
+								input(class='form-control' type="text" id="uniqueName" name="uniqueName" value=card?card.uniqueName:'')
+								small(class='form-text text-muted') Must use underscore instead of spaces, can't use \/:*?"<>|
+							div.col-12
+								label How to get
+								div.form-inline
+									div#source
+										if card && card.source.length !== 0
+											each i in card.source
+												input(class="form-control" type="text" value=i)
+										else
+											input(class="form-control" type="text" value="???")
+									button#removeEvent.btn.text-primary(type="button" data-target="#source") &minus;
+									button#addEvent.btn.text-primary(type="button" data-target="#source") &plus;
+								p.small.text-muted Example lesson source: Hard (3-13, 3-14, 3-15)
+							div.form-group.col-12
+								label(for="type") Type
+								select(class='custom-select' id="type" name="type")
+									option(value='Demon' selected=(card?card.type==='Demon':true)) Demon
+									option(value='Memory' selected=(card?card.type==='Memory':false)) Memory
+							div.form-group.col-12
+								label(for="rarity") Rarity
+								select(class='custom-select' id="rarity" name="rarity")
+									option(value='N' selected=(card?card.rarity==='N':true)) N
+									option(value='R' selected=(card?card.rarity==='R':false)) R
+									option(value='SR' selected=(card?card.rarity==='SR':false)) SR
+									option(value='SSR' selected=(card?card.rarity==='SSR':false)) SSR
+									option(value='UR' selected=(card?card.rarity==='UR':false)) UR
+									option(value='UR+' selected=(card?card.rarity==='UR+':false)) UR+
+							div.form-group.col-12
+								label(for="attribute") Attribute
+								select(class='custom-select' id="attribute" name="attribute")
+									option(value='Pride' selected=(card?card.attribute==='Pride':true)) Pride
+									option(value='Greed' selected=(card?card.attribute==='Greed':false)) Greed
+									option(value='Envy' selected=(card?card.attribute==='Envy':false)) Envy
+									option(value='Wrath' selected=(card?card.attribute==='Wrath':false)) Wrath
+									option(value='Lust' selected=(card?card.attribute==='Lust':false)) Lust
+									option(value='Gluttony' selected=(card?card.attribute==='Gluttony':false)) Gluttony
+									option(value='Sloth' selected=(card?card.attribute==='Sloth':false)) Sloth
+							div.form-group.col-12
+								label Characters
+								each character in ALL_CHARACTERS
+									div.custom-control.custom-checkbox
+										input.custom-control-input(id=character type="checkbox" name="characters" value=character checked=(card?card.characters.includes(character):false))
+										label.custom-control-label(for=character)= character
+							div(class='form-group col-12'+(user.isAdmin?'':" d-none"))
+								label(for="number") Number
+								input(class='form-control' type="text" id="number" name="number" value=card?card.number:'')
+							if !card
+								div.col-12
+									div(class='custom-control custom-checkbox'+(user.isAdmin?'':" d-none"))
+										input(class='custom-control-input' type="checkbox" id="isHidden" name="isHidden")
+										label(class='custom-control-label' for="isHidden") Hidden card
+						if user.type === "Admin"
+							hr
+							div.row
+								div.col-12.col-md-4
+									div(class='input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary')
+										input(id="uploadL" type="file" class="form-control border-0 upload" accept=".jpg")
+										label(for="uploadL" class="font-weight-light text-muted uploadLabel") Original image
+										div(class="input-group-append")
+											label(for="uploadL" class="btn btn-light m-0 rounded-pill px-4")
+												svg(width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-cloud-upload" fill="#4e5761" xmlns="http://www.w3.org/2000/svg" style='position: relative; right: 4px;')
+													path(fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z")
+													path(fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z")
+												small(class="text-uppercase font-weight-bold text-muted") Choose file
+								div.col-12.col-md-4
+									div(class="input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
+										input(id="uploadLB" type="file" class="form-control border-0 upload" accept=".jpg")
+										label(for="uploadLB" class="font-weight-light text-muted uploadLabel") Bloomed image
+										div(class="input-group-append")
+											label(for="uploadLB" class="btn btn-light m-0 rounded-pill px-4")
+												svg(width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-cloud-upload" fill="#4e5761" xmlns="http://www.w3.org/2000/svg" style='position: relative; right: 4px;')
+													path(fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z")
+													path(fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z")
+												small(class="text-uppercase font-weight-bold text-muted") Choose file
+								div.col-12.col-md-4
+									div(class="input-group mb-2 px-2 py-2 rounded-pill bg-white shadow-sm border border-primary")
+										input(id="uploadS" type="file" class="form-control border-0 upload" accept=".jpg")
+										label(for="uploadS" class="font-weight-light text-muted uploadLabel") Preview image
+										div(class="input-group-append")
+											label(for="uploadS" class="btn btn-light m-0 rounded-pill px-4")
+												svg(width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-cloud-upload" fill="#4e5761" xmlns="http://www.w3.org/2000/svg" style='position: relative; right: 4px;')
+													path(fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z")
+													path(fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z")
+												small(class="text-uppercase font-weight-bold text-muted") Choose file
+							div(class='row mx-0 mb-4')
+								div.col-12.col-md-4
+									div(class="image-area mt-2 h-100")
+										div(style='position: relative')
+											if card
+												img(id="imageResultL" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + ".jpg")
+											else
+												img(id="imageResultL" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="#")
+								div.col-12.col-md-4
+									div(class="image-area mt-2 h-100")
+										div(style='position: relative')
+											if card
+												img(id="imageResultLB" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="/images/cards/L/" + card.uniqueName + "_b.jpg")
+											else
+												img(id="imageResultLB" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" src="#")
+								div.col-12.col-md-4
+									div(class="image-area mt-2 h-100 d-flex")
+										div(class=' mx-auto align-self-center' style='position: relative')
+											if card
+												img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm d-block" style='max-width: 120px;' src="/images/cards/S/" + card.uniqueName + ".jpg")
+											else
+												img(id="imageResultS" alt="" class="img-fluid rounded shadow-sm mx-auto d-block" style='max-width: 120px;' src="#")
+					div#strength.tab-pane.fade(role="tabpanel" aria-labelledby="strength-tab")
+						form
+							div.table-responsive-lg
+								table.table
+									thead
+										tr
+											th(scope="col")
+											th(scope="col" style="min-width:128px;") Min
+											th(scope="col" style="min-width:128px;") Max
+											th(scope="col" style="min-width:128px;") Full devil's tree unlocked
+									tbody
+										each attribute in ["pride", "greed", "envy", "wrath", "lust", "gluttony", "sloth"]
+											tr
+												- str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
+												th(scope="row")= t(str)
+												td
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].min:""))
+												td
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].max:""))
+												td
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].fdt:""))
+					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
+				</div>
 				hr
-				button.btn.btn-primary.mr-2(type="submit") Save
+				button#submit.btn.btn-primary.mr-2(type="submit") Save
 				span#cd
 
 	if user.type === "Admin"
@@ -221,8 +262,7 @@ block content
 					}
 				}, 1000);
 			}
-			function submitChange(e) {
-				e.preventDefault();
+			function submitChange() {
 				let newData = JSON.stringify(getCardData());
 				if (newData === originalData) {
 					setCD(20);
