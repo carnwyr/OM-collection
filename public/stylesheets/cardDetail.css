@@ -1,0 +1,40 @@
+#star {
+	transition: transform .5s ease;
+	-webkit-transition: transform .5s ease;
+	overflow: visible;
+}
+
+#star:hover {
+	cursor: pointer;
+	transform: scale(1.2);
+}
+
+#cardToggle img {
+	box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
+#cards {
+	display: flex;
+	border-radius: 8px;
+	margin-bottom: .5rem;
+}
+
+#cards>div {
+	padding: 0 .25rem;
+}
+
+@media (min-width: 992px) {
+	#cards {
+		border-radius: 8px;
+		background:rgba(255, 255, 255, .8);
+		padding: 1.5rem;
+	}
+	#cards>div {
+		text-align: center;
+	}
+	#cards img {
+		width: 60%;
+		height: auto;
+		box-shadow: none !important;
+	}
+}

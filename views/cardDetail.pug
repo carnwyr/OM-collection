@@ -1,7 +1,7 @@
 extends layout
 
 block scripts
-  link(rel="stylesheet" href="/stylesheets/cardDetailStyle.css")
+  link(rel="stylesheet" href="/stylesheets/cardDetail.css")
   script.
     var i18next = { "collected_count": "#{t("cards.collected_count", { percentage: "undefined" })}", "favourite_count": "!{t("cards.favourite_count", { percentage: "undefined" })}" };
     const CARD_NAME = !{JSON.stringify(card.uniqueName)};
@@ -20,41 +20,19 @@ block content
               button.btn.btn-danger(onclick="deleteCard()") Delete
               button.btn.btn-secondary(data-dismiss="modal") Cancel
   div.container
-    h2= title
-    div.row
-      //- Mobile/ Tablet Screen
-      if user && !isHidden
-        div(class="col-12 d-flex justify-content-between d-md-none" style="margin-bottom:10px;")
-          button.btn.btn-primary.owned(type="button") collection
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill favourites" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
-
-      div(class="d-block d-lg-none col-12 col-md-7")
-        if card.type == "Demon"
-          div(class="card text-center")
-            div.card-header
-              ul(class="nav nav-pills card-header-pills nav-justified")
-                li.nav-item
-                  a(class="nav-link active" id="original-card-tab" data-toggle="tab" href="#originalCard" role="tab" aria-controls="original" aria-selected="true")= t("cards.original")
-                li.nav-item
-                  a(class="nav-link" id="bloomed-card-tab" data-toggle="tab" href="#bloomedCard" role="tab" aria-controls="bloomed" aria-selected="false")= t("cards.bloomed")
-        div#cardToggle.tab-content.mb-3
-          div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
-            a(href="/images/cards/L/" + card.uniqueName + ".jpg")
-              img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
-          if card.type == "Demon"
-            div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
-              a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
-                img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
-      //- Desktop Screen
-      div.d-none.d-lg-block.col-4(style="padding:0 2rem 0;")
+    h1= title
+    div#cards
+      div.w-50
+        h5 Original
         a(href="/images/cards/L/" + card.uniqueName + ".jpg")
-          img.w-100(src="/images/cards/L/" + card.uniqueName + ".jpg")
+          img.img-fluid.shadow(src="/images/cards/L/" + card.uniqueName + ".jpg")
       if card.type === "Demon"
-        div.d-none.d-lg-block.col-4(style="padding:0 2rem 0;")
+        div.w-50
+          h5 Bloomed
           a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
-            img.w-100(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
-      //- Info
-      div(class="col-12 col-md-5 col-lg-4")
+            img.img-fluid.shadow(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
+    div.row
+      div.col-12
         div.card
           div.card-body
             p #[strong #{t("cards.type")}:] #{t("cards."+card.type)}
