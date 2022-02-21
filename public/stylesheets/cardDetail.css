@@ -13,28 +13,28 @@
 	box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
 }
 
-#cards {
+.card-container {
 	display: flex;
+	justify-content: center;
 	border-radius: 8px;
 	margin-bottom: .5rem;
 }
 
-#cards>div {
-	padding: 0 .25rem;
-}
-
-@media (min-width: 992px) {
-	#cards {
-		border-radius: 8px;
+@media (min-width: 768px) {
+	.card-container {
+		border-radius: 4px;
 		background:rgba(255, 255, 255, .8);
 		padding: 1.5rem;
 	}
-	#cards>div {
+	.card-container>div {
 		text-align: center;
 	}
-	#cards img {
+	.card-container img {
 		width: 60%;
 		height: auto;
 		box-shadow: none !important;
+	}
+	#memory {
+		width: 50%;
 	}
 }
