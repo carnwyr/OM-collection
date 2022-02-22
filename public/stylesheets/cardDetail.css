@@ -55,11 +55,11 @@ svg.bi-star-fill:hover {
 	}
 }
 
-#info>div {
+#info .row>div {
 	margin-bottom: 1.5rem;
 }
 
-#info>div:nth-child(odd) {
+#info .row>div:nth-child(odd) {
 	border-radius: 50px;
 	background: linear-gradient(to right, rgb(184,121,252), rgb(223,130,246));
 	color: white;
@@ -69,10 +69,13 @@ svg.bi-star-fill:hover {
 }
 
 @media (max-width: 768px) {
-	#info>div {
+	#info .card-title {
+		align-items: center;
+	}
+	#info .row>div {
 		margin-bottom: 1rem;
 	}
-	#info>div:nth-child(even) {
+	#info .row>div:nth-child(even) {
 		text-align: center;
 	}
 }
