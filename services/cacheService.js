@@ -45,10 +45,9 @@ async function cacheSurpriseGuest() {
 		{chara:"Simeon", interactions:[]},
 		{chara:"Solomon", interactions:[]}
 	];
-	let interactionList = await Interactions.find({});
+	let interactionList = await Interactions.find({}).sort({ _id: 1 });
 	interactions.forEach(function(obj) {
 		obj.interactions = interactionList.filter(int => int.character === obj.chara);
-		// TODO: obj.interactions.sort((a, b) => a.order - b.order);
 	});
 	return interactions;
 }
