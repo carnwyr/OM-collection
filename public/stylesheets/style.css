@@ -8,7 +8,7 @@ body {
   src: url("/fonts/Nunito-Regular.ttf");
 }
 
-h1, h2 {
+h1 {
   color: var(--primary);
   padding-bottom: .5rem;
   margin-bottom: 1rem;
