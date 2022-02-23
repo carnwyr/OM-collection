@@ -1,3 +1,4 @@
+let originalData, animations = { animation1: '', animation2: ''};  // TODO: refactor
 $(document).ready(function() {
 	originalData = JSON.stringify(getCardData());
 
@@ -12,6 +13,26 @@ $(document).ready(function() {
 	$("#addEvent").on("click", addEvent);
 	$("#removeEvent").on("click", removeEvent);
 });
+
+$(document).on("change", "input[accept='.mp4']", function(evt) {
+	let $source = $('#' + $(this).data("display"));
+	$source[0].src = URL.createObjectURL(this.files[0]);
+	$source.parent()[0].load();
+
+	getBase64(this.files[0]).then((data) => {
+		animations[$(this).data("display")] = data;
+		showAlert("info", data.slice(0, 30) + "...");
+	});
+});
+
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
 
 function fillUniqueName() {
 	var name = $("#name").val();
@@ -69,6 +90,7 @@ function getCardData() {
 		rarity: $("#rarity").val(),
 		attribute: $("#attribute").val(),
 		characters: getSelectedCharacters(),
+		animationType: $("input[name='animationType']:checked").val(),
 		number: $("#number").val(),
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};

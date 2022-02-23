@@ -7,7 +7,7 @@ exports.saveImage = async function (baseImage, oldName, newName, imagePath) {
   if (!baseImage) {
     return renameImage(imagePath, oldName, newName);
   }
-  
+
   var extension = baseImage.substring(baseImage.indexOf("/") + 1, baseImage.indexOf(";base64"));
 
 	if (oldName === newName || !oldName) {
@@ -66,4 +66,15 @@ async function renameImage(imagePath, oldName, newName) {
         resolve();
     });
   });
+}
+
+// TODO: merge with writeImage
+exports.writeFile = function(name, content) {
+  try {
+    content = content.replace(/^data:(.*?);base64,/, "").replace(/ /g, '+');
+    fs.writeFileSync("public/images/cards/animations/" + name, content, 'base64');
+    return { err: null, message: "Success" };
+  } catch(e) {
+    return { err: true, message: e.message };
+  }
 }

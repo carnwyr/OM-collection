@@ -29,6 +29,10 @@ svg.bi-star-fill:hover {
 	margin-bottom: .5rem;
 }
 
+video {
+	width: 100%;
+}
+
 @media (min-width: 768px) {
 	.card-container {
 		border: 2px solid #e8eaf6;
@@ -52,6 +56,9 @@ svg.bi-star-fill:hover {
 	}
 	table#strength tbody th {
 		width: 20%;
+	}
+	video {
+		width: 75%;
 	}
 }
 

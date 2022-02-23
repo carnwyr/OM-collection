@@ -273,14 +273,35 @@ exports.addNewCard = async function(req, res) {
 	return res.json(result);
 };
 
+// TODO: use promise.all
 exports.updateCard = async function(req, res) {
-	var data = {
-		originalUniqueName: req.params.card,
-		cardData: req.body.cardData,
-		images: req.body.images
-	};
-	var result = await cardService.updateCard(data);
-	return res.json(result);
+	try {
+		let result = await cardService.updateCard({
+			originalUniqueName: req.params.card,
+			cardData: req.body.cardData,
+			images: req.body.images
+		});
+
+		if (result.err) {
+			throw new Error(result.message);
+		}
+
+		if (req.body.cardData.animationType !== "null") {
+			if (req.body.animations.animation1) {
+				result = await fileService.writeFile(req.body.cardData.name + ".mp4", req.body.animations.animation1);
+				if (result.err) { throw new Error(result.message) };
+			}
+			if (req.body.cardData.animationType === "homescreen" && req.body.animations.animation2) {
+				result = await fileService.writeFile(req.body.cardData.name + " (Bloomed).mp4", req.body.animations.animation2);
+				if (result.err) { throw new Error(result.message) };
+			}
+		}
+
+		return res.json({ err: null, message: "Card updated!" });
+	} catch(e) {
+		console.log(e);
+		return res.json({ err: true, message: e.message });
+	}
 };
 
 exports.deleteCard = async function (req, res) {

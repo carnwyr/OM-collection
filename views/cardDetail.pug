@@ -113,14 +113,30 @@ block content
                   th.text-center.text-md-left(scope="row")
                     img.mr-0.mr-md-2(src="/images/attributes/" + t(attribute) + ".png" alt=str style="width:24px;height:24px;")
                     span.d-none.d-md-block= t(str)
-                  td= card.strength&&card.strength[attribute].min?card.strength[attribute].min.toLocaleString("en"):"???"
-                  td= card.strength&&card.strength[attribute].max?card.strength[attribute].max.toLocaleString("en"):"???"
-                  td= card.strength&&card.strength[attribute].fdt?card.strength[attribute].fdt.toLocaleString("en"):"???"
+                  td= card.strength&&card.strength[attribute]&&card.strength[attribute].min?card.strength[attribute].min.toLocaleString("en"):"???"
+                  td= card.strength&&card.strength[attribute]&&card.strength[attribute].max?card.strength[attribute].max.toLocaleString("en"):"???"
+                  td= card.strength&&card.strength[attribute]&&card.strength[attribute].fdt?card.strength[attribute].fdt.toLocaleString("en"):"???"
               tr
                 th.text-center.text-md-left(scope="row") Total
                 td= getTotalStrength("min")
                 td= getTotalStrength("max")
                 td= getTotalStrength("fdt")
+    if card.rarity === "UR+"
+      br
+      div(style="border:2px solid #e8eaf6;border-radius:8px;background:rgba(255,255,255,.8);padding:1.5rem;padding-bottom:2rem;")
+        h2.text-center Animations
+        br
+        div.row.justify-content-center
+          div.col-12.col-md-6.text-center.mb-3.mb-md-0
+            video(controls muted)
+              source(src="/images/cards/animations/"+card.name+".mp4" type="video/mp4")
+              | Your browser does not support HTML5 video.
+          if card.animationType && card.animationType === "homescreen"
+            div.col-12.col-md-6.text-center
+              video(controls muted)
+                source(src="/images/cards/animations/"+card.name+" (Bloomed).mp4" type="video/mp4")
+                | Your browser does not support HTML5 video.
+      
 
   if user && user.isAdmin
     div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
