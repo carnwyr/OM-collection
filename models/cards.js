@@ -26,7 +26,7 @@ const cardSchema = new mongoose.Schema({
 		gluttony: strengthSchema,
 		sloth: strengthSchema
 	},
-	animationType: { type: String, enum: ["battle", "homescreen"] },
+	animationType: { type: String },
 	number: { type: Number, required: true }
 });
 

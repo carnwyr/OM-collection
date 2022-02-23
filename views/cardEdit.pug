@@ -173,9 +173,10 @@ block content
 													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].fdt:""))
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
-						p Can only be added with updateCard request.
+						p Can only be added with updateCard request. Chances of renaming/ deleting is low, so, need to manually rename/ delete file.
+						hr
 						div.form-check.form-check-inline
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="null" checked=(!card||!card.animationType||card.animationType==="null"))
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="" checked=(!card||!card.animationType||card.animationType===""))
 							label.form-check-label(for="inlineRadio1") n/a
 						div.form-check.form-check-inline
 							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animationType&&card.animationType==="battle"))
