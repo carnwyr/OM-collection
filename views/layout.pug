@@ -101,6 +101,8 @@ html(lang=t("lang"))
     main.mb-5(style="position:relative;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
       - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
+      if (!user || !user.isSupporter) && title !== "Karasu OS"
+        div.container.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
       if t("lang") === "ja" && title !== "Karasu OS"
         div.container
           div.alert.alert-info.text-center(style="z-index:0!important;" role="alert") 
@@ -114,12 +116,11 @@ html(lang=t("lang"))
               |
               a(href="https://discord.gg/Y3KMW7U" target="_blank") join our discord server
               | .
-      
+
       block content
       if (!user || !user.isSupporter)
         div#kool-aid.container(style="margin:2rem auto;text-align:center;")
-          div.row(style="min-height:250px;")
-            div.col <div id="ezoic-pub-ad-placeholder-122"></div>
+          div.row.justify-content-center(style="min-height:250px;") <div id="ezoic-pub-ad-placeholder-122"></div>
       //- toasts
       div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
         div(class="toast-body")

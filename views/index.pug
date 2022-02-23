@@ -20,10 +20,9 @@ block content
           a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1")= t("title.my_favourites")
           a(href="/" + user.name + "/profile" type="button" class="btn btn-primary m-1")= t("title.my_profile")
         a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
-
-      if (!user || !user.isSupporter)
-        div.ddd.col-12 <div id="ezoic-pub-ad-placeholder-109"></div>
-
+    if (!user || !user.isSupporter)
+      div.ddd <div id="ezoic-pub-ad-placeholder-109"></div>
+    div.row
       div.col-12.col-md-6.mb-4
         div.card.h-100
           div.card-body
