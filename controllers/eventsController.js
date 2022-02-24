@@ -51,24 +51,27 @@ function getFormatedDate(d) {
 
 exports.getEventDetail = async function (req, res, next) {
 	try {
-		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-		var event = await eventService.getEvent({ "name.en": eventName });
+		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		let event = await eventService.getEvent({ "name.en": eventName });
 
 		if (!event) throw createError(404, "Event not found");
 
-		var cards = await cardService.getCards({ source: { $in: [ eventName ] } });
-
-		if (i18next.t("lang") === "ja" && event.name.ja !== '') {
-			var title = event.name.ja;
-		}
-
-		return res.render("eventDetail", {
-			title: title?title:event.name.en,
+		let locals = {
+			title: event.name.en,
 			description: `View "${event.name.en}" and other Obey Me events on Karasu-OS.com`,
 			event: event,
-			cards: cards,
-			user: req.user });
+			user: req.user
+		};
 
+		if (i18next.t("lang") === "ja" && event.name.ja !== '') {
+			locals.title = event.name.ja;
+		}
+
+		if (event.type === "PopQuiz" || event.type === "Nightmare") {
+			locals.cards = await cardService.getCards({ source: { $in: [ eventName ] } });
+		}
+
+		return res.render("eventDetail", locals);
 	} catch (e) {
 		return next(e);
 	}
