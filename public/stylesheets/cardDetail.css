@@ -57,7 +57,7 @@ video {
 	table#strength tbody th {
 		width: 20%;
 	}
-	video {
+	video.homescreen {
 		width: 75%;
 	}
 }

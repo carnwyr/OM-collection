@@ -28,11 +28,11 @@ block content
     div.card-container.my-4.my-md-3
       if card.type === "Demon"
         div.w-50.pr-1.pr-md-0
-          h5.d-none.d-md-block Original
+          h5.d-none.d-md-block Devil's Flower locked
           a(href="/images/cards/L/" + card.uniqueName + ".jpg")
             img.img-fluid.shadow(src="/images/cards/L/" + card.uniqueName + ".jpg")
         div.w-50.pl-1.pr-md-0
-          h5.d-none.d-md-block Flower Unlocked
+          h5.d-none.d-md-block Unlocked
           a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
             img.img-fluid.shadow(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
       else
@@ -126,17 +126,24 @@ block content
       div(style="border:2px solid #e8eaf6;border-radius:8px;background:rgba(255,255,255,.8);padding:1.5rem;padding-bottom:2rem;")
         h2.text-center Animations
         br
+        p#no-anime-error.text-center.d-none Looks like we don't have this animation in database.
+          |
+          |
+          a(href="https://drive.google.com/drive/folders/1L9GbfPaZRU4a19KVDH_0ovz4wh_QDh2m?usp=sharing" target="_blank") Help us add it!
         div.row.justify-content-center
           div.col-12.col-md-6.text-center.mb-3.mb-md-0
-            video(controls muted)
+            video(class=card.animationType controls muted)
               source(src="/images/cards/animations/"+card.name+".mp4" type="video/mp4")
               | Your browser does not support HTML5 video.
           if card.animationType && card.animationType === "homescreen"
             div.col-12.col-md-6.text-center
-              video(controls muted)
+              video(class=card.animationType controls muted)
                 source(src="/images/cards/animations/"+card.name+" (Bloomed).mp4" type="video/mp4")
                 | Your browser does not support HTML5 video.
-      
+      script.
+        $('video source').last().on('error', function() {
+          $("#no-anime-error").removeClass("d-none");
+        });
 
   if user && user.isAdmin
     div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
