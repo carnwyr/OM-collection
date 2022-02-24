@@ -13,7 +13,7 @@ block content
 			div#edit.pt-2.w-100.text-center
 				a.btn.btn-outline-primary(type="button" href=event.name.en.replace(/ /g, "_")+"/edit")
 					| <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square mb-1" viewBox="0 0 16 16">   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/> </svg>
-					| 
+					|
 					| Edit
 			div.card-body
 				div.row
@@ -21,7 +21,7 @@ block content
 						img.img-fluid(src="/images/events/"+event.name.en+".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
 					div.col-12.col-md
 						div.row
-						p Type: #{event.type}
+						p Type: #{t("events." + event.type)}
 						p Start: #{getFormatedDate(event.start)}
 						p End: #{getFormatedDate(event.end)}
 						p Duration: #{Math.ceil((event.end - event.start)/1000/60/60/24)} #{t("common.days")}
@@ -29,23 +29,20 @@ block content
 				p.card-section-title= t("cards.demon_cards")
 				div.row.justify-content-center.mb-4
 					each card in cards.filter(card => card.type === "Demon")
-						div.dcard-container
-							a(href="../card/" + getURL(card.name))
-								img.img-fluid.mb-2.mb-md-auto(src="/images/cards/L/" + card.uniqueName + ".jpg")
-								if card.type === "Demon"
-									img.img-fluid.ml-md-2(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
-									//- figurecaption= card.name
+						div.col-12.col-md-5.mb-3
+							a.d-flex(href="../card/" + getURL(card.name))
+								div.w-50.pr-1: img.img-fluid(src="/images/cards/L/" + card.uniqueName + ".jpg")
+								div.w-50.pl-1: img.img-fluid(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
 
 				//- need to change for Chapter A, M, G
-				if event.type === "PopQuiz" && cards.filter(card => card.type === "Memory").length > 0
+				if event.type === "PopQuiz" && !event.isBirthday && cards.filter(card => card.type === "Memory").length > 0
 					p.card-section-title= t("cards.memory_cards")
 					div.row.justify-content-center
 						each card in cards.filter(card => card.type === "Memory")
-							div.mcard-container
+							div.col-6.col-md-3.mb-3
 								a(href="../" + "card/" + getURL(card.name))
 									img.img-fluid(src="/images/cards/L/" + card.uniqueName + ".jpg")
-									//- figurecaption= card.name
-									
+
 	-
 		function getFormatedDate(d) {
 			if (!d) return "???";

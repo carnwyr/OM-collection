@@ -1,22 +1,3 @@
-.mcard-container {
-  max-width: 180px;
-	margin: .5rem 1.25rem;
-}
-
-.mcard-container img {
-  height: 243px;
-}
-
-.dcard-container {
-  max-width: 380px;
-	margin: .5rem 1.25rem;
-	text-align: center;
-}
-
-.dcard-container img {
-  height: 243px;
-}
-
 p.card-section-title {
 	text-align: center;
 	font-weight: 600;

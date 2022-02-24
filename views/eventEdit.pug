@@ -38,28 +38,28 @@ mixin boxEntry(box = { name: '', itemsCount: '', ultimateReward: '' })
 		button.btn.btn-outline-danger.remove-item(type="button") Remove
 
 mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
-	div.boxset(style="border-radius:8px;border:3px solid var(--secondary);padding:16px;margin-bottom:.5rem;")
-		div.form-group.row
-			label.col-12.col-md-2.col-form-label Box set name:
-			div.col-12.col-md-3
+	div.boxset(style="border-radius:8px;border:2px solid var(--primary);padding:16px;margin-bottom:.5rem;")
+		div.form-row
+			div.form-group.col
+				label Box set name:
 				input.form-control(type="text" name="box-set-name" value=set.name)
-			label.col-12.col-md-2.col-form-label Individual box cost:
-			div.col-12.col-md-3
+			div.form-group.col
+				label Individual box cost:
 				input.form-control(type="number" name="box-set-cost" value=set.cost step="100")
-		div
+		div.p-2.mb-2(style="border-radius:8px;border:2px solid var(--secondary);")
 			div
 				if set.boxes.length !== 0
 					each box in set.boxes
 						+boxEntry(box)
 				else
 					+boxEntry()
-			button.btn.btn-secondary.mb-2.add-item(data-clone="template#box") Add box
+			button.btn.btn-secondary.add-item(data-clone="template#box") Add box
 		button.btn.btn-outline-danger.remove-item(type="button") Remove box set
 
 mixin lockedStageEntry(stage = { name: '', requirement: '' })
 	form.form-inline
 		input.form-control(type="text" name="name" placeholder="stage name" value=stage.name)
-		input.form-control(type="number" name="requirement" placeholder="requirement" value=stage.requirement)
+		input.form-control(type="number" name="requirement" placeholder="required keys" value=stage.requirement)
 		button.btn.btn-outline-danger.remove-item(type="button") Remove
 
 block content
@@ -200,8 +200,8 @@ block content
 														+apEntry()
 												button.btn.btn-secondary.mb-2.add-ap(data-target="#AP" data-clone="#APTemplate") Add AP reward
 									div#box-set.tab-pane(role="tabpanel" aria-labelledby="box-set-tab")
-										p Under maintenance
-										div.d-none
+										p Ultimate rewards format: name/amount. (i.e., card pieces x25/2 )
+										div#boxset-container
 											div
 												if data && data.rewardListType === "boxes"
 													each set in data.boxRewards
