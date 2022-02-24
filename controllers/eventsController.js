@@ -147,7 +147,7 @@ exports.getEventEditPage = async function(req, res, next) {
 		let data = await eventService.getEvent({ "name.en": eventName });
 		if (!data) throw createError(404, "Event not found");
 
-		var cards = await cardService.getCards();
+		var cards = await cardService.getCards();  // so slow x_x
 		var cardNames = cards.map(x => x.name);
 
 		var apPresets = await eventService.getAPPresets();
