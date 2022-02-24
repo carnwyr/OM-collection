@@ -286,7 +286,7 @@ exports.updateCard = async function(req, res) {
 			throw new Error(result.message);
 		}
 
-		if (req.body.cardData.animationType !== "") {
+		if (req.body.cardData.animationType !== "n/a") {
 			if (req.body.animations.animation1) {
 				result = await fileService.writeFile(req.body.cardData.name + ".mp4", req.body.animations.animation1);
 				if (result.err) { throw new Error(result.message) };
