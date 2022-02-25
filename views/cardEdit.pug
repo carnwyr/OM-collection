@@ -166,11 +166,11 @@ block content
 												- str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
 												th(scope="row")= t(str)
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].min:""))
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].min:0))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].max:""))
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].max:0))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:""))
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:0))
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
 						p Can only be added with updateCard request. Chances of renaming/ deleting is low, so, need to manually rename/ delete file.
