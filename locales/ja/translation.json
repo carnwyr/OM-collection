@@ -1,21 +1,27 @@
 {
   "lang": "ja",
   "header": "｜Obey Me!（おべいみー！）攻略｜Karasu-OS.com",
-  "common": {
-    "home": "ホーム",
-    "gallery": "カード",
-    "cards": "カード",
-    "profile": "プロフィール",
-    "rankings": "ランキング",
-    "tools": "ツール",
-    "spg": "反省会攻略",
-    "signup": "アカウントの登録",
-    "login": "ログイン",
-    "logout": "ログアウト",
-    "settings": "設定",
-    "account": "アカウント",
-    "events": "Events",
-    "days": "日"
+  "calculator": {
+    "calculator": "計算機",
+    "ppt": "単回のpts",
+    "currentPts": "現在のpts",
+    "goal": "目標pts",
+    "stageClear1": "今日はもうバトル",
+    "stageClear2": "回済んだ",
+    "calculate": "計算する！",
+    "disclaimer": "計算の結果は参考だけです。APやDPを合理的に利用してください。",
+    "battles": "挑戦回数",
+    "free": "無料",
+    "buy": "有料",
+    "goalToday": "今日の目標",
+    "endingIn": "あと",
+    "today": "今日",
+    "summary": "合計",
+    "FreeAP": "<p style='font-size:large;'>無料AP</p><ul id='free_ap'><li>５分に１点回復</li><li>フレンドから５０点受け取れる</li><li>冷蔵庫ミッションから６０点もらえる（非VIP）</li><li>広告報酬５０点</li><li>反省会プレゼント２０点</li><li>デイリーミッション２０点</li></ul>",
+    "rewards_ap": "イベントのご褒美リスト",
+    "FreeBattles": "<p style='font-size:large;'>無料挑戦回数</p><ul><li>１つのステージには挑戦回数３回ある</li><li>広告で毎日挑戦回数５回回復できる</li></ul>",
+    "ended": "イベントは終了しました",
+    "timeleft": "あと"
   },
   "cards": {
     "source": "入手方法",
@@ -50,28 +56,32 @@
     "collected_count": "全プレイヤーの所有率：{{percentage}}%",
     "favourite_count": "お気に入り登録率：{{percentage}}%"
   },
-  "title": {
-    "cards": "カード一覧",
-    "my_collection": "アドレス帳",
-    "user_collection": "{{username}}のアドレス帳",
-    "my_favourites": "お気に入り",
-    "user_favourites": "{{username}}のお気に入り",
-    "my_profile": "プロフィール",
-    "user_profile": "{{username}}のプロフィール",
-    "settings": "ユーザー設定",
-    "calculator": "抜き打ちテストpt計算機"
-  },
   "collection": {
     "cards": "アドレス帳",
     "favourites": "お気に入り"
   },
-  "user": {
-    "username": "Karasu ID",
-    "password": "パスワード",
-    "forgot_pass": "アカウントを忘れた場合",
-    "show_pass": "パスワードを表示します",
-    "confirm_pass": "パスワードを認証する",
-    "email": "メールアドレス"
+  "common": {
+    "home": "ホーム",
+    "gallery": "カード",
+    "cards": "カード",
+    "profile": "プロフィール",
+    "rankings": "ランキング",
+    "tools": "ツール",
+    "spg": "反省会攻略",
+    "signup": "アカウントの登録",
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "settings": "設定",
+    "account": "アカウント",
+    "events": "Events",
+    "days": "日"
+  },
+  "error": {
+    "invalid_char": "Karasu IDに使用できるのは半角英数小文字と ._- のみです"
+  },
+  "events": {
+    "PopQuiz": "抜き打ちテスト",
+    "Nightmare": "ナイトメア"
   },
   "profile": {
     "name": "ユーザーID",
@@ -116,30 +126,24 @@
     "allActions": "全アクションを表示",
     "use_item": "アイテムを使う"
   },
-  "calculator": {
-    "calculator": "計算機",
-    "ppt": "単回のpts",
-    "currentPts": "現在のpts",
-    "goal": "目標pts",
-    "stageClear1": "今日はもうバトル",
-    "stageClear2": "回済んだ",
-    "calculate": "計算する！",
-    "disclaimer": "計算の結果は参考だけです。APやDPを合理的に利用してください。",
-    "battles": "挑戦回数",
-    "free": "無料",
-    "buy": "有料",
-    "goalToday": "今日の目標",
-    "endingIn": "あと",
-    "today": "今日",
-    "summary": "合計",
-    "FreeAP": "<p style='font-size:large;'>無料AP</p><ul id='free_ap'><li>５分に１点回復</li><li>フレンドから５０点受け取れる</li><li>冷蔵庫ミッションから６０点もらえる（非VIP）</li><li>広告報酬５０点</li><li>反省会プレゼント２０点</li><li>デイリーミッション２０点</li></ul>",
-    "rewards_ap": "イベントのご褒美リスト",
-    "FreeBattles": "<p style='font-size:large;'>無料挑戦回数</p><ul><li>１つのステージには挑戦回数３回ある</li><li>広告で毎日挑戦回数５回回復できる</li></ul>",
-    "ended": "イベントは終了しました",
-    "timeleft": "あと"
+  "title": {
+    "cards": "カード一覧",
+    "my_collection": "アドレス帳",
+    "user_collection": "{{username}}のアドレス帳",
+    "my_favourites": "お気に入り",
+    "user_favourites": "{{username}}のお気に入り",
+    "my_profile": "プロフィール",
+    "user_profile": "{{username}}のプロフィール",
+    "settings": "ユーザー設定",
+    "calculator": "抜き打ちテストpt計算機"
   },
-  "error": {
-    "invalid_char": "Karasu IDに使用できるのは半角英数小文字と ._- のみです"
+  "user": {
+    "username": "Karasu ID",
+    "password": "パスワード",
+    "forgot_pass": "アカウントを忘れた場合",
+    "show_pass": "パスワードを表示します",
+    "confirm_pass": "パスワードを認証する",
+    "email": "メールアドレス"
   },
 
   "Action 1": "1回目",
