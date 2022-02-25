@@ -101,25 +101,23 @@ html(lang=t("lang"))
     main.mb-5(style="position:relative;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
       - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
-      if t("lang") === "ja" && title !== "Karasu OS"
+      if title !== "Karasu OS"
         div.container
-          div.alert.alert-info.text-center(style="z-index:0!important;" role="alert") 
-            strong Translators needed!
-            p.mb-0 Our website is missing many translations. If you would like to become our translator, please email
-              |
-              |
-              a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
-              |
-              | or
-              |
-              a(href="https://discord.gg/Y3KMW7U" target="_blank") join our discord server
-              | .
-      
+          <div id="announcementToast" class="d-none alert alert-info alert-dismissible fade show" style="z-index:0!important" role="alert">
+            h5 We need your help!
+            p We just added card strength, card animations, pop quiz locked stages, and pop quiz rewards to our website. We are missing a lot of information so some data are not being displayed at the moment.
+            a(href="https://drive.google.com/drive/folders/1v6jYT7NU31alIgcPrrIJerF6O2Iq3jlU?usp=sharing" target="_blank") Click here to become a contributor!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        if (!user || !user.isSupporter)
+          div.container.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
+
       block content
       if (!user || !user.isSupporter)
         div#kool-aid.container(style="margin:2rem auto;text-align:center;")
-          div.row(style="min-height:250px;")
-            div.col <div id="ezoic-pub-ad-placeholder-122"></div>
+          div.row.justify-content-center(style="min-height:250px;") <div id="ezoic-pub-ad-placeholder-122"></div>
       //- toasts
       div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
         div(class="toast-body")
@@ -129,16 +127,16 @@ html(lang=t("lang"))
             a(href="/policies") More information
           button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
             span(aria-hidden="true") Got it &#x1F44D
-
-      div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
-        div.toast-header
-          strong.mr-auto IMPORTANT: changes to card detail pages!
-          button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
-            span(aria-hidden="true") &times;
-        div.toast-body
-          | We're adding more data to card pages. The layout will change. Vote for your favourite layout!
-          |
-          a(href="https://forms.gle/S9sypTYyMTDxFNaD8" class="btn btn-primary btn-sm btn-block mt-3" target="_blank") Vote now!
+      //-
+        div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
+          div.toast-header
+            strong.mr-auto IMPORTANT: changes to card detail pages!
+            button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
+              span(aria-hidden="true") &times;
+          div.toast-body
+            | We're adding more data to card pages. The layout will change. Vote for your favourite layout!
+            |
+            a(href="https://forms.gle/S9sypTYyMTDxFNaD8" class="btn btn-primary btn-sm btn-block mt-3" target="_blank") Vote now!
 
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>

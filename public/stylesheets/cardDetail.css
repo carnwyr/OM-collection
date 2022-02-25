@@ -1,0 +1,92 @@
+svg.bi-star-fill {
+	transition: transform .5s ease;
+	-webkit-transition: transform .5s ease;
+	overflow: visible;
+}
+
+svg.bi-star-fill:hover {
+	cursor: pointer;
+	transform: scale(1.2);
+}
+
+.owned.addCardButton:before {
+	content: "Add to ";
+}
+
+.owned.removeCardButton:before {
+	content: "Remove from ";
+}
+
+.favourites.removeCardButton {
+	stroke: #FFC300;
+	fill: #FFC300;
+}
+
+.card-container {
+	display: flex;
+	justify-content: center;
+	border-radius: 8px;
+	margin-bottom: .5rem;
+}
+
+video {
+	width: 100%;
+}
+
+@media (min-width: 768px) {
+	.card-container {
+		border: 2px solid #e8eaf6;
+		border-radius: 8px;
+		background:rgba(255, 255, 255, .8);
+		padding: 1.5rem;
+	}
+	.card-container>div {
+		text-align: center;
+	}
+	.card-container img {
+		width: 60%;
+		height: auto;
+		box-shadow: none !important;
+	}
+	#memory {
+		width: 50%;
+	}
+	#strength img {
+		float: left;
+	}
+	table#strength tbody th {
+		width: 20%;
+	}
+	video.homescreen {
+		width: 75%;
+	}
+}
+
+#info .row>div {
+	margin-bottom: 1.5rem;
+}
+
+#info .row>div:nth-child(odd) {
+	border-radius: 50px;
+	background: linear-gradient(to right, rgb(184,121,252), rgb(223,130,246));
+	color: white;
+	font-weight: bold;
+	line-height: 1.6;
+	text-align: center;
+}
+
+@media (max-width: 768px) {
+	#info .card-title {
+		align-items: center;
+	}
+	#info .row>div {
+		margin-bottom: 1rem;
+	}
+	#info .row>div:nth-child(even) {
+		text-align: center;
+	}
+}
+
+table#strength thead th, #strength td {
+	text-align: center;
+}

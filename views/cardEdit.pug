@@ -10,7 +10,7 @@ block content
 		h1= title
 		div.card.mb-4
 			div.card-body
-				<ul class="nav nav-tabs" id="cardTab" role="tablist">
+				ul#cardTab.nav.nav-tabs(role="tablist")
 					<li class="nav-item" role="presentation">
 						<a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General info</a>
 					</li>
@@ -20,16 +20,19 @@ block content
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="skills-tab" data-toggle="tab" href="#skills" role="tab" aria-controls="skills" aria-selected="false">Skills</a>
 					</li>
-				</ul>
-				<div class="tab-content py-3 px-md-3" id="cardTabContent">
+					if user.isAdmin
+						<li class="nav-item" role="presentation">
+							<a class="nav-link" id="animation-tab" data-toggle="tab" href="#animation" role="tab" aria-controls="animation" aria-selected="false">UR+ Animation</a>
+						</li>
+				div#cardTabContent.tab-content.py-3.px-md-3
 					div#general.tab-pane.fade.show.active(role="tabpanel" aria-labelledby="general-tab")
 						form.form-row
 							if !user.isAdmin
 								div.col-12.text-center
-									h5 Please upload images to
+									h5 Please upload images and animations to
 										|
 										|
-										a(href="https://drive.google.com/drive/folders/1Tbo6bPrpp0aYb_YCMotNmQXVychxBseI" target="_blank") our google drive folder
+										a(href="https://drive.google.com/drive/folders/1v6jYT7NU31alIgcPrrIJerF6O2Iq3jlU?usp=sharing" target="_blank") our google drive folder
 										| .
 									hr
 							div.form-group.col-12.col-md-6
@@ -163,13 +166,52 @@ block content
 												- str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
 												th(scope="row")= t(str)
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].min:""))
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].min:0))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].max:""))
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].max:0))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].fdt:""))
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:0))
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
-				</div>
+					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
+						p Can only be added with updateCard request. Chances of renaming/ deleting is low, so, need to manually rename/ delete file.
+						hr
+						div.form-check.form-check-inline
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="n/a" checked=(!card||!card.animationType||card.animationType==="n/a"))
+							label.form-check-label(for="inlineRadio1") n/a
+						div.form-check.form-check-inline
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animationType&&card.animationType==="battle"))
+							label.form-check-label(for="inlineRadio2") dance battle/skills animation
+						div.form-check.form-check-inline
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animationType&&card.animationType==="homescreen"))
+							label.form-check-label(for="inlineRadio3") homescreen/moving picture
+						hr
+						div.row
+							div.col-12.col-lg-6
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+									</div>
+									<div class="custom-file">
+										<input type="file" class="custom-file-input" id="animation1input" accept=".mp4" data-display="animation1" aria-describedby="inputGroupFileAddon01">
+										<label class="custom-file-label" for="animation1input">Dance battle/ original moving picture (.mp4)</label>
+									</div>
+								</div>
+								video(width="400" controls muted)
+									source(src=card?"/images/cards/animations/"+card.name+".mp4":"" id="animation1" type="video/mp4")
+									| Your browser does not support HTML5 video.
+							div.col-12.col-lg-6
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text" id="inputGroupFileAddon02">Upload</span>
+									</div>
+									<div class="custom-file">
+										<input type="file" class="custom-file-input" id="animation2input" accept=".mp4" data-display="animation2" aria-describedby="inputGroupFileAddon02">
+										<label class="custom-file-label" for="animation2input">Bloomed animation (.mp4)</label>
+									</div>
+								</div>
+								video(width="400" controls muted)
+									source(src=card?"/images/cards/animations/"+card.name+" (Bloomed).mp4":"" id="animation2" type="video/mp4")
+									| Your browser does not support HTML5 video.
 				hr
 				button#submit.btn.btn-primary.mr-2(type="submit") Save
 				span#cd
@@ -216,7 +258,11 @@ block content
 				prepareCardImages();
 			}
 			function sendRequest(images) {
-				$.post(location.pathname, { cardData: getCardData(), images: images }, function(result) {
+				$.post(location.pathname, {
+					cardData: getCardData(),
+					images: images,
+					animations: animations
+				}, function(result) {
 					if (result.err) {
 						showAlert("danger", result.message);
 						return;
