@@ -29,10 +29,10 @@ block content
 						form.form-row
 							if !user.isAdmin
 								div.col-12.text-center
-									h5 Please upload images to
+									h5 Please upload images and animations to
 										|
 										|
-										a(href="https://drive.google.com/drive/folders/1Tbo6bPrpp0aYb_YCMotNmQXVychxBseI" target="_blank") our google drive folder
+										a(href="https://drive.google.com/drive/folders/1v6jYT7NU31alIgcPrrIJerF6O2Iq3jlU?usp=sharing" target="_blank") our google drive folder
 										| .
 									hr
 							div.form-group.col-12.col-md-6
@@ -166,11 +166,11 @@ block content
 												- str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
 												th(scope="row")= t(str)
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].min:""))
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].min:""))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].max:""))
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].max:""))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength[attribute]?card.strength[attribute].fdt:""))
+													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:""))
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
 						p Can only be added with updateCard request. Chances of renaming/ deleting is low, so, need to manually rename/ delete file.
@@ -180,7 +180,7 @@ block content
 							label.form-check-label(for="inlineRadio1") n/a
 						div.form-check.form-check-inline
 							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animationType&&card.animationType==="battle"))
-							label.form-check-label(for="inlineRadio2") dance battle
+							label.form-check-label(for="inlineRadio2") dance battle/skills animation
 						div.form-check.form-check-inline
 							input.form-check-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animationType&&card.animationType==="homescreen"))
 							label.form-check-label(for="inlineRadio3") homescreen/moving picture
