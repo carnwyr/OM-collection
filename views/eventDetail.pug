@@ -24,7 +24,7 @@ block content
 						p Type: #{t("events." + event.type)}
 						p Start: #{getFormatedDate(event.start)}
 						p End: #{getFormatedDate(event.end)}
-						p Duration: #{Math.ceil((event.end - event.start)/1000/60/60/24)} #{t("common.days")}
+						p Duration: #{Math.ceil((event.end - event.start)/1000/60/60/24)}#{t("common.days")}
 				if cards
 					hr
 					p.card-section-title= t("cards.demon_cards")
