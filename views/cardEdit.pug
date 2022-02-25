@@ -174,22 +174,23 @@ block content
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
 						div.form-check
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="n/a" checked=(!card||!card.animationType||card.animationType==="n/a"))
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="" checked=(!card||!card.animation.type))
 							label.form-check-label(for="inlineRadio1") n/a
 						div.form-check
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animationType&&card.animationType==="battle"))
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animation.type&&card.animation.type==="battle"))
 							label.form-check-label(for="inlineRadio2") dance battle/skills animation
 						div.form-check
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animationType&&card.animationType==="homescreen"))
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animation.type&&card.animation.type==="homescreen"))
 							label.form-check-label(for="inlineRadio3") homescreen/moving picture
 						br
 						h5 Links
+						small Video code from YouTube: the /watch?v=<this code>
 						div.form-group
 							label(for="animation1") Skills animation/ Devil's Flower locked
-							input#animation1.form-control(type="text" value=card&&card.animation&&card.animation[1]?card.animation[1]:"")
+							input#animation1.form-control(type="text" value=card&&card.animation&&card.animation.link1?card.animation.link1:"")
 						div.form-group
 							label(for="animation2") Devil's Flower unlocked
-							input#animation2.form-control(type="text" value=card&&card.animation&&card.animation[2]?card.animation[2]:"")
+							input#animation2.form-control(type="text" value=card&&card.animation&&card.animation.link2?card.animation.link2:"")
 				hr
 				button#submit.btn.btn-primary.mr-2(type="submit") Save
 				span#cd

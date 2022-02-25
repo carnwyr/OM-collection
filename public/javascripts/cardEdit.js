@@ -72,10 +72,8 @@ function getCardData() {
 		characters: getSelectedCharacters(),
 		animation: {
 			type: $("input[name='animationType']:checked").val(),
-			links: [
-				$("input[name='animation1']").val(),
-				$("input[name='animation2']").val()
-			]
+			link1: $("input#animation1").val(),
+			link2: $("input#animation2").val()
 		},
 		number: $("#number").val(),
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
