@@ -273,7 +273,6 @@ exports.addNewCard = async function(req, res) {
 	return res.json(result);
 };
 
-// TODO: use promise.all
 exports.updateCard = async function(req, res) {
 	try {
 		let result = await cardService.updateCard({
@@ -284,17 +283,6 @@ exports.updateCard = async function(req, res) {
 
 		if (result.err) {
 			throw new Error(result.message);
-		}
-
-		if (req.body.cardData.animationType !== "n/a") {
-			if (req.body.animations.animation1) {
-				result = await fileService.writeFile(req.body.cardData.name + ".mp4", req.body.animations.animation1);
-				if (result.err) { throw new Error(result.message) };
-			}
-			if (req.body.cardData.animationType === "homescreen" && req.body.animations.animation2) {
-				result = await fileService.writeFile(req.body.cardData.name + " (Bloomed).mp4", req.body.animations.animation2);
-				if (result.err) { throw new Error(result.message) };
-			}
 		}
 
 		return res.json({ err: null, message: "Card updated!" });
