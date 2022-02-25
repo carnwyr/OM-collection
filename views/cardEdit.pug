@@ -173,45 +173,24 @@ block content
 													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:0))
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
-						p Can only be added with updateCard request. Chances of renaming/ deleting is low, so, need to manually rename/ delete file. Also, bloomed version is too large... so need to manually upload to server until someone finds another way to get the file through.
-						hr
-						div.form-check.form-check-inline
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="n/a" checked=(!card||!card.animationType||card.animationType==="n/a"))
+						div.form-check
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="" checked=(!card||!card.animation.type))
 							label.form-check-label(for="inlineRadio1") n/a
-						div.form-check.form-check-inline
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animationType&&card.animationType==="battle"))
+						div.form-check
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animation.type&&card.animation.type==="battle"))
 							label.form-check-label(for="inlineRadio2") dance battle/skills animation
-						div.form-check.form-check-inline
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animationType&&card.animationType==="homescreen"))
+						div.form-check
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animation.type&&card.animation.type==="homescreen"))
 							label.form-check-label(for="inlineRadio3") homescreen/moving picture
-						hr
-						div.row
-							div.col-12.col-lg-6
-								<div class="input-group mb-3">
-									<div class="input-group-prepend">
-										<span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-									</div>
-									<div class="custom-file">
-										<input type="file" class="custom-file-input" id="animation1input" accept=".mp4" data-display="animation1" aria-describedby="inputGroupFileAddon01">
-										<label class="custom-file-label" for="animation1input">Dance battle/ original moving picture (.mp4)</label>
-									</div>
-								</div>
-								video(width="400" controls muted)
-									source(src=card?"/images/cards/animations/"+card.name+".mp4":"" id="animation1" type="video/mp4")
-									| Your browser does not support HTML5 video.
-							div.col-12.col-lg-6
-								<div class="input-group mb-3">
-									<div class="input-group-prepend">
-										<span class="input-group-text" id="inputGroupFileAddon02">Upload</span>
-									</div>
-									<div class="custom-file">
-										<input type="file" class="custom-file-input" id="animation2input" accept=".mp4" data-display="animation2" aria-describedby="inputGroupFileAddon02">
-										<label class="custom-file-label" for="animation2input">Bloomed animation (.mp4)</label>
-									</div>
-								</div>
-								video(width="400" controls muted)
-									source(src=card?"/images/cards/animations/"+card.name+" (Bloomed).mp4":"" id="animation2" type="video/mp4")
-									| Your browser does not support HTML5 video.
+						br
+						h5 Links
+						small Video code from YouTube: the /watch?v=<this code>
+						div.form-group
+							label(for="animation1") Skills animation/ Devil's Flower locked
+							input#animation1.form-control(type="text" value=card&&card.animation&&card.animation.link1?card.animation.link1:"")
+						div.form-group
+							label(for="animation2") Devil's Flower unlocked
+							input#animation2.form-control(type="text" value=card&&card.animation&&card.animation.link2?card.animation.link2:"")
 				hr
 				button#submit.btn.btn-primary.mr-2(type="submit") Save
 				span#cd
@@ -260,8 +239,7 @@ block content
 			function sendRequest(images) {
 				$.post(location.pathname, {
 					cardData: getCardData(),
-					images: images,
-					animations: animations
+					images: images
 				}, function(result) {
 					if (result.err) {
 						showAlert("danger", result.message);

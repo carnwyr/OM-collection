@@ -126,24 +126,20 @@ block content
       div(style="border:2px solid #e8eaf6;border-radius:8px;background:rgba(255,255,255,.8);padding:1.5rem;padding-bottom:2rem;")
         h2.text-center Animations
         br
-        p#no-anime-error.text-center.d-none Looks like we don't have this animation in database.
-          |
-          |
-          a(href="https://drive.google.com/drive/folders/1L9GbfPaZRU4a19KVDH_0ovz4wh_QDh2m?usp=sharing" target="_blank") Help us add it!
         div.row.justify-content-center
-          div.col-12.col-md-6.text-center.mb-3.mb-md-0
-            video(class=card.animationType controls muted)
-              source(src="/images/cards/animations/"+card.name+".mp4" type="video/mp4")
-              | Your browser does not support HTML5 video.
-          if card.animationType && card.animationType === "homescreen"
-            div.col-12.col-md-6.text-center
-              video(class=card.animationType controls muted)
-                source(src="/images/cards/animations/"+card.name+" (Bloomed).mp4" type="video/mp4")
-                | Your browser does not support HTML5 video.
-      script.
-        $('video source').last().on('error', function() {
-          $("#no-anime-error").removeClass("d-none");
-        });
+          if !card.animation || !card.animation.link1
+            div.col-12.text-center.py-5
+              p Looks like we are missing an animation.
+              a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
+          else
+            iframe.animation(src="https://www.youtube-nocookie.com/embed/"+card.animation.link1 title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
+          if card.animation.type === "homescreen"
+            if !card.animation || !card.animation.link2
+              div.col-12.text-center.py-5
+                p Looks like we are missing an animation.
+                a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
+            else
+              iframe.animation.mt-4(src="https://www.youtube-nocookie.com/embed/"+card.animation.link2 title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
 
   if user && user.isAdmin
     div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")

@@ -67,14 +67,3 @@ async function renameImage(imagePath, oldName, newName) {
     });
   });
 }
-
-// TODO: merge with writeImage
-exports.writeFile = function(name, content) {
-  try {
-    content = content.replace(/^data:(.*?);base64,/, "").replace(/ /g, '+');
-    fs.writeFileSync("public/images/cards/animations/" + name, content, 'base64');
-    return { err: null, message: "Success" };
-  } catch(e) {
-    return { err: true, message: e.message };
-  }
-}

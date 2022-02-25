@@ -26,7 +26,11 @@ const cardSchema = new mongoose.Schema({
 		gluttony: strengthSchema,
 		sloth: strengthSchema
 	},
-	animationType: { type: String },
+	animation: {
+		type: { type: String },
+		link1: { type: String },
+		link2: { type: String }
+	},
 	number: { type: Number, required: true }
 });
 
