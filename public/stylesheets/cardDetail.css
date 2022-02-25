@@ -31,6 +31,7 @@ svg.bi-star-fill:hover {
 
 .animation {
 	width: 100%;
+	height: 315px;
 }
 
 @media (min-width: 768px) {
@@ -59,7 +60,6 @@ svg.bi-star-fill:hover {
 	}
 	.animation {
 		width: 560px;
-		height: 315px;
 	}
 }
 
