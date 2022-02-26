@@ -30,8 +30,9 @@ $(document).ready(function() {
 	$("#resetFilters").click(resetFilters);
 	$("#viewMenuDropdown a").click(updateViewType);
 
+	$('#demoncards>div, #memorycards>div').on('click', ".cardPreview", cardClicked);
+
 	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
-	$('.cardPreview').on('click', cardClicked);
 	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
@@ -49,7 +50,6 @@ function createCardDocuments(data, pageIndex) {
 
   for (let i = offset, len = offset + itemsPerPage; i < len; i++) {
     let item = createCardElement(data[i]);
-		$(item).on('click', cardClicked);
     frag.appendChild(item);
   }
 
@@ -319,26 +319,15 @@ function switchCardsVisualState(cardNames = []) {
 
 function cardClicked(e) {
 	if (!selectionMode) return;
-	if (e) e.preventDefault();
+
+	e.preventDefault();
+	e.stopPropagation();
 
 	let image = $(this).find('img');
 	let cardName = $("img", this).attr('src').slice(16, -4);
 
-	if ($(image).hasClass('notSelectedCard')) {
-		$(image).removeClass('notSelectedCard');
-		if (cardName in changedCards) {
-			delete changedCards[cardName];
-		} else {
-			changedCards[cardName] = true;
-		}
-	} else {
-		$(image).addClass('notSelectedCard');
-		if (cardName in changedCards) {
-			delete changedCards[cardName];
-		} else {
-			changedCards[cardName] = false;
-		}
-	}
+	changedCards[cardName] = $(image).hasClass('notSelectedCard');
+	$(image).toggleClass('notSelectedCard');
 }
 
 function switchSelectionAll(select) {
@@ -354,18 +343,18 @@ function switchSelectionAll(select) {
 	let visibleCards = $('.cardPreview:visible')
 		.filter((idx, el) => $(el).isInViewport())
 		.filter((idx, el) => cardsToSelect.includes($(el).find('img').attr('src').slice(16, -4)));
-	
+
 	let invisibleCards = $('.cardPreview:visible')
 		.filter((idx, el) => !$(el).isInViewport())
 		.filter((idx, el) => cardsToSelect.includes($(el).find('img').attr('src').slice(16, -4)));
-	
+
 	let changeSelection;
 	if (select) {
 		changeSelection = x => $(x).find('img').removeClass('notSelectedCard');
 	} else {
 		changeSelection = x => $(x).find('img').addClass('notSelectedCard');
 	}
-	
+
 	addCardsToChangedList(cardsToSelect, select);
 	changeSelection(visibleCards);
 	applyEffectWithoutTransition(invisibleCards, () => changeSelection(invisibleCards));
