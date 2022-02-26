@@ -49,6 +49,7 @@ function createCardDocuments(data, pageIndex) {
 
   for (let i = offset, len = offset + itemsPerPage; i < len; i++) {
     let item = createCardElement(data[i]);
+		$(item).on('click', cardClicked);
     frag.appendChild(item);
   }
 
