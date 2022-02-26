@@ -60,7 +60,7 @@ function validateFields() {
 }
 
 function getCardData() {
-	return {
+	let data = {
 		name: $("#name").val(),
 		uniqueName: $("#uniqueName").val(),
 		ja_name: $("#ja_name").val(),
@@ -70,14 +70,17 @@ function getCardData() {
 		rarity: $("#rarity").val(),
 		attribute: $("#attribute").val(),
 		characters: getSelectedCharacters(),
-		animation: {
-			type: $("input[name='animationType']:checked").val(),
-			link1: $("input#animation1").val(),
-			link2: $("input#animation2").val()
-		},
 		number: $("#number").val(),
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};
+	if (data.rarity === "UR+") {
+		data.animation = {
+			type: $("input[name='animationType']:checked").val(),
+			link1: $("input#animation1").val(),
+			link2: $("input#animation2").val()
+		};
+	}
+	return data;
 }
 
 function getCardStrength() {

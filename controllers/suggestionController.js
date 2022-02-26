@@ -43,7 +43,7 @@ exports.getSuggestionList = async function(req, res, next) {
 };
 
 exports.addSuggestion = async function(req, res) {
-	notifyAdmin(`New suggestion from __${req.user.name}__ on __${req.body.page}__.`);
+	notifyAdmin(`New suggestion from __${req.user.name}__ on https://karasu-os.com${req.body.page}.`);
 	return res.json(await suggestionService.addSuggestion({
 		user: req.user.name,
 		page: req.body.page,
