@@ -77,7 +77,7 @@ exports.signup = [
 
     if (exists) {
       req.flash("message", "Username taken");
-      res.render("signup", { title: "Signup", user: req.user });
+      return res.render("signup", { title: "Signup", user: req.user });
     } else {
       bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
         if (err) return next(err);
