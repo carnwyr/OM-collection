@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", initLazyLoad);
 
+let lazyloadImages;
+let imageObserver
 function initLazyLoad() {
-  let lazyloadImages;
-
   if ("IntersectionObserver" in window) {
-    lazyloadImages = document.querySelectorAll(".lazy");
-    var imageObserver = new IntersectionObserver(function (entries, observer) {
+    imageObserver = new IntersectionObserver(function (entries, observer) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           var image = entry.target;
@@ -18,9 +17,7 @@ function initLazyLoad() {
       });
     });
 
-    lazyloadImages.forEach(function (image) {
-      imageObserver.observe(image);
-    });
+    observeLazyImages();
   } else {
     var lazyloadThrottleTimeout;
     lazyloadImages = document.querySelectorAll(".lazy");
@@ -52,6 +49,12 @@ function initLazyLoad() {
     window.addEventListener("resize", lazyload);
     window.addEventListener("orientationChange", lazyload);
   }
+}
+
+function observeLazyImages(selector = ".lazy") {
+  document.querySelectorAll(selector).forEach((image) => {
+    imageObserver.observe(image);
+  });
 }
 
 function checkImage(src, good/*, bad*/) {

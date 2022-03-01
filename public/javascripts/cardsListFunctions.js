@@ -2,6 +2,7 @@ var changedCards = {};
 var selectionMode = false;
 var ownedCards = [];
 var querystr = new URLSearchParams(document.location.search);
+let nextHandler, nextHandler2, ias, ias2;
 
 //#region constants
 const splitCardsByVisibility = (cards, currentCard) => {
@@ -162,35 +163,38 @@ function initInfiniteScroll() {
 	var demonCards = cardList.filter(card => card.type === "Demon");
 	var memoryCards = cardList.filter(card => card.type === "Memory");
 
+	if (ias) ias.unbind();
+	if (ias2) ias2.unbind();
+
 	if (demonCards.length !== 0) {
-		let nextHandler = function(pageIndex) {
+		nextHandler = function(pageIndex) {
 		  let result = createCardDocuments(demonCards, pageIndex);
 		  return this.append(Array.from(result.frag.childNodes))
 				.then(() => result.hasNextPage);
 		};
-		let ias = new InfiniteAjaxScroll('#demoncards>div', {
+		ias = new InfiniteAjaxScroll('#demoncards>div', {
 			item: '.cardPreview',
 			next: nextHandler,
 			logger: true
 		});
-		ias.once("appended", initLazyLoad);
+		ias.on("append", () => { observeLazyImages("#demoncards img.lazy"); });
 		$("#demoncards>p").addClass("d-none");
 	} else {
 		$("#demoncards>p").removeClass("d-none");
 	}
 
 	if (memoryCards.length !== 0) {
-		let nextHandler2 = function(pageIndex) {
+		nextHandler2 = function(pageIndex) {
 			let result = createCardDocuments(memoryCards, pageIndex);
 		  return this.append(Array.from(result.frag.childNodes))
 				.then(() => result.hasNextPage);
 		};
-	  let ias2 = new InfiniteAjaxScroll('#memorycards>div', {
+	  ias2 = new InfiniteAjaxScroll('#memorycards>div', {
 	    item: '.cardPreview',
 	    next: nextHandler2,
 			// logger: false
 	  });
-		ias2.once("appended", initLazyLoad);
+		ias2.on("append", () => { observeLazyImages("#mermoycards img.lazy"); });
 		$("#memorycards>p").addClass("d-none");
 	} else {
 		$("#memorycards>p").removeClass("d-none");
