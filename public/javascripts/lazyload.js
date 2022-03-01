@@ -34,7 +34,9 @@ function initLazyLoad() {
         var scrollTop = window.pageYOffset;
         lazyloadImages.forEach(function (img) {
           if (img.offsetTop < window.innerHeight + scrollTop) {
-            img.src = img.dataset.src;
+            checkImage(image.dataset.src, function() {
+              image.src = image.dataset.src;
+            });
             img.classList.remove("lazy");
           }
         });

@@ -58,6 +58,8 @@ function createCardDocuments(data, pageIndex) {
 	return { frag: frag, hasNextPage: hasNextPage };
 }
 
+
+// TODO: fix href, not uniquename, use encoded english name.
 function createCardElement(card) {
 	var template, img_src;
 	var imageSize = 'S', containerSize = "icon-container", viewtype = querystr.get('view');
@@ -82,11 +84,6 @@ function createCardElement(card) {
 
   let item = document.createElement('div');
   item.innerHTML = template.trim();
-
-	if (selectionMode) {
-		// check if card is owned,
-		// add selected card/ not selected based on outcome
-	}
 
 	if (selectionMode && card) {
 		let cardSelectionChanged = card.uniqueName in changedCards;
@@ -126,9 +123,8 @@ function applyFilters(e) {
 	$("#demoncards>div, #memorycards>div").html("Loading...");
 
 	// request cards
-	var collectionPath = window.location.pathname.split('/').at(-1);
-	params.set("path", collectionPath);
-	if (collectionPath === "favourites" || collectionPath === "collection") {
+	params.set("path", PATH);
+	if (PATH === "favourites" || PATH === "collection") {
 		params.set("user", window.location.pathname.split('/').at(-2));
 	}
 	$.get("/getCards?" + params.toString(), function(data) {
@@ -167,34 +163,34 @@ function initInfiniteScroll() {
 	var memoryCards = cardList.filter(card => card.type === "Memory");
 
 	if (demonCards.length !== 0) {
-		var nextHandler = function(pageIndex) {
-		  var result = createCardDocuments(demonCards, pageIndex);
+		let nextHandler = function(pageIndex) {
+		  let result = createCardDocuments(demonCards, pageIndex);
 		  return this.append(Array.from(result.frag.childNodes))
 				.then(() => result.hasNextPage);
 		};
-		var ias = new InfiniteAjaxScroll('#demoncards>div', {
+		let ias = new InfiniteAjaxScroll('#demoncards>div', {
 			item: '.cardPreview',
 			next: nextHandler,
-			// logger: false
+			logger: true
 		});
-		ias.on("appended", initLazyLoad);
+		ias.once("appended", initLazyLoad);
 		$("#demoncards>p").addClass("d-none");
 	} else {
 		$("#demoncards>p").removeClass("d-none");
 	}
 
 	if (memoryCards.length !== 0) {
-		var nextHandler2 = function(pageIndex) {
-			var result = createCardDocuments(memoryCards, pageIndex);
+		let nextHandler2 = function(pageIndex) {
+			let result = createCardDocuments(memoryCards, pageIndex);
 		  return this.append(Array.from(result.frag.childNodes))
 				.then(() => result.hasNextPage);
 		};
-	  var ias2 = new InfiniteAjaxScroll('#memorycards>div', {
+	  let ias2 = new InfiniteAjaxScroll('#memorycards>div', {
 	    item: '.cardPreview',
 	    next: nextHandler2,
 			// logger: false
 	  });
-		ias2.on("appended", initLazyLoad);
+		ias2.once("appended", initLazyLoad);
 		$("#memorycards>p").addClass("d-none");
 	} else {
 		$("#memorycards>p").removeClass("d-none");
@@ -305,7 +301,7 @@ function switchCardsVisualState(cardNames = []) {
 
 	if (selectionMode) {
 		let notOwnedCards = $('.cardPreview:not(".placeholder")')
-			.filter(function () { return !cardNames.includes($("img", this).attr('src').slice(16, -4)) })
+			.filter(function () { return !cardNames.includes($("img", this).data("src").slice(16, -4)) })
 			.toArray();
 		cardPreviews = notOwnedCards.reduce(splitCardsByVisibility, { visible: [], invisible: [] });
 		applyEffect = el => el.addClass('notSelectedCard');
@@ -327,7 +323,7 @@ function cardClicked(e) {
 	e.stopPropagation();
 
 	let image = $(this).find('img');
-	let cardName = $("img", this).attr('src').slice(16, -4);
+	let cardName = $("img", this).data("src").slice(16, -4);
 
 	changedCards[cardName] = $(image).hasClass('notSelectedCard');
 	$(image).toggleClass('notSelectedCard');
@@ -345,11 +341,11 @@ function switchSelectionAll(select) {
 	//TODO remove slice
 	let visibleCards = $('.cardPreview:visible')
 		.filter((idx, el) => $(el).isInViewport())
-		.filter((idx, el) => cardsToSelect.includes($(el).find('img').attr('src').slice(16, -4)));
+		.filter((idx, el) => cardsToSelect.includes($(el).find('img').data("src").slice(16, -4)));
 
 	let invisibleCards = $('.cardPreview:visible')
 		.filter((idx, el) => !$(el).isInViewport())
-		.filter((idx, el) => cardsToSelect.includes($(el).find('img').attr('src').slice(16, -4)));
+		.filter((idx, el) => cardsToSelect.includes($(el).find('img').data("src").slice(16, -4)));
 
 	let changeSelection;
 	if (select) {
