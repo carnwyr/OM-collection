@@ -19,6 +19,7 @@ var indexRouter = require("./routes/index");
 var cardsRouter = require("./routes/cards");
 var userRouter = require("./routes/user");
 var eventsRouter = require("./routes/events");
+var suggestionRouter = require("./routes/suggestions");
 
 const app = express();
 
@@ -35,8 +36,8 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-const eventCacheService = require("./services/eventCacheService");
-eventCacheService.init();
+const cacheService = require("./services/cacheService");
+cacheService.init();
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -48,26 +49,19 @@ var languageDetector = new i18nextMiddleware.LanguageDetector();
 languageDetector.addDetector({
 	name: "subdomain",
 	lookup: function(req, res, options) {
-		var subdomain = options.getHeaders(req).host.split('.')[0];
-		switch(subdomain) {
-			case "ja":
-				var lang = "ja";
-				break;
-			case "zh":
-				var lang = "zh";
-				break;
-			default:
-				var lang = "en";
+		let lang = "en";
+		let subdomain = options.getHeaders(req).host.split('.')[0];
+		if (subdomain === "ja" || subdomain === "zh") {
+			lang = subdomain;
 		}
-
 		i18next.changeLanguage(lang);
 		return lang;
-	}, cacheUserLanguage: function(req, res, lng, options) {}
+	}
 });
 
 i18next
-	.use(Backend)
 	.use(languageDetector)
+	.use(Backend)
 	.init({
 		// debug: true,
 		backend: {
@@ -112,6 +106,7 @@ app.use("/", indexRouter);
 app.use("/card", cardsRouter);
 app.use("/user", userRouter);
 app.use("/event", eventsRouter);
+app.use("/suggestion", suggestionRouter);
 
 app.use(function (req, res, next) { next(createError(404)); });
 

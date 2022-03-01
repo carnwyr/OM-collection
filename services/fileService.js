@@ -7,7 +7,7 @@ exports.saveImage = async function (baseImage, oldName, newName, imagePath) {
   if (!baseImage) {
     return renameImage(imagePath, oldName, newName);
   }
-  
+
   var extension = baseImage.substring(baseImage.indexOf("/") + 1, baseImage.indexOf(";base64"));
 
 	if (oldName === newName || !oldName) {

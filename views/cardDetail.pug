@@ -1,128 +1,156 @@
 extends layout
 
 block scripts
-  link(rel="stylesheet" href="/stylesheets/cardDetailStyle.css")
+  link(rel="stylesheet" href="/stylesheets/cardDetail.css")
   script.
     var i18next = { "collected_count": "#{t("cards.collected_count", { percentage: "undefined" })}", "favourite_count": "!{t("cards.favourite_count", { percentage: "undefined" })}" };
+    const CARD_NAME = !{JSON.stringify(card.uniqueName)};
+  if user && !isHidden
+    script(src="/javascripts/cardDetailFunctions.js")
+    script.
+      var stats = !{JSON.stringify(stats)};
+  else
+    script.
+      $(function() {
+        $(".owned, .favourites").on("click", () => {
+          showAlert("warning", "Please log in!");
+        });
+      });
 
 block content
-  if user
-    div#alert(role="alert")
-    if user.type === "Admin"
-      div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
-        div(class="modal-dialog" role="document")
-          div(class="modal-content")
-            div(class="modal-body")
-              p Are you sure you want to delete this card?
-              p#result.alert
-            div(class="modal-footer")
-              button.btn.btn-danger(onclick="deleteCard()") Delete
-              button.btn.btn-secondary(data-dismiss="modal") Cancel
+  div#alert(role="alert")
   div.container
-    h2= title
-    div.row
-      //- Mobile/ Tablet Screen
-      if user && !isHidden
-        div(class="col-12 d-flex justify-content-between d-md-none" style="margin-bottom:10px;")
-          button.btn.btn-primary.owned(type="button") collection
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill favourites" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
-
-      div(class="d-block d-lg-none col-12 col-md-7")
-        if card.type == "Demon"
-          div(class="card text-center")
-            div.card-header
-              ul(class="nav nav-pills card-header-pills nav-justified")
-                li.nav-item
-                  a(class="nav-link active" id="original-card-tab" data-toggle="tab" href="#originalCard" role="tab" aria-controls="original" aria-selected="true")= t("cards.original")
-                li.nav-item
-                  a(class="nav-link" id="bloomed-card-tab" data-toggle="tab" href="#bloomedCard" role="tab" aria-controls="bloomed" aria-selected="false")= t("cards.bloomed")
-        div#cardToggle.tab-content.mb-3
-          div(class="tab-pane fade show active" id="originalCard" role="tabpanel" aria-labelledby="original-card-tab")
-            a(href="/images/cards/L/" + card.uniqueName + ".jpg")
-              img.card-img(src="/images/cards/L/" + card.uniqueName + ".jpg")
-          if card.type == "Demon"
-            div(class="tab-pane fade" id="bloomedCard" role="tabpanel" aria-labelledby="bloomed-card-tab")
-              a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
-                img.card-img(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
-      //- Desktop Screen
-      div.d-none.d-lg-block.col-4(style="padding:0 2rem 0;")
-        a(href="/images/cards/L/" + card.uniqueName + ".jpg")
-          img.w-100(src="/images/cards/L/" + card.uniqueName + ".jpg")
+    h1= title
+    if user && !isHidden
+      div.d-flex.align-items-center.mb-3.d-md-none
+        button.btn.btn-primary.mr-2.owned(type="button") collection
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill favourites" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+    div.card-container.my-4.my-md-3
       if card.type === "Demon"
-        div.d-none.d-lg-block.col-4(style="padding:0 2rem 0;")
+        div.w-50.pr-1.pr-md-0
+          h5.d-none.d-md-block Devil's Flower locked
+          a(href="/images/cards/L/" + card.uniqueName + ".jpg")
+            img.img-fluid.shadow(src="/images/cards/L/" + card.uniqueName + ".jpg")
+        div.w-50.pl-1.pr-md-0
+          h5.d-none.d-md-block Unlocked
           a(href="/images/cards/L/" + card.uniqueName + "_b.jpg")
-            img.w-100(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
-      //- Info
-      div(class="col-12 col-md-5 col-lg-4")
-        div.card
-          div.card-body
-            p #[strong #{t("cards.type")}:] #{t("cards."+card.type)}
-            p #[strong #{t("cards.rarity")}: ]
+            img.img-fluid.shadow(src="/images/cards/L/" + card.uniqueName + "_b.jpg")
+      else
+        div#memory
+          a(href="/images/cards/L/" + card.uniqueName + ".jpg")
+            img.img-fluid.shadow(src="/images/cards/L/" + card.uniqueName + ".jpg")
+
+    div#info.card.mb-3(style="border-left:3px solid var(--primary);")
+      div.card-body
+        div.card-title.d-flex.justify-content-between
+          h5.m-0 Card Stats
+          if !isHidden
+            div: a.btn.btn-outline-primary.px-3(role="button" href=card.uniqueName+"/edit")
+              | <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square mb-1" viewBox="0 0 16 16">   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/> </svg>
+              | Edit
+        div.container
+          div.row
+            div.col-12.col-md-2
+              span= t("cards.type")
+            div.col-12.col-md-4
+              span= t("cards."+card.type)
+            div.col-12.col-md-2
+              span= t("cards.rarity")
+            div.col-12.col-md-4
               a(href="/cards?rarity="+card.rarity.replace('+', 'p'))= card.rarity
-            p #[strong #{t("cards.attribute")}: ]
+            div.col-12.col-md-2
+              span= t("cards.attribute")
+            div.col-12.col-md-4
               a(href="/cards?attribute="+card.attribute)= t(card.attribute)
-            p #[strong #{card.characters.length>1?t("cards.characters"):t("cards.character")}: ]
+            div.col-12.col-md-2
+              span= card.characters.length>1?t("cards.characters"):t("cards.character")
+            div.col-12.col-md-4
               each val, index in card.characters
                 a(href="/cards?character="+(val==="Little D"?"LittleD":val))= t(val)
                 if index < card.characters.length - 1
                   | ,
                   |
-            p #[strong #{t("cards.source")}: ]
-              //- when events are complete, use card controller to grab the right language before sending to pug. (remove if/else)
-              -
-                var lang = t("lang"), source;
-                if (lang === "en") {
-                  source = card.source;
-                } else if (lang === "ja") {
-                  source = card.ja_source;
-                } else if (lang === "zh") {
-                  // source = card.zh_source;
-                  source = card.source;
-                }
-              each val, index in source.length ? source : ["???"]
-                | #{val}
-                if index < source.length - 1
+            div.col-12.col-md-2
+              span= t("cards.source")
+            div.col-12.col-md-auto
+              each val, index in card.source
+                a(href="/event/"+card.source_link[index])= val
+                if index < card.source.length - 1
                   | ,
                   |
-            hr
-            if !isHidden
-              p.ownedCount= t("cards.collected_count", { percentage: stats.ownedTotal })
-              p.favedCount !{t("cards.favourite_count", { percentage: stats.favedTotal })}
-            if user
-              div(class='d-none d-md-block')
-                hr
-                if !isHidden
-                  div.d-flex.align-items-center.justify-content-between
-                    button.btn.btn-primary.owned(type="button") collection
-                    <svg id="star" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill favourites" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
-              if user.type === "Admin"
-                if !isHidden
-                  div.mt-2
-                    a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/edit") Edit card
-                else
-                  div.mt-2
-                    a.btn.btn-primary.editCardButton(role="button" href=card.uniqueName+"/makePublic") Make public
-                div.mt-2
-                  button.btn.btn-primary.editCardButton(data-toggle='modal' data-target="#confirmDelete") Delete card
+        hr
+        if !isHidden
+          p.text-center.ownedCount= t("cards.collected_count", { percentage: stats.ownedTotal })
+          p.text-center.favedCount!= t("cards.favourite_count", { percentage: stats.favedTotal })
+          hr
+          div.d-flex.align-items-center
+            button.btn.btn-primary.mr-2.owned(type="button")= user?"collection":"Add to collection"
+            <svg id="star" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill favourites" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+        if user && user.isAdmin
+          if isHidden
+            div.mt-2: a.btn.btn-primary(role="button" href=card.uniqueName+"/makePublic") Make public
+          div.mt-2: button.btn.btn-primary(data-toggle='modal' data-target="#confirmDelete") Delete card
 
-  if user && !isHidden
-    style.
-      .owned.addCardButton:before {
-        content: "Add to ";
-      }
-      .owned.removeCardButton:before {
-        content: "Remove from ";
-      }
-      .favourites.removeCardButton {
-        stroke: #FFC300;
-        fill: #FFC300;
-      }
-    script(src="/javascripts/cardDetailFunctions.js")
-    script.
-      const CARD_NAME = !{JSON.stringify(card.uniqueName)};
-      var stats = !{JSON.stringify(stats)};
+    div.card.mb-3(style="border-left:3px solid #d289fb;")
+      div.card-body
+        h5.card-title Attribute values
+        div.table-responsive
+          table#strength.table
+            thead
+              tr
+                th(scope="col")
+                th(scope="col")
+                  abbr(title="Base value") Min
+                th(scope="col")
+                  abbr(title="Maximum level reached without unlocking max cap and devil's tree unlocked up to and including the flower.") Max
+                th(scope="col")
+                  abbr(title="Maximum level reached without unlocking max cap and devil's tree at 100%") FDT
+            tbody
+              - let attributeList = ["pride", "greed", "envy", "wrath", "lust", "gluttony", "sloth"];
+              each attribute in attributeList
+                tr
+                  - let str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
+                  th.text-center.text-md-left(scope="row")
+                    img.mr-0.mr-md-2(src="/images/attributes/" + t(attribute) + ".png" alt=str style="width:24px;height:24px;")
+                    span.d-none.d-md-block= t(str)
+                  td= card.strength&&card.strength[attribute]&&card.strength[attribute].min?card.strength[attribute].min.toLocaleString("en"):"???"
+                  td= card.strength&&card.strength[attribute]&&card.strength[attribute].max?card.strength[attribute].max.toLocaleString("en"):"???"
+                  td= card.strength&&card.strength[attribute]&&card.strength[attribute].fdt?card.strength[attribute].fdt.toLocaleString("en"):"???"
+              tr
+                th.text-center.text-md-left(scope="row") Total
+                td= getTotalStrength("min")
+                td= getTotalStrength("max")
+                td= getTotalStrength("fdt")
+    if card.rarity === "UR+"
+      br
+      div(style="border:2px solid #e8eaf6;border-radius:8px;background:rgba(255,255,255,.8);padding:1.5rem;padding-bottom:2rem;")
+        h2.text-center Animations
+        br
+        div.row.justify-content-center
+          if !card.animation || !card.animation.link1
+            div.col-12.text-center.py-5
+              p Looks like we are missing an animation.
+              a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
+          else
+            iframe.animation(src="https://www.youtube-nocookie.com/embed/"+card.animation.link1 title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
+          if card.animation.type === "homescreen"
+            if !card.animation || !card.animation.link2
+              div.col-12.text-center.py-5
+                p Looks like we are missing an animation.
+                a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
+            else
+              iframe.animation.mt-4(src="https://www.youtube-nocookie.com/embed/"+card.animation.link2 title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
 
   if user && user.isAdmin
+    div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
+      div(class="modal-dialog" role="document")
+        div(class="modal-content")
+          div(class="modal-body")
+            p Are you sure you want to delete this card?
+            p#result.alert
+          div(class="modal-footer")
+            button.btn.btn-danger(onclick="deleteCard()") Delete
+            button.btn.btn-secondary(data-dismiss="modal") Cancel
     script.
       function deleteCard() {
         $.post("delete", { card: CARD_NAME }, function(result) {
@@ -133,3 +161,15 @@ block content
           }
         });
       }
+  -
+    function getTotalStrength(val) {
+      let total = 0;
+      for (const attribute of attributeList) {
+        if (!card.strength || !card.strength[attribute] || !card.strength[attribute][val]) {
+          return "???";
+        } else {
+          total += card.strength[attribute][val];
+        }
+      }
+      return total.toLocaleString("en");
+    }

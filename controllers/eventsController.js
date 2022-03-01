@@ -11,14 +11,23 @@ dayjs.extend(customParseFormat)
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const eventsService = require("../services/eventsService");
+const eventService = require("../services/eventService");
 const eventCalculatorService = require("../services/eventCalculatorService");
-const cardsService = require("../services/cardService");
+const cardService = require("../services/cardService");
 
 exports.getEventsPage = async function(req, res, next) {
 	// TODO: add method to only retrieve a certain type of event
-	// TODO: format events to be { name: __, start: __, end:__ } and remove unused variables.
-	var events = await eventsService.getEvents();
+	var doc = await eventService.getEvents();  // why can't we directly modify returned mongo doc?
+	var events = [];
+
+	doc.reverse().forEach((item, i) => {
+		events[i] = {
+			name: item.name,
+			type: item.type,
+			start: getFormatedDate(item.start),
+			end: getFormatedDate(item.end)
+		};
+	});
 
 	return res.render("eventList", {
 		title: "Events",
@@ -27,37 +36,65 @@ exports.getEventsPage = async function(req, res, next) {
 		events: events });
 }
 
+function getFormatedDate(d) {
+	if (!d) return "???";
+
+	var day = d.getDate(), year = d.getFullYear();
+	if (i18next.t("lang") === "en") {
+		let month = d.toLocaleString('en', { month: 'long' });
+		return `${day} ${month} ${year}`;
+	} else {
+		let month = d.getMonth() + 1;
+		return `${year}年${month}月${day}日`;
+	}
+}
+
 exports.getEventDetail = async function (req, res, next) {
 	try {
-		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-		var event = await eventsService.getEvent(eventName);
+		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		let event = await eventService.getEvent({ "name.en": eventName });
 
 		if (!event) throw createError(404, "Event not found");
+
+		let locals = {
+			title: event.name.en,
+			description: `View "${event.name.en}" and other Obey Me events on Karasu-OS.com`,
+			event: event,
+			user: req.user
+		};
+
+		if (i18next.t("lang") === "ja" && event.name.ja !== '') {
+			locals.title = event.name.ja;
+		}
+
+		if (event.type === "PopQuiz" || event.type === "Nightmare") {
+			locals.cards = await cardService.getCards({ source: { $in: [ eventName ] } });
+		}
+
+		return res.render("eventDetail", locals);
 	} catch (e) {
 		return next(e);
 	}
-	return res.render("eventDetail", {
-		title: event.name,
-		description: `View "${event.name}" and other Obey Me events on Karasu-OS.com`,
-		event: event,
-		user: req.user });
 }
 
 exports.getCalculatorPage = async function (req, res, next) {
 	try {
-		var event = await eventsService.getLatestEvent();
+		var event = await eventService.getLatestEvent();
 	} catch (e) {
 		return next(e);
 	}
 
+	var cookieData = req.cookies.calculator ? JSON.parse(req.cookies.calculator) : {};
+	var reqData = req.query;
+	reqData.advanced = cookieData;
 	var locals = { title: i18next.t("title.calculator"), description: i18next.t("description.calculator"), event: event, query: req.query, user: req.user };
-	[locals.calculationError, locals.result] = eventCalculatorService.calculate(event, req.query);
+	[locals.calculationError, locals.result] = eventCalculatorService.calculate(event, reqData);
 	return res.render("calculator", locals);
 };
 
 exports.calculate = async function(req, res) {
 	var eventName = req.params.event.replace(/_/g, ' ');
-	var event = await eventsService.getEvent(eventName);
+	var event = await eventService.getCalculatorEvent(eventName);
 
 	if (!event) return res.json({ err: true });
 
@@ -67,36 +104,59 @@ exports.calculate = async function(req, res) {
 
 exports.getEventAddPage = async function (req, res, next) {
 	try {
-		var data = eventsService.getDefaultEventData();
-		var cards = await cardsService.getCards();
+		var data = eventService.getDefaultEventData();
+		var cards = await cardService.getCards();
 		var cardNames = cards.map(x => x.name);
-		var apPresets = await eventsService.getAPPresets();
+		var apPresets = await eventService.getAPPresets();
 		return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
 	} catch(e) {
 		return next(e);
 	}
 };
 
+exports.addEvent = async function(req, res) {
+	try {
+		var result = await eventService.addEvent(req.body.data, req.body.img);
+		return res.json(result);
+	} catch(e) {
+		return res.json({ err: true, message: e.message });
+	}
+}
+
+exports.deleteEvent = async function (req, res, next) {
+	try {
+		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		return res.json(await eventService.deleteEvent(eventName));
+	} catch (err) {
+		Sentry.captureException(err);
+		return res.json({ err: true, message: err.message });
+	}
+}
+
+exports.updateEvent = async function (req, res) {
+	try {
+		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		let result = await eventService.updateEvent(eventName, req.body.data, req.body.img);
+		return res.json(result);
+	} catch(e) {
+		Sentry.captureException(e);
+		return res.json({ err: true, message: e.message });
+	}
+}
+
 exports.getEventEditPage = async function(req, res, next) {
 	try {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-		let data = await eventsService.getEvent(eventName);
+		let data = await eventService.getEvent({ "name.en": eventName });
 		if (!data) throw createError(404, "Event not found");
 
-		data.start = formatDateTime(data.start);
-		data.end = formatDateTime(data.end);
-
-		var cards = await cardsService.getCards();
+		var cards = await cardService.getCards();  // so slow x_x
 		var cardNames = cards.map(x => x.name);
-		
-		var apPresets = await eventsService.getAPPresets();
+
+		var apPresets = await eventService.getAPPresets();
 
 		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
 	} catch(e) {
 		return next(e);
 	}
 };
-
-function formatDateTime(datetime) {
-	return dayjs.tz(datetime, "UTC").format('YYYY.MM.DD, HH:mm:ss');
-}

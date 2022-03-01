@@ -1,23 +1,25 @@
 var express = require('express');
 var router = express.Router();
 
-var usersController = require('../controllers/usersController');
+var userController = require('../controllers/userController');
 
 // Restore password
-router.post('/restorePassword', usersController.restorePassword);
+router.post('/restorePassword', userController.restorePassword);
 
 // Email verification
-router.post('/:name/sendVerificationEmail', usersController.isSameUser(), usersController.sendVerificationEmail);
-router.get('/:name/confirmEmail/:code', usersController.isSameUser(), usersController.verifyEmail);
+router.post('/:name/sendVerificationEmail', userController.isSameUser(), userController.sendVerificationEmail);
+router.get('/:name/confirmEmail/:code', userController.isSameUser(), userController.verifyEmail);
 
 // Password change
-router.post('/:name/changePassword', usersController.isSameUser(), usersController.changePassword);
-
-// Account settings page
-router.get('/', usersController.isSameUser(), usersController.getAccountPage);
+router.post('/:name/changePassword', userController.isSameUser(), userController.changePassword);
 
 // update profile
-router.post('/:name/updateUserProfile', usersController.isSameUser(), usersController.updateUserProfile);
+router.post('/:name/updateUserProfile', userController.isSameUser(), userController.updateUserProfile);
+
+router.post("/issueBan", userController.hasAccess("Admin"), userController.banUser);
+
+// Account settings page
+router.get('/', userController.isSameUser(), userController.getAccountPage);
 
 
 module.exports = router;

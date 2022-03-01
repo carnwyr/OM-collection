@@ -25,7 +25,7 @@ const userService = require("../services/userService");
 
 // Login and signup
 exports.getLoginPage = function(req, res, next) {
-  res.render('login', { title: i18next.t("common.login"), message: req.flash('message'), user: req.user });
+  return res.render('login', { title: i18next.t("common.login"), message: req.flash('message'), user: req.user });
 };
 
 exports.login = passport.authenticate('local', {
@@ -151,7 +151,7 @@ exports.isSameUser = function() {
 		if (req.user && (req.user.name == req.params.name || exports.hasAccess("Admin"))) {
 			return next();
 		}
-		return next(createError(404, "Please log in and try again!"));
+		return next(createError(401, "Please log in and try again!"));
 	}
 };
 
@@ -270,7 +270,7 @@ exports.getAccountPage = function(req, res, next) {
       u.profile.isPrivate = false;
     }
 
-    return res.render("account", { title: i18next.t("title.settings"), user: u });
+    return res.render("account", { title: i18next.t("title.settings"), user: Object.assign(req.user, u) });
   });
 };
 
@@ -328,8 +328,7 @@ exports.verifyEmail = function(req, res, next) {
 			return next(err);
 		}
 		if (!record) {
-			var err = new Error('Invalid link');
-			return next(err);
+			return next(createError(404, "Invalid link."));
 		}
 		var setEmail = Users.updateOne({"info.name": req.user.name}, {"info.email": record.email}, (err) => {
 			if (err) {
@@ -417,22 +416,14 @@ exports.restorePassword = function(req, res, next) {
 	});
 };
 
-exports.updateSupport = function(req, res) {
-  const user = req.body.supportstatus.user;
-  const newstatus = req.body.supportstatus.newstatus;
-
-  Users.updateOne({ "info.name": user }, { "info.supportStatus": newstatus }, function(err, result) {
-    if (err) {
-      Sentry.captureException(err);
-      return res.json({ err: true, message: err });
-    }
-
-    if (result.nModified === 1) {
-      return res.json({ err: null, message: user + "'s support status updated!"});
-    } else {
-      return res.json({ err: true, message: "Update failed. Refresh the page and try again." });
-    }
-  });
+exports.updateSupport = async function(req, res) {
+  try {
+    let user = req.body.user;
+    let newstatus = JSON.parse(req.body.newstatus);
+    return res.json(await userService.updateSupport(user, newstatus));
+  } catch(e) {
+    return res.json({ err: true, message: e.message });
+  }
 };
 
 
@@ -533,6 +524,20 @@ exports.updateUserProfile = function(req, res) {
   );
 }
 
+exports.banUser = async function(req, res) {
+  return res.json(await userService.banUser(req.body.name));
+}
+
+exports.canEdit = function() {
+  return function(req, res, next) {
+    if (!req.user ||
+        req.user.supportStatus.some(badge => badge.name === "bannedFromMakingSuggestions")) {
+      return next(createError(401, "Please log in to access this page."));
+    }
+    return next();
+  }
+}
+
 
 // Authentication
 passport.use(new LocalStrategy({ passReqToCallback : true },
@@ -562,11 +567,14 @@ passport.serializeUser(function(user, next) {
 
 passport.deserializeUser(function(id, next) {
   Users.findById(id, function(err, user) {
-    var userInfo = user.info;
+    let userInfo = user.info;
     userInfo.id = user._id;
     if (user.info.type === "Admin") {
     	userInfo.isAdmin = true;
     }
-    next(err, userInfo);
+    if (userInfo.supportStatus && userInfo.supportStatus.length > 0) {
+      userInfo.isSupporter = userInfo.supportStatus.some(badge => badge.name === "adfree");
+    }
+    return next(err, userInfo);
   });
 });

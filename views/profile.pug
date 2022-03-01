@@ -3,59 +3,15 @@ extends layout
 block scripts
   link(rel="stylesheet" href="/stylesheets/profile.css")
 
-mixin joinedDate(date)
-  span.text-muted(style="font-size:12px;letter-spacing:.4px;")
-    | <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
-    | #{t("profile.join_karasu", { date: date })}
-
 block content
   div#alert(role="alert")
   div(class="container")
     h1= title
 
-    if (!user || !user.supportStatus.includes("adfree"))
+    if (!user || !user.isSupporter)
       div.ddd
         <div id="ezoic-pub-ad-placeholder-109"></div>
 
-    - var badges = profileInfo.badges;
-
-    if badges.length !== 0
-      include badgeDescriptions.pug
-      if badges.includes("adfree")
-        - var level = badges.find((el) => el.startsWith("Lv"));
-        style.
-          #supportBadge>div {
-            width: 100%;
-            color: white;
-            font-size: small;
-            text-align: center;
-            transform: translateY(-115%);
-          }
-      each badge in badges
-        if badge === "adfree"
-          div(id="supporterBadgeModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="supporterBadgeModelTitle" aria-hidden="true")
-            div(class="modal-dialog" role="document")
-              div(class="modal-content")
-                div(class="modal-header")
-                  h5(class="modal-title text-primary" id="supporterBadgeModelTitle")= level + " Supporter"
-                  button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-                    span(aria-hidden="true") &times;
-                div(class="modal-body") Proud supporter of Karasu-OS! Unlock by making a donation to keep Karasu alive. (This is a limited-time badge that is no longer obtainable.)
-                div(class="modal-footer")
-                  button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
-        else if (badge.startsWith("Lv") || badge === '')
-          //- do nothing
-        else
-          div(id=badge+"Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby=badge+"Title" aria-hidden="true")
-            div(class="modal-dialog" role="document")
-              div(class="modal-content")
-                div(class="modal-header")
-                  h5(class="modal-title text-primary" id=badge+"Title")= list[badge].title
-                  button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-                    span(aria-hidden="true") &times;
-                div(class="modal-body") !{list[badge].description}
-                div(class="modal-footer")
-                  button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
     div#usernav.mb-3
       a.btn.btn-primary(type="button" href="#") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person mb-1" viewBox="0 0 16 16">   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/> </svg>
         |
@@ -70,31 +26,36 @@ block content
           span &nbsp;#{t("profile.share")}
         script(src="/javascripts/shareProfile.js")
     div.card.card-body.shadow.mb-3
+      if title === t("title.my_profile")
+        a#settingslink.btn.btn-outline-secondary(type="button" href="/user")= t("profile.edit")
       div.row.align-items-center
         div.col-md-5.col-lg-4.text-center.mb-3.mb-lg-auto
-          img(src="/images/cards/L/" + (profileInfo.display?profileInfo.display:"The_Mammon_Way") + ".jpg" style="width:256px;height:auto;")
+          img(src="/images/cards/L/" + (profileInfo.display?profileInfo.display:"The_Mammon_Way") + ".jpg" style="max-width:100%;width:256px;height:auto;")
         div.col
-          h5.row.align-items-center.justify-content-between.mb-0.mx-2.mx-sm-0
-            .inline-block.col-6.col-sm-8.pl-0= profileInfo.karasu_name
-              span.d-none.d-md-inline.ml-4
-                +joinedDate(profileInfo.joinKarasu)
-            if title === t("title.my_profile")
-              a.btn.btn-outline-secondary.col-6.col-sm-4.col-lg-3.col-xl-2(type="button" href="/user")= t("profile.edit")
-          .d-flex.d-md-none.justify-content-start.mx-2.mx-sm-0
-            +joinedDate(profileInfo.joinKarasu)
-          if badges.length !== 0
-            div.d-flex.mt-2
-              each badge in badges
-                if badge === "adfree"
-                  div#supportBadge.mr-2(type="button" data-toggle="modal" data-target="#supporterBadgeModel" style="width:auto;height:32px;")
+          h5= profileInfo.karasu_name
+            span.text-muted.ml-4(style="font-size:12px;letter-spacing:.4px;")
+              | <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
+              | #{t("profile.join_karasu", { date: profileInfo.joinKarasu })}
+          if profileInfo.badges && profileInfo.badges.length > 0
+            div.d-flex
+              each badge in profileInfo.badges
+                if badge.name === "adfree"
+                  style.
+                    [data-target="#adfreeModal"]>div {
+                      width: 100%;
+                      color: white;
+                      font-size: small;
+                      text-align: center;
+                      transform: translateY(-115%);
+                    } 
+                  div.mr-2(type="button" data-toggle="modal" data-target="#adfreeModal" style="width:auto;height:32px;")
                     img(src="/images/SupporterBadge.png" alt="supporter badge" style="width:auto;height:32px;")
-                    div= level.substring(2)
-                else if (badge.startsWith("Lv") || badge === '')
-                  //- do nothing
+                    div= badge.level
                 else
-                  div.mr-2.my-auto(type="button" data-toggle="modal" data-target=`#${badge}Modal`)
-                    img(src="/images/"+badge+".png" alt=badge style="width:auto;height:28px;")
-          div#profile.row.mt-4
+                  div.mr-2.my-auto(type="button" data-toggle="modal" data-target=`#${badge.name}Modal`)
+                    img(src="/images/"+badge.name+".png" alt=badge.name style="width:auto;height:28px;")
+          br
+          div#profile.row.mt-3
             div.col-lg-6
               span= t("profile.name")
               span= profileInfo.name?profileInfo.name:"???"
@@ -105,57 +66,76 @@ block content
             div.col-lg-6
               span= t("profile.entered_rad")
               span= profileInfo.joined?profileInfo.joined:"???"
-            - var lang = {"en": "English", "jp": "日本語"}
+            - var lang = {"en": "English", "jp": "日本語", "zh": "繁體中文"};
             div.col-lg-6
               span= t("profile.language")
               span= profileInfo.language?lang[profileInfo.language]:"???"
             div.col-12
               span= t("profile.favourite_chara")
               div(style="border-radius:8px;border:2px solid var(--secondary);margin-top:.25rem;padding:.5rem;")
-                if profileInfo.characters.length == 0
+                if !profileInfo.characters || profileInfo.characters.length === 0
                   | ???
-                for character in profileInfo.characters
-                  img(src="/images/faces/"+ character + ".png" style="width:32px;height:32px;")
-    div#display.row
-      div.col-12.col-md
-        div.card.shadow.mb-3
-          h5.card-header.d-flex.align-items-center
-            img(src="/images/contacts.png" style="width:28px;margin-right:.5rem;")
-            span= t("collection.cards")
-          div.card-body
-            if cards.owned.length == 0
-              p.text-muted= t("profile.empty_collection")
-            else
-              - cards.owned.length = 15
-              ul.row.justify-content-around
-                for i in cards.owned
-                  if i
-                    li
-                      a(href="../card/" + getURL(i.name))
-                        img(src="/images/cards/S/" + i.uniqueName + ".jpg")
-                  else
-                    li.placeholder
-              div.view_all
-                a(type="button" href="collection" class="btn btn-primary")= t("profile.view_all")
-      div.col-12.col-md
-        div.card.shadow.mb-3
-          h5.card-header <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#FFC300" class="bi bi-star-fill mb-1 mr-1" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>#{t("collection.favourites")}
-          div.card-body
-            if cards.faved.length == 0
-              p.text-muted= t("profile.empty_collection")
-            else
-              - cards.faved.length = 15
-              ul.row.justify-content-around
-                for i in cards.faved
-                  if i
-                    li
-                      a(href="../card/" + getURL(i.name))
-                        img(src="/images/cards/S/" + i.uniqueName + ".jpg")
-                  else
-                    li.placeholder
-              div.view_all
-                a(type="button" href="favourites" class="btn btn-primary")= t("profile.view_all")
+                else
+                  each character in profileInfo.characters
+                    img(src="/images/faces/"+ character + ".png" style="width:32px;height:32px;")
+    if profileInfo.isPrivate && (!user || user.name !== profileInfo.karasu_name)
+      div.card.card-body
+        p.my-5.text-center.text-muted= t("profile.private_collection")
+    else
+      div#display.row
+        div.col-12.col-md
+          div.card.shadow.mb-3
+            h5.card-header.d-flex.align-items-center
+              img(src="/images/contacts.png" style="width:28px;margin-right:.5rem;")
+              span= t("collection.cards")
+            div.card-body
+              if cards.owned.length == 0
+                p.text-muted= t("profile.empty_collection")
+              else
+                - cards.owned.length = 15
+                ul.row.justify-content-around
+                  for i in cards.owned
+                    if i
+                      li
+                        a(href="../card/" + getURL(i.name))
+                          img(src="/images/cards/S/" + i.uniqueName + ".jpg")
+                    else
+                      li.placeholder
+                div.view_all
+                  a(type="button" href="collection" class="btn btn-primary")= t("profile.view_all")
+        div.col-12.col-md
+          div.card.shadow.mb-3
+            h5.card-header <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#FFC300" class="bi bi-star-fill mb-1 mr-1" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>#{t("collection.favourites")}
+            div.card-body
+              if cards.faved.length == 0
+                p.text-muted= t("profile.empty_collection")
+              else
+                - cards.faved.length = 15
+                ul.row.justify-content-around
+                  for i in cards.faved
+                    if i
+                      li
+                        a(href="../card/" + getURL(i.name))
+                          img(src="/images/cards/S/" + i.uniqueName + ".jpg")
+                    else
+                      li.placeholder
+                div.view_all
+                  a(type="button" href="favourites" class="btn btn-primary")= t("profile.view_all")
 
+  // modals
+  if profileInfo.badges && profileInfo.badges.length > 0
+    include badgeDescriptions.pug
+    each badge in profileInfo.badges
+      div(id=badge.name+"Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby=badge.name+"Title" aria-hidden="true")
+        div(class="modal-dialog" role="document")
+          div(class="modal-content")
+            div(class="modal-header")
+              h5(class="modal-title text-primary" id=badge.name+"Title")!= list[badge.name].title
+              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                span(aria-hidden="true") &times;
+            div(class="modal-body")!= list[badge.name].description
+            div(class="modal-footer")
+              button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
   if title === t("title.my_profile")
     div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
       div(class="modal-dialog" role="document")

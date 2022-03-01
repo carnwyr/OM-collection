@@ -13,7 +13,7 @@ block content
 	div.container
 		div.row
 			div.card.card-body
-				h2.text-center.text-md-left= title
+				h1.text-center.text-md-left= title
 				div.row.mb-4
 					div.col-12.col-md-3.text-center.text-md-left.mb-3.mb-md-0
 						div(class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical")
@@ -46,6 +46,9 @@ block content
 												div.form-check
 													input(type="radio" class="form-check-input" id="japanese" name="language" value="jp" checked=(user.profile.language==="jp"?true:false))
 													label(for="japanese" class="form-check-label") 日本語
+												div.form-check
+													input(type="radio" class="form-check-input" id="chinese" name="language" value="zh" checked=(user.profile.language==="zh"?true:false))
+													label(for="chinese" class="form-check-label") 繁體中文
 
 										p.my-2= t("profile.favourite_chara")
 										p.text-muted= t("settings.fav_char_instruction")
@@ -133,11 +136,6 @@ block content
 									div(class="form-check")
 										input(class="form-check-input" type="radio" name="isPrivate" id="privateProfileRadio" value="true" checked=(user.profile.isPrivate?true:false))
 										label(class="form-check-label" for="privateProfileRadio")= t("settings.private")
-											sup *
-								br
-								p.text-muted
-									sup *
-									| #{t("settings.privacy_note")}
 								br
 								input#updatePrivacy.btn.btn-primary(type="submit" value=t("settings.update"))
 				//-
@@ -148,8 +146,8 @@ block content
 							h5.card-title Supporter Perks
 							div#perks.col-12
 								div(class="custom-control custom-switch")
-									input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+									input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.isSupporter?true:false) disabled)
 									label(class="custom-control-label" for="adFreeStatus")= t("donation.ad-free")
 								div(class="custom-control custom-switch")
-									input(type="checkbox" class="custom-control-input" id="specialBadge" checked=(user.supportStatus.includes("adfree")?true:false) disabled)
+									input(type="checkbox" class="custom-control-input" id="specialBadge" checked=(user.isSupporter?true:false) disabled)
 									label(class="custom-control-label" for="specialBadge")= t("donation.badge")

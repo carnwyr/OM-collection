@@ -15,42 +15,47 @@ dayjs.extend(timezone)
 const Events = require("../models/events");
 const APPresets = require("../models/apPresets");
 
-const eventCacheService = require("../services/eventCacheService");
+const cacheService = require("../services/cacheService");
 const fileService = require("../services/fileService");
 
-exports.getEvents = async function(condition = {}) {
+exports.getEvents = async function(condition = {}, sort = { start: 1 }) {
 	try {
-		return await Events.find(condition);
+		return await Events.find(condition).sort(sort);
 	} catch (e) {
 		Sentry.captureException(e);
-		console.error(e);
 		return [];
 	}
 }
 
-exports.getEvent = async function(eventName) {
-	var event = eventCacheService.getCachedEvent();
+exports.getEvent = async function(query = {}) {
+	return await Events.findOne(query);
+}
+
+exports.getCalculatorEvent = async function(eventName) {
+	var event = cacheService.getCachedEvent();
 	if (!event || eventName != event.name) {
 		event = await getFullEventData(eventName);
 	}
+
 	return event;
 }
 
 exports.getLatestEvent = async function () {
 	var latestEventName = await getLatestEventName();
 
-	var cachedEvent = eventCacheService.getCachedEvent();
+	var cachedEvent = cacheService.getCachedEvent();
 	if (cachedEvent && cachedEvent.name === latestEventName) {
 		return cachedEvent;
 	}
 
 	try {
 		var latestEventData = await getFullEventData(latestEventName);
-		eventCacheService.setCachedEvent(latestEventData);
+		cacheService.setCachedEvent(latestEventData);
 		return latestEventData;
 	} catch (e) {
-		console.error(e);
+		// console.error(e);
 		Sentry.captureException(e);
+		return {};
 	}
 }
 
@@ -120,65 +125,58 @@ async function getFullEventData(eventName) {
 	}
 }
 
-exports.addEvent = async function (req, res) {
+exports.addEvent = async function(data, img) {
 	try {
-		let data = req.body.data;
-
-		data.start = stringToDateTime(data.start);
-		data.end = stringToDateTime(data.end);
-
 		let event = await Events.findOne({ "name.en": data.name.en });
 		if (event) {
-			throw createError(400, `Event with name ${data.name.en} already exists`);
+			throw createError(400, `Event with name "${data.name.en}" already exists`);
 		}
 
 		await Events.create(data);
-		await fileService.saveImage(req.body.img, null, data.name.en, "events");
-		return res.json({ err: null, message: "Event created!" });
+		await fileService.saveImage(img, null, data.name.en, "events");
+
+		return { err: null, message: "Event created!" };
 	} catch(e) {
-		console.error(e);
 		Sentry.captureException(e);
-		return res.json({ err: true, message: e.message });
+		return { err: true, message: e.message };
 	}
 }
 
-exports.updateEvent = async function (req, res) {
+exports.updateEvent = async function(originalName, data, img = null) {
 	try {
-		let data = req.body.data;
-		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 
 		data.start = stringToDateTime(data.start);
 		data.end = stringToDateTime(data.end);
 
-		let event = await Events.findOne({ "name.en": eventName });
+		let event = await Events.findOne({ "name.en": originalName });
 
 		if (!event) {
-			throw createError(404, `Event with name ${data.name.en} doesn't exist`);
+			throw createError(404, `Event with name ${originalName} doesn't exist`);
 		}
 
-		await Events.findOneAndUpdate({ "name.en": eventName }, data, { runValidators: true }).exec();
-		await fileService.saveImage(req.body.img, eventName, data.name.en, "events");
+		await Events.replaceOne({ "name.en": originalName }, data);
 
-		return res.json({ err: null, message: "Event updated!" });
+		if (img) {
+			await fileService.saveImage(img, originalName, data.name.en, "events");
+		}
+
+		return { err: null, message: "Event updated!" };
 	} catch(e) {
-		console.error(e);
 		Sentry.captureException(e);
-		return res.json({ err: true, message: e.message });
+		return { err: true, message: e.message };
 	}
 }
 
-exports.deleteEvent = async function (req, res) {
+exports.deleteEvent = async function(eventName) {
 	try {
-		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		var event = await Events.findOneAndRemove({ "name.en": eventName });
 		if (event) {
 			await fileService.deleteImage("events", event.name.en);
 		}
-		return res.redirect('/events');
+		return { err: null, message: "Event deleted!" };
 	} catch (err) {
-		console.error(err);
 		Sentry.captureException(err);
-		return next(err);
+		return { err: true, message: err.message };
 	}
 }
 
@@ -201,7 +199,7 @@ exports.getDefaultEventData = function() {
 }
 
 function stringToDateTime(dateString) {
-	return dayjs.tz(dateString, 'YYYY.MM.DD, HH:mm:ss', "UTC");
+	return dayjs(dateString).format('YYYY-MM-DDTHH:mm:ss.000+00:00');
 }
 
 exports.getAPPresets = async function () {

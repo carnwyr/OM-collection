@@ -11,7 +11,7 @@ block content
   div(class="container")
     h1= title
 
-    if (!user || !user.supportStatus.includes("adfree"))
+    if (!user || !user.isSupporter)
       div.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
 
     if path === "collection"
@@ -64,7 +64,7 @@ block content
               |
               | #{t("cards.manage_collection")}
 
-      if (!user || !user.supportStatus.includes("adfree"))
+      if (!user || !user.isSupporter)
         div.ddd
           <div id="ezoic-pub-ad-placeholder-111"></div>
 
@@ -169,7 +169,7 @@ block content
                 | #{t("cards.reset")}
               input.btn.btn-primary(type="submit" style="width:100px;" value="Apply")
 
-      if (!user || !user.supportStatus.includes("adfree"))
+      if (!user || !user.isSupporter)
         div.text-center
           <div id="ezoic-pub-ad-placeholder-108"></div>
 

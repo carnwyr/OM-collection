@@ -33,10 +33,9 @@ mixin statsTab(entries, category)
         each entry in chunk
           +percentBar(ownedStats[category][entry], totalStats[category][entry], entry)
 
-div#statsCard.card.card-body.shadow.mb-3
+div.card.card-body.shadow.mb-3
   div.row.align-items-center
-    //- mx-auto is needed for share stats image
-    div#statsTotal.col-lg-4.row.text-center.mb-3.mb-lg-0.mx-auto
+    div.col-lg-4.row.text-center.mb-3.mb-lg-0
       div.col-6
         h5.text-primary.mb-0= t("cards.Demon")
         - var demonPercentage = roundPercentage(ownedStats.cards.Demon / totalStats.cards.Demon * 100);
@@ -96,7 +95,7 @@ style.
 
 if title === t("title.my_collection")
   div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
-    div(class="modal-dialog modal-lg" role="document")
+    div(class="modal-dialog" role="document")
       div(class="modal-content")
         div(class="modal-header")
           h5(class="modal-title text-primary" id="openShareLink")= t("profile.share")
@@ -107,8 +106,3 @@ if title === t("title.my_collection")
             input(type="text" id="userLink" class="form-control" value=`https://karasu-os.com/${user.name}/collection` name="userlink" autocomplete="off" aria-label="user's collection link" aria-describedby="user link" readonly)
             div.input-group-append
               button#copyLink.btn.btn-primary(style="border-radius:0 4px 4px 0;")= t("profile.copy")
-          div.text-center.text-secondary.mt-2 Stats image to copy and share
-          div(class='d-flex justify-content-center align-items-center mt-3' id='statsImageContainer')
-            div(id='statsSpinner' class="spinner-border text-secondary" role="status" style='display: none')
-            img(id='statsImage' class='img-fluid')
-            div(id='statsMessage')

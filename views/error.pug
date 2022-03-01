@@ -3,9 +3,18 @@ extends layout
 block content
   div.container
     div.row.my-5.align-items-center.text-center
-      div.col.col-lg-5.text-lg-right
+      div.col-12.col-lg-5.text-lg-right
         img(src="/images/LeviChibi.png")
       div.col.text-lg-left
         h1(style="border:0;")= message
-        p Oops, looks like you found our error page. Double check the link, maybe?
+        
+        //- temp
+        if message === "Event not found"
+          h5 We're still adding to our event database. Please help us by contributing to 
+            |
+            a(href="https://docs.google.com/spreadsheets/d/1BcTf4jVsw6dtvu8U7vmP0LVB_yVDYXyl3KdeHLtPmxo/edit?usp=sharing" target="_blank") this spreadsheet
+            | . Thank you!
+        else
+          p Oops, looks like you found our error page. Double check the link, maybe?
+        
         a.mt-2(type="button" href='/' class="btn btn-primary") Back to home

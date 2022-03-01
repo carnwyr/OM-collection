@@ -1,19 +1,24 @@
 var selectPickerOptions = {
 	liveSearch: true,
 	style: '',
-	styleBase: 'form-control',
+	styleBase: 'form-control mb-0',
 	size: 15,
-	title: 'Card (if applicable)'
+	title: 'card name'
 };
 
 $(document).ready(function () {
 	createMasks();
 
-	$(".remove-button").click(removeItem);
-	$("#addReward, #addAP").click(addItem);
-	$("#submit").click(saveChanges);
+	originalData = JSON.stringify(prepareEventData());
 
-	bindCustomTags();
+	$(document).on("click", ".add-item", addItem);
+	$(document).on("click", ".remove-item", removeItem);
+
+	$(".add-ap").click(addAP);
+
+	$("#submit").click(saveChanges);  // function is in pug file
+
+	// $("select[name='tag']").change(checkIfCustom);
 
 	$('.card-select').selectpicker(selectPickerOptions);
 
@@ -75,47 +80,24 @@ function removeItem() {
 }
 
 function addItem() {
-	var parentForm = $(this).data("target");
 	var template = $(this).data("clone");
-	var newItem = $($(template).html()).appendTo($(parentForm));
-	newItem.find(".remove-button").click(removeItem);
-	newItem.find(".tag-select").change(switchCustomTagDisplay);
-	newItem.find(".card-select").selectpicker(selectPickerOptions);
-	return newItem;
+	$(this).parent().children("div:first-of-type").append($(template).html());
+
+	if (template === "#rewardTemplate") {
+		$('.card-select').selectpicker(selectPickerOptions);
+	}
 }
 
-function bindCustomTags() {
-	var tagDropdowns = $('#rewards .tag-select');
-	tagDropdowns.each((index, reward) => {
-		if (!$(reward).val()) {
-			$(reward).next().addClass('d-block').removeClass('d-none');
-		};
-	});
-
-	tagDropdowns.change(switchCustomTagDisplay)
-}
-
-function switchCustomTagDisplay(event) {
-	var tag = event.target;
-	if (!$(tag).val()) {
-		$(tag).next().addClass('d-block').removeClass('d-none');
+function checkIfCustom() {
+	if ($(this).val() === "custom") {
+		$("input[name='customTag']").show();
 	} else {
-		$(tag).next().addClass('d-none').removeClass('d-block');
-	};
-}
-
-// TODO merge with card edit functions
-// TODO fix page reload (not needed, shows old values)
-function saveChanges(e) {
-  e.preventDefault();
-  if (!validateFields()) {
-    return;
-  }
-  submitChange();
+		$("input[name='customTag']").hide();
+	}
 }
 
 function validateFields() {
-    if (!$('#en-name').val()) {
+  if (!$('#en-name').val()) {
     showAlert("danger", 'English name must be filled');
     return false;
   }
@@ -131,17 +113,10 @@ function validateFields() {
   return true;
 }
 
-function submitChange() {
-	var data = {};
-
-	var formData = new FormData(document.getElementById('info'));
+function prepareEventData() {
+	let data = {};
+	let formData = new FormData(document.getElementById('info'));
 	formData.forEach((value, key) => data[key] = value);
-
-	if (data.type !== "Nightmare") {
-		data.rewards = getRewards();
-		data.ap = getAP();
-	}
-
 	data.name = {
 		en: data["en-name"],
 		ja: data["ja-name"],
@@ -149,20 +124,35 @@ function submitChange() {
 	};
 	["en-name", "ja-name", "zh-name"].forEach(e => delete data[e]);
 
-	for (let key in data) {
-		if (data[key] === "") {
-			if (data.type === "Nightmare" && ["stages", "pageCost"].includes(key)) {
-				continue;
-			}
-			showAlert("danger", "Please fill: "+key);
-			return;
+	if (data.type === "PopQuiz") {
+		let rewardType = $("input[name='rewardListType']:checked").val();
+		let popQuizData = {
+			isLonelyDevil: $("input#lonelydevil").is(":checked"),
+			isBirthday: $("input#birthday").is(":checked"),
+			hasKeys: $("input#has-keys").is(":checked"),
+			rewardListType: rewardType,
+			stages: $("input#stages").val()
+		};
+
+		if (popQuizData.hasKeys) {
+			data.lockedStages = getLockedStages();
+			data.keyDroppingStages = $("input[name='keydrops']").val().split(',').map(element => {
+				element.trim();
+			});
 		}
+
+		if (rewardType === "points") {
+			popQuizData.listRewards = getRewards();
+			popQuizData.ap = getAP();
+			popQuizData.pageCost = $("input[name='pageCost']").val();
+		} else {
+			popQuizData.boxRewards = getBoxRewards();
+		}
+
+		data = Object.assign(popQuizData, data);
 	}
 
-	var image = readImage($('#uploadImage')[0]);
-	image
-		.then(res => sendRequest(data, res))
-		.catch(err => showAlert("danger", "Can't load image: " + err.message));
+	return data;
 }
 
 function getRewards() {
@@ -170,14 +160,15 @@ function getRewards() {
 		var formData = new FormData(form);
 		var reward = {};
 		formData.forEach((value, key) => reward[key] = value);
-		if (!reward.tag) {
+		if (reward.tag === "custom") {
 			reward.tag = reward.customTag;
 		}
+
 		delete reward.customTag;
 		return reward;
 	}).toArray();
 
-	rewards = rewards.filter(r => r.tag && r.points);
+	rewards = rewards.filter(r => r.card && r.points);
 
 	return rewards;
 }
@@ -195,24 +186,64 @@ function getAP() {
 	return apRewards;
 }
 
-function sendRequest(data, image) {
-	$.ajax({
-		type: "post",
-		url: location.pathname,
-		contentType: "application/json",
-		data: JSON.stringify({
-			data: data,
-			img: image,
-			name: location.pathname.split("/")[2]
-		})
-	}).done(function(result) {
-			if (result.err) {
-				showAlert("danger", result.message);
-				return;
-			}
-			showAlert("success", result.message);
+function getBoxRewards() {
+	var sets = []
+
+	$("div.boxset").each(function() {
+		let set = {
+			name: $(this).find("input[name='box-set-name']").val(),
+			cost: $(this).find("input[name='box-set-cost']").val(),
+			boxes: []
+		};
+
+		$(this).find("form").each(function() {
+			var formData = new FormData(this);
+			var boxData = {};
+			formData.forEach((value, key) => boxData[key] = value);
+			set.boxes.push(boxData);
 		});
+
+		sets.push(set);
+	});
+
+	sets = sets.filter(r => r.name && r.cost);
+
+	return sets;
 }
+
+function getLockedStages() {
+	var stages = []
+
+	$("div#keys form").each(function() {
+		var formData = new FormData(this);
+		var boxData = {};
+		formData.forEach((value, key) => boxData[key] = value);
+		stages.push(boxData);
+	});
+
+	stages = stages.filter(r => r.name && r.requirement);
+
+	return stages;
+}
+
+// function sendRequest(data, image) {
+// 	$.ajax({
+// 		type: "post",
+// 		url: location.pathname,
+// 		contentType: "application/json",
+// 		data: JSON.stringify({
+// 			data: data,
+// 			img: image,
+// 			name: location.pathname.split("/")[2]
+// 		})
+// 	}).done(function(result) {
+// 			if (result.err) {
+// 				showAlert("danger", result.message);
+// 				return;
+// 			}
+// 			showAlert("success", result.message);
+// 		});
+// }
 
 function formatRewards(f, end) {
 	var temp = {}, lst = [];
@@ -226,6 +257,20 @@ function formatRewards(f, end) {
 	return lst;
 }
 
+
+
+function addAP() {
+	var parentForm = $(this).data("target");
+	var template = $(this).data("clone");
+	var newItem = $($(template).html()).appendTo($(parentForm));
+
+	// newItem.find(".remove-item").click(removeItem);
+	// newItem.find(".tag-select").change(switchCustomTagDisplay);
+	// newItem.find(".card-select").selectpicker(selectPickerOptions);
+
+	return newItem;
+}
+
 function applyPreset() {
 	var presetName = $(this).val();
 	var presetData = apPresets[presetName];
@@ -233,7 +278,7 @@ function applyPreset() {
 	$("#AP").empty();
 
 	presetData.forEach(ap => {
-		let newItem = addItem.call($("#addAP"));
+		let newItem = addAP.call($("#addAP"));
 		newItem.find('[name="amount"]').val(ap.amount);
 		newItem.find('[name="points"]').val(ap.points);
 		if (ap.page)

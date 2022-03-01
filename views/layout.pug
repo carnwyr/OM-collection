@@ -17,17 +17,15 @@ html(lang=t("lang"))
     meta(property="og:title" content=title)
     meta(property="og:description" content=description?description:title+t("header"))
     if card
-      meta(property="og:image" content=`https://karasu-os.com/images/cards/S/${card.uniqueName}.jpg`)
+      meta(property="og:image" content=`/images/cards/S/${card.uniqueName}.jpg`)
     else
-      meta(property="og:image" content="https://karasu-os.com/images/karasu.png")
-    meta(name="baidu-site-verification" content="code-og1W6xXq1t")
+      meta(property="og:image" content="/images/karasu.png")
     link(rel="icon" type="image/x-icon" href="/images/favicon.ico")
-    link(rel="stylesheet" href="/stylesheets/bootstrap.min.css")
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
     link(rel='stylesheet' href='/stylesheets/theme.css')
     link(rel='stylesheet' href='/stylesheets/style.css')
-    script(src="/javascripts/ads-loader.js" onerror="document.dispatchEvent(new CustomEvent('adBlocked'));")
-    script(src="/javascripts/jquery-3.6.0.min.js")
-    script(src="/javascripts/bootstrap.bundle.min.js")
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
     script(src='/javascripts/commonFunctions.js')
     block scripts
 
@@ -45,15 +43,8 @@ html(lang=t("lang"))
             a(class="nav-link" href='/')= t("common.home")
           li(class="nav-item")
             a(class="nav-link" href='/cards')= t("common.gallery")
-          if user
-            li(class="nav-item dropdown")
-              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Karasu
-              div(class="dropdown-menu shadow px-2" aria-labelledby="collectionDropdown")
-                span#overline collections
-                a(class="dropdown-item" href='/' + user.name + '/collection')= t("collection.cards")
-                a(class="dropdown-item" href='/' + user.name + '/favourites')= t("collection.favourites")
-                div(class="dropdown-divider" style="opacity:50%;")
-                a(class="dropdown-item" href='/' + user.name + '/profile')= t("common.profile")
+          li.nav-item
+            a.nav-link(href="/events") Events
           li(class="nav-item")
             a(class="nav-link" href='/rankings')= t("common.rankings")
           li(class="nav-item dropdown")
@@ -72,7 +63,6 @@ html(lang=t("lang"))
                   a(class="dropdown-item" href='/hiddenCards') Hidden cards
                 if user.type === "Admin"
                   a(class="dropdown-item" href='/userpage') User List
-                a(class="dropdown-item" href="/events") Events
                 a(class="dropdown-item" href="/event/new") Add new event
         ul(class="navbar-nav ml-auto")
           li(class="nav-item d-none d-md-block")
@@ -84,6 +74,14 @@ html(lang=t("lang"))
             li(class="nav-item")
               a(class="nav-link" href='/login')= t("common.login")
           else
+            li(class="nav-item dropdown")
+              a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Karasu
+              div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="collectionDropdown")
+                span#overline collections
+                a(class="dropdown-item" href='/' + user.name + '/collection')= t("collection.cards")
+                a(class="dropdown-item" href='/' + user.name + '/favourites')= t("collection.favourites")
+                div(class="dropdown-divider" style="opacity:50%;")
+                a(class="dropdown-item" href='/' + user.name + '/profile')= t("common.profile")
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link text-white" role='button' id='accountDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.account")
                 if !user.email
@@ -100,14 +98,26 @@ html(lang=t("lang"))
             li(class="nav-item d-md-none")
               a(class="nav-link" href='/logout')= t("common.logout")
 
-    main(class='container-fluid mb-5' style="position:relative;")
+    main.mb-5(style="position:relative;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
       - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
+      if title !== "Karasu OS"
+        div.container
+          <div id="announcementToast" class="d-none alert alert-info alert-dismissible fade show" style="z-index:0!important" role="alert">
+            h5 We need your help!
+            p We just added card strength, card animations, pop quiz locked stages, and pop quiz rewards to our website. We are missing a lot of information so some data are not being displayed at the moment.
+            a(href="https://drive.google.com/drive/folders/1v6jYT7NU31alIgcPrrIJerF6O2Iq3jlU?usp=sharing" target="_blank") Click here to become a contributor!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        if (!user || !user.isSupporter)
+          div.container.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
+
       block content
-      if (!user || !user.supportStatus.includes("adfree"))
+      if (!user || !user.isSupporter)
         div#kool-aid.container(style="margin:2rem auto;text-align:center;")
-          div.row(style="min-height:250px;")
-            div.col <div id="ezoic-pub-ad-placeholder-122"></div>
+          div.row.justify-content-center(style="min-height:250px;") <div id="ezoic-pub-ad-placeholder-122"></div>
       //- toasts
       div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
         div(class="toast-body")
@@ -117,17 +127,16 @@ html(lang=t("lang"))
             a(href="/policies") More information
           button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
             span(aria-hidden="true") Got it &#x1F44D
-
       //-
         div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
           div.toast-header
-            img.mr-2(src="/images/twitter.png" width="20px")
-            strong.mr-auto Karasu-OS Joined Twitter!
+            strong.mr-auto IMPORTANT: changes to card detail pages!
             button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
               span(aria-hidden="true") &times;
           div.toast-body
-            | Follow us on Twitter to be the first to see our newest features!
-            a(href="https://twitter.com/karasu_os" class="btn btn-sm btn-block mt-3" style="background:#1DA1F2;color:white;" target="_blank") Follow @karasu_os
+            | We're adding more data to card pages. The layout will change. Vote for your favourite layout!
+            |
+            a(href="https://forms.gle/S9sypTYyMTDxFNaD8" class="btn btn-primary btn-sm btn-block mt-3" target="_blank") Vote now!
 
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
