@@ -26,7 +26,7 @@ $(document).ready(function() {
 	initInfiniteScroll();
 
 	$("#search, #filters form").on("submit", applyFilters);
-	$("#filters form input").change(updateFilters);
+	$("#filters form input").change(udpateFilterParams);
 	$("#resetFilters").click(resetFilters);
 	$("#viewMenuDropdown a").click(updateViewType);
 
@@ -75,7 +75,7 @@ function createCardElement(card) {
 		img_src = `/images/cards/${imageSize}/${card.uniqueName}${bloomed}.jpg`;
 	  template =
 			`<a class="cardPreview ${containerSize}" href="card/${card.uniqueName}">
-				<img loading="lazy" src="${img_src}">
+				<img class="lazy" loading="lazy" data-src="${img_src}">
 				<figcaption>${card.name}</figcaption>
 			</a>`;
 	}
@@ -103,7 +103,7 @@ function createCardElement(card) {
 function applyFilters(e) {
 	e.preventDefault();
 
-	// update url
+	// update query string
 	var filters = new FormData($("#filters form")[0]);
 	var params = new URLSearchParams();
 
@@ -118,11 +118,12 @@ function applyFilters(e) {
 
 	if (querystr.get("view")) params.set('view', querystr.get("view"));
 
-	// don't send new request if no filter update
-	// if (params.toString() === document.location.search.substring(1)) return;
+	if (params.toString() === document.location.search.substring(1)) return;
 
 	querystr = new URLSearchParams(params.toString());
 	updateURL();
+
+	$("#demoncards>div, #memorycards>div").html("Loading...");
 
 	// request cards
 	var collectionPath = window.location.pathname.split('/').at(-1);
@@ -198,7 +199,7 @@ function initInfiniteScroll() {
 	}
 }
 
-function updateFilters() {
+function udpateFilterParams() {
 	var name = $(this).attr("name");
 
 	if (name === "cards") return;

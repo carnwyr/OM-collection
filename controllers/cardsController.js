@@ -21,8 +21,14 @@ exports.index = function (req, res, next) {
 exports.getCardsListPage = async function(req, res, next) {
 	try {
 		var query = getCardsDBQuery(req.query);
-		var cards = await cardService.getCards(query);
-		cards = stripeExcessData(cards);
+		var cards = await cardService.getCards(query, {
+			name: 1,
+			ja_name: 1,
+			uniqueName: 1,
+			type: 1
+		});
+
+		console.log(cards);
 
 		if (req.user && req.query.cards) {
 			let ownedCards = await userService.getOwnedCards(req.user.name);
@@ -308,10 +314,8 @@ exports.getCards = async function (req, res) {
 				}
 		}
 
-		cards = stripeExcessData(cards);
 		return res.json({ err: null, cards: cards });
 	} catch(e) {
-		console.log(e);
 		return res.json({ err: true, message: e.message });
 	}
 }
@@ -383,15 +387,4 @@ function getCardsDBQuery(obj) {
 		}
 	}
 	return query;
-}
-
-// better way to do this ?
-function stripeExcessData(cards) {
-	return cards.map(card => {
-		return {
-			name: i18next.t("lang") === "ja" ? card.ja_name : card.name,
-			uniqueName: card.uniqueName,
-			type: card.type
-		}
-	});
 }
