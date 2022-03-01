@@ -177,6 +177,7 @@ function initInfiniteScroll() {
 			next: nextHandler,
 			// logger: false
 		});
+		ias.on("appended", initLazyLoad);
 		$("#demoncards>p").addClass("d-none");
 	} else {
 		$("#demoncards>p").removeClass("d-none");
@@ -193,6 +194,7 @@ function initInfiniteScroll() {
 	    next: nextHandler2,
 			// logger: false
 	  });
+		ias2.on("appended", initLazyLoad);
 		$("#memorycards>p").addClass("d-none");
 	} else {
 		$("#memorycards>p").removeClass("d-none");

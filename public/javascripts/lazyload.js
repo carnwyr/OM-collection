@@ -1,5 +1,7 @@
-document.addEventListener("DOMContentLoaded", function () {
-  var lazyloadImages;
+document.addEventListener("DOMContentLoaded", initLazyLoad);
+
+function initLazyLoad() {
+  let lazyloadImages;
 
   if ("IntersectionObserver" in window) {
     lazyloadImages = document.querySelectorAll(".lazy");
@@ -48,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("resize", lazyload);
     window.addEventListener("orientationChange", lazyload);
   }
-});
+}
 
 function checkImage(src, good/*, bad*/) {
   var img = new Image();
