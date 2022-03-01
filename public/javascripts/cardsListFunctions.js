@@ -177,7 +177,7 @@ function initInfiniteScroll() {
 			next: nextHandler,
 			logger: true
 		});
-		ias.on("append", () => { observeLazyImages("#demoncards img.lazy"); });
+		ias.on("appended", () => { observeLazyImages(); });
 		$("#demoncards>p").addClass("d-none");
 	} else {
 		$("#demoncards>p").removeClass("d-none");
@@ -194,7 +194,7 @@ function initInfiniteScroll() {
 	    next: nextHandler2,
 			// logger: false
 	  });
-		ias2.on("append", () => { observeLazyImages("#mermoycards img.lazy"); });
+		ias2.on("appended", () => { observeLazyImages(); });
 		$("#memorycards>p").addClass("d-none");
 	} else {
 		$("#memorycards>p").removeClass("d-none");
