@@ -260,16 +260,43 @@ exports.directImage = async function (req, res, next) {
 
 // Collection functions
 exports.getCards = async function (req, res) {
-	var cards = await cardService.getCards();
-	var lang = i18next.t("lang");
-	cards = cards.map(card => {
-		return {
-			name: lang === "ja" ? card.ja_name : card.name,
-			uniqueName: card.uniqueName
-		};
-	});
-	return res.send(cards);
-};
+	try {
+		var query = getCardsDBQuery(req.query);
+		var cards = await cardService.getCards(query, {
+			name: 1,
+			ja_name: 1,
+			uniqueName: 1,
+			type: 1
+		});
+		var user;
+
+		//
+		switch (req.query.path) {
+			case "collection":
+				user = await userService.getUser(req.query.user);
+				cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+				break;
+			case "favourites":
+				user = await userService.getUser(req.query.user);
+				cards = cards.filter(card => user.cards.faved.includes(card.uniqueName));
+				break;
+			default:
+				if (req.query.cards) {
+					let type = req.query.cards;
+					user = await userService.getUser(req.params.user);
+					if (type === "owned") {
+						cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+					} else if (type === "not_owned") {
+						cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
+					}
+				}
+		}
+
+		return res.json({ err: null, cards: cards });
+	} catch(e) {
+		return res.json({ err: true, message: e.message });
+	}
+}
 
 // Admin card management
 exports.getEditCardPage = async function(req, res, next) {
