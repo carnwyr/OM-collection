@@ -175,7 +175,7 @@ function initInfiniteScroll() {
 		ias = new InfiniteAjaxScroll('#demoncards>div', {
 			item: '.cardPreview',
 			next: nextHandler,
-			logger: true
+			logger: false
 		});
 		ias.on("appended", () => { observeLazyImages(); });
 		$("#demoncards>p").addClass("d-none");
@@ -192,7 +192,7 @@ function initInfiniteScroll() {
 	  ias2 = new InfiniteAjaxScroll('#memorycards>div', {
 	    item: '.cardPreview',
 	    next: nextHandler2,
-			// logger: false
+			logger: false
 	  });
 		ias2.on("appended", () => { observeLazyImages(); });
 		$("#memorycards>p").addClass("d-none");
