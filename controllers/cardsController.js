@@ -268,9 +268,8 @@ exports.getCards = async function (req, res) {
 			uniqueName: 1,
 			type: 1
 		});
-		var user;
 
-		//
+		let user;
 		switch (req.query.path) {
 			case "collection":
 				user = await userService.getUser(req.query.user);
@@ -281,9 +280,9 @@ exports.getCards = async function (req, res) {
 				cards = cards.filter(card => user.cards.faved.includes(card.uniqueName));
 				break;
 			default:
-				if (req.query.cards) {
-					let type = req.query.cards;
-					user = await userService.getUser(req.params.user);
+				let type = req.query.cards;
+				if (type && req.user) {
+					user = await userService.getUser(req.user.name);
 					if (type === "owned") {
 						cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
 					} else if (type === "not_owned") {
