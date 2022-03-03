@@ -44,7 +44,7 @@ var APSchema = new Schema({
 const lockedStageSchema = new Schema({
 	name: String,
 	requirement: Number
-});
+}, { _id: false });
 
 const popQuizSchema = new Schema({
 	isLonelyDevil: { type: Boolean, required: true },

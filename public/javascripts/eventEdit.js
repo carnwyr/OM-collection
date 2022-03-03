@@ -6,6 +6,7 @@ var selectPickerOptions = {
 	title: 'card name'
 };
 
+let originalData;
 $(document).ready(function () {
 	createMasks();
 
@@ -137,7 +138,7 @@ function prepareEventData() {
 		if (popQuizData.hasKeys) {
 			data.lockedStages = getLockedStages();
 			data.keyDroppingStages = $("input[name='keydrops']").val().split(',').map(element => {
-				element.trim();
+				return element.trim();
 			});
 		}
 
@@ -212,38 +213,21 @@ function getBoxRewards() {
 }
 
 function getLockedStages() {
-	var stages = []
+	let stages = [];
 
 	$("div#keys form").each(function() {
-		var formData = new FormData(this);
-		var boxData = {};
-		formData.forEach((value, key) => boxData[key] = value);
-		stages.push(boxData);
+		let formData = new FormData(this);
+		let lockedStage = {};
+		for(var pair of formData.entries()) {
+			lockedStage[pair[0]] = pair[1];
+		}
+		stages.push(lockedStage);
 	});
 
 	stages = stages.filter(r => r.name && r.requirement);
 
 	return stages;
 }
-
-// function sendRequest(data, image) {
-// 	$.ajax({
-// 		type: "post",
-// 		url: location.pathname,
-// 		contentType: "application/json",
-// 		data: JSON.stringify({
-// 			data: data,
-// 			img: image,
-// 			name: location.pathname.split("/")[2]
-// 		})
-// 	}).done(function(result) {
-// 			if (result.err) {
-// 				showAlert("danger", result.message);
-// 				return;
-// 			}
-// 			showAlert("success", result.message);
-// 		});
-// }
 
 function formatRewards(f, end) {
 	var temp = {}, lst = [];
@@ -256,8 +240,6 @@ function formatRewards(f, end) {
 	}
 	return lst;
 }
-
-
 
 function addAP() {
 	var parentForm = $(this).data("target");
