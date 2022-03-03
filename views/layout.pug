@@ -102,15 +102,15 @@ html(lang=t("lang"))
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
       - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
       if title !== "Karasu OS"
-        div.container
-          <div id="announcementToast" class="d-none alert alert-info alert-dismissible fade show" style="z-index:0!important" role="alert">
-            h5 We need your help!
-            p We just added card strength, card animations, pop quiz locked stages, and pop quiz rewards to our website. We are missing a lot of information so some data are not being displayed at the moment.
-            a(href="https://drive.google.com/drive/folders/1v6jYT7NU31alIgcPrrIJerF6O2Iq3jlU?usp=sharing" target="_blank") Click here to become a contributor!
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
+        //- div.container
+        //-   <div id="announcementToast" class="d-none alert alert-info alert-dismissible fade show" style="z-index:0!important" role="alert">
+        //-     h5 We need your help!
+        //-     p We just added card strength, card animations, pop quiz locked stages, and pop quiz rewards to our website. We are missing a lot of information so some data are not being displayed at the moment.
+        //-     a(href="https://drive.google.com/drive/folders/1v6jYT7NU31alIgcPrrIJerF6O2Iq3jlU?usp=sharing" target="_blank") Click here to become a contributor!
+        //-     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        //-       <span aria-hidden="true">&times;</span>
+        //-     </button>
+        //-   </div>
         if (!user || !user.isSupporter)
           div.container.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
 
