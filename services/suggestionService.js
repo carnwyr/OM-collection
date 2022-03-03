@@ -25,6 +25,8 @@ exports.getSuggestionList = async function(query = {}) {
 exports.addSuggestion = async function(data) {
   try {
     data.status = "pending";
+    let doc = await Suggestions.updateOne({ user: data.user, page: data.page, status: "pending" }, data);
+    if (doc.n === 1) return doc;
     return await Suggestions.create(data);
   } catch(e) {
     return { err: true, message: e.message };
