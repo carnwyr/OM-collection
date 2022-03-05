@@ -75,6 +75,9 @@ function createCardElement(card) {
 		if (viewtype === 'bloomed' && card.type === "Demon") {
 			bloomed = '_b';
 		}
+		if (document.documentElement.lang === "ja") {
+			card.name = card.ja_name;
+		}
 		img_src = `/images/cards/${imageSize}/${card.uniqueName}${bloomed}.jpg`;
 	  template =
 			`<a class="cardPreview ${containerSize}" href="card/${card.uniqueName}">
