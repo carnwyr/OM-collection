@@ -7,9 +7,10 @@ function initLazyLoad() {
     imageObserver = new IntersectionObserver(function (entries, observer) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          var image = entry.target;
+          let image = entry.target;
           checkImage(image.dataset.src, function() {
             image.src = image.dataset.src;
+            image.style.opacity = "1";
           });
           image.classList.remove("lazy");
           imageObserver.unobserve(image);
