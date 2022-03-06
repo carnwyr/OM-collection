@@ -59,8 +59,6 @@ function createCardDocuments(data, pageIndex) {
 	return { frag: frag, hasNextPage: hasNextPage };
 }
 
-
-// TODO: fix href, not uniquename, use encoded english name.
 function createCardElement(card) {
 	var template, img_src;
 	var imageSize = 'S', containerSize = "icon-container", viewtype = querystr.get('view');
@@ -75,14 +73,11 @@ function createCardElement(card) {
 		if (viewtype === 'bloomed' && card.type === "Demon") {
 			bloomed = '_b';
 		}
-		if (document.documentElement.lang === "ja") {
-			card.name = card.ja_name;
-		}
 		img_src = `/images/cards/${imageSize}/${card.uniqueName}${bloomed}.jpg`;
 	  template =
-			`<a class="cardPreview ${containerSize}" href="card/${card.uniqueName}">
+			`<a class="cardPreview ${containerSize}" href="card/${encodeURIComponent(card.name)}">
 				<img class="lazy" loading="lazy" data-src="${img_src}">
-				<figcaption>${card.name}</figcaption>
+				<figcaption>${document.documentElement.lang === "ja"?card.ja_name:card.name}</figcaption>
 			</a>`;
 	}
 
