@@ -28,11 +28,11 @@ exports.getCardsListPage = async function(req, res, next) {
 		});
 
 		if (req.user && req.query.cards) {
-			let ownedCards = await userService.getOwnedCards(req.user.name);
+			let user = await userService.getUser(req.user.name);
 			if (req.query.cards === 'owned') {
-				cards = cards.filter(card => ownedCards.includes(card.uniqueName));
+				cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
 			} else if (req.query.cards === 'notowned') {
-				cards = cards.filter(card => !ownedCards.includes(card.uniqueName));
+				cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
 			}
 		}
 
@@ -259,6 +259,7 @@ exports.directImage = async function (req, res, next) {
 
 
 // Collection functions
+// TODO: merge with getCardsListPage
 exports.getCards = async function (req, res) {
 	try {
 		var query = getCardsDBQuery(req.query);

@@ -125,6 +125,7 @@ function applyFilters(e) {
 	updateURL();
 
 	$("#demoncards>div, #memorycards>div").html("Loading...");
+	unbindInfiniteScroll();
 
 	// request cards
 	params.set("path", PATH);
@@ -161,13 +162,12 @@ function updateViewType() {
 }
 
 function initInfiniteScroll() {
+	unbindInfiniteScroll();
+
 	$("#demoncards>div, #memorycards>div").html("");
 
 	var demonCards = cardList.filter(card => card.type === "Demon");
 	var memoryCards = cardList.filter(card => card.type === "Memory");
-
-	if (ias) ias.unbind();
-	if (ias2) ias2.unbind();
 
 	if (demonCards.length !== 0) {
 		nextHandler = function(pageIndex) {
@@ -202,6 +202,11 @@ function initInfiniteScroll() {
 	} else {
 		$("#memorycards>p").removeClass("d-none");
 	}
+}
+
+function unbindInfiniteScroll() {
+	if (ias) ias.unbind();
+	if (ias2) ias2.unbind();
 }
 
 function udpateFilterParams() {
