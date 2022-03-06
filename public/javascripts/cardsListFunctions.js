@@ -346,11 +346,11 @@ function switchSelectionAll(select) {
 	if (cardsToSelect.length == 0) return;
 
 	//TODO remove slice
-	let visibleCards = $('.cardPreview:visible')
+	let visibleCards = $('.cardPreview:visible:not(".placeholder")')
 		.filter((idx, el) => $(el).isInViewport())
 		.filter((idx, el) => cardsToSelect.includes($(el).find('img').data("src").slice(16, -4)));
 
-	let invisibleCards = $('.cardPreview:visible')
+	let invisibleCards = $('.cardPreview:visible:not(".placeholder")')
 		.filter((idx, el) => !$(el).isInViewport())
 		.filter((idx, el) => cardsToSelect.includes($(el).find('img').data("src").slice(16, -4)));
 
