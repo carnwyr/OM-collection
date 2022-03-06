@@ -1,8 +1,10 @@
 img[loading="lazy"] {
   transition: all .5s ease;
   -webkit-transition: all .5s ease;
-  opacity: 0;
 }
+/* img.lazy {
+  opacity: 0;
+} */
 .cardPreview, .cardPreview:hover {
   text-align: center;
   margin: .25rem;

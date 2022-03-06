@@ -82,9 +82,10 @@ function createCardElement(card) {
 		img_src = `/images/cards/${imageSize}/${card.uniqueName}${bloomed}.jpg`;
 	  template =
 			`<a class="cardPreview ${containerSize}" href="card/${encodeURIComponent(card.name)}">
-				<img class="lazy" loading="lazy" data-src="${img_src}">
+				<img loading="lazy" src="${img_src}">
 				<figcaption>${document.documentElement.lang === "ja"?card.ja_name:card.name}</figcaption>
 			</a>`;
+		// class="lazy" data-src="${img_src}"
 	}
 
   let item = document.createElement('div');
@@ -181,7 +182,7 @@ function initInfiniteScroll() {
 			next: nextHandler,
 			logger: false
 		});
-		ias.on("appended", () => { observeLazyImages(); });
+		// ias.on("appended", () => { observeLazyImages(); });
 		$("#demoncards>p").addClass("d-none");
 	} else {
 		$("#demoncards>p").removeClass("d-none");
@@ -198,7 +199,7 @@ function initInfiniteScroll() {
 	    next: nextHandler2,
 			logger: false
 	  });
-		ias2.on("appended", () => { observeLazyImages(); });
+		// ias2.on("appended", () => { observeLazyImages(); });
 		$("#memorycards>p").addClass("d-none");
 	} else {
 		$("#memorycards>p").removeClass("d-none");
