@@ -53,8 +53,6 @@ function createCardDocuments(data, pageIndex) {
 		maxCardCount -= maxCardCount % cardsPerRow;
 	}
 
-	console.log(itemsPerPage);
-
   for (let i = offset, len = offset + itemsPerPage; i < len && i < maxCardCount; i++) {
     let item = createCardElement(data[i]);
     frag.appendChild(item);
