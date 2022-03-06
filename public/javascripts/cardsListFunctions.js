@@ -41,15 +41,21 @@ $(document).ready(function() {
 	$(window).on('beforeunload', () => { if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?"); });
 });
 
-// TODO: change itemsPerPage to fill rank.
-// TODO: added too many placeholders.
 function createCardDocuments(data, pageIndex) {
+	let cardsPerRow = getRowCapacity();
 	let frag = document.createDocumentFragment();
-  let itemsPerPage = 100;
+  let itemsPerPage = 100 - 100 % cardsPerRow;
   let totalPages = Math.ceil(data.length / itemsPerPage);
   let offset = pageIndex * itemsPerPage;
+	let maxCardCount = data.length;
+	if (data.length % cardsPerRow !== 0) {
+		maxCardCount += cardsPerRow;
+		maxCardCount -= maxCardCount % cardsPerRow;
+	}
 
-  for (let i = offset, len = offset + itemsPerPage; i < len; i++) {
+	console.log(itemsPerPage);
+
+  for (let i = offset, len = offset + itemsPerPage; i < len && i < maxCardCount; i++) {
     let item = createCardElement(data[i]);
     frag.appendChild(item);
   }
@@ -376,7 +382,7 @@ function addCardsToChangedList(cardsToSwitch, select) {
 function getRowCapacity() {
 	// max number of cards for xs is 4, on smaller screens it's reduced by 1 (possibly outdated)
 	let cardsInRow;
-	if (viewType === "icon") {
+	if (querystr.get('view') !== "original" || querystr.get('view') !== "bloomed") {
 		cardsInRow = { 576: Math.floor(($(window).width() - 100) / 100), 768: 6, 992: 6, 1200: 7, xl: 9 };
 	} else {
 		cardsInRow = { 576: Math.floor(($(window).width() - 100) / 100), 768: 4, 992: 3, 1200: 4, xl: 5 };
