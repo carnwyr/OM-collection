@@ -2,9 +2,9 @@ img[loading="lazy"] {
   transition: all .5s ease;
   -webkit-transition: all .5s ease;
 }
-/* img.lazy {
+img.lazy {
   opacity: 0;
-} */
+}
 .cardPreview, .cardPreview:hover {
   text-align: center;
   margin: .25rem;
