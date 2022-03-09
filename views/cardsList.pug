@@ -55,17 +55,20 @@ block content
       if user && path === "list"
         div(class="card card-body sticky-top sticky-offset mb-3 p-3")
           div.d-flex.flex-wrap.justify-content-between.align-items-center
-            h5.m-0 Demon:
-              |
-              |
-              span --/--
-              | &emsp;Memory:
-              |
-              span --/--
-            div#actionButtons
-              div#selectionButtons.btn-group.d-none.mr-md-2.mb-2.mb-md-0
+            h5.mb-2.mb-lg-0.mx-auto.mx-lg-0.text-center.text-md-left.d-md-flex
+              div.mr-md-3 Demon:
+                |
+                |
+                span#demoncount --/--
+              div Memory:
+                |
+                span#memorycount --/--
+            div.w-100.d-lg-none
+            div#actionButtons.mx-auto.mx-lg-0.text-center
+              div#selectionButtons.btn-group.d-none.mr-sm-2.mb-2.mb-sm-0
                 button(class="btn btn-secondary" id="deselectAll")= t("cards.deselect_all")
                 button(class="btn btn-secondary" id="selectAll")= t("cards.select_all")
+              div.w-100.d-sm-none
               div(class="btn-group d-none" id="manageButtons")
                 button(class="btn btn-primary" id="cancelManaging")= t("cards.cancel")
                 button(class="btn btn-primary" id="saveManaging")= t("cards.save")
@@ -99,7 +102,7 @@ block content
               div(class="dropdown-divider")
               a(class="dropdown-item"+isSelectedView("original") data-viewtype="original")= t("cards.full_original")
               a(class="dropdown-item"+isSelectedView("bloomed") data-viewtype="bloomed")= t("cards.full_bloomed")
-          form#search.d-flex.flex-grow-1.mx-md-2.mb-2.mb-md-auto
+          form#search.d-flex.flex-grow-1.mx-md-2.mb-2.mb-md-0
             div(class="input-group rounded-pill mr-2" style="background-color:rgba(219,158,251,0.2)")
               div.input-group-prepend
                 span.input-group-text.text-secondary <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>

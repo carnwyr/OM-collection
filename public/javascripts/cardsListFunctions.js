@@ -3,6 +3,13 @@ var selectionMode = false;
 var ownedCards = [];
 var querystr = new URLSearchParams(document.location.search);
 let nextHandler, nextHandler2, ias, ias2;
+let demon = {
+	selected: "--",
+	total: cardList.filter(card => card.type === "Demon").length
+}, memory = {
+	selected: "--",
+	total: cardList.filter(card => card.type === "Memory").length
+};
 
 //#region constants
 const splitCardsByVisibility = (cards, currentCard) => {
@@ -20,6 +27,7 @@ const splitCardsByVisibility = (cards, currentCard) => {
 
 $(document).ready(function() {
 	initInfiniteScroll();
+	updateSelectedCardCount();
 
 	$("#search, #filters form").on("submit", applyFilters);
 	$("#filters form input").change(udpateFilterParams);
@@ -33,7 +41,7 @@ $(document).ready(function() {
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 
-	$(window).on('beforeunload', () => { if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?"); });
+	// $(window).on('beforeunload', () => { if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?"); });
 });
 
 function createCardDocuments(data, pageIndex) {
@@ -133,6 +141,7 @@ function applyFilters(e) {
 		}
 		cardList = data.cards;
 		initInfiniteScroll();
+		updateSelectedCardCount();
 	});
 }
 
@@ -259,6 +268,13 @@ function switchSelectionMode() {
 			selectionMode = true;
 			switchManagementButtons();
 			switchCardsVisualState(cardNames);
+
+			let cardOwned = card => ownedCards.includes(card);
+			let cardSelected = card => changedCards[card];
+			demon.selected = cardList.filter(x => (x.type === "Demon" && ownedCards.includes(x.uniqueName))).length;
+			memory.selected = cardList.filter(x => (x.type === "Memory" && cardOwned(x.uniqueName))).length
+			$("#demoncount").text(`${demon.selected}/${demon.total}`);
+			$("#memorycount").text(`${memory.selected}/${memory.total}`);
 		});
 	} else {
 		if (Object.keys(changedCards).length > 0) {
@@ -286,6 +302,11 @@ function switchSelectionMode() {
 			switchManagementButtons();
 			switchCardsVisualState();
 		}
+
+		demon.selected = "--";
+		memory.selected = "--";
+		$("#demoncount").text(`${demon.selected}/${demon.total}`);
+		$("#memorycount").text(`${memory.selected}/${memory.total}`);
 	}
 }
 
@@ -333,15 +354,12 @@ function cardClicked(e) {
 
 	changedCards[cardName] = $(image).hasClass('notSelectedCard');
 	$(image).toggleClass('notSelectedCard');
+
+	updateSelectedCardCount();
 }
 
 function switchSelectionAll(select) {
-	let cardOwned = card => ownedCards.includes(card.uniqueName);
-	let cardChanged = card => Object.keys(changedCards).includes(card.uniqueName);
-	let demonTabSelected = $("#demon-tab").hasClass("active");
-	let cardsToSelect = cardList.filter(x => (x.type === "Demon") === demonTabSelected);
-	cardsToSelect = cardsToSelect.filter(x => (!cardOwned(x) && cardChanged(x) !== select) || (cardOwned(x) && cardChanged(x) === select)).map(x => x.uniqueName);
-	console.log(cardsToSelect.length)
+	let cardsToSelect = getCardsToSelect(select);
 	if (cardsToSelect.length == 0) return;
 
 	//TODO remove slice
@@ -363,18 +381,21 @@ function switchSelectionAll(select) {
 	addCardsToChangedList(cardsToSelect, select);
 	changeSelection(visibleCards);
 	applyEffectWithoutTransition(invisibleCards, () => changeSelection(invisibleCards));
+	updateSelectedCardCount();
 }
 
 function addCardsToChangedList(cardsToSwitch, select) {
-	var cardsToAdd = [];
+	// var cardsToAdd = [];
 	cardsToSwitch.forEach(uniqueName => {
-		if (Object.keys(changedCards).includes(uniqueName)) {
-			delete changedCards[uniqueName];
-		} else {
-			cardsToAdd.push(uniqueName);
-		}
+		changedCards[uniqueName] = select;
+		// console.log(uniqueName);
+		// if (Object.keys(changedCards).includes(uniqueName)) {
+		// 	delete changedCards[uniqueName];
+		// } else {
+		// 	cardsToAdd.push(uniqueName);
+		// }
 	});
-	cardsToAdd.forEach(uniqueName => changedCards[uniqueName] = select);
+	// cardsToAdd.forEach(uniqueName => changedCards[uniqueName] = select);
 }
 
 function getRowCapacity() {
@@ -395,4 +416,49 @@ function getRowCapacity() {
 
 function fadeInImages() {
 	$("img.lazy").off("load").on("load", function() { $(this).removeClass("lazy"); });
+}
+
+function getCardsToSelect(select) {
+	let cardOwned = card => ownedCards.includes(card);
+	let cardSelected = card => changedCards[card];
+	let demonTabSelected = $("#demon-tab").hasClass("active");
+	let cardsToSelect = cardList.filter(x => (x.type === "Demon") === demonTabSelected);
+	// cardsToSelect = cardsToSelect.filter(x => (!cardOwned(x) && cardSelected(x) !== select) || (cardOwned(x) && cardSelected(x) === select)).map(x => x.uniqueName);
+
+	if (select) {
+		cardsToSelect = cardsToSelect.filter(x => (!cardOwned(x.uniqueName) || !cardSelected(x.uniqueName))).map(x => x.uniqueName);
+	} else {
+		cardsToSelect = cardsToSelect.filter(x => (cardOwned(x.uniqueName) || cardSelected(x.uniqueName))).map(x => x.uniqueName);
+	}
+
+	// console.log(select, cardsToSelect);
+
+	return cardsToSelect;
+}
+
+function updateSelectedCardCount() {
+	let cardOwned = card => ownedCards.includes(card);
+	let cardSelected = card => changedCards[card];
+	let demonTabSelected = $("#demon-tab").hasClass("active");
+	let cardsToSelect = cardList.filter(x => (x.type === "Demon") === demonTabSelected);
+	// cardsToSelect = cardsToSelect.filter(x => (!cardOwned(x) && cardSelected(x) !== select) || (cardOwned(x) && cardSelected(x) === select)).map(x => x.uniqueName);
+
+	cardsToSelect = cardsToSelect.filter(x => (cardOwned(x.uniqueName) && !Object.keys(changedCards).includes(x.uniqueName)) || cardSelected(x.uniqueName)).map(x => x.uniqueName);
+
+	// console.log(cardsToSelect);
+
+	//
+
+	if (selectionMode) {
+		if (demonTabSelected) {
+			demon.selected = cardsToSelect.length;
+		} else {
+			memory.selected = cardsToSelect.length;
+		}
+	} else {
+		demon.selected = "--";
+		memory.selected = "--";
+	}
+	$("#demoncount").text(`${demon.selected}/${demon.total}`);
+	$("#memorycount").text(`${memory.selected}/${memory.total}`);
 }
