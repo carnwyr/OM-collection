@@ -1,7 +1,7 @@
-var changedCards = {};
-var selectionMode = false;
-var ownedCards = [];
-var querystr = new URLSearchParams(document.location.search);
+let changedCards = {};
+let selectionMode = false;
+let ownedCards = [];
+let querystr = new URLSearchParams(document.location.search);
 let nextHandler, nextHandler2, ias, ias2;
 let demon = {
 	selected: "--",
@@ -30,7 +30,7 @@ $(document).ready(function() {
 	updateSelectedCardCount();
 
 	$("#search, #filters form").on("submit", applyFilters);
-	$("#filters form input").change(udpateFilterParams);
+	$("#filters form input").change(updateFilterParams);
 	$("#resetFilters").click(resetFilters);
 	$("#viewMenuDropdown a").click(updateViewType);
 
@@ -67,8 +67,8 @@ function createCardDocuments(data, pageIndex) {
 }
 
 function createCardElement(card) {
-	var template, img_src;
-	var imageSize = 'S', containerSize = "icon-container", viewtype = querystr.get('view');
+	let template, img_src;
+	let imageSize = 'S', containerSize = "icon-container", viewtype = querystr.get('view');
 	if (viewtype === 'original' || viewtype === "bloomed") {
 		imageSize = 'L';
 		containerSize = "full-container";
@@ -107,8 +107,8 @@ function applyFilters(e) {
 	e.preventDefault();
 
 	// update query string
-	var filters = new FormData($("#filters form")[0]);
-	var params = new URLSearchParams();
+	let filters = new FormData($("#filters form")[0]);
+	let params = new URLSearchParams();
 
 	for (let [key, value] of filters.entries()) {
 		if (value) params.append(key, value);
@@ -116,7 +116,7 @@ function applyFilters(e) {
 
 	if (params.get("cards") === "all") params.delete("cards");
 
-	var search = $("input[name='search']").val();
+	let search = $("input[name='search']").val();
 	if (search) params.set("search", search);
 
 	if (querystr.get("view")) params.set('view', querystr.get("view"));
@@ -150,8 +150,8 @@ function updateURL() {
 }
 
 function updateViewType() {
-	var currentView = querystr.get("view");
-	var newView = $(this).data("viewtype");
+	let currentView = querystr.get("view");
+	let newView = $(this).data("viewtype");
 	if (newView === currentView) return;
 
 	$("#viewMenuDropdown>button").text($(this).text());
@@ -169,8 +169,8 @@ function initInfiniteScroll() {
 
 	$("#demoncards>div, #memorycards>div").html("");
 
-	var demonCards = cardList.filter(card => card.type === "Demon");
-	var memoryCards = cardList.filter(card => card.type === "Memory");
+	let demonCards = cardList.filter(card => card.type === "Demon");
+	let memoryCards = cardList.filter(card => card.type === "Memory");
 
 	if (demonCards.length !== 0) {
 		nextHandler = function(pageIndex) {
@@ -212,12 +212,12 @@ function unbindInfiniteScroll() {
 	if (ias2) ias2.unbind();
 }
 
-function udpateFilterParams() {
-	var name = $(this).attr("name");
+function updateFilterParams() {
+	let name = $(this).attr("name");
 
 	if (name === "cards") return;
 
-	var checkedItems = $(`input[name=${name}][type=checkbox]:checked`);
+	let checkedItems = $(`input[name=${name}][type=checkbox]:checked`);
 
 	if ($(this).attr("type") === "radio") {
 		if (name !== "characters")
@@ -385,7 +385,7 @@ function switchSelectionAll(select) {
 }
 
 function addCardsToChangedList(cardsToSwitch, select) {
-	// var cardsToAdd = [];
+	// let cardsToAdd = [];
 	cardsToSwitch.forEach(uniqueName => {
 		changedCards[uniqueName] = select;
 		// console.log(uniqueName);
