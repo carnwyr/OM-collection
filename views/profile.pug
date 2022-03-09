@@ -47,7 +47,7 @@ block content
                       font-size: small;
                       text-align: center;
                       transform: translateY(-115%);
-                    } 
+                    }
                   div.mr-2(type="button" data-toggle="modal" data-target="#adfreeModal" style="width:auto;height:32px;")
                     img(src="/images/SupporterBadge.png" alt="supporter badge" style="width:auto;height:32px;")
                     div= badge.level
@@ -57,21 +57,20 @@ block content
           br
           div#profile.row.mt-3
             div.col-lg-6
-              span= t("profile.name")
-              span= profileInfo.name?profileInfo.name:"???"
+              div: span= t("profile.name")
+              div: span= profileInfo.name?profileInfo.name:"???"
             div.col-lg-6
-              span= t("profile.friend_id")
-              span= profileInfo.id?profileInfo.id:"???"
-            div.w-100.d-md-none.mb-0
+              div: span= t("profile.friend_id")
+              div: span= profileInfo.id?profileInfo.id:"???"
             div.col-lg-6
-              span= t("profile.entered_rad")
-              span= profileInfo.joined?profileInfo.joined:"???"
+              div: span= t("profile.entered_rad")
+              div: span= profileInfo.joined?profileInfo.joined:"???"
             - var lang = {"en": "English", "jp": "日本語", "zh": "繁體中文"};
             div.col-lg-6
-              span= t("profile.language")
-              span= profileInfo.language?lang[profileInfo.language]:"???"
+              div: span= t("profile.language")
+              div: span= profileInfo.language?lang[profileInfo.language]:"???"
             div.col-12
-              span= t("profile.favourite_chara")
+              div: span= t("profile.favourite_chara")
               div(style="border-radius:8px;border:2px solid var(--secondary);margin-top:.25rem;padding:.5rem;")
                 if !profileInfo.characters || profileInfo.characters.length === 0
                   | ???

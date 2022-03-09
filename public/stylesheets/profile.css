@@ -42,7 +42,7 @@ li.placeholder {
   margin-bottom: .5rem;
 }
 
-#profile>div>span:first-child {
+#profile>div>div:first-child {
   width: 8.5rem;
   font-size: small;
   text-align: center;
@@ -53,7 +53,7 @@ li.placeholder {
   border-radius: 16px;
 }
 
-#profile>div.col-lg-6>span:last-child {
+#profile>div.col-lg-6>div:last-child {
   border-bottom: 2px dotted;
   flex-grow: 1;
   text-align: center;
@@ -64,8 +64,16 @@ li.placeholder {
   margin-bottom: 1.25rem;
 }
 
+#profile>div.col-lg-6>div {
+  display: inline-flex;
+}
+
+#profile>div.col-lg-6>div>span {
+  margin: auto;
+}
+
 @media (min-width:992px) {
-  #profile>div.col-12>div {
+  #profile>div.col-12>div:last-child {
     width: 50%;
   }
 }
