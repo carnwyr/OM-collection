@@ -116,6 +116,18 @@ form#search input::placeholder {
   background: transparent;
 }
 
+#rarity>.custom-control {
+  width: 3.5rem;
+}
+
+#attribute>.custom-control {
+  width: 6rem;
+}
+
+#filters .custom-radio:first-of-type {
+  width: 3rem;
+}
+
 /* collection and favourites page */
 
 #usernav span {
