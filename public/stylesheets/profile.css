@@ -93,6 +93,7 @@ li.placeholder {
 
 #settingslink {
   margin: 0 auto 1.25rem;
+  z-index: 1;
 }
 
 @media (min-width: 992px) {
