@@ -273,8 +273,8 @@ function switchSelectionMode() {
 			let cardSelected = card => changedCards[card];
 			demon.selected = cardList.filter(x => (x.type === "Demon" && ownedCards.includes(x.uniqueName))).length;
 			memory.selected = cardList.filter(x => (x.type === "Memory" && cardOwned(x.uniqueName))).length
-			$("#demoncount").text(`${demon.selected}/${demon.total}`);
-			$("#memorycount").text(`${memory.selected}/${memory.total}`);
+			$("#demoncount").text(` ${demon.selected}/${demon.total}`);
+			$("#memorycount").text(` ${memory.selected}/${memory.total}`);
 		});
 	} else {
 		if (Object.keys(changedCards).length > 0) {
@@ -305,8 +305,8 @@ function switchSelectionMode() {
 
 		demon.selected = "--";
 		memory.selected = "--";
-		$("#demoncount").text(`${demon.selected}/${demon.total}`);
-		$("#memorycount").text(`${memory.selected}/${memory.total}`);
+		$("#demoncount").text(` ${demon.selected}/${demon.total}`);
+		$("#memorycount").text(` ${memory.selected}/${memory.total}`);
 	}
 }
 
@@ -459,6 +459,6 @@ function updateSelectedCardCount() {
 		demon.selected = "--";
 		memory.selected = "--";
 	}
-	$("#demoncount").text(`${demon.selected}/${demon.total}`);
-	$("#memorycount").text(`${memory.selected}/${memory.total}`);
+	$("#demoncount").text(` ${demon.selected}/${demon.total}`);
+	$("#memorycount").text(` ${memory.selected}/${memory.total}`);
 }
