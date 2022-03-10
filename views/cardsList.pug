@@ -211,11 +211,11 @@ block content
 
       ul.nav.nav-pills.nav-fill.shadow.mb-3(style="background:white;border-radius:.25rem;")
         li.nav-item
-          a#demon-tab.nav-link.active(data-toggle="tab" href="#demoncards" role="tab" aria-controls="demoncards" aria-selected="true") Demon
+          a#demon-tab.nav-link(data-toggle="tab" href="#demoncards" role="tab" aria-controls="demoncards" aria-selected="false") Demon
         li.nav-item
           a#memory-tab.nav-link(data-toggle="tab" href="#memorycards" role="tab" aria-controls="memorycards" aria-selected="false") Memory
       div.tab-content
-        div#demoncards.tab-pane.active(role="tabpanel" aria-labelledby="demon-tab")
+        div#demoncards.tab-pane(role="tabpanel" aria-labelledby="demon-tab")
           p.text-center.text-muted.my-5.d-none= t("cards.no-cards")
           div.d-flex.flex-wrap.justify-content-between
         div#memorycards.tab-pane(role="tabpanel" aria-labelledby="memory-tab")

@@ -3,8 +3,16 @@ extends layout
 block scripts
   //- link(rel="stylesheet" href="/stylesheets/eventList.css")
   script(src="/javascripts/lazyload.js")
+  script.
+    $(function() {
+      let openedTab = localStorage.getItem("eventTab") ? localStorage.getItem("eventTab") : "popquiz-tab";
+    	$('#' + openedTab).tab("show");
+    	$("ul#category a").on("click", function() {
+    		localStorage.setItem("eventTab", $(this).attr("id"));
+    	});
+    });
 
-mixin section(events) 
+mixin section(events)
   div.row
     each event in events
       .col-12.col-sm-6.col-lg-4.mb-3
@@ -19,20 +27,20 @@ block content
   div.container
     h1= title
     div.card.card-body.p-5.text-center.mb-3
-      h5.mb-4 Karasu-OS.com needs your help! 
+      h5.mb-4 Karasu-OS.com needs your help!
       p.mb-4 Please help us complete events data by adding to our database.
       span: a.h5.mb-0(href="https://drive.google.com/drive/folders/1lpIwYjeZLMaHr-7wTMuAdOYMn8lFQZct?usp=sharing" target="_blank") Click here to access database.
-    
+
     ul#category.nav.nav-pills.nav-fill.mb-2.shadow-sm(style="background:white;border-radius:4px;" role="tablist")
       li.nav-item
-        a#popquiz-tab.nav-link.active(data-toggle="tab" href="#popquiz" role="tab" aria-controls="popquiz" aria-selected="true") Pop Quiz
+        a#popquiz-tab.nav-link(data-toggle="tab" href="#popquiz" role="tab" aria-controls="popquiz" aria-selected="false") Pop Quiz
       li.nav-item
         a#nightmare-tab.nav-link(data-toggle="tab" href="#nightmare" role="tab" aria-controls="nightmare" aria-selected="false") Nightmare
       li.nav-item
         a#other-tab.nav-link(data-toggle="tab" href="#other" role="tab" aria-controls="other" aria-selected="false") Other
-    
+
     div.tab-content
-      div#popquiz.tab-pane.show.active(role="tabpanel" aria-labelledby="popquiz-tab")
+      div#popquiz.tab-pane(role="tabpanel" aria-labelledby="popquiz-tab")
         +section(events.filter(e => e.type === "PopQuiz"))
       div#nightmare.tab-pane(role="tabpanel" aria-labelledby="nightmare-tab")
         +section(events.filter(e => e.type === "Nightmare"))

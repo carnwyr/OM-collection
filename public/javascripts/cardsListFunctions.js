@@ -44,6 +44,12 @@ $(document).ready(function() {
 	$('button#deselectAll').on('click', function() { switchSelectionAll(false); });
 	$('button#cancelManaging').on('click', function() { changedCards = {}; switchSelectionMode.call(); });
 
+	let openedTab = localStorage.getItem("cardTab") ? localStorage.getItem("cardTab") : "demon-tab";
+	$('#' + openedTab).tab("show");
+	$("#demon-tab, #memory-tab").on("click", function() {
+		localStorage.setItem("cardTab", $(this).attr("id"));
+	});
+
 	$(window).on('beforeunload', () => { if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?"); });
 });
 
