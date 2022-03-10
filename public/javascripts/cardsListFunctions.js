@@ -93,7 +93,7 @@ function createCardElement(card) {
 			bloomed = '_b';
 		}
 
-		if (sortby && sortby.match(/(min|max|fdt)_(-1|1)$/)) {
+		if (sortby && sortby.match(/^(min|max|fdt)_(-1|1)$/)) {
 			figcaption = card.total ? card.total.toLocaleString("en") : "???";
 		}
 

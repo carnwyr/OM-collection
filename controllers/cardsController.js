@@ -378,7 +378,7 @@ function formatAggPipeline(obj) {
 				query["name"] = new RegExp(value, 'i');
 			}
 		} else if (key === "sortby") {
-			if (!value.match(/(min|max|fdt)_(-1|1)$/)) {
+			if (!value.match(/^(min|max|fdt)_(-1|1)$/)) {
 				continue;
 			}
 			let t = value.split("_");
