@@ -86,14 +86,22 @@ function createCardElement(card) {
 		template = `<a class='cardPreview ${containerSize} placeholder'></a>`;
 	} else {
 		let bloomed = '';
+		let figcaption = document.documentElement.lang === "ja"?card.ja_name:card.name;
+		let sortby = querystr.get("sortby");
+
 		if (viewtype === 'bloomed' && card.type === "Demon") {
 			bloomed = '_b';
 		}
+
+		if (sortby && sortby.match(/(min|max|fdt)_(-1|1)$/)) {
+			figcaption = card.total ? card.total.toLocaleString("en") : "???";
+		}
+
 		img_src = `/images/cards/${imageSize}/${card.uniqueName}${bloomed}.jpg`;
 	  template =
-			`<a class="cardPreview ${containerSize}" href="card/${encodeURIComponent(card.name)}">
+			`<a class="cardPreview ${containerSize}" href="card/${encodeURIComponent(card.name.replace(/ /g, "_"))}">
 				<img class="lazy" loading="lazy" src="${img_src}">
-				<figcaption>${document.documentElement.lang === "ja"?card.ja_name:card.name}</figcaption>
+				<figcaption>${figcaption}</figcaption>
 			</a>`;
 	}
 
@@ -248,6 +256,7 @@ function resetFilters() {
 	$("#checkCardsAll").prop("checked", true);
 	$("#characters label.btn").removeClass("active");
 	$("input[name='search']").val('');
+	$("select[name='sortby']").val('').change();
 }
 
 function applyEffectWithoutTransition(elements, effect) {

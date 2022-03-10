@@ -11,6 +11,10 @@ exports.getCards = async function (query = {}, returnVal = {}) {
   return await Cards.find(query, returnVal).sort({ number: -1 });
 }
 
+exports.aggregateCards = async function(pipeline) {
+  return await Cards.aggregate(pipeline);
+};
+
 exports.getHiddenCards = async function () {
 	return await HiddenCards.find().sort({ number: -1 });
 };

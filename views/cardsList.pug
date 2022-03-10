@@ -115,10 +115,22 @@ block content
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16" style="margin-bottom:.125rem">   <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/> </svg>
             |
             | #{t("cards.filters")}
-        div#filters.container.collapse
+        div#filters.container.collapse.pt-4
           form
-            //- h5= t("cards.filters")
-            hr(style="border-color:transparent;")
+            div.row
+              div.col-12.text-center
+                label Sort by:
+                |
+                |
+                select.custom-select(name="sortby" style="width:auto;")
+                  option(value='') default
+                  option(value="min_-1" selected=(query.sortby&&query.sortby==="min_-1")) Min strength &uarr;
+                  option(value="min_1" selected=(query.sortby&&query.sortby==="min_1")) Min strength &darr;
+                  option(value="max_-1" selected=(query.sortby&&query.sortby==="max_-1")) Max strength &uarr;
+                  option(value="max_1" selected=(query.sortby&&query.sortby==="max_1")) Max strength &darr;
+                  option(value="fdt_-1" selected=(query.sortby&&query.sortby==="fdt_-1")) FDT strength &uarr;
+                  option(value="fdt_1" selected=(query.sortby&&query.sortby==="fdt_1")) FDT strength &darr;
+            hr
             if path === "list"
               div.row
                 p.col-lg-2.text-center= t("common.cards")

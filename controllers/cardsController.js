@@ -19,13 +19,8 @@ exports.index = function (req, res, next) {
 
 exports.getCardsListPage = async function(req, res, next) {
 	try {
-		var query = getCardsDBQuery(req.query);
-		var cards = await cardService.getCards(query, {
-			name: 1,
-			ja_name: 1,
-			uniqueName: 1,
-			type: 1
-		});
+		let pipeline = formatAggPipeline(req.query);
+		let cards = await cardService.aggregateCards(pipeline);
 
 		if (req.user && req.query.cards) {
 			let user = await userService.getUser(req.user.name);
@@ -56,7 +51,7 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
-		var query = getCardsDBQuery(req.query);
+		let query = formatAggPipeline(req.query);
 		var pageParams = {
 			description: `${req.params.username}'s Collection on Karasu-OS.com`,
 			path: "collection",
@@ -85,7 +80,7 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 			}
 
 			// get cards
-			var cardList = await cardService.getCards(query);
+			let cardList = await cardService.aggregateCards(query);
 			pageParams.cardsList = cardList.filter(card => user.cards.owned.includes(card.uniqueName));
 		}
 
@@ -102,7 +97,7 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
-		var query = getCardsDBQuery(req.query);
+		let query = formatAggPipeline(req.query);
 		var pageParams = {
 			description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
 			path: "fav",
@@ -117,7 +112,7 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 		if (isPrivate) {
 			pageParams.isPrivate = true;
 		} else {
-			var favedCards = await cardService.getCards(query);
+			let favedCards = await cardService.aggregateCards(query);
 			pageParams.cardsList = favedCards.filter(card => user.cards.faved.includes(card.uniqueName));
 		}
 
@@ -262,13 +257,8 @@ exports.directImage = async function (req, res, next) {
 // TODO: merge with getCardsListPage
 exports.getCards = async function (req, res) {
 	try {
-		var query = getCardsDBQuery(req.query);
-		var cards = await cardService.getCards(query, {
-			name: 1,
-			ja_name: 1,
-			uniqueName: 1,
-			type: 1
-		});
+		let query = formatAggPipeline(req.query);
+		let cards = await cardService.aggregateCards(query);
 
 		let user;
 		switch (req.query.path) {
@@ -366,8 +356,14 @@ exports.makeCardPublic = async function (req, res, next) {
 
 
 /* helper */
-function getCardsDBQuery(obj) {
-	var query = {};
+function formatAggPipeline(obj) {
+	let query = {};
+	let sum = [];
+	let sortby = "number";
+	let order = -1;
+	let sortbyVal;
+	let match, addFields, sort, project, pipeline;
+
 	for (let [key, value] of Object.entries(obj)) {
 		if (value === "") continue;
 		if (["characters", "attribute", "rarity"].includes(key)) {
@@ -381,7 +377,48 @@ function getCardsDBQuery(obj) {
 			} else {
 				query["name"] = new RegExp(value, 'i');
 			}
+		} else if (key === "sortby") {
+			if (!value.match(/(min|max|fdt)_(-1|1)$/)) {
+				continue;
+			}
+			let t = value.split("_");
+			sortby = "total";
+			sortbyVal = t[0];
+			order = parseInt(t[1]);
 		}
 	}
-	return query;
+
+	["pride", "greed", "envy", "wrath", "lust", "gluttony", "sloth"].forEach((attr) => {
+		sum.push(`$strength.${attr}.${sortbyVal}`);
+	});
+
+
+	match = { '$match': query };
+
+	addFields = {
+		'$addFields': {
+			'total': { '$sum': sum }
+		}
+	};
+
+	sort = { '$sort': {} };
+	sort['$sort'][sortby] = order;
+
+	project = {
+		'$project': {
+			'name': 1,
+			'ja_name': 1,
+			'uniqueName': 1,
+			'type': 1,
+			'total': 1
+		}
+	};
+
+	pipeline = [match];
+	if (sortby === "total") {
+		pipeline.push(addFields);
+	}
+	pipeline.push(sort, project);
+
+	return pipeline;
 }
