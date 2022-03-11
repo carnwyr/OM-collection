@@ -125,10 +125,6 @@ form#search input::placeholder {
     width: 6rem;
   }
 
-  #filters .custom-radio:first-of-type {
-    width: 3rem;
-  }
-
   #selectioncount {
     font-size: 1rem;
   }
