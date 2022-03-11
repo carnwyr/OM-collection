@@ -359,9 +359,7 @@ exports.makeCardPublic = async function (req, res, next) {
 function formatAggPipeline(obj) {
 	let query = {};
 	let sum = [];
-	let sortby = "number";
-	let order = -1;
-	let sortbyVal;
+	let sortby, order, sortbyVal;
 	let match, addFields, sort, project, pipeline;
 
 	for (let [key, value] of Object.entries(obj)) {
@@ -402,7 +400,10 @@ function formatAggPipeline(obj) {
 	};
 
 	sort = { '$sort': {} };
-	sort['$sort'][sortby] = order;
+	if (sortby) {
+		sort['$sort'][sortby] = order;
+	}
+	sort['$sort']["number"] = -1;
 
 	project = {
 		'$project': {
