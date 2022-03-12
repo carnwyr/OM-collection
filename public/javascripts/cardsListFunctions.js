@@ -198,7 +198,7 @@ function initInfiniteScroll() {
 			next: nextHandler,
 			logger: false
 		});
-		ias.on("appended", fadeInImages);
+		// ias.on("appended", fadeInImages);
 		$("#demoncards>p").addClass("d-none");
 	} else {
 		$("#demoncards>p").removeClass("d-none");
@@ -215,7 +215,7 @@ function initInfiniteScroll() {
 	    next: nextHandler2,
 			logger: false
 	  });
-		ias2.on("appended", fadeInImages);
+		// ias2.on("appended", fadeInImages);
 		$("#memorycards>p").addClass("d-none");
 	} else {
 		$("#memorycards>p").removeClass("d-none");
@@ -422,9 +422,9 @@ function getRowCapacity() {
 	}
 }
 
-function fadeInImages() {
-	$("img.lazy").off("load").on("load", function() { $(this).removeClass("lazy"); });
-}
+// function fadeInImages() {
+// 	$("img.lazy").off("load").on("load", function() { $(this).removeClass("lazy"); });
+// }
 
 function getCardsToSelect(select) {
 	let demonTabSelected = $("#demon-tab").hasClass("active");
