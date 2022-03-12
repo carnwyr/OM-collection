@@ -7,8 +7,12 @@ const createError = require("http-errors");
 const fileService = require("../services/fileService");
 const userService = require("../services/userService");
 
-exports.getCards = async function (query = {}) {
-	return await Cards.find(query).sort({ number: -1 });
+exports.getCards = async function (query = {}, returnVal = {}) {
+  return await Cards.find(query, returnVal).sort({ number: -1 });
+}
+
+exports.aggregateCards = async function(pipeline) {
+  return await Cards.aggregate(pipeline);
 };
 
 exports.getHiddenCards = async function () {

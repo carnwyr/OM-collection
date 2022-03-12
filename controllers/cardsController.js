@@ -19,12 +19,24 @@ exports.index = function (req, res, next) {
 
 exports.getCardsListPage = async function(req, res, next) {
 	try {
-		var cards = await cardService.getCards();
+		let pipeline = formatAggPipeline(req.query);
+		let cards = await cardService.aggregateCards(pipeline);
+
+		if (req.user && req.query.cards) {
+			let user = await userService.getUser(req.user.name);
+			if (req.query.cards === 'owned') {
+				cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+			} else if (req.query.cards === 'notowned') {
+				cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
+			}
+		}
+
 		return res.render("cardsList", {
 			title: i18next.t("title.cards"),
 			description: "The place to view all of Obey Me!'s cards. The largest and most complete card databse with all sorts of filters for you to find the card you want! This is also the place to manage your card collection. Create an account to access more features! ... Pride, Greed, Envy, Wrath, Lust, Gluttony, Sloth, UR+, UR, SSR, SR, N, Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon, Little D., Owned, Not owned.",
 			cardsList: cards,
 			path: "list",
+			query: req.query,
 			user: req.user
 		});
 	} catch(e) {
@@ -39,9 +51,11 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
+		let query = formatAggPipeline(req.query);
 		var pageParams = {
 			description: `${req.params.username}'s Collection on Karasu-OS.com`,
 			path: "collection",
+			query: req.query,
 			user: req.user
 		};
 
@@ -52,9 +66,9 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 		if (isPrivate) {
 			pageParams.isPrivate = true;
 		} else {
+			// get collection stats
 			var allCards = await cardService.getCards();
 			var ownedCards = await userService.getOwnedCards(user.info.name);
-			pageParams.cardsList = ownedCards;
 
 			pageParams.ownedStats = cardService.getCollectionStats(ownedCards);
 			pageParams.totalStats = cardService.getCollectionStats(allCards);
@@ -64,6 +78,10 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 					pageParams.ownedStats[category][entry] = pageParams.ownedStats[category][entry] || 0;
 				}
 			}
+
+			// get cards
+			let cardList = await cardService.aggregateCards(query);
+			pageParams.cardsList = cardList.filter(card => user.cards.owned.includes(card.uniqueName));
 		}
 
 		return res.render("cardsList", pageParams);
@@ -79,9 +97,11 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
+		let query = formatAggPipeline(req.query);
 		var pageParams = {
 			description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
 			path: "fav",
+			query: req.query,
 			user: req.user
 		};
 
@@ -92,9 +112,8 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 		if (isPrivate) {
 			pageParams.isPrivate = true;
 		} else {
-
-			var favedCards = await userService.getFaveCards(user.info.name);
-			pageParams.cardsList = favedCards;
+			let favedCards = await cardService.aggregateCards(query);
+			pageParams.cardsList = favedCards.filter(card => user.cards.faved.includes(card.uniqueName));
 		}
 
 		return res.render("cardsList", pageParams);
@@ -235,17 +254,39 @@ exports.directImage = async function (req, res, next) {
 
 
 // Collection functions
-exports.getAvailableCards = async function (req, res) {
-	var cards = await cardService.getCards();
-	var lang = i18next.t("lang");
-	cards = cards.map(card => {
-		return {
-			name: lang === "ja" ? card.ja_name : card.name,
-			uniqueName: card.uniqueName
-		};
-	});
-	return res.send(cards);
-};
+// TODO: merge with getCardsListPage
+exports.getCards = async function (req, res) {
+	try {
+		let query = formatAggPipeline(req.query);
+		let cards = await cardService.aggregateCards(query);
+
+		let user;
+		switch (req.query.path) {
+			case "collection":
+				user = await userService.getUser(req.query.user);
+				cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+				break;
+			case "favourites":
+				user = await userService.getUser(req.query.user);
+				cards = cards.filter(card => user.cards.faved.includes(card.uniqueName));
+				break;
+			default:
+				let type = req.query.cards;
+				if (type && req.user) {
+					user = await userService.getUser(req.user.name);
+					if (type === "owned") {
+						cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+					} else if (type === "not_owned") {
+						cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
+					}
+				}
+		}
+
+		return res.json({ err: null, cards: cards });
+	} catch(e) {
+		return res.json({ err: true, message: e.message });
+	}
+}
 
 // Admin card management
 exports.getEditCardPage = async function(req, res, next) {
@@ -312,3 +353,73 @@ exports.makeCardPublic = async function (req, res, next) {
 		next(e);
 	}
 };
+
+
+/* helper */
+function formatAggPipeline(obj) {
+	let query = {};
+	let sum = [];
+	let sortby, order, sortbyVal;
+	let match, addFields, sort, project, pipeline;
+
+	for (let [key, value] of Object.entries(obj)) {
+		if (value === "") continue;
+		if (["characters", "attribute", "rarity"].includes(key)) {
+			query[key] = { $in: [].concat(value) };
+		} else if (key === "search") {
+			// var lang = i18next.t("lang") === "zh" ? "en" : i18next.t("lang");
+			// query["name."+lang] = new RegExp(value, 'i');
+
+			if (i18next.t("lang") === "ja") {
+				query["ja_name"] = new RegExp(value, 'i');
+			} else {
+				query["name"] = new RegExp(value, 'i');
+			}
+		} else if (key === "sortby") {
+			if (!value.match(/^(min|max|fdt)_(-1|1)$/)) {
+				continue;
+			}
+			let t = value.split("_");
+			sortby = "total";
+			sortbyVal = t[0];
+			order = parseInt(t[1]);
+		}
+	}
+
+	["pride", "greed", "envy", "wrath", "lust", "gluttony", "sloth"].forEach((attr) => {
+		sum.push(`$strength.${attr}.${sortbyVal}`);
+	});
+
+
+	match = { '$match': query };
+
+	addFields = {
+		'$addFields': {
+			'total': { '$sum': sum }
+		}
+	};
+
+	sort = { '$sort': {} };
+	if (sortby) {
+		sort['$sort'][sortby] = order;
+	}
+	sort['$sort']["number"] = -1;
+
+	project = {
+		'$project': {
+			'name': 1,
+			'ja_name': 1,
+			'uniqueName': 1,
+			'type': 1,
+			'total': 1
+		}
+	};
+
+	pipeline = [match];
+	if (sortby === "total") {
+		pipeline.push(addFields);
+	}
+	pipeline.push(sort, project);
+
+	return pipeline;
+}

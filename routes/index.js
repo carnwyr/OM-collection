@@ -40,7 +40,7 @@ router.get("/userpage", userController.hasAccess("Admin"), userController.getUse
 router.post("/updateSupport", userController.hasAccess("Admin"), userController.updateSupport);
 
 // Misc.
-router.get('/getAllCards', cardsController.getAvailableCards);
+router.get('/getCards', cardsController.getCards);
 
 // TEMP: calculator
 router.get('/calculator', miscController.calculator);

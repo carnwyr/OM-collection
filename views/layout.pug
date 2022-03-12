@@ -113,6 +113,18 @@ html(lang=t("lang"))
         //-   </div>
         if (!user || !user.isSupporter)
           div.container.ddd <div id="ezoic-pub-ad-placeholder-109"> </div>
+        if t("lang") === "ja"
+          div.alert.alert-info.text-center(style="z-index:0!important;" role="alert")
+            strong Japanese translators needed!
+            p.mb-0 Become a translator, please email
+              |
+              |
+              a(href="mailto:karasu.os.mail@gmail.com") karasu.os.mail@gmail.com
+              |
+              | or
+              |
+              a(href="https://discord.gg/Y3KMW7U" target="_blank") join our discord server
+              | .
 
       block content
       if (!user || !user.isSupporter)
