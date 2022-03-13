@@ -276,13 +276,13 @@ block content
 		</div>
 		script.
 			function setCD(countdown) {
-				$("form#data button[type='submit']").prop("disabled", true);
+				$("button#submit").prop("disabled", true);
 				let cd = setInterval(() => {
 					$("span#cd").text(--countdown + 's');
 					if (countdown === 0) {
 						clearInterval(cd);
 						$("span#cd").text('');
-						$("form#data button[type='submit']").prop("disabled", false);
+						$("button#submit").prop("disabled", false);
 					}
 				}, 1000);
 			}
@@ -296,6 +296,7 @@ block content
 				setCD(60);
 				$.post("/suggestion/add", {
 					page: location.pathname.replace("/edit", ''),
+					originalData: originalData,
 					data: newData
 				}, function(result) {
 					if (result.err) {

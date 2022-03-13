@@ -8,7 +8,7 @@ $(document).ready(function() {
       });
   });
   $("#delete").on("click", () => {
-    $.post("/suggestion/refuse", { _id: suggestion_id })
+    $.post("/suggestion/refuse", { _id: suggestion_id, reason: $("input#reason").val() })
       .done(function(result) {
         let status = result.err?"danger":"success";
         showAlert(status, result.message);

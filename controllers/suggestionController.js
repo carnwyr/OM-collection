@@ -43,12 +43,18 @@ exports.getSuggestionList = async function(req, res, next) {
 };
 
 exports.addSuggestion = async function(req, res) {
-	notifyAdmin(`New suggestion from \`\`${req.user.name}\`\` on \`\`${req.body.page}\`\`.`);
-	return res.json(await suggestionService.addSuggestion({
+	let result = await suggestionService.addSuggestion({
 		user: req.user.name,
 		page: req.body.page,
+		old: req.body.originalData,
 		stringifiedJSON: req.body.data
-	}));
+	});
+
+	if (!result.err) {
+		notifyAdmin(`New suggestion from \`\`${req.user.name}\`\` on \`\`${req.body.page}\`\`.`);
+	}
+
+	return res.json(result);
 };
 
 // NOTE: card search use uniqueName, event search use name.en
@@ -78,7 +84,7 @@ exports.approveSuggestion = async function(req, res) {
 };
 
 exports.refuseSuggestion = async function(req, res) {
-	return res.json(await suggestionService.updateSuggestionStatus(req.body._id, "refused"));
+	return res.json(await suggestionService.updateSuggestionStatus(req.body._id, "refused", req.body.reason));
 };
 
 function notifyAdmin(message) {

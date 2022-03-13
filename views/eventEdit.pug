@@ -337,6 +337,7 @@ block content
 				}
 				setCD(60);
 				$.post("/suggestion/add", {
+					originalData: originalData,
 					data: newData,
 					page: location.pathname.replace("/edit", '')
 				}, function(result) {

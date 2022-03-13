@@ -33,11 +33,11 @@ exports.addSuggestion = async function(data) {
   }
 };
 
-exports.updateSuggestionStatus = async function(id, status) {
+exports.updateSuggestionStatus = async function(id, status, reason = "") {
   try {
     let res = await Suggestions.updateOne(
       { _id: id },
-      { $set: { status: status } }
+      { $set: { status: status, reason: reason } }
     );
     if (res.err) throw res.message;
     return { err: null, message: "Suggestion status updated!" };

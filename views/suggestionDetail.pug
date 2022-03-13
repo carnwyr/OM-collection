@@ -39,9 +39,12 @@ block content
 
         textarea#final.form-control.mb-3(style="min-height:260px;")= JSON.stringify(JSON.parse(suggestion.stringifiedJSON), undefined, 2)
 
-        button#ban.mr-2(data-name=suggestion.user) Ban user
-        button#delete.mr-2 Delete suggestion
-        button#save Save changes
+        div.row
+          div.col
+            button#ban.btn.btn-outline-danger.mr-2(data-name=suggestion.user) Ban user
+            button#delete.btn.btn-secondary.mr-2 Delete suggestion
+            button#save.btn.btn-primary Save changes
+          div.col: input#reason.form-control(type="text" value=suggestion.reason placeholder="reason")
 
   script(src="/javascripts/jdd.js")
   script.
