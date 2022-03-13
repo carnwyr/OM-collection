@@ -53,8 +53,8 @@ languageDetector.addDetector({
 		let subdomain = options.getHeaders(req).host.split('.')[0];
 		if (subdomain === "ja" || subdomain === "zh") {
 			lang = subdomain;
+			i18next.changeLanguage(lang);
 		}
-		if (i18next.t("lang") !== lang) { i18next.changeLanguage(lang); }
 		return lang;
 	}
 });
