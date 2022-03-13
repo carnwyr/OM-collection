@@ -89,6 +89,8 @@ footer ul {
 }
 
 .ddd {
+  position: relative;
+  z-index: -1;
   text-align: center;
   margin-bottom: .5rem;
   border-radius: 16px;
