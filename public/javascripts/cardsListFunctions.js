@@ -166,7 +166,7 @@ function updateURL() {
 }
 
 function updateViewType() {
-	let currentView = querystr.get("view");
+	let currentView = querystr.get("view")?querystr.get("view"):"icon";
 	let newView = $(this).data("viewtype");
 	if (newView === currentView) return;
 
