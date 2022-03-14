@@ -155,13 +155,12 @@ exports.isSameUser = function() {
 	}
 };
 
+// as array of uniqueName
 exports.getOwnedCards = async function (req, res, next) {
 	try {
-		var ownedCards = await userService.getOwnedCards(req.user.name);
-		ownedCards = ownedCards.map(card => card.uniqueName);
-		res.send(ownedCards);
+		let user = await userService.getUser(req.user.name);
+		return res.send(user.cards.owned);
 	} catch (e) {
-		console.error(e)
 		Sentry.captureException(e);
 		return res.send([]);
 	}
