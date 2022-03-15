@@ -50,7 +50,8 @@ languageDetector.addDetector({
 	name: "subdomain",
 	lookup: function(req, res, options) {
 		let lang = "en";
-		let subdomain = options.getHeaders(req).host.split('.')[0];
+		let host = options.getHeaders(req).host;
+		let subdomain = host.split('.')[0];
 		if (subdomain === "ja" || subdomain === "zh") {
 			lang = subdomain;
 		}
@@ -58,6 +59,10 @@ languageDetector.addDetector({
 			i18next.changeLanguage(lang, (err, t) => {
 				if (err) Sentry.captureException(err);
 			});
+		}
+		if (i18next.t("lang") != lang) {
+			let message = `Wrong language! host: ${host}; subdomain: ${subdomain}, type: ${typeof subdomain}; lang: ${lang}, type: ${typeof lang}`;
+			Sentry.captureMessage(message);
 		}
 		return lang;
 	}
