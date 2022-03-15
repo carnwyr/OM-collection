@@ -49,12 +49,11 @@ let languageDetector = new i18nextMiddleware.LanguageDetector();
 languageDetector.addDetector({
 	name: "subdomain",
 	lookup: function(req, res, options) {
-		let lang = "en";
 		let subdomain = options.getHeaders(req).host.split('.')[0];
 		if (subdomain === "ja" || subdomain === "zh") {
-			lang = subdomain;
+			return subdomain;
 		}
-		return lang;
+		return "en";
 	}
 });
 
