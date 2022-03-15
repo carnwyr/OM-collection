@@ -23,8 +23,8 @@ var suggestionRouter = require("./routes/suggestions");
 
 const app = express();
 
-const i18next = require("i18next");
-const i18nextMiddleware = require("i18next-http-middleware");
+let i18next = require("i18next");
+let i18nextMiddleware = require("i18next-http-middleware");
 const Backend = require("i18next-fs-backend");
 
 Sentry.init({ environment: process.env.NODE_ENV, dsn: process.env.SENTRY });
@@ -45,24 +45,15 @@ app.set("view engine", "pug");
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(Sentry.Handlers.requestHandler());
 
-var languageDetector = new i18nextMiddleware.LanguageDetector();
+let languageDetector = new i18nextMiddleware.LanguageDetector();
 languageDetector.addDetector({
 	name: "subdomain",
 	lookup: function(req, res, options) {
 		let lang = "en";
-		let host = options.getHeaders(req).host;
-		let subdomain = host.split('.')[0];
+		let subdomain = options.getHeaders(req).host.split('.')[0];
 		if (subdomain === "ja" || subdomain === "zh") {
 			lang = subdomain;
-		}
-		if (i18next.t("lang") !== lang) {
-			i18next.changeLanguage(lang, (err, t) => {
-				if (err) Sentry.captureException(err);
-			});
-		}
-		if (i18next.t("lang") != lang) {
-			let message = `Wrong language! host: ${host}; subdomain: ${subdomain}, type: ${typeof subdomain}; lang: ${lang}, type: ${typeof lang}`;
-			Sentry.captureMessage(message);
+			i18next.changeLanguage(lang);
 		}
 		return lang;
 	}
