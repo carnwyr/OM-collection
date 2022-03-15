@@ -1,6 +1,5 @@
 const createError = require("http-errors");
 const async = require("async");
-const i18next = require("i18next");
 const dayjs = require("dayjs");
 
 const customParseFormat = require('dayjs/plugin/customParseFormat')
@@ -24,8 +23,8 @@ exports.getEventsPage = async function(req, res, next) {
 		events[i] = {
 			name: item.name,
 			type: item.type,
-			start: getFormatedDate(item.start),
-			end: getFormatedDate(item.end)
+			start: getFormatedDate(item.start, req.i18n.t("lang")),
+			end: getFormatedDate(item.end, req.i18n.t("lang"))
 		};
 	});
 
@@ -36,11 +35,11 @@ exports.getEventsPage = async function(req, res, next) {
 		events: events });
 }
 
-function getFormatedDate(d) {
+function getFormatedDate(d, lang) {
 	if (!d) return "???";
 
 	var day = d.getDate(), year = d.getFullYear();
-	if (i18next.t("lang") === "en") {
+	if (lang === "en") {
 		let month = d.toLocaleString('en', { month: 'long' });
 		return `${day} ${month} ${year}`;
 	} else {
@@ -63,7 +62,7 @@ exports.getEventDetail = async function (req, res, next) {
 			user: req.user
 		};
 
-		if (i18next.t("lang") === "ja" && event.name.ja !== '') {
+		if (req.i18n.t("lang") === "ja" && event.name.ja !== '') {
 			locals.title = event.name.ja;
 		}
 
@@ -87,7 +86,7 @@ exports.getCalculatorPage = async function (req, res, next) {
 	var cookieData = req.cookies.calculator ? JSON.parse(req.cookies.calculator) : {};
 	var reqData = req.query;
 	reqData.advanced = cookieData;
-	var locals = { title: i18next.t("title.calculator"), description: i18next.t("description.calculator"), event: event, query: req.query, user: req.user };
+	var locals = { title: req.i18n.t("title.calculator"), description: req.i18n.t("description.calculator"), event: event, query: req.query, user: req.user };
 	[locals.calculationError, locals.result] = eventCalculatorService.calculate(event, reqData);
 	return res.render("calculator", locals);
 };

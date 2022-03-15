@@ -12,7 +12,6 @@ const { body, validationResult } = require("express-validator");
 const async = require("async");
 
 const ObjectId = require("mongodb").ObjectID;
-const i18next = require("i18next");
 
 require("dotenv").config();
 
@@ -25,7 +24,7 @@ const userService = require("../services/userService");
 
 // Login and signup
 exports.getLoginPage = function(req, res, next) {
-  return res.render('login', { title: i18next.t("common.login"), message: req.flash('message'), user: req.user });
+  return res.render('login', { title: req.i18n.t("common.login"), message: req.flash('message'), user: req.user });
 };
 
 exports.login = passport.authenticate('local', {
@@ -44,7 +43,7 @@ exports.logout = function (req, res) {
 };
 
 exports.getSignupPage = function(req, res, next) {
-  res.render('signup', { title: i18next.t("common.signup"), user: req.user });
+  res.render('signup', { title: req.i18n.t("common.signup"), user: req.user });
 };
 
 exports.signup = [
@@ -269,7 +268,7 @@ exports.getAccountPage = function(req, res, next) {
       u.profile.isPrivate = false;
     }
 
-    return res.render("account", { title: i18next.t("title.settings"), user: Object.assign(req.user, u) });
+    return res.render("account", { title: req.i18n.t("title.settings"), user: Object.assign(req.user, u) });
   });
 };
 
@@ -305,8 +304,8 @@ exports.sendVerificationEmail = async function(req, res, next) {
       to: [req.body.userData.email],
       from: "Karasu OS <no-reply@karasu-os.com>",
       'h:Reply-To': 'karasu.os.mail@gmail.com',
-      subject: i18next.t("settings.email_confirmation") + " - Karasu-OS.com",
-      template: i18next.t("settings.email_template"),
+      subject: req.i18n.t("settings.email_confirmation") + " - Karasu-OS.com",
+      template: req.i18n.t("settings.email_template"),
       'h:X-Mailgun-Variables': JSON.stringify({ username: req.params.name, code: code })
     });
 
@@ -391,7 +390,7 @@ exports.restorePassword = function(req, res, next) {
       from: "Karasu OS <no-reply@karasu-os.com>",
       'h:Reply-To': 'karasu.os.mail@gmail.com',
       subject: "Restore password",
-      text: `${i18next.t("user.username")}: ${user.info.name}\n${i18next.t("user.password")}: ${newPassword}`
+      text: `${req.i18n.t("user.username")}: ${user.info.name}\n${req.i18n.t("user.password")}: ${newPassword}`
 		})
 		.then(result => {
 			bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
@@ -493,7 +492,7 @@ exports.getRankingsPage = async function(req, res, next) {
       { $set: { name: "$name.name", ja_name: "$name.ja_name" } },
       { $unset: ["cardData"] }
     ]);
-    res.render("rankings", { title: i18next.t("common.rankings"), description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
+    return res.render("rankings", { title: req.i18n.t("common.rankings"), description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
   } catch (e) {
     return next(e);
   }

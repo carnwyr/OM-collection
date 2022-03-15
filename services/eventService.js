@@ -1,7 +1,6 @@
 const Sentry = require('@sentry/node');
 const async = require("async");
 const dayjs = require('dayjs');
-const i18next = require("i18next");
 const createError = require("http-errors");
 
 const customParseFormat = require('dayjs/plugin/customParseFormat')

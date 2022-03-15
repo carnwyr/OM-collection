@@ -1,4 +1,3 @@
-const i18next = require("i18next");
 const cacheService = require("../services/cacheService");
 
 exports.privacyPolicy = function(req, res, next) {
@@ -8,7 +7,7 @@ exports.privacyPolicy = function(req, res, next) {
 exports.surpriseGuest = async function(req, res, next) {
 	try {
 		return res.render("surpriseGuest", {
-			title: i18next.t("common.spg"),
+			title: req.i18n.t("common.spg"),
 			description: "An all-in-one guide for Obey Me! surprise guest interactions. Karasu's interactive guide features all characters including the demon brothers and side characters. ... Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon.",
 			user: req.user, interactions: await cacheService.getCachedSurpriseGuest()
 		});

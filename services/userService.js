@@ -1,5 +1,4 @@
 const Sentry = require('@sentry/node');
-const i18next = require("i18next");
 const ObjectId = require("mongodb").ObjectID;
 
 const suggestionService = require("../services/suggestionService");
@@ -45,12 +44,12 @@ getCardCollection = function (username, collection) {
   }
 };
 
-exports.getProfileInfo = async function(username) {
+exports.getProfileInfo = async function(username, language) {
   try {
     var user = await exports.getUser(username);
     var info = { ...user.profile };
 
-    if (i18next.t("lang") === "en") {
+    if (language === "en") {
       info.joinKarasu = `${new Intl.DateTimeFormat("en", { month: "long" }).format(ObjectId(user._id).getTimestamp())} ${ObjectId(user._id).getTimestamp().getFullYear()}`;
     } else {
       info.joinKarasu = `${ObjectId(user._id).getTimestamp().getFullYear()}年${ObjectId(user._id).getTimestamp().getMonth() + 1}月`;
@@ -60,7 +59,7 @@ exports.getProfileInfo = async function(username) {
       var date = info.joined.getUTCDate(),
           month = info.joined.getUTCMonth() + 1,
           year = info.joined.getUTCFullYear();
-      if (i18next.t("lang") === "en") {
+      if (language === "en") {
         info.joined = `${date} ${new Intl.DateTimeFormat("en", { month: "long" }).format(info.joined)} ${year}`;
       } else {
         info.joined = `${year}年${month}月${date}日`;

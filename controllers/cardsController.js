@@ -1,7 +1,6 @@
 const createError = require("http-errors");
 const async = require("async");
 const fs = require("fs");
-const i18next = require("i18next");
 const Sentry = require("@sentry/node");
 
 const cardService = require("../services/cardService");
@@ -12,14 +11,14 @@ const fileService = require("../services/fileService");
 exports.index = function (req, res, next) {
 	return res.render("index", {
 		title: "Karasu OS",
-		description: i18next.t("description.cards"),
+		description: req.i18n.t("description.cards"),
 		user: req.user
 	});
 };
 
 exports.getCardsListPage = async function(req, res, next) {
 	try {
-		let pipeline = formatAggPipeline(req.query);
+		let pipeline = formatAggPipeline(req.query, req.i18n.t("lang"));
 		let cards = await cardService.aggregateCards(pipeline);
 
 		if (req.user && req.query.cards) {
@@ -32,7 +31,7 @@ exports.getCardsListPage = async function(req, res, next) {
 		}
 
 		return res.render("cardsList", {
-			title: i18next.t("title.cards"),
+			title: req.i18n.t("title.cards"),
 			description: "The place to view all of Obey Me!'s cards. The largest and most complete card databse with all sorts of filters for you to find the card you want! This is also the place to manage your card collection. Create an account to access more features! ... Pride, Greed, Envy, Wrath, Lust, Gluttony, Sloth, UR+, UR, SSR, SR, N, Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon, Little D., Owned, Not owned.",
 			cardsList: cards,
 			path: "list",
@@ -51,7 +50,7 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
-		let query = formatAggPipeline(req.query);
+		let query = formatAggPipeline(req.query, req.i18n.t("lang"));
 		var pageParams = {
 			description: `${req.params.username}'s Collection on Karasu-OS.com`,
 			path: "collection",
@@ -60,7 +59,7 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 		};
 
 		var isCollectionOwner = req.user && req.user.name === user.info.name;
-		pageParams.title = isCollectionOwner ? i18next.t("title.my_collection") : i18next.t("title.user_collection", { username: user.info.name });
+		pageParams.title = isCollectionOwner ? req.i18n.t("title.my_collection") : req.i18n.t("title.user_collection", { username: user.info.name });
 
 		var isPrivate = user.profile.isPrivate && !isCollectionOwner;
 		if (isPrivate) {
@@ -97,7 +96,7 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 			throw createError(404, "User not found");
 		}
 
-		let query = formatAggPipeline(req.query);
+		let query = formatAggPipeline(req.query, req.i18n.t("lang"));
 		var pageParams = {
 			description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
 			path: "fav",
@@ -106,7 +105,7 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 		};
 
 		var isCollectionOwner = req.user && req.user.name === user.info.name;
-		pageParams.title = isCollectionOwner ? i18next.t("title.my_favourites") : i18next.t("title.user_favourites", { username: user.info.name });
+		pageParams.title = isCollectionOwner ? req.i18n.t("title.my_favourites") : req.i18n.t("title.user_favourites", { username: user.info.name });
 
 		var isPrivate = user.profile.isPrivate && !isCollectionOwner;
 		if (isPrivate) {
@@ -134,7 +133,7 @@ exports.getCardDetailPage = async function(req, res, next) {
 		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g, "_")));
 
 		var title = cardData.name;
-		var lang = i18next.t("lang");
+		var lang = req.i18n.t("lang");
 
 		if (lang === "ja") {
 			if (cardData.ja_name !== "???") {
@@ -218,9 +217,9 @@ exports.getProfilePage = async function(req, res, next) {
 
 		var title;
 		if (req.user && req.user.name === user.info.name) {
-			title = i18next.t("title.my_profile");
+			title = req.i18n.t("title.my_profile");
 		} else {
-			title = i18next.t("title.user_profile", { username: user.info.name });
+			title = req.i18n.t("title.user_profile", { username: user.info.name });
 		}
 
 		var cards = {
@@ -257,7 +256,7 @@ exports.directImage = async function (req, res, next) {
 // TODO: merge with getCardsListPage
 exports.getCards = async function (req, res) {
 	try {
-		let query = formatAggPipeline(req.query);
+		let query = formatAggPipeline(req.query, req.i18n.t("lang"));
 		let cards = await cardService.aggregateCards(query);
 
 		let user;
@@ -356,7 +355,7 @@ exports.makeCardPublic = async function (req, res, next) {
 
 
 /* helper */
-function formatAggPipeline(obj) {
+function formatAggPipeline(obj, language = "en") {
 	let query = {};
 	let sum = [];
 	let sortby, order, sortbyVal;
@@ -370,7 +369,7 @@ function formatAggPipeline(obj) {
 			// var lang = i18next.t("lang") === "zh" ? "en" : i18next.t("lang");
 			// query["name."+lang] = new RegExp(value, 'i');
 
-			if (i18next.t("lang") === "ja") {
+			if (language === "ja") {
 				query["ja_name"] = new RegExp(value, 'i');
 			} else {
 				query["name"] = new RegExp(value, 'i');
