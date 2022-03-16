@@ -124,22 +124,35 @@ block content
     if card.rarity === "UR+"
       br
       div(style="border:2px solid #e8eaf6;border-radius:8px;background:rgba(255,255,255,.8);padding:1.5rem;padding-bottom:2rem;")
-        h2.text-center Animations
-        br
-        div.row.justify-content-center
-          if !card.animation || !card.animation.link1
-            div.col-12.text-center.py-5
-              p Looks like we are missing an animation.
-              a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
-          else
-            iframe.animation(src="https://www.youtube-nocookie.com/embed/"+card.animation.link1 title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
-          if card.animation.type === "homescreen"
-            if !card.animation || !card.animation.link2
-              div.col-12.text-center.py-5
-                p Looks like we are missing an animation.
-                a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
-            else
-              iframe.animation.mt-4(src="https://www.youtube-nocookie.com/embed/"+card.animation.link2 title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
+        div.row
+          div.col-12.col-md-10.mx-auto
+            h2.text-center Animations
+            div.row.justify-content-center.pt-md-3
+              if card.animation.type === "battle"
+                if !card.animation || !card.animation.link1
+                  div.col-12.text-center.py-5
+                    p Looks like we are missing an animation.
+                    a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
+                else
+                  div.col-12.animation: div
+                    iframe(src="https://player.vimeo.com/video/" + card.animation.link1 + "?autoplay=1&loop=1&autopause=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Makeup Transformation! (Original)")
+              if card.animation.type === "homescreen"
+                div.col-12.d-flex.flex-wrap
+                  div.animation: div
+                    if !card.animation || !card.animation.link1
+                      div.text-center.py-5
+                        p Looks like we are missing an animation.
+                        a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
+                    else
+                      iframe(src="https://player.vimeo.com/video/" + card.animation.link1 + "?autoplay=1&loop=1&autopause=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Makeup Transformation! (Original)")
+
+                  div.animation: div
+                    if !card.animation || !card.animation.link2
+                      div.text-center.py-5
+                        p Looks like we are missing an animation.
+                        a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
+                    else
+                      iframe(src="https://player.vimeo.com/video/" + card.animation.link2 + "?autoplay=1&loop=1&autopause=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Makeup Transformation! (Original)")
 
   if user && user.isAdmin
     div(class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true")
