@@ -17,6 +17,22 @@ block scripts
         });
       });
 
+mixin dtTemplate(node)
+  div.col-12.col-md-4.mb-3
+    div.p-3(style="border-radius:5px;border:2px solid blue;")
+      p.text-center= node.reward
+      hr
+      if node.requirements.length !== 0
+        ul
+          each i in node.requirements
+            li= i.name !== '' ? i.name + ' x' + i.amount : "???"
+      else
+        p.text-center Missing data T^T. Please help.
+      hr
+      div.form-check.text-center
+        input.form-check-input(id=i+"_completion" type="checkbox")
+        label.form-check-label(for=i+"_completion") Unlocked
+
 block content
   div#alert(role="alert")
   div.container
@@ -121,6 +137,30 @@ block content
                 td= getTotalStrength("min")
                 td= getTotalStrength("max")
                 td= getTotalStrength("fdt")
+    div.card.mb-3(style="border-left:3px solid #d289fb;")
+      div.card-body
+        h5.card-title Devil's tree
+        if card.dt
+          p.section-title Rewards
+          div.row.justify-content-center
+            - let rewards = card.dt.filter(x => x.type !== "level_up" || x.type !== "flower");
+            if rewards.length === 0
+              p.text-center Missing data T^T. Please help.
+            else
+              each i in rewards
+                +dtTemplate(i)
+          br
+          p.section-title Level up
+          div.row.justify-content-center
+            - let levelNodes = card.dt.filter(x => x.type === "level_up" || x.type === "flower");
+            if levelNodes.length === 0
+              p.text-center Missing data T^T. Please help.
+            else
+              each i in levelNodes
+                +dtTemplate(i)
+        else
+          p.text-center.p-5 Looks like we're missing devil's tree data. Help us add!
+
     if card.rarity === "UR+"
       br
       div(style="border:2px solid #e8eaf6;border-radius:8px;background:rgba(255,255,255,.8);padding:1.5rem;padding-bottom:2rem;")
