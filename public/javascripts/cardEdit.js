@@ -1,4 +1,11 @@
 let originalData;
+let selectPickerOptions = {
+	liveSearch: true,
+	style: '',
+	styleBase: 'form-control mb-0',
+	title: 'required item name'
+};
+
 $(document).ready(function() {
 	originalData = JSON.stringify(getCardData());
 
@@ -12,11 +19,14 @@ $(document).ready(function() {
 
 	$("#addEvent").on("click", addEvent);
 	$("#removeEvent").on("click", removeEvent);
+
+	$('.item-select').selectpicker(selectPickerOptions);
 });
 
 $(document).on("click", ".add-item", function() {
 	let template = $(this).data("clone");
 	$(this).parent().children("div:first-of-type").append($(template).html());
+	$('.item-select').selectpicker(selectPickerOptions);
 });
 $(document).on("click", ".remove-item", function() {
 	$(this).parent().remove();
