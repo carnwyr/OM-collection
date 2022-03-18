@@ -78,6 +78,7 @@ function getCardData() {
 		rarity: $("#rarity").val(),
 		attribute: $("#attribute").val(),
 		characters: getSelectedCharacters(),
+		dt: getTreeRewards(),
 		number: $("#number").val(),
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};
@@ -139,4 +140,29 @@ function addEvent() {
 function removeEvent() {
 	var target = $(this).data("target");
 	$(target + " input:last-child").remove();
+}
+
+function getTreeRewards() {
+	let rewards = [];
+
+	$("div#dt-content form").each(function() {
+		let formData = new FormData(this);
+		let node = { requirements: [] };
+		let name;
+		for(let pair of formData.entries()) {
+			console.log(pair);
+			if (pair[0] === "name") {
+				name = pair[1];
+			} else if (pair[0] === "amount") {
+				node.requirements.push({ name: name, amount: pair[1] });
+			} else {
+				node[pair[0]] = pair[1];
+			}
+		}
+		rewards.push(node);
+	});
+
+	rewards = rewards.filter(x => x.reward && x.type);
+
+	return rewards;
 }

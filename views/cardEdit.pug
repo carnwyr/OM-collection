@@ -12,8 +12,8 @@ mixin treeCostTemplate(item)
 		- count++;
 		div.form-inline
 			label.mr-md-3(style="width:3.5rem;") Req #{count}
-			input.form-control(type="text" value=i.name placeholder="required item name")
-			input.form-control(type="number" value=i.amount placeholder="required item cost")
+			input.form-control(type="text" name="name" value=i.name placeholder="required item name")
+			input.form-control(type="number" name="amount" value=i.amount placeholder="required item cost")
 
 mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
 	div
@@ -25,7 +25,7 @@ mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '
 				label Type
 				select.custom-select.form-control(name="type")
 					option(disabled) --
-					each t in ['item', 'icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'skill_animation', 'moving_picture', 'level_up', 'flower']
+					each t in ['item', 'icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'skill_animation', 'moving_picture', 'home_picture', 'level_up', 'flower']
 						option(value=t selected=(node.type===t))= t
 			div.form-group.col-12.col-md-3
 				label Grimm cost
@@ -56,10 +56,10 @@ block content
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="skills-tab" data-toggle="tab" href="#skills" role="tab" aria-controls="skills" aria-selected="false">Skills</a>
 					</li>
-					<li class="nav-item" role="presentation">
-						<a class="nav-link" id="tree-tab" data-toggle="tab" href="#tree" role="tab" aria-controls="tree" aria-selected="false">Devil's tree</a>
-					</li>
 					if user.isAdmin
+						<li class="nav-item" role="presentation">
+							<a class="nav-link" id="tree-tab" data-toggle="tab" href="#tree" role="tab" aria-controls="tree" aria-selected="false">Devil's tree</a>
+						</li>
 						<li class="nav-item" role="presentation">
 							<a class="nav-link" id="animation-tab" data-toggle="tab" href="#animation" role="tab" aria-controls="animation" aria-selected="false">UR+ Animation</a>
 						</li>

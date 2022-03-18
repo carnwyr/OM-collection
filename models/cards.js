@@ -19,7 +19,7 @@ const dtRewardSchema = new Schema({
 	requirements: { type: [dtReqSchema] },
 	grimmCost: { type: Number },
 	nodeOrder: { type: Number }
-}, { _id: false });
+});
 
 const cardSchema = new mongoose.Schema({
 	name: { type: String, required: true, unique: true },
