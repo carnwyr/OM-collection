@@ -19,19 +19,21 @@ block scripts
 
 mixin dtTemplate(node)
   div.col-12.col-md-4.mb-3
-    div.p-3(style="border-radius:5px;border:2px solid blue;")
-      p.text-center= node.reward
+    div(class="p-3 dt-node " + node.type)
+      div.d-flex.flex-wrap.align-items-center
+        img.mb-2.mb-md-0(src="/images/nodes/" + node.type + ".png" alt=node.type+" icon" style="width:32px;height:32px;")
+        span.text-center.w-100= node.reward
       hr
       if node.requirements.length !== 0
         ul
           each i in node.requirements
-            li= i.name !== '' ? i.name + ' x' + i.amount : "???"
+            li= i.name && i.amount ? i.name + ' x' + i.amount : "???"
       else
-        p.text-center Missing data T^T. Please help.
+        p ???
       hr
       div.form-check.text-center
-        input.form-check-input(id=i+"_completion" type="checkbox")
-        label.form-check-label(for=i+"_completion") Unlocked
+        input.form-check-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox")
+        label.form-check-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
 
 block content
   div#alert(role="alert")
@@ -145,7 +147,10 @@ block content
           div.row.justify-content-center
             - let rewards = card.dt.filter(x => x.type !== "level_up" || x.type !== "flower");
             if rewards.length === 0
-              p.text-center Missing data T^T. Please help.
+              p.text-center.p-5 Looks like we're missing devil's tree data.
+                |
+                |
+                a(href=card.uniqueName+"/edit") Add missing data!
             else
               each i in rewards
                 +dtTemplate(i)
@@ -154,12 +159,18 @@ block content
           div.row.justify-content-center
             - let levelNodes = card.dt.filter(x => x.type === "level_up" || x.type === "flower");
             if levelNodes.length === 0
-              p.text-center Missing data T^T. Please help.
+              p.text-center.p-5 Looks like we're missing devil's tree data.
+                |
+                |
+                a(href=card.uniqueName+"/edit") Add missing data!
             else
               each i in levelNodes
                 +dtTemplate(i)
         else
-          p.text-center.p-5 Looks like we're missing devil's tree data. Help us add!
+          p.text-center.p-5 Looks like we're missing devil's tree data.
+            |
+            |
+            a(href=card.uniqueName+"/edit") Add missing data!
 
     if card.rarity === "UR+"
       br

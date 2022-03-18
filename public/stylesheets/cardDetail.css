@@ -86,8 +86,30 @@ svg.bi-star-fill:hover {
 	#info .row>div:nth-child(even) {
 		text-align: center;
 	}
+
+	.dt-node .d-flex {
+		justify-content: center;
+	}
 }
 
 table#strength thead th, #strength td {
 	text-align: center;
+}
+
+.dt-node {
+	border-radius: 16px;
+	border: 2px solid var(--secondary);
+}
+
+.dt-node.item {
+	border-color: gold;
+}
+
+@media (min-width: 768px) {
+	.dt-node img {
+		position: absolute;
+	}
+	.dt-node span {
+		padding: 0 36px;
+	}
 }
