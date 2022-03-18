@@ -14,6 +14,14 @@ $(document).ready(function() {
 	$("#removeEvent").on("click", removeEvent);
 });
 
+$(document).on("click", ".add-item", function() {
+	let template = $(this).data("clone");
+	$(this).parent().children("div:first-of-type").append($(template).html());
+});
+$(document).on("click", ".remove-item", function() {
+	$(this).parent().remove();
+});
+
 function fillUniqueName() {
 	var name = $("#name").val();
 	var uniqueName = name.replace(/[\\/:*?"<>|]/g, "");
