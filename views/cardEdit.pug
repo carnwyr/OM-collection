@@ -18,27 +18,26 @@ mixin treeCostTemplate(item)
 mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
 	form.form-row
 		div.form-group.col-12.col-md-3
-			label Name:
-			input.form-control(type="text" value=node.reward name="reward")
+			label Name
+			input.form-control(type="text" value=node.reward name="reward" placeholder="???")
 		div.form-group.col-12.col-md-3
-			label Type:
+			label Type
 			select.custom-select.form-control(name="type")
 				option(disabled) --
-				each t in ['skill_animation', 'item', 'icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'moving_picture', 'lv_up', 'flower']
+				each t in ['skill_animation', 'item', 'icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'moving_picture', 'level_up', 'flower']
 					option(value=t selected=(node.type===t))= t
 		div.form-group.col-12.col-md-3
 			label Grimm cost
-			input.form-control(type="number" name="grimmCost" value=node.grimmCost)
+			input.form-control(type="number" name="grimmCost" value=node.grimmCost placeholder="???")
 		div.form-group.col-12.col-md-3
 			label Node number
-			input.form-control(type="number" name="nodeOrder" value=node.nodeOrder)
+			input.form-control(type="number" name="nodeOrder" value=node.nodeOrder placeholder="???")
 			small.form-text.text-muted item 1, 2, or 3? icon 1, 2?
 		div.form-group.col-12
 			label Requirements
 			+treeCostTemplate(requirements)
 		div.col-12
-			button.btn.btn-outline-secondary.remove-item(type="button") Remove
-			hr
+			button.btn.btn-outline-secondary.remove-item(type="button") Remove node
 
 block content
 	div#alert(role="alert")
@@ -220,6 +219,7 @@ block content
 								else
 									each i in card.dt
 										+treeTemplate(i)
+										hr
 							button.btn.btn-primary(type="button") Add reward
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
 						div.form-check
