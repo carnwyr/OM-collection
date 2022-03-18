@@ -21,7 +21,7 @@ mixin treeCostTemplate(item)
 					each x in ITEMS
 						option(value=x selected=(i.name===x))= x
 			div.col-12.col-md-3
-				input.form-control(type="number" name="amount" value=i.amount placeholder="required item cost")
+				input.form-control(type="number" name="amount" value=i.amount placeholder="how many?")
 
 mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
 	div
