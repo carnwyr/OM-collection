@@ -42,8 +42,5 @@ router.post("/updateSupport", userController.hasAccess("Admin"), userController.
 // Misc.
 router.get('/getCards', cardsController.getCards);
 
-// TEMP: calculator
-router.get('/calculator', miscController.calculator);
-
 
 module.exports = router;

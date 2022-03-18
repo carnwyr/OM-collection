@@ -5,7 +5,7 @@ const eventsController = require("../controllers/eventsController");
 const userController = require("../controllers/userController");
 
 // Calculate DP and AP needed for rewards
-router.post("/:event/calculate", eventsController.calculate);
+// router.post("/:event/calculate", eventsController.calculate);
 
 // Event page
 router.get("/new", userController.hasAccess("Moderator"), eventsController.getEventAddPage);

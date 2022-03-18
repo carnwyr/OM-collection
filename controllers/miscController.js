@@ -15,11 +15,3 @@ exports.surpriseGuest = async function(req, res, next) {
 		return next(e);
 	}
 };
-
-exports.calculator = function(req, res, next) {
-	return res.render("temp", {
-		title: "Pop Quiz Calculator",
-		description: "",
-		user: req.user
-	});
-};
