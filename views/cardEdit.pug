@@ -4,6 +4,42 @@ block scripts
 	link(rel="stylesheet" href="/stylesheets/imageUpload.css")
 	script(src="/javascripts/cardEdit.js")
 
+mixin treeCostTemplate(item)
+	if !item
+		- item = Array(3).fill({ name: '', amount: '' });
+	- count = 0;
+	each i in item
+		- count++;
+		div.form-inline
+			label.mr-md-3(style="width:3.5rem;") Req #{count}
+			input.form-control(type="text" value=i.name placeholder="required item name")
+			input.form-control(type="number" value=i.amount placeholder="required item cost")
+
+mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
+	form.form-row
+		div.form-group.col-12.col-md-3
+			label Name:
+			input.form-control(type="text" value=node.reward name="reward")
+		div.form-group.col-12.col-md-3
+			label Type:
+			select.custom-select.form-control(name="type")
+				option(disabled) --
+				each t in ['skill_animation', 'item', 'icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'moving_picture', 'lv_up', 'flower']
+					option(value=t selected=(node.type===t))= t
+		div.form-group.col-12.col-md-3
+			label Grimm cost
+			input.form-control(type="number" name="grimmCost" value=node.grimmCost)
+		div.form-group.col-12.col-md-3
+			label Node number
+			input.form-control(type="number" name="nodeOrder" value=node.nodeOrder)
+			small.form-text.text-muted item 1, 2, or 3? icon 1, 2?
+		div.form-group.col-12
+			label Requirements
+			+treeCostTemplate(requirements)
+		div.col-12
+			button.btn.btn-outline-secondary.remove-item(type="button") Remove
+			hr
+
 block content
 	div#alert(role="alert")
 	div(class="container")
@@ -19,6 +55,9 @@ block content
 					</li>
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="skills-tab" data-toggle="tab" href="#skills" role="tab" aria-controls="skills" aria-selected="false">Skills</a>
+					</li>
+					<li class="nav-item" role="presentation">
+						<a class="nav-link" id="tree-tab" data-toggle="tab" href="#tree" role="tab" aria-controls="tree" aria-selected="false">Devil's tree</a>
 					</li>
 					if user.isAdmin
 						<li class="nav-item" role="presentation">
@@ -172,6 +211,16 @@ block content
 												td
 													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:0))
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
+					div#tree.tab-pane.fade(role="tabpanel" aria-labelledby="tree-tab")
+						h5 Devil's tree
+						div#dt-container
+							div#dt-content
+								if !card || !card.dt
+									+treeTemplate()
+								else
+									each i in card.dt
+										+treeTemplate(i)
+							button.btn.btn-primary(type="button") Add reward
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
 						div.form-check
 							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="" checked=(!card||!card.animation.type))
