@@ -12,11 +12,9 @@ img[loading="lazy"] {
 } */
 .cardPreview, .cardPreview:hover {
   text-align: center;
-  margin: .25rem;
+  margin: .5rem .25rem;
   color: #717982;
   width: 100%;
-
-  display: inline-block;
 }
 .sticky-offset {
   top: 70px;
@@ -82,11 +80,12 @@ img[loading="lazy"] {
   border-color: transparent;
 }
 
-a>figcaption {
+.cardPreview>figcaption {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin: 0;
 }
 
 form#search span, input[name="search"] {

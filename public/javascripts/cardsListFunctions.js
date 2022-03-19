@@ -88,13 +88,14 @@ function createCardElement(card) {
 		let bloomed = '';
 		let figcaption = document.documentElement.lang === "ja"?card.ja_name:card.name;
 		let sortby = querystr.get("sortby");
+		let strength = '';
 
 		if (viewtype === 'bloomed' && card.type === "Demon") {
 			bloomed = '_b';
 		}
 
 		if (sortby && sortby.match(/^(min|max|fdt)_(-1|1)$/)) {
-			figcaption = card.total ? card.total.toLocaleString("en") : "???";
+			strength = `<small>${card.total ? card.total.toLocaleString("en") : "???"}</small>`;
 		}
 
 		img_src = `/images/cards/${imageSize}/${card.uniqueName}${bloomed}.jpg`;
@@ -102,6 +103,7 @@ function createCardElement(card) {
 			`<a class="cardPreview ${containerSize}" href="card/${encodeURIComponent(card.name.replace(/ /g, "_"))}">
 				<img loading="lazy" src="${img_src}">
 				<figcaption>${figcaption}</figcaption>
+				${strength}
 			</a>`;
 			// class="lazy"
 	}
