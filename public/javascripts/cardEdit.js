@@ -9,6 +9,9 @@ let selectPickerOptions = {
 $(document).ready(function() {
 	originalData = JSON.stringify(getCardData());
 
+	// TODO: add style
+	$(".autocomplete").autocomplete({ source: rewards });
+
 	$("#name").on("focusout", fillUniqueName);
 
 	$("#uploadL").on("change", {extra: "#imageResultL"}, imageUploaded);
@@ -26,6 +29,8 @@ $(document).ready(function() {
 $(document).on("click", ".add-item", function() {
 	let template = $(this).data("clone");
 	$(this).parent().children("div:first-of-type").append($(template).html());
+	// TODO: auto add node count to new node
+	$(".autocomplete").autocomplete({ source: rewards });
 	$('.item-select').selectpicker(selectPickerOptions);
 });
 $(document).on("click", ".remove-item", function() {
@@ -160,7 +165,7 @@ function getTreeRewards() {
 		let node = { requirements: [] };
 		let name;
 		for(let pair of formData.entries()) {
-			console.log(pair);
+			// console.log(pair);
 			if (pair[0] === "name") {
 				name = pair[1];
 			} else if (pair[0] === "amount") {

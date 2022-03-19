@@ -2,9 +2,18 @@ extends layout
 
 block scripts
 	link(href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css" rel="stylesheet")
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 	link(rel="stylesheet" href="/stylesheets/imageUpload.css")
 	script(src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js")
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	script(src="/javascripts/cardEdit.js")
+	include dict/itemList.pug
+	include dict/itemList2.pug
+	script.
+		// add other rewards
+		var items1 = !{JSON.stringify(ITEMS)};
+		var items2 = !{JSON.stringify(itemList)};
+		var rewards = items1.concat(items2).sort();
 
 mixin treeCostTemplate(item)
 	if !item
@@ -26,22 +35,25 @@ mixin treeCostTemplate(item)
 mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
 	div
 		form.form-row
+			div.form-inline.col-12.align-items-center.mb-2
+				label.mr-2 No.
+				input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder placeholder="???" style="width:80px;")
+				small.text-muted The order in which this node should appear on this page.
 			div.form-group.col-12.col-md-3
 				label Name
-				input.form-control(type="text" value=node.reward name="reward" placeholder="???")
+				input.form-control.autocomplete(type="text" value=node.reward name="reward" placeholder="???")
+			div.form-group.col-12.col-md-3
+				label Amount
+				input.form-control(type="number" value=node.count name="count" placeholder="???")
 			div.form-group.col-12.col-md-3
 				label Type
 				select.custom-select.form-control(name="type")
-					option(disabled) --
+					option(value='') --
 					each t in ['item', 'icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'skill_animation', 'moving_picture', 'home_picture', 'level_up', 'flower']
 						option(value=t selected=(node.type===t))= t
 			div.form-group.col-12.col-md-3
 				label Grimm cost
 				input.form-control(type="number" name="grimmCost" value=node.grimmCost placeholder="???")
-			div.form-group.col-12.col-md-3
-				label Node number
-				input.form-control(type="number" name="nodeOrder" value=node.nodeOrder placeholder="???")
-				small.form-text.text-muted item 1, 2, or 3? icon 1, 2?
 			div.form-group.col-12
 				label Requirements
 				+treeCostTemplate(requirements)
@@ -227,8 +239,6 @@ block content
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
 					div#tree.tab-pane.fade(role="tabpanel" aria-labelledby="tree-tab")
 						h5 Devil's tree
-						p.text-muted Please make sure rewards are named exactly same as in-game (spelling AND capitalization). Thank you!
-						include mixins/itemList.pug
 						div#dt-container
 							div#dt-content
 								if !card || !card.dt
