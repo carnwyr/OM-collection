@@ -20,6 +20,7 @@ router.post("/issueBan", userController.hasAccess("Admin"), userController.banUs
 
 //
 router.get("/tree_progress", userController.isSameUser(), userController.getTreeProgressPage);
+router.get("/edits", userController.isSameUser(), userController.getUserSuggestionPage);
 
 // Account settings page
 router.get('/', userController.isSameUser(), userController.getAccountPage);

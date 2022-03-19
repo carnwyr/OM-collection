@@ -1,0 +1,25 @@
+extends ../layout
+
+block content
+  div.container
+    h1 My edits
+    div.card.card-body
+      div.row
+        div.col-12
+          p Total edits: #{suggestions.length}
+          h5 Edits under review
+          if suggestions.length > 0
+            ol
+              each i in suggestions
+                if i.status === "pending"
+                  li(style="line-height:2;")
+                    | #{getDateFromObjectID(i._id)}
+                    |
+                    a(href=i.page + "/edit")= i.page + "/edit"
+          else
+            p.text-muted You have not made any edits on karasu-os.com. Go to any card or event page and click "edit" to start editing.
+
+  -
+    function getDateFromObjectID(id) {
+      return (new Date(parseInt(id.toString().substring(0, 8), 16) * 1000)).toString().substring(4, 24);
+    }
