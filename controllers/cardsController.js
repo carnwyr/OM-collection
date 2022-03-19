@@ -332,6 +332,10 @@ exports.makeCardPublic = async function (req, res, next) {
 
 
 /* helper */
+function escapeSearchString(str) {
+	return str.replace(/[.*+?^${}()|[\]\\'"]/g, '\\$&');
+}
+
 function formatAggPipeline(obj, language = "en") {
 	let query = {};
 	let sum = [];
@@ -345,7 +349,7 @@ function formatAggPipeline(obj, language = "en") {
 		} else if (key === "search") {
 			// var lang = i18next.t("lang") === "zh" ? "en" : i18next.t("lang");
 			// query["name."+lang] = new RegExp(value, 'i');
-
+			value = escapeSearchString(value);
 			if (language === "ja") {
 				query["ja_name"] = new RegExp(value, 'i');
 			} else {

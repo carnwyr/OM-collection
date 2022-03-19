@@ -30,6 +30,7 @@ mixin dtTemplate(node)
             li= i.name && i.amount ? i.name + ' x' + i.amount : "???"
       else
         p.text-center ???
+      p.text-center Grimm: #{node.grimmCost ? node.grimmCost.toLocaleString("en") : "???"}
       hr
       div.form-check.text-center
         input.form-check-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" disabled)
@@ -147,13 +148,13 @@ block content
           a.btn.btn-link(data-toggle="collapse" href="#collapseTree" role="button" aria-expanded="true" aria-controls="collapseTree") (collapse)
         div#collapseTree.collapse.show
           div.text-center
-            p We don't have enough data to make tree tracking work yet. Help us add missing data so the track can be used sooner.
+            p Devil's tree tracker will be ready when there's more data. Help us add missing data so the tracker can be ready sooner.
             a(href=card.uniqueName+"/edit") Click here to edit data.
             hr
           if card.dt
             p.section-title Rewards
             div.row.justify-content-center
-              - let rewards = card.dt.filter(x => x.type !== "level_up" || x.type !== "flower");
+              - let rewards = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower");
               if rewards.length === 0
                 p.text-center.p-5 Looks like we're missing devil's tree data.
                   |

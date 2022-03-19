@@ -99,6 +99,7 @@ table#strength thead th, #strength td {
 .dt-node {
 	border-radius: 16px;
 	border: 2px solid var(--secondary);
+	height: 100%;
 }
 
 .dt-node.item {
