@@ -15,6 +15,7 @@ const dtReqSchema = new Schema({
 
 const dtRewardSchema = new Schema({
 	reward: { type: String, required: true },
+	count: { type: Number },
 	type: { type: String, required: true },
 	requirements: { type: [dtReqSchema] },
 	grimmCost: { type: Number },

@@ -17,15 +17,15 @@ $(document).ready(function() {
 	});
 
 	/***/
-	// let cookieName = "contributorAnnouncement0";
-	// if (!document.cookie.split('; ').find(row => row.startsWith(cookieName))) {
-	// 	// $("#announcementToast").removeClass("d-none").toast("show");
-	// 	$("#announcementToast").removeClass("d-none");
-	// }
-	// $("#announcementToast .close, #announcementToast a").on("click", () => {
-	// 	document.cookie = cookieName + "=true; expires=" + cookieExpiryDate() + ";";
-	// 	// $("#announcementToast").toast("hide");
-	// });
+	let cookieName = "dt";
+	if (!document.cookie.split('; ').find(row => row.startsWith(cookieName))) {
+		$("#announcementToast").removeClass("d-none").toast("show");  // if is toast
+		// $("#announcementToast").removeClass("d-none");  // if is alert
+	}
+	$("#announcementToast .close").on("click", () => {
+		document.cookie = cookieName + "=true; expires=" + cookieExpiryDate() + ";";
+		$("#announcementToast").toast("hide");  // if is toast
+	});
 	/***/
 
 	$(".navbar .dropdown").hover(function() {
