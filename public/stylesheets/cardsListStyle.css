@@ -2,6 +2,11 @@ img[loading="lazy"] {
   transition: all .5s ease;
   -webkit-transition: all .5s ease;
 }
+.ias {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
 /* img.lazy {
   opacity: 0;
 } */

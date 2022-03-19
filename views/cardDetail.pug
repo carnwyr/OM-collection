@@ -75,7 +75,7 @@ block content
             div.col-12.col-md-2
               span= t("cards.rarity")
             div.col-12.col-md-4
-              a(href="/cards?rarity="+card.rarity.replace('+', 'p'))= card.rarity
+              a(href="/cards?rarity="+encodeURIComponent(card.rarity))= card.rarity
             div.col-12.col-md-2
               span= t("cards.attribute")
             div.col-12.col-md-4

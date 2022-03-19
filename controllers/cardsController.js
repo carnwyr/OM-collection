@@ -18,22 +18,9 @@ exports.index = function (req, res, next) {
 
 exports.getCardsListPage = async function(req, res, next) {
 	try {
-		let pipeline = formatAggPipeline(req.query, req.i18n.t("lang"));
-		let cards = await cardService.aggregateCards(pipeline);
-
-		if (req.user && req.query.cards) {
-			let user = await userService.getUser(req.user.name);
-			if (req.query.cards === 'owned') {
-				cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
-			} else if (req.query.cards === 'notowned') {
-				cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
-			}
-		}
-
 		return res.render("cardsList", {
 			title: req.i18n.t("title.cards"),
 			description: "The place to view all of Obey Me!'s cards. The largest and most complete card databse with all sorts of filters for you to find the card you want! This is also the place to manage your card collection. Create an account to access more features! ... Pride, Greed, Envy, Wrath, Lust, Gluttony, Sloth, UR+, UR, SSR, SR, N, Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon, Little D., Owned, Not owned.",
-			cardsList: cards,
 			path: "list",
 			query: req.query,
 			user: req.user
