@@ -54,6 +54,12 @@ block content
 		h1= title
 		div.card.mb-4
 			div.card-body
+				if !user.isAdmin
+					p.text-center If in doubt, ask for help in our
+						|
+						|
+						a(href="https://discord.gg/Y3KMW7U") discord server
+						| .
 				ul#cardTab.nav.nav-tabs(role="tablist")
 					<li class="nav-item" role="presentation">
 						<a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General info</a>
@@ -64,10 +70,10 @@ block content
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="skills-tab" data-toggle="tab" href="#skills" role="tab" aria-controls="skills" aria-selected="false">Skills</a>
 					</li>
+					<li class="nav-item" role="presentation">
+						<a class="nav-link" id="tree-tab" data-toggle="tab" href="#tree" role="tab" aria-controls="tree" aria-selected="false">Devil's tree</a>
+					</li>
 					if user.isAdmin
-						<li class="nav-item" role="presentation">
-							<a class="nav-link" id="tree-tab" data-toggle="tab" href="#tree" role="tab" aria-controls="tree" aria-selected="false">Devil's tree</a>
-						</li>
 						<li class="nav-item" role="presentation">
 							<a class="nav-link" id="animation-tab" data-toggle="tab" href="#animation" role="tab" aria-controls="animation" aria-selected="false">UR+ Animation</a>
 						</li>
@@ -221,6 +227,7 @@ block content
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
 					div#tree.tab-pane.fade(role="tabpanel" aria-labelledby="tree-tab")
 						h5 Devil's tree
+						p.text-muted Please make sure rewards are named exactly same as in-game (spelling AND capitalization). Thank you!
 						include mixins/itemList.pug
 						div#dt-container
 							div#dt-content

@@ -27,7 +27,8 @@ const userSchema = new Schema({
 	cards: {
 		owned: { type: Array },
 		faved: { type: Array }
-	}
+	},
+	tree: { type: Array }
 });
 
 

@@ -21,6 +21,7 @@ const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: 'api', key: process.env.API_KEY });
 
 const userService = require("../services/userService");
+const cardService = require("../services/cardService");
 
 // Login and signup
 exports.getLoginPage = function(req, res, next) {
@@ -494,6 +495,23 @@ exports.getRankingsPage = async function(req, res, next) {
     ]);
     return res.render("rankings", { title: req.i18n.t("common.rankings"), description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
   } catch (e) {
+    return next(e);
+  }
+};
+
+exports.getTreeProgressPage = async function(req, res, next) {
+  try {
+    let totalTreeStats = await cardService.getTotalTreeStats();
+    let userTreeStats = await userService.getUserTreeStats(req.user.name);
+
+    return res.render("user/treeProgress", {
+      title: "My tree progress",
+      description: "My tree progress on Karasu-OS.com",
+      stats: { total: totalTreeStats, user: userTreeStats },
+      user: req.user
+    });
+  } catch(e) {
+    Sentry.captureException(e);
     return next(e);
   }
 };

@@ -131,6 +131,50 @@ function getCardCounts(card) {
 	return promise;
 }
 
+exports.getTotalTreeStats = async function() {
+  try {
+    return await Cards.aggregate([
+      {
+          '$project': {
+              'dt': 1
+          }
+      }, {
+          '$unwind': {
+              'path': '$dt',
+              'preserveNullAndEmptyArrays': false
+          }
+      }, {
+          '$replaceRoot': {
+              'newRoot': {
+                  '$mergeObjects': [
+                      '$dt'
+                  ]
+              }
+          }
+      }, {
+          '$match': {
+              'type': 'item', 'reward': { $not: { $regex: /\)$/g } }
+          }
+      }, {
+          '$group': {
+              '_id': '$reward',
+              'count': {
+                  '$count': {}
+              }
+          }
+      }, {
+        '$sort': {
+          '_id': 1
+        }
+      }
+    ]);
+  } catch(e) {
+    console.error(e);
+    Sentry.captureException(e);
+    return [];
+  }
+};
+
 exports.updateCard = async function(data) {
 	var originalUniqueName = data.originalUniqueName;
 	var newUniqueName = data.cardData.uniqueName;
