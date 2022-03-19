@@ -20,7 +20,7 @@ const userSchema = new Schema({
 		id: { type: String },
 		joined: { type: Date },
 		characters: { type: Array },
-		language: { type: String, enum: ["en", "jp", "zh"] },
+		language: { type: String, enum: ["en", "jp"] },
 		display: { type: String },
 		isPrivate: { type: Boolean }
 	},
@@ -28,7 +28,7 @@ const userSchema = new Schema({
 		owned: { type: Array },
 		faved: { type: Array }
 	},
-	tree: { type: [ObjectId] }
+	tree: { type: Array }
 });
 
 
