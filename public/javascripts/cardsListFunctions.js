@@ -30,7 +30,7 @@ const cardSelectionChanged = (name) => name in changedCards;
 // TODO: create a single listener that controls all hover effects for dropdowns.
 
 $(document).ready(function() {
-	getCards(querystr.toString());
+	getCards(getFilterQuery());
 
 	$("#search, #filters form").on("submit", applyFilters);
 	$("#filters form input").change(updateFilterParams);
@@ -125,6 +125,21 @@ function applyFilters(e) {
 	e.preventDefault();
 
 	// update query string
+	let params = getFilterQuery();
+	if (params === undefined) return;
+
+	querystr = new URLSearchParams(params.toString());
+	updateURL();
+
+	$("#demoncards>.ias, #memorycards>.ias").html("<div class='mx-auto'>Loading...</div>");
+	$("#demoncards>p, #memorycards>p").addClass("d-none");
+	unbindInfiniteScroll();
+
+	// request cards
+	getCards(params);
+}
+
+function getFilterQuery() {
 	let filters = new FormData($("#filters form")[0]);
 	let params = new URLSearchParams();
 
@@ -139,29 +154,19 @@ function applyFilters(e) {
 
 	if (querystr.get("view")) params.set('view', querystr.get("view"));
 
-	if (params.toString() === document.location.search.substring(1)) return;
+	if (cardList.length > 0 && params.toString() === document.location.search.substring(1)) return;
 
-	querystr = new URLSearchParams(params.toString());
-	updateURL();
-
-	$("#demoncards>.ias, #memorycards>.ias").html("<div class='mx-auto'>Loading...</div>");
-	unbindInfiniteScroll();
-
-	// request cards
-	params.set("path", PATH);
-	if (PATH === "favourites" || PATH === "collection") {
-		params.set("user", window.location.pathname.split('/').at(-2));
-	}
-
-	getCards(params.toString());
+	return params;
 }
 
-function getCards(q) {
-	console.log(q);
-	$.get("/getCards?" + q, function(data) {
+function getCards(query) {
+	query.set("path", PATH);
+	if (PATH === "favourites" || PATH === "collection") {
+		query.set("user", window.location.pathname.split('/').at(-2));
+	}
+	$.get("/getCards?" + query.toString(), function(data) {
 		if (data.err) {
 			showAlert("danger", "Something went wrong");
-			return;
 		}
 		cardList = data.cards;
 		initInfiniteScroll();
@@ -209,9 +214,9 @@ function initInfiniteScroll() {
 			spinner: $("#demoncards>.spinner")[0]
 		});
 		// ias.on("appended", fadeInImages);
-		$("#demoncards>p").addClass("d-none");
 	} else {
 		$("#demoncards>p").removeClass("d-none");
+		$("#demoncards>.spinner").addClass("d-none");
 	}
 
 	if (memoryCards.length !== 0) {
@@ -227,9 +232,9 @@ function initInfiniteScroll() {
 			spinner: $("#memorycards>.spinner")[0]
 	  });
 		// ias2.on("appended", fadeInImages);
-		$("#memorycards>p").addClass("d-none");
 	} else {
 		$("#memorycards>p").removeClass("d-none");
+		$("#memorycards>.spinner").addClass("d-none");
 	}
 }
 

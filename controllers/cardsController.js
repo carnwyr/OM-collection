@@ -64,10 +64,6 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 					pageParams.ownedStats[category][entry] = pageParams.ownedStats[category][entry] || 0;
 				}
 			}
-
-			// get cards
-			let cardList = await cardService.aggregateCards(query);
-			pageParams.cardsList = cardList.filter(card => user.cards.owned.includes(card.uniqueName));
 		}
 
 		return res.render("cardsList", pageParams);
@@ -93,14 +89,7 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 
 		var isCollectionOwner = req.user && req.user.name === user.info.name;
 		pageParams.title = isCollectionOwner ? req.i18n.t("title.my_favourites") : req.i18n.t("title.user_favourites", { username: user.info.name });
-
-		var isPrivate = user.profile.isPrivate && !isCollectionOwner;
-		if (isPrivate) {
-			pageParams.isPrivate = true;
-		} else {
-			let favedCards = await cardService.aggregateCards(query);
-			pageParams.cardsList = favedCards.filter(card => user.cards.faved.includes(card.uniqueName));
-		}
+		pageParams.isPrivate = user.profile.isPrivate && !isCollectionOwner;
 
 		return res.render("cardsList", pageParams);
 	} catch (e) {
@@ -252,7 +241,7 @@ exports.getCards = async function (req, res) {
 				user = await userService.getUser(req.query.user);
 				cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
 				break;
-			case "favourites":
+			case "fav":
 				user = await userService.getUser(req.query.user);
 				cards = cards.filter(card => user.cards.faved.includes(card.uniqueName));
 				break;
@@ -270,7 +259,8 @@ exports.getCards = async function (req, res) {
 
 		return res.json({ err: null, cards: cards });
 	} catch(e) {
-		return res.json({ err: true, message: e.message });
+		Sentry.captureException(e);
+		return res.json({ err: true, cards: [], message: e.message });
 	}
 }
 
