@@ -32,7 +32,7 @@ mixin dtTemplate(node)
         p.text-center ???
       hr
       div.form-check.text-center
-        input.form-check-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox")
+        input.form-check-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" disabled)
         label.form-check-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
 
 block content
@@ -146,6 +146,10 @@ block content
         h5.card-title.d-flex.flex-wrap.justify-content-between.align-items-center Devil's tree
           a.btn.btn-link(data-toggle="collapse" href="#collapseTree" role="button" aria-expanded="true" aria-controls="collapseTree") (collapse)
         div#collapseTree.collapse.show
+          div.text-center
+            p We don't have enough data to make tree tracking work yet. Help us add missing data so the track can be used sooner.
+            a(href=card.uniqueName+"/edit") Click here to edit data.
+            hr
           if card.dt
             p.section-title Rewards
             div.row.justify-content-center
