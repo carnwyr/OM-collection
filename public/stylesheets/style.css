@@ -122,3 +122,12 @@ footer ul {
   height: 64px;
   z-index: 1030;
 }
+
+p.section-title {
+	text-align: center;
+	font-weight: 600;
+	text-transform: uppercase;
+	color: var(--primary);
+	margin-bottom: 1rem;
+	letter-spacing: .08em;
+}

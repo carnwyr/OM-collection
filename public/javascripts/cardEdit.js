@@ -1,6 +1,16 @@
 let originalData;
+let selectPickerOptions = {
+	liveSearch: true,
+	style: '',
+	styleBase: 'form-control mb-0',
+	title: 'required item name'
+};
+
 $(document).ready(function() {
 	originalData = JSON.stringify(getCardData());
+
+	// TODO: add style
+	$(".autocomplete").autocomplete({ source: rewards });
 
 	$("#name").on("focusout", fillUniqueName);
 
@@ -12,6 +22,19 @@ $(document).ready(function() {
 
 	$("#addEvent").on("click", addEvent);
 	$("#removeEvent").on("click", removeEvent);
+
+	$('.item-select').selectpicker(selectPickerOptions);
+});
+
+$(document).on("click", ".add-item", function() {
+	let template = $(this).data("clone");
+	$(this).parent().children("div:first-of-type").append($(template).html());
+	// TODO: auto add node count to new node
+	$(".autocomplete").autocomplete({ source: rewards });
+	$('.item-select').selectpicker(selectPickerOptions);
+});
+$(document).on("click", ".remove-item", function() {
+	$(this).parent().remove();
 });
 
 function fillUniqueName() {
@@ -70,6 +93,7 @@ function getCardData() {
 		rarity: $("#rarity").val(),
 		attribute: $("#attribute").val(),
 		characters: getSelectedCharacters(),
+		dt: getTreeRewards(),
 		number: $("#number").val(),
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};
@@ -131,4 +155,29 @@ function addEvent() {
 function removeEvent() {
 	var target = $(this).data("target");
 	$(target + " input:last-child").remove();
+}
+
+function getTreeRewards() {
+	let rewards = [];
+
+	$("div#dt-content form").each(function() {
+		let formData = new FormData(this);
+		let node = { requirements: [] };
+		let name;
+		for(let pair of formData.entries()) {
+			// console.log(pair);
+			if (pair[0] === "name") {
+				name = pair[1];
+			} else if (pair[0] === "amount") {
+				node.requirements.push({ name: name, amount: pair[1] });
+			} else {
+				node[pair[0]] = pair[1];
+			}
+		}
+		rewards.push(node);
+	});
+
+	rewards = rewards.filter(x => x.reward && x.type);
+
+	return rewards;
 }

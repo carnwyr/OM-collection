@@ -1,14 +1,15 @@
+let cardList = [];
 let changedCards = {};
 let selectionMode = false;
 let ownedCards = [];
 let querystr = new URLSearchParams(document.location.search);
 let nextHandler, nextHandler2, ias, ias2;
-let demon = {
-	selected: "--",
-	total: cardList.filter(card => card.type === "Demon").length
-}, memory = {
-	selected: "--",
-	total: cardList.filter(card => card.type === "Memory").length
+let totalCardCount = {
+	demon: "--",
+	memory: "--"
+}, selectedCardCount = {
+	demon: "--",
+	memory: "--"
 };
 
 //#region constants
@@ -29,15 +30,14 @@ const cardSelectionChanged = (name) => name in changedCards;
 // TODO: create a single listener that controls all hover effects for dropdowns.
 
 $(document).ready(function() {
-	initInfiniteScroll();
-	updateSelectedCardCount();
+	getCards(getFilterQuery());
 
 	$("#search, #filters form").on("submit", applyFilters);
 	$("#filters form input").change(updateFilterParams);
 	$("#resetFilters").click(resetFilters);
 	$("#viewMenuDropdown a").click(updateViewType);
 
-	$('#demoncards>div, #memorycards>div').on('click', ".cardPreview", cardClicked);
+	$('#demoncards>.ias, #memorycards>.ias').on('click', ".cardPreview", cardClicked);
 
 	$('button#manageCollection, button#saveManaging').on('click', switchSelectionMode);
 	$('button#selectAll').on('click', function() { switchSelectionAll(true); } );
@@ -88,13 +88,14 @@ function createCardElement(card) {
 		let bloomed = '';
 		let figcaption = document.documentElement.lang === "ja"?card.ja_name:card.name;
 		let sortby = querystr.get("sortby");
+		let strength = '';
 
 		if (viewtype === 'bloomed' && card.type === "Demon") {
 			bloomed = '_b';
 		}
 
 		if (sortby && sortby.match(/^(min|max|fdt)_(-1|1)$/)) {
-			figcaption = card.total ? card.total.toLocaleString("en") : "???";
+			strength = `<small>${card.total ? card.total.toLocaleString("en") : "???"}</small>`;
 		}
 
 		img_src = `/images/cards/${imageSize}/${card.uniqueName}${bloomed}.jpg`;
@@ -102,6 +103,7 @@ function createCardElement(card) {
 			`<a class="cardPreview ${containerSize}" href="card/${encodeURIComponent(card.name.replace(/ /g, "_"))}">
 				<img loading="lazy" src="${img_src}">
 				<figcaption>${figcaption}</figcaption>
+				${strength}
 			</a>`;
 			// class="lazy"
 	}
@@ -123,6 +125,21 @@ function applyFilters(e) {
 	e.preventDefault();
 
 	// update query string
+	let params = getFilterQuery();
+	if (params === undefined) return;
+
+	querystr = new URLSearchParams(params.toString());
+	updateURL();
+
+	$("#demoncards>.ias, #memorycards>.ias").html("<div class='mx-auto'>Loading...</div>");
+	$("#demoncards>p, #memorycards>p").addClass("d-none");
+	unbindInfiniteScroll();
+
+	// request cards
+	getCards(params);
+}
+
+function getFilterQuery() {
 	let filters = new FormData($("#filters form")[0]);
 	let params = new URLSearchParams();
 
@@ -137,27 +154,23 @@ function applyFilters(e) {
 
 	if (querystr.get("view")) params.set('view', querystr.get("view"));
 
-	if (params.toString() === document.location.search.substring(1)) return;
+	if (cardList.length > 0 && params.toString() === document.location.search.substring(1)) return;
 
-	querystr = new URLSearchParams(params.toString());
-	updateURL();
+	return params;
+}
 
-	$("#demoncards>div, #memorycards>div").html("Loading...");
-	unbindInfiniteScroll();
-
-	// request cards
-	params.set("path", PATH);
+function getCards(query) {
+	query.set("path", PATH);
 	if (PATH === "favourites" || PATH === "collection") {
-		params.set("user", window.location.pathname.split('/').at(-2));
+		query.set("user", window.location.pathname.split('/').at(-2));
 	}
-	$.get("/getCards?" + params.toString(), function(data) {
+	$.get("/getCards?" + query.toString(), function(data) {
 		if (data.err) {
 			showAlert("danger", "Something went wrong");
-			return;
 		}
 		cardList = data.cards;
 		initInfiniteScroll();
-		updateSelectedCardCount();
+		updateCardCount();
 	});
 }
 
@@ -183,7 +196,7 @@ function updateViewType() {
 function initInfiniteScroll() {
 	unbindInfiniteScroll();
 
-	$("#demoncards>div, #memorycards>div").html("");
+	$("#demoncards>.ias, #memorycards>.ias").html("");
 
 	let demonCards = cardList.filter(card => card.type === "Demon");
 	let memoryCards = cardList.filter(card => card.type === "Memory");
@@ -194,15 +207,16 @@ function initInfiniteScroll() {
 		  return this.append(Array.from(result.frag.childNodes))
 				.then(() => result.hasNextPage);
 		};
-		ias = new InfiniteAjaxScroll('#demoncards>div', {
+		ias = new InfiniteAjaxScroll('#demoncards>.ias', {
 			item: '.cardPreview',
 			next: nextHandler,
-			logger: false
+			logger: false,
+			spinner: $("#demoncards>.spinner")[0]
 		});
 		// ias.on("appended", fadeInImages);
-		$("#demoncards>p").addClass("d-none");
 	} else {
 		$("#demoncards>p").removeClass("d-none");
+		$("#demoncards>.spinner").addClass("d-none");
 	}
 
 	if (memoryCards.length !== 0) {
@@ -211,15 +225,16 @@ function initInfiniteScroll() {
 		  return this.append(Array.from(result.frag.childNodes))
 				.then(() => result.hasNextPage);
 		};
-	  ias2 = new InfiniteAjaxScroll('#memorycards>div', {
+	  ias2 = new InfiniteAjaxScroll('#memorycards>.ias', {
 	    item: '.cardPreview',
 	    next: nextHandler2,
-			logger: false
+			logger: false,
+			spinner: $("#memorycards>.spinner")[0]
 	  });
 		// ias2.on("appended", fadeInImages);
-		$("#memorycards>p").addClass("d-none");
 	} else {
 		$("#memorycards>p").removeClass("d-none");
+		$("#memorycards>.spinner").addClass("d-none");
 	}
 }
 
@@ -286,10 +301,9 @@ function switchSelectionMode() {
 			switchManagementButtons();
 			switchCardsVisualState(cardNames);
 
-			demon.selected = cardList.filter(x => (x.type === "Demon" && cardOwned(x.uniqueName))).length;
-			memory.selected = cardList.filter(x => (x.type === "Memory" && cardOwned(x.uniqueName))).length
-			$("#demoncount").text(` ${demon.selected}/${demon.total}`);
-			$("#memorycount").text(` ${memory.selected}/${memory.total}`);
+			selectedCardCount.demon = cardList.filter(x => (x.type === "Demon" && cardOwned(x.uniqueName))).length;
+			selectedCardCount.memory = cardList.filter(x => (x.type === "Memory" && cardOwned(x.uniqueName))).length
+			updateCardCount();
 		});
 	} else {
 		if (Object.keys(changedCards).length > 0) {
@@ -311,7 +325,7 @@ function switchSelectionMode() {
 				switchCardsVisualState();
 				showAlert("success", "Collection updated!");
 
-				updateSelectedCardCount();
+				updateCardCount();
 			});
 		} else {
 			changedCards = {};
@@ -320,7 +334,7 @@ function switchSelectionMode() {
 			switchCardsVisualState();
 		}
 
-		updateSelectedCardCount();
+		updateCardCount();
 	}
 }
 
@@ -369,7 +383,7 @@ function cardClicked(e) {
 	updateChangedCards([cardName], $(image).hasClass('notSelectedCard'));
 	$(image).toggleClass('notSelectedCard');
 
-	updateSelectedCardCount();
+	updateCardCount();
 }
 
 function switchSelectionAll(select) {
@@ -395,7 +409,7 @@ function switchSelectionAll(select) {
 	updateChangedCards(cardsToSelect, select);
 	changeSelection(visibleCards);
 	applyEffectWithoutTransition(invisibleCards, () => changeSelection(invisibleCards));
-	updateSelectedCardCount();
+	updateCardCount();
 }
 
 function updateChangedCards(cards, selected) {
@@ -440,23 +454,23 @@ function getCardsToSelect(select) {
 	return cardsToSelect.map(x => x.uniqueName);
 }
 
-function updateSelectedCardCount() {
+function updateCardCount() {
 	let demonTabSelected = $("#demon-tab").hasClass("active");
 	let cardsToSelect = cardList.filter(x => (x.type === "Demon") === demonTabSelected);
-
 	cardsToSelect = cardsToSelect.filter(x => (cardOwned(x.uniqueName) && !cardSelectionChanged(x.uniqueName)) || changedCards[x.uniqueName]).map(x => x.uniqueName);
+	totalCardCount.demon = cardList.filter(card => card.type === "Demon").length;
+	totalCardCount.memory = cardList.filter(card => card.type === "Memory").length;
 
 	if (selectionMode) {
 		if (demonTabSelected) {
-			demon.selected = cardsToSelect.length;
+			selectedCardCount.demon = cardsToSelect.length;
 		} else {
-			memory.selected = cardsToSelect.length;
+			selectedCardCount.memory = cardsToSelect.length;
 		}
+		$("#demoncount").text(` ${selectedCardCount.demon}/${totalCardCount.demon}`);
+		$("#memorycount").text(` ${selectedCardCount.memory}/${totalCardCount.memory}`);
 	} else {
-		demon.selected = "--";
-		memory.selected = "--";
+		$("#demoncount").text(` ${totalCardCount.demon}`);
+		$("#memorycount").text(` ${totalCardCount.memory}`);
 	}
-
-	$("#demoncount").text(` ${demon.selected}/${demon.total}`);
-	$("#memorycount").text(` ${memory.selected}/${memory.total}`);
 }

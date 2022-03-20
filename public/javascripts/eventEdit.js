@@ -1,11 +1,3 @@
-var selectPickerOptions = {
-	liveSearch: true,
-	style: '',
-	styleBase: 'form-control mb-0',
-	size: 15,
-	title: 'card name'
-};
-
 let originalData;
 $(document).ready(function () {
 	createMasks();
@@ -21,7 +13,7 @@ $(document).ready(function () {
 
 	// $("select[name='tag']").change(checkIfCustom);
 
-	$('.card-select').selectpicker(selectPickerOptions);
+	$('.card-select').autocomplete({ source: cardNames });
 
 	$('.preset').click(applyPreset);
 });
@@ -85,7 +77,7 @@ function addItem() {
 	$(this).parent().children("div:first-of-type").append($(template).html());
 
 	if (template === "#rewardTemplate") {
-		$('.card-select').selectpicker(selectPickerOptions);
+		$('.card-select').autocomplete({ source: cardNames });
 	}
 }
 

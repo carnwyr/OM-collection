@@ -123,7 +123,7 @@ block content
 
   // modals
   if profileInfo.badges && profileInfo.badges.length > 0
-    include badgeDescriptions.pug
+    include dict/badgeDescriptions.pug
     each badge in profileInfo.badges
       div(id=badge.name+"Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby=badge.name+"Title" aria-hidden="true")
         div(class="modal-dialog" role="document")

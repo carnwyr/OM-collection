@@ -8,6 +8,20 @@ const strengthSchema = new Schema({
 	fdt: Number
 }, { _id: false });
 
+const dtReqSchema = new Schema({
+	name: String,
+	amount: Number
+}, { _id: false });
+
+const dtRewardSchema = new Schema({
+	reward: { type: String, required: true },
+	count: { type: Number },
+	type: { type: String, required: true },
+	requirements: { type: [dtReqSchema] },
+	grimmCost: { type: Number },
+	nodeOrder: { type: Number }
+});
+
 const cardSchema = new mongoose.Schema({
 	name: { type: String, required: true, unique: true },
 	uniqueName: { type: String, required: true, unique: true },
@@ -26,6 +40,7 @@ const cardSchema = new mongoose.Schema({
 		gluttony: strengthSchema,
 		sloth: strengthSchema
 	},
+	dt: { type: [dtRewardSchema] },
 	animation: {
 		type: { type: String },
 		link1: { type: String },

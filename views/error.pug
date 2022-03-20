@@ -7,14 +7,17 @@ block content
         img(src="/images/LeviChibi.png")
       div.col.text-lg-left
         h1(style="border:0;")= message
-        
+
         //- temp
         if message === "Event not found"
-          h5 We're still adding to our event database. Please help us by contributing to 
+          h5 We're still adding to our event database. Please help us by contributing to
+            |
             |
             a(href="https://docs.google.com/spreadsheets/d/1BcTf4jVsw6dtvu8U7vmP0LVB_yVDYXyl3KdeHLtPmxo/edit?usp=sharing" target="_blank") this spreadsheet
             | . Thank you!
         else
           p Oops, looks like you found our error page. Double check the link, maybe?
-        
-        a.mt-2(type="button" href='/' class="btn btn-primary") Back to home
+
+        a.mt-2.mr-2(type="button" href='/' class="btn btn-primary") Back to home
+        a.mt-2.mr-2(type="button" href='/login' class="btn btn-primary") Login
+        a.mt-2(type="button" href='/signup' class="btn btn-primary") Sign up

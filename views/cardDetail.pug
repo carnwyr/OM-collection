@@ -17,6 +17,25 @@ block scripts
         });
       });
 
+mixin dtTemplate(node)
+  div.col-12.col-md-4.mb-3
+    div(class="p-3 dt-node " + node.type)
+      div.d-flex.flex-wrap.align-items-center
+        img.mb-2.mb-md-0(src="/images/nodes/" + node.type + ".png" alt=node.type style="width:32px;height:32px;")
+        span.text-center.w-100= node.reward
+      hr
+      if node.requirements.length !== 0
+        ul
+          each i in node.requirements
+            li= i.name && i.amount ? i.name + ' x' + i.amount : "???"
+      else
+        p.text-center ???
+      p.text-center Grimm: #{node.grimmCost ? node.grimmCost.toLocaleString("en") : "???"}
+      hr
+      div.form-check.text-center
+        input.form-check-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" disabled)
+        label.form-check-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
+
 block content
   div#alert(role="alert")
   div.container
@@ -57,7 +76,7 @@ block content
             div.col-12.col-md-2
               span= t("cards.rarity")
             div.col-12.col-md-4
-              a(href="/cards?rarity="+card.rarity.replace('+', 'p'))= card.rarity
+              a(href="/cards?rarity="+encodeURIComponent(card.rarity))= card.rarity
             div.col-12.col-md-2
               span= t("cards.attribute")
             div.col-12.col-md-4
@@ -93,34 +112,75 @@ block content
 
     div.card.mb-3(style="border-left:3px solid #d289fb;")
       div.card-body
-        h5.card-title Attribute values
-        div.table-responsive
-          table#strength.table
-            thead
-              tr
-                th(scope="col")
-                th(scope="col")
-                  abbr(title="Base value") Min
-                th(scope="col")
-                  abbr(title="Maximum level reached without unlocking max cap and devil's tree unlocked up to and including the flower.") Max
-                th(scope="col")
-                  abbr(title="Maximum level reached without unlocking max cap and devil's tree at 100%") FDT
-            tbody
-              - let attributeList = ["pride", "greed", "envy", "wrath", "lust", "gluttony", "sloth"];
-              each attribute in attributeList
+        h5.card-title.d-flex.flex-wrap.justify-content-between.align-items-center Attribute values
+          a.btn.btn-link(data-toggle="collapse" href="#collapseStrength" role="button" aria-expanded="true" aria-controls="collapseStrength") (collapse)
+        div#collapseStrength.collapse.show
+          div.table-responsive
+            table#strength.table
+              thead
                 tr
-                  - let str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
-                  th.text-center.text-md-left(scope="row")
-                    img.mr-0.mr-md-2(src="/images/attributes/" + t(attribute) + ".png" alt=str style="width:24px;height:24px;")
-                    span.d-none.d-md-block= t(str)
-                  td= card.strength&&card.strength[attribute]&&card.strength[attribute].min?card.strength[attribute].min.toLocaleString("en"):"???"
-                  td= card.strength&&card.strength[attribute]&&card.strength[attribute].max?card.strength[attribute].max.toLocaleString("en"):"???"
-                  td= card.strength&&card.strength[attribute]&&card.strength[attribute].fdt?card.strength[attribute].fdt.toLocaleString("en"):"???"
-              tr
-                th.text-center.text-md-left(scope="row") Total
-                td= getTotalStrength("min")
-                td= getTotalStrength("max")
-                td= getTotalStrength("fdt")
+                  th(scope="col")
+                  th(scope="col")
+                    abbr(title="Base value") Min
+                  th(scope="col")
+                    abbr(title="Maximum level reached without unlocking max cap and devil's tree unlocked up to and including the flower.") Max
+                  th(scope="col")
+                    abbr(title="Maximum level reached without unlocking max cap and devil's tree at 100%") FDT
+              tbody
+                - let attributeList = ["pride", "greed", "envy", "wrath", "lust", "gluttony", "sloth"];
+                each attribute in attributeList
+                  tr
+                    - let str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
+                    th.text-center.text-md-left(scope="row")
+                      img.mr-0.mr-md-2(src="/images/attributes/" + t(attribute) + ".png" alt=str style="width:24px;height:24px;")
+                      span.d-none.d-md-block= t(str)
+                    td= card.strength&&card.strength[attribute]&&card.strength[attribute].min?card.strength[attribute].min.toLocaleString("en"):"???"
+                    td= card.strength&&card.strength[attribute]&&card.strength[attribute].max?card.strength[attribute].max.toLocaleString("en"):"???"
+                    td= card.strength&&card.strength[attribute]&&card.strength[attribute].fdt?card.strength[attribute].fdt.toLocaleString("en"):"???"
+                tr
+                  th.text-center.text-md-left(scope="row") Total
+                  td= getTotalStrength("min")
+                  td= getTotalStrength("max")
+                  td= getTotalStrength("fdt")
+    div.card.mb-3(style="border-left:3px solid #d289fb;")
+      div.card-body
+        h5.card-title.d-flex.flex-wrap.justify-content-between.align-items-center Devil's tree
+          a.btn.btn-link(data-toggle="collapse" href="#collapseTree" role="button" aria-expanded="true" aria-controls="collapseTree") (collapse)
+        div#collapseTree.collapse.show
+          div.text-center
+            p Devil's tree tracker will be ready when there's more data. Help us add missing data so the tracker can be ready sooner.
+            a(href=card.uniqueName+"/edit") Click here to edit data.
+            hr
+          if card.dt
+            p.section-title Rewards
+            div.row.justify-content-center
+              - let rewards = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower");
+              if rewards.length === 0
+                p.text-center.p-5 Looks like we're missing devil's tree data.
+                  |
+                  |
+                  a(href=card.uniqueName+"/edit") Add missing data!
+              else
+                each i in rewards
+                  +dtTemplate(i)
+            br
+            p.section-title Level up
+            div.row.justify-content-center
+              - let levelNodes = card.dt.filter(x => x.type === "level_up" || x.type === "flower");
+              if levelNodes.length === 0
+                p.text-center.p-5 Looks like we're missing devil's tree data.
+                  |
+                  |
+                  a(href=card.uniqueName+"/edit") Add missing data!
+              else
+                each i in levelNodes
+                  +dtTemplate(i)
+          else
+            p.text-center.p-5 Looks like we're missing devil's tree data.
+              |
+              |
+              a(href=card.uniqueName+"/edit") Add missing data!
+
     if card.rarity === "UR+"
       br
       div(style="border:2px solid #e8eaf6;border-radius:8px;background:rgba(255,255,255,.8);padding:1.5rem;padding-bottom:2rem;")

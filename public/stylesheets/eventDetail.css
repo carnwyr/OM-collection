@@ -1,12 +1,3 @@
-p.card-section-title {
-	text-align: center;
-	font-weight: 600;
-	text-transform: uppercase;
-	color: var(--primary);
-	margin-bottom: 1rem;
-	letter-spacing: .08em;
-}
-
 @media screen and (min-width: 720px) {
   #edit {
     text-align: right !important;

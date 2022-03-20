@@ -3,7 +3,6 @@ extends layout
 block scripts
   link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
   script.
-    var cardList = !{JSON.stringify(cardsList)};
     const PATH = !{JSON.stringify(path)};
   script(src="/javascripts/cardsListFunctions.js")
   <script src="https://unpkg.com/@webcreate/infinite-ajax-scroll/dist/infinite-ajax-scroll.min.js"></script>
@@ -59,11 +58,11 @@ block content
               div.mr-sm-3 Demon:
                 |
                 |
-                span#demoncount --/--
+                span#demoncount --
               div Memory:
                 |
                 |
-                span#memorycount --/--
+                span#memorycount --
             div.w-100.d-lg-none
             div#actionButtons.mx-auto.mx-lg-0.text-center
               div#selectionButtons.btn-group.d-none.mr-sm-2.mb-2.mb-sm-0
@@ -163,8 +162,8 @@ block content
                 each rarity in ["N", "R", "SR", "SSR", "UR", "UR+"]
                   - query.rarity = [].concat(query.rarity)
                   div.custom-control.custom-checkbox.custom-control-inline
-                    input.custom-control-input(type="checkbox" id="checkRarity"+(rarity==="UR+"?"URp":rarity) name="rarity" value=rarity checked=(query.rarity&&query.rarity.includes(rarity)?true:false))
-                    label.custom-control-label(for="checkRarity"+(rarity==="UR+"?"URp":rarity))= rarity
+                    input.custom-control-input(type="checkbox" id="checkRarity"+rarity name="rarity" value=rarity checked=(query.rarity&&query.rarity.includes(rarity)?true:false))
+                    label.custom-control-label(for="checkRarity"+rarity)= rarity
             hr
             div.row
               p.col-lg-2.text-center= t("cards.attribute")
@@ -229,10 +228,12 @@ block content
       div.tab-content
         div#demoncards.tab-pane(role="tabpanel" aria-labelledby="demon-tab")
           p.text-center.text-muted.my-5.d-none= t("cards.no-cards")
-          div.d-flex.flex-wrap.justify-content-between
+          div.ias
+          div.spinner.text-center Loading...
         div#memorycards.tab-pane(role="tabpanel" aria-labelledby="memory-tab")
           p.text-center.text-muted.my-5.d-none= t("cards.no-cards")
-          div.d-flex.flex-wrap.justify-content-between
+          div.ias
+          div.spinner.text-center Loading...
 
       //-
         if title === t("title.my_favourites")

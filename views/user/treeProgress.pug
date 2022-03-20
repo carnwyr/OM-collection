@@ -1,0 +1,29 @@
+extends ../layout
+
+block content
+  div.container
+    h1 My devil's tree progress
+    div.card.card-body
+      div.alert.alert-info(style="z-index:0!important;")
+        strong Info
+        ol
+          li We excluded rewards that strengths a card (e.g., gems, lipsticks, teddy bears).
+          li We're adding a page that shows you which items you can unlock but have not unlocked. But, we don't have enough data at the moment to make it happen. So...
+          li Pease help us add more data! If you need help, the easiest way to find help is by joining our
+            |
+            |
+            a(href="https://discord.gg/Y3KMW7U") discord server
+            | .
+      table.table.table-hover.table-responsive-md
+        thead
+          tr
+            th(scope="col")
+            th.text-center(scope="col") total
+            th.text-center(scope="col") unlocked by you
+        tbody
+          each i in stats.total
+            tr
+              td(scope="row")= i._id
+              td.text-center= i.count
+              - let userUnlocked = stats.user.find(x => x._id === i._id);
+              td.text-center= userUnlocked ? userUnlocked.count : 0
