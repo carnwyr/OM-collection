@@ -161,7 +161,7 @@ function getFilterQuery() {
 
 function getCards(query) {
 	query.set("path", PATH);
-	if (PATH === "favourites" || PATH === "collection") {
+	if (PATH === "fav" || PATH === "collection") {
 		query.set("user", window.location.pathname.split('/').at(-2));
 	}
 	$.get("/getCards?" + query.toString(), function(data) {
