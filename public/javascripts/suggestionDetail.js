@@ -23,4 +23,16 @@ $(document).ready(function() {
       showAlert(status, result.message);
     });
   });
+
+  $("#old").on("click", () => { copyObj(JSON.stringify(originalFile)); });
+  $("#new").on("click", () => { copyObj(JSON.stringify(suggestionFile)); });
 });
+
+function copyObj(str) {
+  navigator.clipboard.writeText(str).then(function() {
+    showAlert("success", "Copied!")
+  }, function(e) {
+    console.error(e);
+    showAlert("danger", "Something went wrong.")
+  });
+}

@@ -8,6 +8,9 @@ block scripts
       border-radius: 8px;
       height: 100%;
     }
+    #display pre {
+      max-height: 1028px;
+    }
   script(src="/javascripts/suggestionDetail.js")
   script.
     const PATH = !{JSON.stringify(suggestion.page.split('/'))};
@@ -37,10 +40,12 @@ block content
           div.col-6
             div
               p.text-center.mb-0 Original
+              div.text-center: button#old.btn.btn-link Copy
               pre#left= JSON.stringify(originalFile, undefined, 2)
           div.col-6
             div
               p.text-center.mb-0 Suggestion
+              div.text-center: button#new.btn.btn-link Copy
               pre#right= JSON.stringify(JSON.parse(suggestion.stringifiedJSON), undefined, 2)
 
         textarea#final.form-control.mb-3(style="min-height:260px;")= JSON.stringify(JSON.parse(suggestion.stringifiedJSON), undefined, 2)
@@ -57,4 +62,6 @@ block content
     leftBlockId = $('#left').attr('id');
     rightBlockId = $('#right').attr('id');
     $(document).jdd(leftBlockId, rightBlockId);
-    console.log("Original", !{JSON.stringify(originalFile)}, "Suggestion", !{suggestion.stringifiedJSON});
+    var originalFile = !{JSON.stringify(originalFile)};
+    var suggestionFile = !{suggestion.stringifiedJSON};
+    console.log("Original", originalFile, "Suggestion", suggestionFile);
