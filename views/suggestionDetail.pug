@@ -18,8 +18,14 @@ block content
     h1 Suggestion: #{title}
     div.card.mb-3
       div.card-body
-        p User: #{suggestion.user}
-        p Page: #{suggestion.page}
+        p User:
+          |
+          |
+          a(href='/' + suggestion.user + "/profile")= suggestion.user
+        p Page:
+          |
+          |
+          a(href=suggestion.page)= suggestion.page
         p Status: #{suggestion.status}
         p.text-center Note: not 100% accurate. Use
           |
@@ -51,3 +57,4 @@ block content
     leftBlockId = $('#left').attr('id');
     rightBlockId = $('#right').attr('id');
     $(document).jdd(leftBlockId, rightBlockId);
+    console.log("Original", !{JSON.stringify(originalFile)}, "Suggestion", !{suggestion.stringifiedJSON});
