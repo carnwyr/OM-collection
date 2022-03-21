@@ -16,7 +16,7 @@ block scripts
 		var rewards = items1.concat(items2).sort();
 
 mixin treeCostTemplate(item)
-	if !item
+	if item.length === 0
 		- item = Array(3).fill({ name: '', amount: '' });
 	- count = 0;
 	each i in item
@@ -56,7 +56,7 @@ mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '
 				input.form-control(type="number" name="grimmCost" value=node.grimmCost placeholder="???")
 			div.form-group.col-12
 				label Requirements
-				+treeCostTemplate(requirements)
+				+treeCostTemplate(node.requirements)
 		button.btn.btn-outline-secondary.remove-item(type="button") Remove node
 		hr
 
