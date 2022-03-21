@@ -23,6 +23,8 @@ mixin dtTemplate(node)
       div.d-flex.flex-wrap.align-items-center
         img.mb-2.mb-md-0(src="/images/nodes/" + node.type + ".png" alt=node.type style="width:32px;height:32px;")
         span.text-center.w-100= node.reward
+          if node.type === "item" && node.count
+            small= ' x' + node.count
       hr
       if node.requirements.length !== 0
         ul
