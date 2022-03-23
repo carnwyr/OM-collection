@@ -8,11 +8,13 @@ block content
 		h1 Pending edits
 		div.card.card-body
 			ol
-				each suggestion in suggestions
-					li(style="line-height:2;")
-						if user && user.type === "Admin"
+				if user && user.type === "Admin"
+					each suggestion in suggestions
+						li(style="line-height:2;")
 							a(href="/suggestion/" + suggestion._id) #{suggestion.user}: #{suggestion.page}
-						else
+				else
+					each suggestion in suggestions
+						li(style="line-height:2;")
 							| #{getDateFromObjectID(suggestion._id)}
 							|
 							a(href=suggestion.page)= suggestion.page
