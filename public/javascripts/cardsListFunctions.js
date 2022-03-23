@@ -97,7 +97,7 @@ function createCardElement(card) {
 
 		img_src = `/images/cards/${imageSize}/${card.uniqueName}${bloomed}.jpg`;
 	  template =
-			`<a class="cardPreview ${containerSize}" href="card/${encodeURIComponent(card.name.replace(/ /g, "_"))}">
+			`<a class="cardPreview ${containerSize}" href="/card/${encodeURIComponent(card.name.replace(/ /g, "_"))}">
 				<img loading="lazy" src="${img_src}">
 				<figcaption>${figcaption}</figcaption>
 				${strength}
