@@ -1,4 +1,3 @@
-let cardList = [];
 let changedCards = {};
 let selectionMode = false;
 let ownedCards = [];
@@ -30,8 +29,6 @@ const cardSelectionChanged = (name) => name in changedCards;
 // TODO: create a single listener that controls all hover effects for dropdowns.
 
 $(document).ready(function() {
-	getCards(getFilterQuery());
-
 	$("#search, #filters form").on("submit", applyFilters);
 	$("#filters form input").change(updateFilterParams);
 	$("#resetFilters").click(resetFilters);

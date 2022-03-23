@@ -4,6 +4,22 @@ block scripts
   link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
   script.
     const PATH = !{JSON.stringify(path)};
+  if path === "hidden"
+    script.
+      let cardList = !{JSON.stringify(cardList)};
+      $(function() {
+        let f = document.getElementById("filter-container");
+        f.style.pointerEvents = "none";
+        f.style.opacity = 0.5;
+        initInfiniteScroll();
+        updateCardCount();
+      });
+  else
+    script.
+      let cardList = [];
+      $(function() {
+        getCards(getFilterQuery());
+      });
   script(src="/javascripts/cardsListFunctions.js")
   <script src="https://unpkg.com/@webcreate/infinite-ajax-scroll/dist/infinite-ajax-scroll.min.js"></script>
   //script(src="/javascripts/lazyload.js")
@@ -82,7 +98,7 @@ block content
           <div id="ezoic-pub-ad-placeholder-111"></div>
 
       //- Filters
-      div(class="card card-body mb-3 p-3")
+      div#filter-container.card.card-body.mb-3.p-3
         div(class="d-flex flex-wrap justify-content-around align-items-center")
           div#viewMenuDropdown(class="dropdown text-center")
             button(class="btn dropdown-toggle text-secondary mb-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")

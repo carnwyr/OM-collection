@@ -178,7 +178,7 @@ async function getHiddenCardDetailPage(req, res, next) {
 exports.getHiddenCardsListPage = async function(req, res, next) {
 	try {
 		var cards = await cardService.getHiddenCards();
-		return res.render("cardsList", { title: "Hidden Cards", cardsList: cards, user: req.user, path: "hidden" });
+		return res.render("cardsList", { title: "Hidden Cards", cardList: cards, query: req.query, user: req.user, path: "hidden" });
 	} catch(e) {
 		return next(e);
 	}
