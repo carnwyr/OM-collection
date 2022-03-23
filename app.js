@@ -49,7 +49,7 @@ let languageDetector = new i18nextMiddleware.LanguageDetector();
 languageDetector.addDetector({
 	name: "subdomain",
 	lookup: function(req, res, options) {
-		let subdomain = options.getHeaders(req).host.split('.')[0];
+		let subdomain = options.getHeaders(req).host.split(".")[0];
 		if (subdomain === "ja" || subdomain === "zh") {
 			return subdomain;
 		}
@@ -69,7 +69,7 @@ i18next
 		fallbackLng: "en",
 		preload: ["en", "ja", "zh"],
 		// saveMissing: true,
-    detection: { order: ["subdomain"] }
+		detection: { order: ["subdomain"] }
 	});
 
 app.use(i18nextMiddleware.handle(i18next));
