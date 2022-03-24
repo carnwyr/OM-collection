@@ -150,7 +150,10 @@
 		"my_profile": "My Profile",
 		"user_profile": "{{username}}'s Profile",
 		"settings": "User Settings",
-		"calculator": "Pop Quiz Calculator"
+		"calculator": "Pop Quiz Calculator",
+		"dt_rewards": "Which cards give {{item}} in its devil's tree?",
+		"card_unlock_items": "Which cards need {{item}} for its devil's tree?",
+		"majolish_cards": "Which cards have {{item}}?"
 	},
 	"user": {
 		"username": "Username",

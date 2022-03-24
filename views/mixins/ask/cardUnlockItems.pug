@@ -1,0 +1,14 @@
+mixin question(item)
+  include ../../dict/itemList
+  h5.card-title Which cards need
+    |
+    |
+    div.w-100.d-md-none
+    select#select-picker.my-2.my-md-0(name="item")
+      each i in ITEMS
+        option(selected=(item === i))= i
+    div.w-100.d-md-none
+    |
+    | for its devil's tree?
+    div.w-100.d-md-none
+    button.btn.btn-outline-primary.mt-2.mt-md-0.ml-md-2(type="submit") Ask!

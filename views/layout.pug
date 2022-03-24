@@ -52,7 +52,12 @@ html(lang=t("lang"))
             div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
               a(class="dropdown-item" href='/SurpriseGuest')= t("common.spg")
               // a.dropdown-item(href="/calculator") Calculator
-          // TODO use userController to check rights
+              div(class="dropdown-divider" style="opacity:50%;")
+              span.overline ask karasu
+              a(class="dropdown-item" href="/ask/dt_rewards") Devil's tree rewards
+              a(class="dropdown-item" href="/ask/card_unlock_items") Card unlock items
+              a(class="dropdown-item" href="/ask/majolish_cards") Majolish cards
+          //- TODO: use userController to check rights
           if user && (user.type === "Admin" || user.type === "Moderator")
             li(class="nav-item dropdown")
               a(class="nav-link dropdown-toggle" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
@@ -77,7 +82,7 @@ html(lang=t("lang"))
             li(class="nav-item dropdown")
               a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Karasu
               div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="collectionDropdown")
-                span#overline collections
+                span.overline collections
                 a(class="dropdown-item" href='/' + user.name + '/collection')= t("collection.cards")
                 a(class="dropdown-item" href='/' + user.name + '/favourites')= t("collection.favourites")
                 div(class="dropdown-divider" style="opacity:50%;")

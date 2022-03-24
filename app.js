@@ -20,6 +20,7 @@ var cardsRouter = require("./routes/cards");
 var userRouter = require("./routes/user");
 var eventsRouter = require("./routes/events");
 var suggestionRouter = require("./routes/suggestions");
+var askKarasuRouter = require("./routes/askKarasu");
 
 const app = express();
 
@@ -105,6 +106,7 @@ app.use("/card", cardsRouter);
 app.use("/user", userRouter);
 app.use("/event", eventsRouter);
 app.use("/suggestion", suggestionRouter);
+app.use("/ask", askKarasuRouter);
 
 app.use(function (req, res, next) { next(createError(404)); });
 
