@@ -4,7 +4,7 @@ mixin question(item)
     |
     div.w-100.d-md-none
     select#select-picker.my-2.my-md-0(name="item")
-      each i in ['icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'home_picture'].sort()
+      each i in ['bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'home_picture'].sort()
         option(value=i selected=(item === i))= i.replace('_', ' ')
     div.w-100.d-md-none
     |
