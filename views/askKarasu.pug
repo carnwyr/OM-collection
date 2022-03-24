@@ -34,17 +34,16 @@ block content
             div.col-8
               div.card-body
                 p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
-                p.card-text #{i.dt.reward}
+                p.card-text.mb-0.mb-md-3 #{i.dt.reward}
                   if i.dt.type === "item"
                     |
                     | x#{i.dt.count?i.dt.count.toLocaleString("en"):"???"}
-                div.p.card-text.d-none.d-md-block
-                  if i.dt.requirements && i.dt.requirements.length > 0
-                    ul
-                      each j in i.dt.requirements
-                        li #{j.name ? j.name : "???"} x#{j.amount ? j.amount.toLocaleString("en") : "???" }
-                  else
-                    | Requirements ???
+                if i.dt.requirements && i.dt.requirements.length > 0
+                  ul.d-none.d-md-block
+                    each j in i.dt.requirements
+                      li #{j.name ? j.name : "???"} x#{j.amount ? j.amount.toLocaleString("en") : "???" }
+                else
+                  p.card-text.d-none.d-md-block Requirements ???
                 p.card-text.d-none.d-md-block Grimm: #{i.dt.grimmCost ? i.dt.grimmCost.toLocaleString("en") : "???"}
 
   link(href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css" rel="stylesheet")
