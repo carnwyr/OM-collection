@@ -42,7 +42,7 @@ block content
                   if i.dt.requirements && i.dt.requirements.length > 0
                     ul
                       each j in i.dt.requirements
-                        li #{j.name ? j.name : "???"} x#{j.count ? j.count.toLocaleString("en") : "???" }
+                        li #{j.name ? j.name : "???"} x#{j.amount ? j.amount.toLocaleString("en") : "???" }
                   else
                     | Requirements ???
                 p.card-text.d-none.d-md-block Grimm: #{i.dt.grimmCost ? i.dt.grimmCost.toLocaleString("en") : "???"}
