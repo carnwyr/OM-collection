@@ -157,7 +157,7 @@ block content
                     input#checkCardsOwned.custom-control-input(type="radio" name="cards" value="owned" checked=(user && query.cards === "owned") disabled=(user?false:true))
                     label.custom-control-label(for="checkCardsOwned")= t("cards.owned")
                   div.custom-control.custom-radio.custom-control-inline(style={opacity: (user?'1':".5")})
-                    input#checkCardsNotOwned.custom-control-input(type="radio" name="cards" value="notowned" checked=(user && query.cards === "notowned") disabled=(user?false:true))
+                    input#checkCardsNotOwned.custom-control-input(type="radio" name="cards" value="not_owned" checked=(user && query.cards === "not_owned") disabled=(user?false:true))
                     label.custom-control-label(for="checkCardsNotOwned")= t("cards.not_owned")
                   if !user
                     div(style="display:inline;")
