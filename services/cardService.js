@@ -175,6 +175,33 @@ exports.getTotalTreeStats = async function() {
   }
 };
 
+exports.getCardsWithItem = async function(matchStage) {
+	try {
+		return await Cards.aggregate([
+			matchStage, {
+				'$unwind': {
+					'path': '$dt',
+					'preserveNullAndEmptyArrays': false
+				}
+			}, matchStage, {
+				'$sort': {
+					'number': -1
+				}
+			}, {
+				'$project': {
+					'name': 1,
+					'ja_name': 1,
+					'uniqueName': 1,
+					'dt': 1
+				}
+			}
+		]);
+	} catch(e) {
+		Sentry.captureException(e);
+		return [];
+	}
+};
+
 exports.updateCard = async function(data) {
 	var originalUniqueName = data.originalUniqueName;
 	var newUniqueName = data.cardData.uniqueName;

@@ -1,0 +1,13 @@
+mixin question(item)
+  h5.card-title Which cards have
+    |
+    |
+    div.w-100.d-md-none
+    select#select-picker.my-2.my-md-0(name="item")
+      each i in ['icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'home_picture'].sort()
+        option(value=i selected=(item === i))= i.replace('_', ' ')
+    div.w-100.d-md-none
+    |
+    | ?
+    div.w-100.d-md-none
+    button.btn.btn-outline-primary.mt-2.mt-md-0.ml-md-2(type="submit") Ask!

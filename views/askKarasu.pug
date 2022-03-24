@@ -1,0 +1,64 @@
+extends layout
+
+block scripts
+  script(src="/javascripts/lazyload.js")
+
+block content
+  div.container
+    h1.display-1.border-0.text-center.py-2
+      img(src="/images/karasu.png" style="width:99px;border:5px solid white;border-radius:50px;box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
+    div.card.card-body.text-center.mb-3(style="border-radius:5rem;box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
+      form
+        if path === "dt_rewards"
+          include mixins/ask/dtRewards
+        else if path === "card_unlock_items"
+          include mixins/ask/cardUnlockItems
+        else if path === "majolish_cards"
+          include mixins/ask/majolishCards
+        +question(item)
+        div
+          p.text-center.m-0 Coming soon.
+          div.form-check.form-check-inline
+            input#showOwned.form-check-input(type="checkbox" disabled)
+            label.form-check-label(for="showOwned") Only show cards I own.
+          div.form-check.form-check-inline
+            input#hideUnlocked.form-check-input(type="checkbox" disabled)
+            label.form-check-label(for="hideUnlocked") Hide nodes I've already unlocked.
+    div.d-flex.flex-wrap.justify-content-around
+      each i in cards
+        div.card.mb-3(style="max-width: 540px;")
+          div.row.no-gutters
+            div.col-4
+              a(href="/card/" + i.uniqueName)
+                img.img-fluid.lazy(data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg")
+            div.col-8
+              div.card-body
+                p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
+                p.card-text #{i.dt.reward}
+                  if i.dt.type === "item"
+                    |
+                    | x#{i.dt.count?i.dt.count.toLocaleString("en"):"???"}
+                p.card-text.d-none.d-md-block
+                  if i.dt.requirements && i.dt.requirements.length > 0
+                    ul
+                      each j in i.dt.requirements
+                          li #{j.name ? j.name : "???"} x#{j.count ? j.count.toLocaleString("en") : "???" }
+                  else
+                    | Requirements ???
+                p.card-text.d-none.d-md-block Grimm: #{i.dt.grimmCost ? i.dt.grimmCost.toLocaleString("en") : "???"}
+
+  link(href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css" rel="stylesheet")
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js")
+  script.
+    $(function() {
+      $('#select-picker').selectpicker({
+        liveSearch: true,
+        style: '',
+        styleBase: 'form-control mb-0',
+        title: '--'
+      });
+    });
+  style.
+    .bootstrap-select > .dropdown-menu {
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    }

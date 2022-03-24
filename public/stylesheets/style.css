@@ -70,7 +70,7 @@ footer ul {
   transform: scaleY(-1);
 }
 
-#overline {
+.overline {
   color: var(--light);
   font-size: 10px;
   letter-spacing: 1.5px;
@@ -79,7 +79,7 @@ footer ul {
 }
 
 @media (min-width: 768px) {
-  #overline {
+  .overline {
     color: #6c757d;
   }
 
