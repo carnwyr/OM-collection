@@ -5,7 +5,7 @@ mixin question(item)
     |
     div.w-100.d-md-none
     select#select-picker.my-2.my-md-0(name="item")
-      each i in ITEMS
+      each i in ITEMS.slice(7)
         option(selected=(item === i))= i
     div.w-100.d-md-none
     |
