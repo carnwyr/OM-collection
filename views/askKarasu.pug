@@ -30,7 +30,7 @@ block content
           div.row.no-gutters
             div.col-4
               a(href="/card/" + i.uniqueName)
-                img.img-fluid.lazy(data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg")
+                img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg")
             div.col-8
               div.card-body
                 p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
