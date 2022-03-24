@@ -38,11 +38,11 @@ block content
                   if i.dt.type === "item"
                     |
                     | x#{i.dt.count?i.dt.count.toLocaleString("en"):"???"}
-                p.card-text.d-none.d-md-block
+                div.p.card-text.d-none.d-md-block
                   if i.dt.requirements && i.dt.requirements.length > 0
                     ul
                       each j in i.dt.requirements
-                          li #{j.name ? j.name : "???"} x#{j.count ? j.count.toLocaleString("en") : "???" }
+                        li #{j.name ? j.name : "???"} x#{j.count ? j.count.toLocaleString("en") : "???" }
                   else
                     | Requirements ???
                 p.card-text.d-none.d-md-block Grimm: #{i.dt.grimmCost ? i.dt.grimmCost.toLocaleString("en") : "???"}
