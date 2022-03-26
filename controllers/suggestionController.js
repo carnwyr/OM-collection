@@ -20,11 +20,12 @@ exports.getSuggestionPage = async function(req, res, next) {
 
 async function getOriginalFile(path) {
 	try {
-		let db = path[path.length - 2];
+		let db = path[path.length - 2], docName = decodeURIComponent(path[path.length - 1]);
+		console.log(docName, path[path.length - 1]);
 		if (db === "card") {
-			return await cardService.getCard({ uniqueName: path[path.length - 1] });;
+			return await cardService.getCard({ uniqueName: docName });;
 		} else if (db === "event") {
-			return await eventService.getEvent({ "name.en": path[path.length - 1].replace(/_/g, " ") });
+			return await eventService.getEvent({ "name.en": docName.replace(/_/g, " ") });
 		} else {
 			return { error: "Something went wrong." };
 		}
@@ -62,7 +63,7 @@ exports.approveSuggestion = async function(req, res) {
 	try {
 		let suggestion = await suggestionService.getSuggestion({ _id: req.body._id });
 		let db = suggestion.page.split("/")[1];
-		let docName = suggestion.page.split("/")[2];
+		let docName = decodeURIComponent(suggestion.page.split("/")[2]);
 		let data = JSON.parse(req.body.data);
 
 		if (db === "card") {
