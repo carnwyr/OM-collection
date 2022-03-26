@@ -21,7 +21,6 @@ exports.getSuggestionPage = async function(req, res, next) {
 async function getOriginalFile(path) {
 	try {
 		let db = path[path.length - 2], docName = decodeURIComponent(path[path.length - 1]);
-		console.log(docName, path[path.length - 1]);
 		if (db === "card") {
 			return await cardService.getCard({ uniqueName: docName });;
 		} else if (db === "event") {
