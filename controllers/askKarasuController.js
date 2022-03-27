@@ -2,7 +2,7 @@ const createError = require("http-errors");
 const Sentry = require("@sentry/node");
 
 const cardService = require("../services/cardService");
-// const eventService = require("../services/eventService");
+const userService = require("../services/userService");
 
 exports.getAskKarasuPage = async function (req, res, next) {
 	try {
@@ -23,7 +23,6 @@ exports.getAskKarasuPage = async function (req, res, next) {
 			throw createError(404);
 		}
 
-		
 		if (req.query.item && req.query.item !== "") {
 			cards = await cardService.getCardsWithItem({
 				"$match": dict[q]
@@ -31,12 +30,17 @@ exports.getAskKarasuPage = async function (req, res, next) {
 			item = req.query.item;
 		}
 
+		if (req.user && req.query.owned === "on") {
+			let user = await userService.getUser(req.user.name);
+			cards = cards.filter(x => user.cards.owned.includes(x.uniqueName));
+		}
+
 		return res.render("askKarasu", {
 			title: req.i18n.t("title." + q, { "item": item }),
 			description: "",
 			cards: cards,
-			item: item,
 			path: q,
+			query: req.query,
 			user: req.user
 		});
 	} catch (e) {

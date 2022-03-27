@@ -7,7 +7,7 @@ block content
   div.container
     h1.display-1.border-0.text-center.py-2
       img(src="/images/karasu.png" style="width:99px;border:5px solid white;border-radius:50px;box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
-    div.card.card-body.text-center.mb-3(style="border-radius:5rem;box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
+    div#question.card.card-body.text-center.mb-3(style="border-radius:5rem;box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
       form
         if path === "dt_rewards"
           include mixins/ask/dtRewards
@@ -15,15 +15,13 @@ block content
           include mixins/ask/cardUnlockItems
         else if path === "majolish_cards"
           include mixins/ask/majolishCards
-        +question(item)
-        div
-          p.text-center.m-0 Coming soon.
-          div.form-check.form-check-inline
-            input#showOwned.form-check-input(type="checkbox" disabled)
-            label.form-check-label(for="showOwned") Only show cards I own.
-          div.form-check.form-check-inline
-            input#hideUnlocked.form-check-input(type="checkbox" disabled)
-            label.form-check-label(for="hideUnlocked") Hide nodes I've already unlocked.
+        +question(query.item)
+        div.custom-control.custom-checkbox.custom-control-inline
+          input#showOwned.custom-control-input(type="checkbox" name="owned" checked=(user && query.owned === "on") disabled=(!user))
+          label.custom-control-label(for="showOwned") Only show cards I own.
+        div.custom-control.custom-checkbox.custom-control-inline
+          input#hideUnlocked.custom-control-input(type="checkbox" name="locked" disabled)
+          label.custom-control-label(for="hideUnlocked") Hide nodes I've already unlocked. (Coming soon)
     div.d-flex.flex-wrap.justify-content-around
       each i in cards
         div.card.mb-3(style="max-width: 540px;")
@@ -60,4 +58,9 @@ block content
   style.
     .bootstrap-select > .dropdown-menu {
         box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    }
+    @media (max-width: 540px) {
+      #question {
+        padding: 2rem;
+      }
     }
