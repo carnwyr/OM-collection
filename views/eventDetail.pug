@@ -18,7 +18,7 @@ block content
 			div.card-body
 				div.row
 					div.col-12.col-md-4.text-center.mb-3.mb-md-auto
-						img.img-fluid(src="/images/events/"+event.name.en+".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
+						img.img-fluid(src="/images/events/"+encodeURIComponent(event.name.en)+".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
 					div.col-12.col-md
 						div.row
 						p Type: #{t("events." + event.type)}
