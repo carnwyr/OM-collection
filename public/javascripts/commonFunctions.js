@@ -39,10 +39,31 @@ $(document).ready(function() {
 	$("#b2t").on("click", () => { $("html, body").animate({scrollTop:0}, 500); });
 });
 
-$(document).on("koolAid", () => {
-	$("#kool-aid>.row").hide();
-	$("#kool-aid").append(`<div class="card shadow-none" style="background:rgba(255,255,255,.8)"><div class="card-body col-md-8 mx-auto" style="border-radius:1rem;"><h5 class="card-title">Using an ad-blocker?</h5><img style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png"><p>Advertisements help us cover the cost to keep karasu-os online.</p><p>Please consider whitelisting karasu-os.com to keep the website free for everyone!</p></div></div>`);
+async function detectAdBlock() {
+  let adBlockEnabled = false;
+  const googleAdUrl = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+  try {
+    await fetch(new Request(googleAdUrl)).catch((_) => (adBlockEnabled = true));
+  } catch(e) {
+    adBlockEnabled = true;
+  } finally {
+    if (adBlockEnabled) {
+			showFallback();
+		}
+  }
+}
+
+$(window).on("load", function() {
+  detectAdBlock();
 });
+
+$(document).on("koolAid", showFallback);
+
+function showFallback() {
+	$("#kool-aid>.row").hide();
+	if ($("#kool-fallback")[0] === undefined) $("#kool-aid").append(`<div id="kool-fallback" class="card shadow-none" style="background:rgba(255,255,255,.8)"><div class="card-body col-md-8 mx-auto" style="border-radius:1rem;"><h5 class="card-title">Using an ad-blocker?</h5><img style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png"><p>Advertisements help us cover the cost to keep karasu-os online.</p><p>Please consider whitelisting karasu-os.com to keep the website free for everyone!</p></div></div>`);
+	console.log("Ad-block detected. Please disable. Thank you.");
+}
 
 $(window).on("scroll", () => {
 	switchBackToTopButton();
