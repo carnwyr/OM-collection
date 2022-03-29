@@ -37,7 +37,7 @@ exports.getSuggestionList = async function(req, res, next) {
 	try {
 		let sort = {};
 		if (req.user && req.user.isAdmin && req.query.q === 's') {
-			sort = { "name": 1, "_id": 1 };
+			sort = { "page": 1, "_id": 1 };
 		}
 		let suggestions = await suggestionService.getSuggestionList({ status: "pending" }, sort);
 		return res.render("suggestionList", { title: "Suggestions", suggestions: suggestions, user: req.user });
