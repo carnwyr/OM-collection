@@ -12,14 +12,14 @@ exports.getSuggestion = async function(query = {}) {
 	}
 };
 
-exports.getSuggestionList = async function(query = {}) {
+exports.getSuggestionList = async function(query = {}, sort = {}) {
   try {
-    return await Suggestions.find(query);
+    return await Suggestions.find(query).sort(sort);
   } catch(e) {
-		console.error(e);
+    // console.error(e);
     Sentry.captureException(e);
-		return [];
-	}
+    return [];
+  }
 };
 
 exports.addSuggestion = async function(data) {

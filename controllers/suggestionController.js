@@ -35,7 +35,11 @@ async function getOriginalFile(path) {
 
 exports.getSuggestionList = async function(req, res, next) {
 	try {
-		var suggestions = await suggestionService.getSuggestionList({ status: "pending" });
+		let sort = {};
+		if (req.user && req.user.isAdmin && req.query.q === 's') {
+			sort = { "name": 1, "_id": 1 };
+		}
+		let suggestions = await suggestionService.getSuggestionList({ status: "pending" }, sort);
 		return res.render("suggestionList", { title: "Suggestions", suggestions: suggestions, user: req.user });
 	} catch(e) {
 		return next(e);
