@@ -26,7 +26,6 @@ html(lang=t("lang"))
     link(rel='stylesheet' href='/stylesheets/style.css')
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352" crossorigin="anonymous" onerror="document.dispatchEvent(new CustomEvent('koolAid'));"></script>
     script(src='/javascripts/commonFunctions.js')
     block scripts
 
@@ -37,13 +36,17 @@ html(lang=t("lang"))
     - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
     - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
     
-    template#kool-fallback-template
-      #kool-fallback.card.shadow.rounded
-        .card-body.col-md-8.mx-auto
+    template#kool-fallback-template-big
+      .card.rounded
+        .card-body.mx-auto
           .h5.card-title Using an ad-blocker?
           img(style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png")
           p Advertisements help us cover the cost to keep karasu-os online.
           p Please consider whitelisting karasu-os.com to keep the website free for everyone!
+    
+    template#kool-fallback-template-small
+      .card.rounded(style="height:90px")
+        img.img-fluid.h-100.mx-auto.py-2(src="/images/adblocked.png")
     
     nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white" style="z-index:1032;")
       a.navbar-brand.logo-bg.d-flex.align-items-center(href='/')
@@ -137,10 +140,11 @@ html(lang=t("lang"))
         //-     </button>
         //-   </div>
         if (!user || !user.isSupporter)
-          div.container.ddd
-            div#ezoic-pub-ad-placeholder-109
-              <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
-              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          .kool-aid.container.text-center.mt-3(data-fallback="kool-fallback-template-small")
+            .row.justify-content-center
+              #ezoic-pub-ad-placeholder-109
+                <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         if t("lang") === "ja"
           div.container
             div.alert.alert-info.text-center(style="z-index:0!important;" role="alert")
@@ -157,9 +161,9 @@ html(lang=t("lang"))
 
       block content
       if (!user || !user.isSupporter)
-        div#kool-aid.container.text-center(style="margin:2rem auto")
-          div.row.justify-content-center
-            div#ezoic-pub-ad-placeholder-122.w-100
+        .kool-aid.container.text-center.mt-4(data-fallback="kool-fallback-template-big")
+          .row.justify-content-center
+            #ezoic-pub-ad-placeholder-122.w-100
               <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4992362293" data-ad-format="auto" data-full-width-responsive="true"></ins>
               <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
       //- toasts

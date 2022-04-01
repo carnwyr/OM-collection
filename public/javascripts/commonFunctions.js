@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).on("koolAid", showFallback);
+
+$(document).ready(function () {
 	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
 	$("head").append(`<link rel="alternate" hreflang="${$("select#language").val()}" href="${window.location.href}">`);
 	$("select#language").on("change", function() {
@@ -39,33 +41,43 @@ $(document).ready(function() {
 	$("#b2t").on("click", () => { $("html, body").animate({scrollTop:0}, 500); });
 });
 
-async function detectAdBlock() {
+async function detectAdBlock(callback) {
   let adBlockEnabled = false;
   const googleAdUrl = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
   try {
     await fetch(new Request(googleAdUrl)).catch((_) => (adBlockEnabled = true));
   } catch(e) {
     adBlockEnabled = true;
-  } finally {
-    if (adBlockEnabled) {
-			showFallback();
+	} finally {
+		if (callback) {
+			callback(adBlockEnabled);
 		}
   }
 }
 
 $(window).on("load", function() {
-  detectAdBlock();
+	detectAdBlock(adBlockEnabled => {
+		if (adBlockEnabled) {
+			showFallback();
+		}
+		else {
+			let script = document.createElement('script');
+			script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352";
+			script.crossorigin = "anonymous";
+			script.onerror = () => document.dispatchEvent(new CustomEvent('koolAid'));
+			document.head.append(script);
+		}
+	});
 });
 
-$(document).on("koolAid", showFallback);
 
 function showFallback() {
-	$("#kool-aid>.row").hide();
-	if ($("#kool-fallback")[0] === undefined) {
-		var template = document.querySelector('#kool-fallback-template');
-		var clone = template.content.cloneNode(true);
-		$("#kool-aid").append($(clone));
-	}
+	$(".kool-aid>.row").hide();
+	$(".kool-aid").each(function() {
+		let templateId = "#" + $(this).attr("data-fallback");
+		var fallback = $(templateId).first().html();
+		$(this).append(fallback);
+	});
 }
 
 $(window).on("scroll", () => {
