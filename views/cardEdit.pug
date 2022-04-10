@@ -249,7 +249,7 @@ block content
 						div.alert.alert-info(style="z-index:0!important;")
 							strong Important!!
 							br
-							p Skills here must be LV.1/10 <u>and</u> descriptions must be exactly same as in-game, down to every space, capitalization, and decimal place. Small mistake here will lead to wrong result when searching by skills. Please be careful. Thank you!
+							p Skills here must be LV.1/10 <u>and</u> descriptions must be exactly same as in-game, down to every capitalization and decimal place. Small mistake here will lead to wrong result when searching by skills. Please be careful. Thank you!
 							p.mb-0 Exception: You can remove "Effect: " at the beginning of Special Skill descriptions, but everything else must be exact same as in-game.
 						if !card || !card.skills || card.skills.length === 0
 							+skillTemplate({ skillType: "Special Skill", title: '', description: '' })

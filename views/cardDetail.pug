@@ -116,16 +116,20 @@ block content
         h5.card-title.d-flex.flex-wrap.justify-content-between.align-items-center Skills
           a.btn.btn-link(data-toggle="collapse" href="#collapseSkills" role="button" aria-expanded="true" aria-controls="collapseSkills") (collapse)
         div#collapseSkills.collapse.show
-          if card.skills && card.skills.length > 0
-            each s in card.skills
-              div.row
-                p.col-12.col-lg-4.strong #{s.skillType}: #{s.title}
-                  |
-                  |
-                  small LV.1/10
-                p.col-12.col-lg-8= s.description
-          else
-            p.text-center Missing skills data.
+          div.container
+            div.row.justify-content-center
+              if card.skills && card.skills.length > 0
+                each s in card.skills
+                  div.col-12.col-lg-6
+                      div.row.align-items-center
+                        span.col-12.col-lg-3.text-center.strong= s.skillType
+                        div.col-12.col-lg-9
+                          div.d-flex.justify-content-between.align-items-center.p-1(style="background:var(--light);border-radius:5px;")
+                            span= s.title
+                            small(style="letter-spacing:.1em;") LV.1/10
+                          p.p-1= s.description
+              else
+                p.col-12.text-center Missing skills data.
     div.card.mb-3(style="border-left:3px solid #d289fb;")
       div.card-body
         h5.card-title.d-flex.flex-wrap.justify-content-between.align-items-center Attribute values
