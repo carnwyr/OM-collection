@@ -18,18 +18,15 @@ block scripts
 mixin treeCostTemplate(item)
 	if item.length === 0
 		- item = Array(3).fill({ name: '', amount: '' });
-	- count = 0;
-	each i in item
-		- count++;
-		div.form-row.mb-2
-			div.col-12.col-md-1
-				label Req #{count}
-			div.col-12.col-md-3
+	each i, index in item
+		div.form-row.align-items-center.mb-2
+			label.col-12.col-md-2.col-lg-1.text-center= index + 1
+			div.col-12.col-md-5.col-lg-3.mb-2.mb-md-0
 				select.item-select.custom-select.form-control(name="name")
 					option(value='' data-subtext='--')
 					each x in ITEMS
 						option(value=x selected=(i.name===x))= x
-			div.col-12.col-md-3
+			div.col-12.col-md-5.col-lg-3
 				input.form-control(type="number" name="amount" value=i.amount placeholder="how many?")
 
 mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
@@ -39,19 +36,19 @@ mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '
 				label.mr-2 No.
 				input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder placeholder="???" style="width:80px;")
 				small.text-muted The order in which this node should appear on this page.
-			div.form-group.col-12.col-md-3
+			div.form-group.col-12.col-md-6.col-lg-3
 				label Name
 				input.form-control.autocomplete(type="text" value=node.reward name="reward" placeholder="???")
-			div.form-group.col-12.col-md-3
+			div.form-group.col-12.col-md-6.col-lg-3
 				label Amount
 				input.form-control(type="number" value=node.count name="count" placeholder="???")
-			div.form-group.col-12.col-md-3
+			div.form-group.col-12.col-md-6.col-lg-3
 				label Type
 				select.custom-select.form-control(name="type")
 					option(value='') --
-					each t in ['item', 'icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'skill_animation', 'moving_picture', 'home_picture', 'level_up', 'flower']
+					each t in ['item', 'icon', 'bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'skill_animation', 'moving_picture', 'home_picture']
 						option(value=t selected=(node.type===t))= t
-			div.form-group.col-12.col-md-3
+			div.form-group.col-12.col-md-6.col-lg-3
 				label Grimm cost
 				input.form-control(type="number" name="grimmCost" value=node.grimmCost placeholder="???")
 			div.form-group.col-12
@@ -239,15 +236,65 @@ block content
 					<div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">...</div>
 					div#tree.tab-pane.fade(role="tabpanel" aria-labelledby="tree-tab")
 						h5 Devil's tree
-						p Note: icon (Locked) means the original/ devil's flower locked icon, (Unlocked) means the flower unlocked icon.
-						div#dt-container
-							div#dt-content
-								if !card || !card.dt
-									+treeTemplate()
-								else
-									each i in card.dt
-										+treeTemplate(i)
-							button.btn.btn-primary.add-item(type="button" data-clone="template#dt") Add node
+						p: a.h5(data-toggle="collapse" href="#rewardCollapse" aria-expanded="true" aria-controls="rewardCollapse") Rewards
+							|
+							| <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/> </svg>
+						div#rewardCollapse.collapse.show
+							div.alert.alert-light(style="z-index:0!important;border:2px solid var(--light);") Note: icon (Locked) means the original/ devil's flower locked icon, (Unlocked) means the flower unlocked icon.
+							div
+								div
+									each node in card.dt.filter(x => x.type !== "level_up" && x.type !== "flower")
+										+treeTemplate(node)
+								button.btn.btn-primary.add-item.mb-3(type="button" data-clone="template#dt") Add node
+						p: a.h5(data-toggle="collapse" href="#leveUpCollapse" aria-expanded="true" aria-controls="leveUpCollapse") Level up + flower
+							|
+							| <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/> </svg>
+						div#leveUpCollapse.collapse.show
+							- 
+								rar = {
+									"N": 1,
+									"R": 2,
+									"SR": 3,
+									"SSR": 4,
+									"UR": 5,
+									"UR+": 5
+								}
+								levelUpNodes = card.dt.filter(x => x.type === "level_up");
+							//- hopefully there aren't any cards with missing level_up nodes (i.e., lv.10, lv.30, lv.40, missing lv.20)
+							while levelUpNodes.length < rar[card.rarity]
+								- levelUpNodes.push({ reward: `Lv.${levelUpNodes.length + 1}0 Rank Up`, requirements: [], grimmCost: '' });
+							each node in levelUpNodes
+								form.form-row
+									div.d-none: input(type="number" name="nodeOrder" value=0)
+									div.form-group.col-12.col-md-6.col-lg-3
+										label Level
+										input.form-control(type="number" value=(node.reward.replace("Lv.", "").replace("Rank Up", "").trim()) name="reward" readonly)
+									div.d-none: input(type="number" value=1 name="count")
+									div.d-none: input(type="text" name="type" value="level_up")
+									div.form-group.col-12.col-md-6.col-lg-3
+										label Grimm cost
+										input.form-control(type="number" name="grimmCost" value=node.grimmCost placeholder="???")
+									div.form-group.col-12.mb-0
+										label Requirements
+										+treeCostTemplate(node.requirements)
+								hr
+							- flowerNode = card.dt.filter(x => x.type === "flower");
+							if flowerNode.length === 0
+								- flowerNode = { requirements: [], grimmCost: '' }
+							else
+								- flowerNode = flowerNode[0];
+							h5 Devil's Flower
+							form.form-row
+								div.d-none: input(type="number" name="nodeOrder" value=0)
+								div.d-none: input(type="text" value="Devil's Flower" name="reward")
+								div.d-none: input(type="number" value=1 name="count")
+								div.d-none: input(type="text" name="type" value="flower")
+								div.form-group.col-12.col-md-6.col-lg-3
+									label Grimm cost
+									input.form-control(type="number" name="grimmCost" value=flowerNode.grimmCost placeholder="???")
+								div.form-group.col-12.mb-0
+									label Requirements
+									+treeCostTemplate(flowerNode.requirements)
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
 						div.form-check
 							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="" checked=(!card||!card.animation.type))
@@ -402,4 +449,7 @@ block content
 				padding: 0 !important;
 				margin: 0 !important;
 			}
+		}
+		a[data-toggle="collapse"][aria-expanded="true"] .bi.bi-chevron-down {
+			transform: rotate(180deg);
 		}

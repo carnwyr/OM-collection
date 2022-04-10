@@ -160,7 +160,7 @@ function removeEvent() {
 function getTreeRewards() {
 	let rewards = [];
 
-	$("div#dt-content form").each(function() {
+	$("div#tree form").each(function() {
 		let formData = new FormData(this);
 		let node = { requirements: [] };
 		let name;
@@ -174,6 +174,11 @@ function getTreeRewards() {
 				node[pair[0]] = pair[1];
 			}
 		}
+
+		if (node.type === "level_up") {
+			node.reward = `Lv.${node.reward} Rank Up`
+		}
+
 		rewards.push(node);
 	});
 
