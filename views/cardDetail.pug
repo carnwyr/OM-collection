@@ -111,7 +111,21 @@ block content
           if isHidden
             div.mt-2: a.btn.btn-primary(role="button" href=card.uniqueName+"/makePublic") Make public
           div.mt-2: button.btn.btn-primary(data-toggle='modal' data-target="#confirmDelete") Delete card
-
+    div.card.mb-3(style="border-left:3px solid #d289fb;")
+      div.card-body
+        h5.card-title.d-flex.flex-wrap.justify-content-between.align-items-center Skills
+          a.btn.btn-link(data-toggle="collapse" href="#collapseSkills" role="button" aria-expanded="true" aria-controls="collapseSkills") (collapse)
+        div#collapseSkills.collapse.show
+          if card.skills && card.skills.length > 0
+            each s in card.skills
+              div.row
+                p.col-12.col-lg-4.strong #{s.skillType}: #{s.title}
+                  |
+                  |
+                  small LV.1/10
+                p.col-12.col-lg-8= s.description
+          else
+            p.text-center Missing skills data.
     div.card.mb-3(style="border-left:3px solid #d289fb;")
       div.card-body
         h5.card-title.d-flex.flex-wrap.justify-content-between.align-items-center Attribute values
