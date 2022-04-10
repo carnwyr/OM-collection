@@ -111,7 +111,7 @@ block content
 									hr
 							div.form-group.col-12.col-md-6
 								label(for="name") Name
-								input(class='form-control' type="text" id="name" name="name" value=card?card.name:'')
+								input(class='form-control' type="text" id="name" name="name" value=card?card.name:'' readonly=(user.isAdmin?false:true))
 							div.form-group.col-12.col-md-6
 								label(for="ja_name") Japanese Name
 								input(class='form-control' type="text" id="ja_name" name="ja_name" value=card?card.ja_name:'???')

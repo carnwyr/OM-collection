@@ -12,7 +12,7 @@ $(document).ready(function() {
 	// TODO: add style
 	$(".autocomplete").autocomplete({ source: rewards });
 
-	$("#name").on("focusout", fillUniqueName);
+	$("#name").on("change", fillUniqueName);
 
 	$("#uploadL").on("change", {extra: "#imageResultL"}, imageUploaded);
 	$("#uploadLB").on("change", {extra: "#imageResultLB"}, imageUploaded);
