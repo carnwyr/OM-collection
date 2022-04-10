@@ -56,7 +56,7 @@ mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '
 				+treeCostTemplate(node.requirements)
 		button.btn.btn-outline-secondary.remove-item(type="button") Remove node
 		hr
-		
+
 mixin skillTemplate(skill = { skillType: '', title: '', description: '' })
 	form.form-row
 		div.form-group.col-12.col-md-6
@@ -65,11 +65,9 @@ mixin skillTemplate(skill = { skillType: '', title: '', description: '' })
 		div.form-group.col-12.col-md-6
 			label Type
 			input.form-control(type="text" name="skillType" value=skill.skillType readonly)
-
 		div.form-group.col-12
 			label Description
 			textarea.form-control(name="description")= skill.description
-	hr
 
 block content
 	div#alert(role="alert")
@@ -277,6 +275,14 @@ block content
 									+skillTemplate({ skillType: "Auto Skill", title: '', description: '' })
 					div#tree.tab-pane.fade(role="tabpanel" aria-labelledby="tree-tab")
 						h5 Devil's tree
+						if card && card.dt
+							- rewardNodes = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower");
+							- levelUpNodes = card.dt.filter(x => x.type === "level_up");
+							- flowerNode = card.dt.filter(x => x.type === "flower");
+						else
+							- rewardNodes = [];
+							- levelUpNodes = [];
+							- flowerNode = [];
 						p: a.h5(data-toggle="collapse" href="#rewardCollapse" aria-expanded="true" aria-controls="rewardCollapse") Rewards
 							|
 							| <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/> </svg>
@@ -284,14 +290,14 @@ block content
 							div.alert.alert-light(style="z-index:0!important;border:2px solid var(--light);") Note: icon (Locked) means the original/ devil's flower locked icon, (Unlocked) means the flower unlocked icon.
 							div
 								div
-									each node in card.dt.filter(x => x.type !== "level_up" && x.type !== "flower")
+									each node in rewardNodes
 										+treeTemplate(node)
 								button.btn.btn-primary.add-item.mb-3(type="button" data-clone="template#dt") Add node
 						p: a.h5(data-toggle="collapse" href="#leveUpCollapse" aria-expanded="true" aria-controls="leveUpCollapse") Level up + flower
 							|
 							| <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/> </svg>
 						div#leveUpCollapse.collapse.show
-							- 
+							-
 								rar = {
 									"N": 1,
 									"R": 2,
@@ -300,10 +306,11 @@ block content
 									"UR": 5,
 									"UR+": 5
 								}
-								levelUpNodes = card.dt.filter(x => x.type === "level_up");
 							//- hopefully there aren't any cards with missing level_up nodes (i.e., lv.10, lv.30, lv.40, missing lv.20)
-							while levelUpNodes.length < rar[card.rarity]
-								- levelUpNodes.push({ reward: `Lv.${levelUpNodes.length + 1}0 Rank Up`, requirements: [], grimmCost: '' });
+							//- can't add level_up nodes from blank template
+							if card
+								while levelUpNodes.length < rar[card.rarity]
+									- levelUpNodes.push({ reward: `Lv.${levelUpNodes.length + 1}0 Rank Up`, requirements: [], grimmCost: '' });
 							each node in levelUpNodes
 								form.form-row
 									div.d-none: input(type="number" name="nodeOrder" value=0)
@@ -319,7 +326,6 @@ block content
 										label Requirements
 										+treeCostTemplate(node.requirements)
 								hr
-							- flowerNode = card.dt.filter(x => x.type === "flower");
 							if flowerNode.length === 0
 								- flowerNode = { requirements: [], grimmCost: '' }
 							else
