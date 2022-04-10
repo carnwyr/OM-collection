@@ -22,6 +22,12 @@ const dtRewardSchema = new Schema({
 	nodeOrder: { type: Number }
 });
 
+const skillSchema = new Schema({
+	skillType: { type: String, enum: ["Special Skill", "Ability", "Auto Skill"] },
+	title: { type: String },
+	description: { type: String }
+}, { _id: false });
+
 const cardSchema = new mongoose.Schema({
 	name: { type: String, required: true, unique: true },
 	uniqueName: { type: String, required: true, unique: true },
@@ -41,6 +47,7 @@ const cardSchema = new mongoose.Schema({
 		sloth: strengthSchema
 	},
 	dt: { type: [dtRewardSchema] },
+	skills: { type: [skillSchema] },
 	animation: {
 		type: { type: String },
 		link1: { type: String },

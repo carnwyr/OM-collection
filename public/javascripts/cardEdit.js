@@ -94,6 +94,7 @@ function getCardData() {
 		attribute: $("#attribute").val(),
 		characters: getSelectedCharacters(),
 		dt: getTreeRewards(),
+		skills: getCardSkills(),
 		number: $("#number").val(),
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};
@@ -185,4 +186,19 @@ function getTreeRewards() {
 	rewards = rewards.filter(x => x.reward && x.type);
 
 	return rewards;
+}
+
+function getCardSkills() {
+	let skills = [];
+
+	$("div#skills form").each(function() {
+		let formData = new FormData(this);
+		let skill = { skillType: '', title: '', description: '' };
+		for(let pair of formData.entries()) {
+			skill[pair[0]] = pair[1].trim();
+		}
+		skills.push(skill);
+	});
+
+	return skills.filter(x => x.skillType && x.title && x.description);
 }
