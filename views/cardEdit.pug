@@ -250,7 +250,7 @@ block content
 							strong Important!!
 							br
 							p Skills here must be LV.1/10 <u>and</u> descriptions must be exactly same as in-game, down to every capitalization and decimal place. Small mistake here will lead to wrong result when searching by skills. Please be careful. Thank you!
-							p.mb-0 Exception: You can remove "Effect: " at the beginning of Special Skill descriptions, but everything else must be exact same as in-game.
+							p.mb-0 Exception: Please remove "Effect: " at the beginning of Special Skill descriptions, but everything else must be exact same as in-game.
 						if !card || !card.skills || card.skills.length === 0
 							+skillTemplate({ skillType: "Special Skill", title: '', description: '' })
 							+skillTemplate({ skillType: "Ability", title: '', description: '' })
@@ -287,7 +287,7 @@ block content
 							|
 							| <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/> </svg>
 						div#rewardCollapse.collapse.show
-							div.alert.alert-light(style="z-index:0!important;border:2px solid var(--light);") Note: icon (Locked) means the original/ devil's flower locked icon, (Unlocked) means the flower unlocked icon.
+							div.alert.alert-info(style="z-index:0!important;") Note: icon (Locked) means the original/ devil's flower locked icon, (Unlocked) means the flower unlocked icon.
 							div
 								div
 									each node in rewardNodes
@@ -434,11 +434,11 @@ block content
 					</div>
 					div.modal-body
 						p Thank you for your edit!
-						p We have received your edit and will review it soon. If you would like to know the status of your edit, please check our
+						p If you would like to know the status of your edit, please check the
 							|
 							|
 							a(href="/suggestion") pending edits' page
-							| . We will usually approve it within 72 hours.
+							| .
 						h5 IMPORTANT:
 						p If you make a new edit on the same page, <u>it will overwrite your previous edit</u>! So, make sure submit all of your edits at once!
 					<div class="modal-footer">
