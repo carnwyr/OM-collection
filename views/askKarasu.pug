@@ -17,7 +17,7 @@ block content
           include mixins/ask/cardUnlockItems
         else if path === "majolish_cards"
           include mixins/ask/majolishCards
-        else if path === "skill_charge_speed"
+        else if path === "skill_charge_time"
           include mixins/ask/skillChargeSpeed
         +question(query)
         div.custom-control.custom-checkbox.custom-control-inline
@@ -27,7 +27,7 @@ block content
           input#hideUnlocked.custom-control-input(type="checkbox" name="locked" disabled)
           label.custom-control-label(for="hideUnlocked") Hide nodes I've already unlocked. (Coming soon)
     p.text-center.text-muted If you like this feature, please share it with others! We will add more questions only if people are interested.
-    if path === "skill_charge_speed"
+    if path === "skill_charge_time"
       p.small.text-center.text-muted *Only SSR and above is displayed.
       div.d-flex.flex-wrap.justify-content-center
         each i in cards

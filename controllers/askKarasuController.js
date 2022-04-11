@@ -20,14 +20,14 @@ exports.getAskKarasuPage = async function (req, res, next) {
 			"majolish_cards": {
 				'dt.type': req.query.item
 			},
-			"skill_charge_speed": {}
+			"skill_charge_time": {}
 		};
 
 		if (req.params.question in dict === false) {
 			throw createError(404);
 		}
 
-		speed = q === "skill_charge_speed";
+		speed = q === "skill_charge_time";
 
 		if (!speed && req.query.item && req.query.item !== "") {
 			cards = await cardService.getCardsWithItem({
