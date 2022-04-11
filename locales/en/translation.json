@@ -153,7 +153,8 @@
 		"calculator": "Pop Quiz Calculator",
 		"dt_rewards": "Which cards give {{item}} in its devil's tree?",
 		"card_unlock_items": "Which cards need {{item}} for its devil's tree?",
-		"majolish_cards": "Which cards have {{item}}?"
+		"majolish_cards": "Which cards have {{item}}?",
+		"skill_charge_speed": "Which cards have {{item}} charging skills?"
 	},
 	"user": {
 		"username": "Username",

@@ -1,4 +1,4 @@
-mixin question(item)
+mixin question(query)
   include ../../dict/itemList
   include ../../dict/itemList2
   h5.card-title Which cards give
@@ -7,7 +7,7 @@ mixin question(item)
     div.w-100.d-md-none
     select#select-picker.my-2.my-md-0(name="item")
       each i in itemList.concat(ITEMS)
-        option(selected=(item === i))= i
+        option(selected=(query.item === i))= i
     div.w-100.d-md-none
     |
     | in its devil's tree?

@@ -1,0 +1,23 @@
+{
+  "fast":[
+    "Charm x4.5",
+    "Charm x5 Increases charm of 2 to 3 members of your team.",
+    "Charm x5 Increases the speed of 1 to 3 members of your team.",
+    "Charm x5 Protects the gauge of all members of your team.",
+    "Charm x5 Bans skills of 1 to 3 members of the opponent's team.",
+    "Charm x5 Decreases charm of 1 to 3 members of the opponent's team.",
+    "Charm x5 Decreases the speed of all members of the opponent's team.",
+    "Charm x5 Enables Bad for all members of the opponent's team.",
+    "Charm x5 Disables Good for 1 to 3 members of the opponent's team.",
+    "Charm x5 Disables Great for all members of the opponent's team.",
+    "Charm x5 Disables protecting the gauge of all members of the opponent's team.",
+    "Charm x5 Disables decreasing the speed of 1 to 3 members of your team.",
+    "Charm x5 Enables Great for all members of your team."
+  ],
+  "slow":[
+    "Charm x3",
+    "Charm x4 Increases charm of 2 to 3 members of your team.",
+    "Charm x5.5 Enables Lucky for all members of your team.",
+    "Charm x5.5 Poisons 1 to 2 members of the opponent's team when you use a Special Skill."
+  ]
+}

@@ -3,11 +3,11 @@ mixin question(query)
     |
     |
     div.w-100.d-md-none
-    select#select-picker.my-2.my-md-0(name="item")
-      each i in ['bgm', 'wallpaper', 'clothing', 'voice', 'chat', 'home_picture'].sort()
-        option(value=i selected=(query.item === i))= i.replace('_', ' ')
+    select#select-picker.my-2.my-md-0(name="speed")
+      option(selected=(query.speed === "fast")) fast
+      option(selected=(query.speed === "slow")) slow
     div.w-100.d-md-none
     |
-    | ?
+    | charging skills?
     div.w-100.d-md-none
     button.btn.btn-outline-primary.mt-2.mt-md-0.ml-md-2(type="submit") Ask!
