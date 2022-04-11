@@ -217,6 +217,21 @@ exports.getProfilePage = async function(req, res, next) {
 	}
 };
 
+exports.getAnimationList = async function(req, res, next) {
+	try {
+		let cards = await cardService.getCards({ "rarity": "UR+" }, { name: 1, uniqueName: 1, animation: 1 });
+		return res.render("animationList", {
+			title: "Animations",
+			description: "A list of Obey Me! card animations.",
+			user: req.user,
+			cards: cards
+		});
+	} catch(e) {
+		Sentry.captureException(e);
+		return next(e);
+	}
+};
+
 exports.directImage = async function (req, res, next) {
 	var cardName = req.url.substring(1).replace("_b.jpg", "").replace(".jpg", "");
 	cardName = cardService.decodeCardName(cardName);
