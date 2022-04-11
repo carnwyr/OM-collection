@@ -87,7 +87,7 @@ block content
               span= card.characters.length>1?t("cards.characters"):t("cards.character")
             div.col-12.col-md-4
               each val, index in card.characters
-                a(href="/cards?character="+(val==="Little D"?"LittleD":val))= t(val)
+                a(href="/cards?characters="+(val==="Little D"?"LittleD":val))= t(val)
                 if index < card.characters.length - 1
                   | ,
                   |
