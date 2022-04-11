@@ -4,10 +4,13 @@ const Sentry = require("@sentry/node");
 const cardService = require("../services/cardService");
 const userService = require("../services/userService");
 
+const skillCharge = require("../data/speed.json");
+
+// TODO: REFACTOR!!
 exports.getAskKarasuPage = async function (req, res, next) {
 	try {
 		let cards = [], item = "???", q = req.params.question;
-		let dict = {  // todo: do something with this so it doesn't keep getting larger
+		let dict = {
 			"dt_rewards": {
 				'dt.reward': req.query.item
 			},
@@ -16,18 +19,29 @@ exports.getAskKarasuPage = async function (req, res, next) {
 			},
 			"majolish_cards": {
 				'dt.type': req.query.item
-			}
+			},
+			"skill_charge_time": {}
 		};
 
 		if (req.params.question in dict === false) {
 			throw createError(404);
 		}
 
-		if (req.query.item && req.query.item !== "") {
+		speed = q === "skill_charge_time";
+
+		if (!speed && req.query.item && req.query.item !== "") {
 			cards = await cardService.getCardsWithItem({
 				"$match": dict[q]
 			});
 			item = req.query.item;
+		}
+
+		if (speed && req.query.speed && (req.query.speed === "fast" || req.query.speed === "slow")) {
+			cards = await cardService.getCards({
+				"skills.description": { "$in": skillCharge[req.query.speed] },
+				"rarity": { "$in": ["SSR", "UR", "UR+"] }  // SR and below have duplicate skills with different charging time..
+			}, { 'name': 1, 'uniqueName': 1 });
+			item = req.query.speed;
 		}
 
 		if (req.user && req.query.owned === "on") {
@@ -36,7 +50,7 @@ exports.getAskKarasuPage = async function (req, res, next) {
 		}
 
 		return res.render("askKarasu", {
-			title: req.i18n.t("title." + q, { "item": item }),
+			title: req.i18n.t("title." + q, { "item": item.replace('_', ' ') }),
 			description: "",
 			cards: cards,
 			path: q,

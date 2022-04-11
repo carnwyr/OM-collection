@@ -1,4 +1,4 @@
-mixin question(item)
+mixin question(query)
   include ../../dict/itemList
   h5.card-title Which cards need
     |
@@ -6,7 +6,7 @@ mixin question(item)
     div.w-100.d-md-none
     select#select-picker.my-2.my-md-0(name="item")
       each i in ITEMS.slice(7)
-        option(selected=(item === i))= i
+        option(selected=(query.item === i))= i
     div.w-100.d-md-none
     |
     | for its devil's tree?

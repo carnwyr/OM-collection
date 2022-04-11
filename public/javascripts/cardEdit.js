@@ -12,7 +12,7 @@ $(document).ready(function() {
 	// TODO: add style
 	$(".autocomplete").autocomplete({ source: rewards });
 
-	$("#name").on("focusout", fillUniqueName);
+	$("#name").on("change", fillUniqueName);
 
 	$("#uploadL").on("change", {extra: "#imageResultL"}, imageUploaded);
 	$("#uploadLB").on("change", {extra: "#imageResultLB"}, imageUploaded);
@@ -94,6 +94,7 @@ function getCardData() {
 		attribute: $("#attribute").val(),
 		characters: getSelectedCharacters(),
 		dt: getTreeRewards(),
+		skills: getCardSkills(),
 		number: $("#number").val(),
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};
@@ -160,7 +161,7 @@ function removeEvent() {
 function getTreeRewards() {
 	let rewards = [];
 
-	$("div#dt-content form").each(function() {
+	$("div#tree form").each(function() {
 		let formData = new FormData(this);
 		let node = { requirements: [] };
 		let name;
@@ -174,10 +175,30 @@ function getTreeRewards() {
 				node[pair[0]] = pair[1];
 			}
 		}
+
+		if (node.type === "level_up") {
+			node.reward = `Lv.${node.reward} Rank Up`
+		}
+
 		rewards.push(node);
 	});
 
 	rewards = rewards.filter(x => x.reward && x.type);
 
 	return rewards;
+}
+
+function getCardSkills() {
+	let skills = [];
+
+	$("div#skills form").each(function() {
+		let formData = new FormData(this);
+		let skill = { skillType: '', title: '', description: '' };
+		for(let pair of formData.entries()) {
+			skill[pair[0]] = pair[1].trim();
+		}
+		skills.push(skill);
+	});
+
+	return skills.filter(x => x.skillType && x.title && x.description);
 }

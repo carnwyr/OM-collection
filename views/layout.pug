@@ -58,6 +58,7 @@ html(lang=t("lang"))
               a(class="dropdown-item" href="/ask/dt_rewards") Devil's tree rewards
               a(class="dropdown-item" href="/ask/card_unlock_items") Card unlock items
               a(class="dropdown-item" href="/ask/majolish_cards") Majolish cards
+              a(class="dropdown-item" href="/ask/skill_charge_time") Skill charging time
           //- TODO: use userController to check rights
           if user && (user.type === "Admin" || user.type === "Moderator")
             li(class="nav-item dropdown")
@@ -162,10 +163,10 @@ html(lang=t("lang"))
           button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
             span(aria-hidden="true") &times;
         div.toast-body
-          | We are introducing a new feature called "ask karasu." You can ask questions like:
+          | You can now ask karasu to show you a list of:
           ul.m-0
-            li: a(href="/ask/dt_rewards?item=Devil+Point") Which cards give devil points?
-            li: a(href="/ask/majolish_cards?item=clothing") Which cards give clothing?
+            li: a(href="/ask/skill_charge_time?speed=fast") fast charging cards
+            li: a(href="/ask/skill_charge_time?speed=slow") slow charging cards
           //- a(href="https://karasu-os.notion.site/Add-devil-s-tree-data-eb02884e5f7e4b2ba6ad245ce5e7667e" class="btn btn-primary btn-sm btn-block mt-3" target="_blank") Learn how to add data!
 
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
