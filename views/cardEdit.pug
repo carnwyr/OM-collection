@@ -262,12 +262,11 @@ block content
 									+skillTemplate(specialSkill)
 								else
 									+skillTemplate({ skillType: "Special Skill", title: '', description: '' })
-								if card.rarity === "UR+"
-									- ability = card.skills.find(x => x.skillType === "Ability");
-									if ability
-										+skillTemplate(ability)
-									else
-										+skillTemplate({ skillType: "Ability", title: '', description: '' })
+								- ability = card.skills.find(x => x.skillType === "Ability");
+								if ability
+									+skillTemplate(ability)
+								else
+									+skillTemplate({ skillType: "Ability", title: '', description: '' })
 							else
 								if card.skills && card.skills.length > 0
 									+skillTemplate(card.skills[0])
