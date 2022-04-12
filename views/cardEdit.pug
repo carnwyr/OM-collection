@@ -256,7 +256,7 @@ block content
 							+skillTemplate({ skillType: "Ability", title: '', description: '' })
 							+skillTemplate({ skillType: "Auto Skill", title: '', description: '' })
 						else
-							if card.type === Demon
+							if card.type === "Demon"
 								- specialSkill = card.skills.find(x => x.skillType === "Special Skill");
 								if specialSkill
 									+skillTemplate(specialSkill)
