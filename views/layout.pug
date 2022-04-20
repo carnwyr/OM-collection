@@ -159,15 +159,12 @@ html(lang=t("lang"))
       //-
       div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
         div.toast-header
-          strong.mr-auto Ask Karasu!
+          strong.mr-auto Tracker vs. Calculator
           button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
             span(aria-hidden="true") &times;
         div.toast-body
-          | You can now ask karasu to show you a list of:
-          ul.m-0
-            li: a(href="/ask/skill_charge_time?speed=fast") fast charging cards
-            li: a(href="/ask/skill_charge_time?speed=slow") slow charging cards
-          //- a(href="https://karasu-os.notion.site/Add-devil-s-tree-data-eb02884e5f7e4b2ba6ad245ce5e7667e" class="btn btn-primary btn-sm btn-block mt-3" target="_blank") Learn how to add data!
+          | Should karasu-os.com release devil's tree tracker or pop quiz calculator first?
+          a(href="https://forms.gle/ABK9sYbp3wtsbJra6" class="btn btn-primary btn-sm btn-block mt-3" target="_blank") Vote
 
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
