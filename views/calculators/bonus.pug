@@ -1,0 +1,38 @@
+extends ../layout
+
+block content
+  div.container
+    h1= title
+    div.card.card-body
+      if cards.length === 0
+        p.text-center.py-5 Cheat cards have not been updated. Please check
+          |
+          |
+          a(href="/calculator/bonus_(general)") general cheat card bonus calculator
+          |
+          | while we work on updating data!
+      else
+        div.row.justify-content-center
+          // TODO: use div instead
+          div.col-12.col-md-8.table-responsive
+            table.table.text-center
+              thead
+                tr
+                  th(scope="col")
+                  th(scope="col") Skill level
+              tbody
+                each card in cards
+                  tr
+                    td: a(href="/card/" + getURL(card.uniqueName)): img(src="/images/cards/S/" + card.uniqueName + ".jpg" style="width:80px;")
+                    td
+                      div.form-group: input.form-control(type="number" min=0 max=10)
+                      span +12
+        div.text-center
+          h5 Total bonus:
+          p +120
+          h5 Total points per stage cleared
+          p 299
+  style.
+    td {
+      vertical-align: middle !important;
+    }

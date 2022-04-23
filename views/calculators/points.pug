@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+    div.container
+      h1 Pop Quiz Calculator
+      div.row
+        div.col-12.col-md-4
+          div.card.card-body
+            h5 On-going
+            img.img-fluid(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg")
+        div.col-12.col-md-8
+          div.card.card-body
+            h5 Calculator
+            hr
+            h5 Result
