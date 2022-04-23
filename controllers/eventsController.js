@@ -76,6 +76,7 @@ exports.getEventDetail = async function (req, res, next) {
 	}
 }
 
+/*
 exports.getCalculatorPage = async function (req, res, next) {
 	try {
 		var event = await eventService.getLatestEvent();
@@ -100,6 +101,7 @@ exports.calculate = async function(req, res) {
 	var result = eventCalculatorService.calculate(event, req.body.currentPoints, req.body.pointsPerBattle, req.body.isVip);
 	return res.json({ err: false, result: result });
 }
+*/
 
 exports.getEventAddPage = async function (req, res, next) {
 	try {
