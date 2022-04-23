@@ -76,6 +76,66 @@ exports.getEventDetail = async function (req, res, next) {
 	}
 }
 
+exports.getCalculatorPage = function (req, res, next) {
+	try {
+		switch (req.params.type) {
+			case "points":
+				return exports.getPointsCalculator(req, res, next);
+				break;
+			case "bonus":
+				return exports.getCheatCardBonusCalculator(req, res, next);
+				break;
+			case "bonus_(general)":
+				return exports.getGeneralBonusCalculator(req, res, next);
+				break;
+			default:
+				return next(e);
+		}
+	} catch(e) {
+		Sentry.captureException(e);
+		return next(e);
+	}
+};
+
+exports.getPointsCalculator = async function(req, res, next) {
+	try {
+		return res.render("calculators/points", {
+			title: "Pop Quiz Calculator",
+			description: "Pop quiz calculator for obey me. Help you calculate the amount of stages/ap/d-energy/dp you need to spend to reach a certain point.",
+			data: await eventService.getLatestEvent("PopQuiz"),
+			user: req.user
+		});
+	} catch(e) {
+		return next(e);
+	}
+};
+
+exports.getCheatCardBonusCalculator = async function(req, res, next) {
+	try {
+		let latestEvent = await eventService.getLatestEvent("Nightmare");
+		return res.render("calculators/bonus", {
+			title: "Cheat Card Bonus",
+			description: " Cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
+			cards: await cardService.getCards({ source: { $in: [ "Dark Santa" ] } }),  // latestEvent.name.en
+			user: req.user
+		});
+	} catch(e) {
+		return next(e);
+	}
+};
+
+exports.getGeneralBonusCalculator = function(req, res, next) {
+	try {
+		return res.render("calculators/generalBonus", {
+			title: "Cheat Card Bonus (General)",
+			description: " A general cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
+			user: req.user
+		});
+	} catch(e) {
+		return next(e);
+	}
+};
+
 /*
 exports.getCalculatorPage = async function (req, res, next) {
 	try {
