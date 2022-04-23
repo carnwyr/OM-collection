@@ -17,7 +17,7 @@ $(document).ready(function() {
 	});
 
 	/***/
-	let cookieName = "survey0420";
+	let cookieName = "result0423";
 	if (!document.cookie.split('; ').find(row => row.startsWith(cookieName))) {
 		$("#announcementToast").removeClass("d-none").toast("show");  // if is toast
 		// $("#announcementToast").removeClass("d-none");  // if is alert
