@@ -77,23 +77,21 @@ exports.getEventDetail = async function (req, res, next) {
 }
 
 exports.getCalculatorPage = function (req, res, next) {
-	try {
-		switch (req.params.type) {
-			case "points":
-				return exports.getPointsCalculator(req, res, next);
-				break;
-			case "bonus":
-				return exports.getCheatCardBonusCalculator(req, res, next);
-				break;
-			case "bonus_(general)":
-				return exports.getGeneralBonusCalculator(req, res, next);
-				break;
-			default:
-				return next(e);
-		}
-	} catch(e) {
-		Sentry.captureException(e);
-		return next(e);
+	switch (req.params.type.toLowerCase()) {
+		case "points":
+			return exports.getPointsCalculator(req, res, next);
+			break;
+		case "bonus":
+			return exports.getCheatCardBonusCalculator(req, res, next);
+			break;
+		case "bonus_(general)":
+			return exports.getGeneralBonusCalculator(req, res, next);
+			break;
+		case "ap":
+			return exports.getAPCalculator(req, res, next);
+			break;
+		default:
+			return next(createError(404));
 	}
 };
 
@@ -125,15 +123,19 @@ exports.getCheatCardBonusCalculator = async function(req, res, next) {
 };
 
 exports.getGeneralBonusCalculator = function(req, res, next) {
-	try {
-		return res.render("calculators/generalBonus", {
-			title: "Cheat Card Bonus (General)",
-			description: " A general cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
-			user: req.user
-		});
-	} catch(e) {
-		return next(e);
-	}
+	return res.render("calculators/generalBonus", {
+		title: "Cheat Card Bonus (General)",
+		description: " A general cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
+		user: req.user
+	});
+};
+
+exports.getAPCalculator = function(req, res, next) {
+	return res.render("calculators/ap", {
+		title: "AP Recovery",
+		description: "Karasu calculator that calculates when your AP will fill in Obey Me.",
+		user: req.user
+	});
 };
 
 /*

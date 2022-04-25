@@ -1,0 +1,57 @@
+extends ../layout
+
+block content
+  div.container
+    h1= title
+    div.card.card-body.mb-3
+      form#input
+        div.form-row.justify-content-center
+          div.col-12.col-md-3.form-group
+            label Current AP
+            input.form-control(type="number" name="curr")
+          div.col-12.col-md-3.form-group
+            label Max AP
+            input.form-control(type="number" name="max")
+      div.text-center
+        h5 Recover in
+        p#cd(style="font-size:large;") --
+        h5 Recover at
+        p#time(style="font-size:large;") --
+        small.text-muted Your local time.
+  script.
+    let timer;
+    $(function() {
+      calculate();
+      $("form#input").on("change", calculate);
+    });
+    function calculate() {
+      let current = parseInt($("input[name='curr']").val());
+      let max = parseInt($("input[name='max']").val());
+
+      if (isNaN(current)|| isNaN(max) || max <= current) return;
+
+      let cdMinutes = (max - current) * 5;
+      let recoverAt = new Date((new Date()).getTime() + cdMinutes * 60000);
+
+      clearInterval(timer);
+      countdown(recoverAt);
+      $("#time").text(`${recoverAt.toLocaleTimeString("en", { hour: '2-digit', minute: '2-digit' })}`);
+    }
+    function countdown(d) {
+      let countDownDate = new Date(d).getTime();
+      timer = setInterval(function () {
+        let now = new Date().getTime();
+        let distance = countDownDate - now;
+        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("cd").innerHTML = hours + "h " + minutes + "m " + seconds + "s";
+
+        if (distance < 0) {
+          clearInterval(timer);
+          document.getElementById("cd").innerHTML = "AP Full";
+        }
+      }, 1000);
+    }
