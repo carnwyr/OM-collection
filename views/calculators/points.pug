@@ -1,15 +1,108 @@
 extends ../layout
 
 block content
-    div.container
-      h1 Pop Quiz Calculator
-      div.row
-        div.col-12.col-md-4
-          div.card.card-body
-            h5 On-going
-            img.img-fluid(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg")
-        div.col-12.col-md-8
-          div.card.card-body
-            h5 Calculator
+  div.container
+    h1 Pop Quiz Calculator
+    div.card.card-body.mb-3
+      h5.card-title Information
+      p.card-text
+        ul
+          li This calculator assumes you get three-stars on each battle.
+          li This calculator always round up in calculation.
+          li Calculation is only as accurate as your input.
+          li Support for boosting will be added in the future.
+          li If you feel the result is wrong, then please follow your own calculation.
+    div.card
+      div.card-body
+        div.row
+          div#pqinfo.col-12.col-md-4
+            //- h5 On-going
+            h5.text-center= data.name[t("lang")]
+            a(href="/event/" + getURL(data.name.en)): img.img-fluid.mb-3(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg")
+            div.text-center
+              p Ending in
+              h5#cd --
+            hr.d-md-none
+          div.col-12.col-md-8
+            //- h5 Calculator
+            form#calculator
+              div.form-row
+                div.col-12.col-md-4
+                  label Goal
+                  input.form-control(type="number" name="goal")
+                div.col-12.col-md-4
+                  label Current pts
+                  input.form-control(type="number" name="currpts")
+                div.col-12.col-md-4
+                  label Pts per stage
+                  input.form-control(type="number" name="ppb")
             hr
-            h5 Result
+            //- h5 Result
+            div.text-center
+              p Today's goal
+              h5#goaltoday --
+              br
+              p Required battles
+              h5#dailybattles --
+              br
+              p Required AP
+              h5#apreq --
+      -
+        function ended() {
+          return new Date() > new Date(JSON.stringify(data.end));
+        }
+      if ended()
+        div.w-100.h-100(style="position:absolute;background:rgba(255,255,255,.8);border-radius:4px;")
+          div.row.w-100.h-100.justify-content-center.align-items-center
+            h5 This event has ended.
+
+  style.
+    @media (min-width: 768px) {
+      #pqinfo {
+        border-right:1px solid #e5e5e5;
+      }
+    }
+  script.
+    $(function() {
+      countdown();
+      calculate();
+      $("form#calculator").on("change", calculate);
+    });
+    function calculate() {
+      let goal = parseInt($("input[name='goal']").val());
+      let currentPts = parseInt($("input[name='currpts']").val());
+      let ptsPerBattle = parseInt($("input[name='ppb']").val());
+
+      if (goal === '' || currentPts === '' || ptsPerBattle === '' ||
+          goal < currentPts || !ptsPerBattle) return;
+
+      let countDownDate = new Date(!{JSON.stringify(data.end)}).getTime();
+      let now = new Date().getTime();
+      let distance = countDownDate - now;
+      let daysLeft = Math.floor(distance / (1000 * 60 * 60 * 24));
+
+      let dailyGoal =  Math.ceil((goal - currentPts) / daysLeft);
+      let dailyBattles = Math.ceil(dailyGoal / ptsPerBattle);
+
+      $("#goaltoday").text(currentPts + dailyGoal);
+      $("#dailybattles").text(`${dailyBattles} (${Math.floor(dailyBattles/3)} stages ${dailyBattles%3} battles)`);
+      $("#apreq").text((dailyBattles * 8).toLocaleString("en"));
+    }
+    function countdown() {
+      let countDownDate = new Date(!{JSON.stringify(data.end)}).getTime();
+      let timer = setInterval(function () {
+        let now = new Date().getTime();
+        let distance = countDownDate - now;
+        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("cd").innerHTML = `${days} days ${hours}:${minutes}:${seconds}`;
+
+        if (distance < 0) {
+          clearInterval(timer);
+          document.getElementById("cd").innerHTML = "--";
+        }
+      }, 1000);
+    }

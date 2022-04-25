@@ -113,7 +113,7 @@ exports.getCheatCardBonusCalculator = async function(req, res, next) {
 		let latestEvent = await eventService.getLatestEvent("Nightmare");
 		return res.render("calculators/bonus", {
 			title: "Cheat Card Bonus",
-			description: " Cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
+			description: "Cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
 			cards: await cardService.getCards({ source: { $in: [ "Dark Santa" ] } }),  // latestEvent.name.en
 			user: req.user
 		});
@@ -125,7 +125,7 @@ exports.getCheatCardBonusCalculator = async function(req, res, next) {
 exports.getGeneralBonusCalculator = function(req, res, next) {
 	return res.render("calculators/generalBonus", {
 		title: "Cheat Card Bonus (General)",
-		description: " A general cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
+		description: "A general cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
 		user: req.user
 	});
 };
