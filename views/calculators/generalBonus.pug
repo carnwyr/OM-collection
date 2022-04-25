@@ -3,10 +3,75 @@ extends ../layout
 block content
   div.container
     h1= title
-    div.row
-      div.col-12.col-md-6.mb-3.mb-md-0
-        div.card.card-body
-          h5 Bonus calculator
-      div.col-12.col-md-6
-        div.card.card-body
-          h5 Reverse bonus calculator
+    div.card.card-body.mb-3
+      h5.card-title Information
+      p.card-text Hello
+    div.card.card-body
+      h5.card-title Bonus calculator
+      form#input
+        div.form-row
+          div.form-group.col-2: label.col-form-label UR/UR+
+          div.form-group.col-5: input.form-control(type="number" name="count" placeholder="number of UR/UR+ cards")
+          div.form-group.col-5: input.form-control(type="number" name="lv" placeholder="total level")
+        div.form-row
+          div.form-group.col-2: label.col-form-label SSR
+          div.form-group.col-5: input.form-control(type="number" name="count" placeholder="number of SSR cards")
+          div.form-group.col-5: input.form-control(type="number" name="lv" placeholder="total level")
+        div.form-row
+          div.form-group.col-2: label.col-form-label SR
+          div.form-group.col-5: input.form-control(type="number" name="count" placeholder="number of SR cards")
+          div.form-group.col-5: input.form-control(type="number" name="lv" placeholder="total level")
+        br
+        div.text-center
+          h5 Total bonus
+          p#totalbonus 0
+          h5 Total points per stage clear
+          p#total 120
+  style.
+    div.form-group.col-2 {
+      text-align: center;
+    }
+    #total, #totalbonus {
+      font-size: large;
+    }
+  script.
+    $(function() {
+      calculate();
+      $("form#input").on("change", calculate);
+    });
+    function calculate() {
+      let formData = new FormData($("form#input")[0]);
+      let data = {
+        "rarity": ["UR", "SSR", "SR"],
+        "count": [],
+        "lv": []
+      }, bonus = 0;
+      for (const pair of formData.entries()) {
+        data[pair[0]].push(pair[1]);
+      }
+      for (const [index, value] of Object.entries(data.rarity)) {
+        let c = data.count[index], lv = data.lv[index];
+        if (isInvalidInput(c, lv)) {
+          $("#totalbonus, #total").text("ERROR");
+          return;
+        }
+        bonus += getVal(value, parseInt(c), parseInt(lv));
+      };
+      $("#totalbonus").text(bonus);
+      $("#total").text(bonus + 120);
+    }
+    function isInvalidInput(c, lv) {
+      return c < 0 || lv < c || lv > c * 10;
+    }
+    let b = {
+      'UR': [36,6],
+      'SSR': [18,3.6],
+      'SR': [6,1.2]
+    };
+    function getVal(r, c, lv) {
+      if (c >= 1) {
+        return c * b[r][0] + Math.floor((lv - c) * b[r][1]);
+      } else {
+        return 0;
+      }
+    }

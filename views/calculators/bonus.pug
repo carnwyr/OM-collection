@@ -15,24 +15,79 @@ block content
         div.row.justify-content-center
           // TODO: use div instead
           div.col-12.col-md-8.table-responsive
-            table.table.text-center
-              thead
-                tr
-                  th(scope="col")
-                  th(scope="col") Skill level
-              tbody
-                each card in cards
+            form#input
+              table.table.table-borderless.text-center
+                thead
                   tr
-                    td: a(href="/card/" + getURL(card.uniqueName)): img(src="/images/cards/S/" + card.uniqueName + ".jpg" style="width:80px;")
-                    td
-                      div.form-group: input.form-control(type="number" min=0 max=10)
-                      span +12
+                    th(scope="col") Card
+                    th(scope="col") Skill level
+                tbody
+                  each card in cards
+                    tr
+                      td: a(href="/card/" + getURL(card.uniqueName)): img(src="/images/cards/S/" + card.uniqueName + ".jpg" style="width:80px;")
+                      td
+                        div.form-group: input.form-control.w-auto.mx-auto(type="number" name=card.rarity)
+                        span 0
         div.text-center
-          h5 Total bonus:
-          p +120
-          h5 Total points per stage cleared
-          p 299
+          h5 Total bonus
+          p#totalbonus 0
+          h5 Total points per stage clear
+          p#total 120
   style.
     td {
       vertical-align: middle !important;
+    }
+    form#input span::before {
+      content: "+ ";
+    }
+    form#input span::after {
+      content: "pts";
+    }
+    #total, #totalbonus {
+      font-size: large;
+    }
+  script.
+    $(function() {
+      calculate();
+      $("form#input").on("change", calculate);
+    });
+    function calculate() {
+      clearInput();
+
+      let formData = new FormData($("form#input")[0]);
+      let rar = [], bonus = [];
+      for (const pair of formData.entries()) {
+        if (pair[1] > 10 || pair[1] < 0) {
+          $(`form#input tbody tr:nth-child(${rar.length + 1}) input`).addClass("is-invalid");
+          return;
+        }
+
+    		rar.push(pair[0]);
+        bonus.push(pair[1]);
+    	}
+      bonus.forEach((element, index) => {
+        bonus[index] = getVal(rar[index], bonus[index]);
+      });
+      $("form#input span").each(function(index) {
+        $(this).text(bonus[index]);
+      });
+      let totalBonus = bonus.reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+      $("#totalbonus").text(totalBonus);
+      $("#total").text(totalBonus + 120);
+    }
+    function clearInput() {
+      $("form#input input").removeClass("is-invalid");
+    }
+    let b = {
+      'UR': [36,6],
+      'UR+': [36,6],
+      'SSR': [18,3.6],
+      'SR': [6,1.2]
+    };
+    function getVal(rarity, count) {
+      if (count >= 1) {
+        return b[rarity][0] + Math.floor((count - 1) * b[rarity][1]);
+      } else {
+        return 0;
+      }
     }
