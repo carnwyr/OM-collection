@@ -21,7 +21,7 @@ block content
         ul
           li you get three-stars on every battle.
           li you have not cleared today's free battles.
-        h5.text-center.m-0 Please use your own calculation if you believe karasu's result if wrong!
+        h5.text-center.m-0 Please use your own calculation if you believe Karasu's result if wrong!
     div.card
       div.card-body
         div.row
@@ -58,9 +58,16 @@ block content
               p Required AP
               h5#apreq --
       -
+        function started() {
+          return new Date() > new Date(data.start);
+        }
         function ended() {
           return new Date() > new Date(data.end);
         }
+      if !started()
+        div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
+          div.row.w-100.h-100.justify-content-center.align-items-center
+            h5 Coming soon.
       if ended()
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
