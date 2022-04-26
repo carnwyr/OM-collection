@@ -71,6 +71,7 @@ exports.approveSuggestion = async function(req, res) {
 
 		if (db === "card") {
 			let result = await cardService.updateCard({
+				user: suggestion.user,
 				originalUniqueName: docName,
 				cardData: data
 			});

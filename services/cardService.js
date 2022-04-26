@@ -1,5 +1,6 @@
 const Cards = require("../models/cards");
 const HiddenCards = require("../models/hiddenCards.js");
+const Revisions = require("../models/revisions");
 
 const Sentry = require("@sentry/node");
 const createError = require("http-errors");
@@ -205,8 +206,18 @@ exports.getCardsWithItem = async function(matchStage) {
 exports.updateCard = async function(data) {
 	var originalUniqueName = data.originalUniqueName;
 	var newUniqueName = data.cardData.uniqueName;
-	var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData);
-	var promiseList = [promiseCard];
+  var promiseList = [];
+  var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData);
+  var promiseCard2 = promiseCard.then((result) => {
+    return Revisions.create({
+      title: result.name,
+      type: "card",
+    	user: data.user,
+      timestamp: new Date(),
+      data: result
+    });
+  });
+  promiseList.push(promiseCard2);
 
 	if (newUniqueName !== originalUniqueName) {
 		var promiseCollections = userService.renameCardInCollections(originalUniqueName, newUniqueName);
