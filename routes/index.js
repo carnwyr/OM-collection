@@ -18,7 +18,7 @@ router.get("/hiddenCards", userController.hasAccess("Admin"), cardsController.ge
 
 // Events
 router.get("/events", eventsController.getEventsPage);
-// router.get("/calculator", eventsController.getCalculatorPage);
+router.get("/calculator/:type", eventsController.getCalculatorPage);
 
 // Account management
 router.get("/login", userController.getLoginPage);

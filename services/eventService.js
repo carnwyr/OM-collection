@@ -30,6 +30,11 @@ exports.getEvent = async function(query = {}) {
 	return await Events.findOne(query);
 }
 
+exports.getLatestEvent = async function(t) {
+	return (await Events.find({ type: t }).sort({ start: -1 }).limit(1))[0];
+};
+
+/*
 exports.getCalculatorEvent = async function(eventName) {
 	var event = cacheService.getCachedEvent();
 	if (!event || eventName != event.name) {
@@ -123,6 +128,7 @@ async function getFullEventData(eventName) {
 		Sentry.captureException(e);
 	}
 }
+*/
 
 exports.addEvent = async function(data, img) {
 	try {

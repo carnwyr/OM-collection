@@ -76,6 +76,69 @@ exports.getEventDetail = async function (req, res, next) {
 	}
 }
 
+exports.getCalculatorPage = function (req, res, next) {
+	switch (req.params.type.toLowerCase()) {
+		case "points":
+			return exports.getPointsCalculator(req, res, next);
+			break;
+		case "bonus":
+			return exports.getCheatCardBonusCalculator(req, res, next);
+			break;
+		case "bonus_(general)":
+			return exports.getGeneralBonusCalculator(req, res, next);
+			break;
+		case "ap":
+			return exports.getAPCalculator(req, res, next);
+			break;
+		default:
+			return next(createError(404));
+	}
+};
+
+exports.getPointsCalculator = async function(req, res, next) {
+	try {
+		return res.render("calculators/points", {
+			title: "Pop Quiz Calculator",
+			description: "Pop quiz calculator for obey me. Help you calculate the amount of stages/ap/d-energy/dp you need to spend to reach a certain point.",
+			data: await eventService.getLatestEvent("PopQuiz"),
+			user: req.user
+		});
+	} catch(e) {
+		return next(e);
+	}
+};
+
+exports.getCheatCardBonusCalculator = async function(req, res, next) {
+	try {
+		let latestEvent = await eventService.getLatestEvent("Nightmare");
+		return res.render("calculators/bonus", {
+			title: "Cheat Card Bonus",
+			description: "Cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
+			cards: await cardService.getCards({ source: { $in: [ latestEvent.name.en ] } }),
+			user: req.user
+		});
+	} catch(e) {
+		return next(e);
+	}
+};
+
+exports.getGeneralBonusCalculator = function(req, res, next) {
+	return res.render("calculators/generalBonus", {
+		title: "Cheat Card Bonus (General)",
+		description: "A general cheat card bonus calculator for NTT Solmare's otome game: Obey Me.",
+		user: req.user
+	});
+};
+
+exports.getAPCalculator = function(req, res, next) {
+	return res.render("calculators/ap", {
+		title: "AP Recovery",
+		description: "Karasu calculator that calculates when your AP will fill in Obey Me.",
+		user: req.user
+	});
+};
+
+/*
 exports.getCalculatorPage = async function (req, res, next) {
 	try {
 		var event = await eventService.getLatestEvent();
@@ -100,6 +163,7 @@ exports.calculate = async function(req, res) {
 	var result = eventCalculatorService.calculate(event, req.body.currentPoints, req.body.pointsPerBattle, req.body.isVip);
 	return res.json({ err: false, result: result });
 }
+*/
 
 exports.getEventAddPage = async function (req, res, next) {
 	try {
