@@ -13,6 +13,7 @@ dayjs.extend(timezone)
 
 const Events = require("../models/events");
 const APPresets = require("../models/apPresets");
+const Revisions = require("../models/revisions");
 
 const cacheService = require("../services/cacheService");
 const fileService = require("../services/fileService");
@@ -130,7 +131,7 @@ async function getFullEventData(eventName) {
 }
 */
 
-exports.addEvent = async function(data, img) {
+exports.addEvent = async function(data, img, user) {
 	try {
 		let event = await Events.findOne({ "name.en": data.name.en });
 		if (event) {
@@ -138,6 +139,13 @@ exports.addEvent = async function(data, img) {
 		}
 
 		await Events.create(data);
+		await Revisions.create({
+			title: data.name.en,
+      type: "event",
+    	user: user,
+      timestamp: new Date(),
+      data: data
+		});
 		await fileService.saveImage(img, null, data.name.en, "events");
 
 		return { err: null, message: "Event created!" };
