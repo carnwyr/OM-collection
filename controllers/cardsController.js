@@ -325,7 +325,7 @@ exports.updateCard = async function(req, res) {
 			throw new Error(result.message);
 		}
 
-		miscController.notifyAdmin(`Card updated. \`\`${req.user.name}\`\` just updated: \`\`${originalUniqueName}\`\`.`);
+		miscController.notifyAdmin(`Card updated. \`\`${req.user.name}\`\` just updated: \`\`${req.params.card}\`\`.`);
 
 		return res.json({ err: null, message: "Card updated!" });
 	} catch(e) {
