@@ -50,7 +50,6 @@ exports.addSuggestion = async function(req, res) {
 	let result = await suggestionService.addSuggestion({
 		user: req.user.name,
 		page: req.body.page,
-		old: req.body.originalData,
 		stringifiedJSON: req.body.data
 	});
 

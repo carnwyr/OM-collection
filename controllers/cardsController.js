@@ -296,7 +296,7 @@ exports.getEditCardPage = async function(req, res, next) {
 		return res.render("cardEdit", {
 			title: "Edit Card: " + cardData.name,
 			card: cardData,
-			pendingSuggestion: await suggestionService.getSuggestion({ path: "/card/" + encodeURIComponent(cardData.name) }),
+			pendingSuggestion: await suggestionService.getSuggestion({ status: "pending", page: "/card/" + cardData.uniqueName }),
 			user: req.user
 		});
 	} catch (e) {

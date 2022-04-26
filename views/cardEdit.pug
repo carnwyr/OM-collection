@@ -74,7 +74,7 @@ block content
 	div(class="container")
 		h1= title
 		if pendingSuggestion
-			div.card.card-body.text-center.mb-3: h5.m-0 Thank you for helping out! But, there's pending edits for this page. Please check back later.
+			div.card.card-body.text-center.mb-3: h5.m-0 Karasu is behind in reviewing edits. Please check back later. Thank you!
 		div.card.mb-4
 			if pendingSuggestion
 				div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);z-index:10;")
@@ -372,117 +372,135 @@ block content
 	template#dt
 		+treeTemplate()
 
-	if user.type === "Admin" || user.supportStatus.some(badge => badge.name === "trustedContributor")
+	if pendingSuggestion
 		script.
-			function readImage(upload) {
-				return new Promise((resolve, reject) => {
-					if (upload.files && upload.files[0]) {
-						let reader = new FileReader();
-						reader.onloadend = function (e) {
-							resolve(e.target.result);
-						};
-						try {
-							reader.readAsDataURL(upload.files[0]);
-						} catch(err) {
-							reject(err);
+			function submitChange() {
+				showAlert("danger", "Action not allowed!");
+			}
+	else
+		if user.type === "Admin"
+			script.
+				function readImage(upload) {
+					return new Promise((resolve, reject) => {
+						if (upload.files && upload.files[0]) {
+							let reader = new FileReader();
+							reader.onloadend = function (e) {
+								resolve(e.target.result);
+							};
+							try {
+								reader.readAsDataURL(upload.files[0]);
+							} catch(err) {
+								reject(err);
+							}
+						} else {
+							resolve('');
 						}
-					} else {
-						resolve('');
-					}
-				});
-			}
-			function prepareCardImages() {
-				var images = {};
-				var readL = readImage($('#uploadL')[0]);
-				var readLB = readImage($('#uploadLB')[0]);
-				var readS = readImage($('#uploadS')[0]);
-
-				Promise.all([readL, readLB, readS]).then(values => {
-					if (values[0]) images.L = values[0];
-					if (values[1]) images.LB = values[1];
-					if (values[2]) images.S = values[2];
-					sendRequest(images);
-				}, reason => {
-					showAlert("danger", "Can't load images\n" + reason.message);
-				});
-			}
-			function submitChange(e) {
-				e.preventDefault();
-				if (!validateFields()) {
-					return;
+					});
 				}
-				prepareCardImages();
-			}
-			function sendRequest(images) {
-				$.post(location.pathname, {
-					cardData: getCardData(),
-					images: images
-				}, function(result) {
-					if (result.err) {
-						showAlert("danger", result.message);
+				function prepareCardImages() {
+					var images = {};
+					var readL = readImage($('#uploadL')[0]);
+					var readLB = readImage($('#uploadLB')[0]);
+					var readS = readImage($('#uploadS')[0]);
+
+					Promise.all([readL, readLB, readS]).then(values => {
+						if (values[0]) images.L = values[0];
+						if (values[1]) images.LB = values[1];
+						if (values[2]) images.S = values[2];
+						sendRequest(images);
+					}, reason => {
+						showAlert("danger", "Can't load images\n" + reason.message);
+					});
+				}
+				function submitChange(e) {
+					e.preventDefault();
+					if (!validateFields()) {
 						return;
 					}
-					showAlert("success", result.message);
-				});
-			}
-
-	else
-		<div class="modal fade" id="suggestionModal" tabindex="-1" aria-labelledby="suggestionModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="suggestionModalLabel">Suggestion submitted :)</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					div.modal-body
-						p Thank you for your edit!
-						p If you would like to know the status of your edit, please check the
-							|
-							|
-							a(href="/suggestion") pending edits' page
-							| .
-						h5 IMPORTANT:
-						p If you make a new edit on the same page, <u>it will overwrite your previous edit</u>! So, make sure submit all of your edits at once!
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					prepareCardImages();
+				}
+				function sendRequest(images) {
+					$.post(location.pathname, {
+						cardData: getCardData(),
+						images: images
+					}, function(result) {
+						if (result.err) {
+							showAlert("danger", result.message);
+							return;
+						}
+						showAlert("success", result.message);
+					});
+				}
+		else if user.supportStatus.some(badge => badge.name === "trustedContributor")
+			script.
+				function submitChange(e) {
+					e.preventDefault();
+					let newData = JSON.stringify(getCardData());
+					if (newData === originalData) {
+						setCD(20);
+						showAlert("warning", "You didn't make any change.")
+						return;
+					}
+					if (!validateFields()) {
+						return;
+					}
+					setCD(60);
+					$.post(location.pathname, {
+						cardData: getCardData(),
+						images: null
+					}, function(result) {
+						if (result.err) {
+							showAlert("danger", result.message);
+							return;
+						}
+						showAlert("success", result.message);
+					});
+				}
+		else
+			<div class="modal fade" id="suggestionModal" tabindex="-1" aria-labelledby="suggestionModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="suggestionModalLabel">Suggestion submitted :)</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						div.modal-body
+							p Thank you for your edit!
+							p If you would like to know the status of your edit, please check the
+								|
+								|
+								a(href="/suggestion") pending edits' page
+								| .
+							h5 IMPORTANT:
+							p If you make a new edit on the same page, <u>it will overwrite your previous edit</u>! So, make sure submit all of your edits at once!
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		script.
-			function setCD(countdown) {
-				$("button#submit").prop("disabled", true);
-				let cd = setInterval(() => {
-					$("span#cd").text(--countdown + 's');
-					if (countdown === 0) {
-						clearInterval(cd);
-						$("span#cd").text('');
-						$("button#submit").prop("disabled", false);
-					}
-				}, 1000);
-			}
-			function submitChange() {
-				let newData = JSON.stringify(getCardData());
-				if (newData === originalData) {
-					setCD(20);
-					showAlert("warning", "You didn't make any change.")
-					return;
-				}
-				setCD(60);
-				$.post("/suggestion/add", {
-					page: location.pathname.replace("/edit", ''),
-					originalData: originalData,
-					data: newData
-				}, function(result) {
-					if (result.err) {
-						showAlert("danger", result.message);
+			script.
+				function submitChange() {
+					let newData = JSON.stringify(getCardData());
+					if (newData === originalData) {
+						setCD(20);
+						showAlert("warning", "You didn't make any change.")
 						return;
 					}
-					$("#suggestionModal").modal("show");
-				});
-			}
+					setCD(60);
+					$.post("/suggestion/add", {
+						page: location.pathname.replace("/edit", ''),
+						data: newData
+					}, function(result) {
+						if (result.err) {
+							showAlert("danger", result.message);
+							return;
+						}
+						$("#suggestionModal").modal("show");
+					});
+				}
 
 	style.
 		.bootstrap-select.item-select>.dropdown-menu {
