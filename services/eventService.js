@@ -34,10 +34,6 @@ exports.getLatestEvent = async function(t) {
 	return (await Events.find({ type: t }).sort({ start: -1 }).limit(1))[0];
 };
 
-exports.getLatestFullPopQuiz = async function() {
-	return [];
-};
-
 /*
 exports.getCalculatorEvent = async function(eventName) {
 	var event = cacheService.getCachedEvent();
