@@ -24,7 +24,7 @@ exports.getAskKarasuPage = async function (req, res, next) {
 		};
 
 		if (req.params.question in dict === false) {
-			throw createError(404);
+			return next(createError(404));
 		}
 
 		speed = q === "skill_charge_time";
