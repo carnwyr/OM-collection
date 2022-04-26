@@ -73,7 +73,11 @@ block content
 	div#alert(role="alert")
 	div(class="container")
 		h1= title
+		if pendingSuggestion
+			div.card.card-body.text-center.mb-3: h5.m-0 Thank you for helping out! But, there's pending edits for this page. Please check back later.
 		div.card.mb-4
+			if pendingSuggestion
+				div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);z-index:10;")
 			div.card-body
 				if !user.isAdmin
 					p.text-center If in doubt, ask for help in our
@@ -368,7 +372,7 @@ block content
 	template#dt
 		+treeTemplate()
 
-	if user.type === "Admin"
+	if user.type === "Admin" || user.supportStatus.some(badge => badge.name === "trustedContributor")
 		script.
 			function readImage(upload) {
 				return new Promise((resolve, reject) => {

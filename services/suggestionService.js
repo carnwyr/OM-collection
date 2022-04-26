@@ -6,7 +6,6 @@ exports.getSuggestion = async function(query = {}) {
   try {
     return await Suggestions.findOne(query);
   } catch(e) {
-		console.error(e);
     Sentry.captureException(e);
 		return [];
 	}
@@ -16,7 +15,6 @@ exports.getSuggestionList = async function(query = {}, sort = {}) {
   try {
     return await Suggestions.find(query).sort(sort);
   } catch(e) {
-    // console.error(e);
     Sentry.captureException(e);
     return [];
   }

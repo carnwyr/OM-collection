@@ -560,10 +560,10 @@ exports.banUser = async function(req, res) {
   return res.json(await userService.banUser(req.body.name));
 }
 
-exports.canEdit = function() {
+exports.canEdit = function(type = "regular") {
   return function(req, res, next) {
-    if (!req.user ||
-        req.user.supportStatus.some(badge => badge.name === "bannedFromMakingSuggestions")) {
+    if (!req.user || req.user.supportStatus.some(badge => badge.name === "bannedFromMakingSuggestions") ||
+        (type === "trusted" && (req.user.type !== "Admin" && !req.user.supportStatus.some(badge => badge.name === "trustedContributor")))) {
       return next(createError(401, "Please log in to access this page."));
     }
     return next();
