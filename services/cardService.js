@@ -207,7 +207,7 @@ exports.updateCard = async function(data) {
 	var originalUniqueName = data.originalUniqueName;
 	var newUniqueName = data.cardData.uniqueName;
   var promiseList = [];
-  var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData);
+  var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData, { returnDocument: "after" });
   var promiseCard2 = promiseCard.then((result) => {
     return Revisions.create({
       title: result.name,
@@ -236,32 +236,34 @@ exports.updateCard = async function(data) {
 		.catch(reason => { return { err: true, message: reason.message }; });
 };
 
-exports.addNewCard = async function(cardData, images = "") {
+exports.addNewCard = async function(cardData, images = "", creator) {
 	try {
-		var promiseList = [];
-
 		if (cardData.isHidden == "true") {
 			if (cardData.number === "") {
 				cardData.number = await HiddenCards.estimatedDocumentCount() + 1;
 			}
-			promiseList.push(HiddenCards.create(cardData));
+			await HiddenCards.create(cardData);
 		} else {
 			if (cardData.number === "") {
 				cardData.number = await getLatestCardNum(cardData.rarity);
 			}
-			promiseList.push(Cards.create(cardData));
+			await Cards.create(cardData);
+      await Revisions.create({
+        title: cardData.name,
+        type: "card",
+      	user: creator,
+        timestamp: new Date(),
+        data: cardData
+      });
 		}
 
 		if (images) {
-			var promiseL = fileService.saveImage(images.L, null, cardData.uniqueName, "cards/L");
-			var promiseLB = fileService.saveImage(images.LB, null, cardData.uniqueName + "_b", "cards/L");
-			var promiseS = fileService.saveImage(images.S, null, cardData.uniqueName, "cards/S");
-			promiseList.push(promiseL, promiseLB, promiseS);
+			await fileService.saveImage(images.L, null, cardData.uniqueName, "cards/L");
+			await fileService.saveImage(images.LB, null, cardData.uniqueName + "_b", "cards/L");
+			await fileService.saveImage(images.S, null, cardData.uniqueName, "cards/S");
 		}
 
-		return await Promise.all(promiseList)
-			.then(() => { return { err: false, message: "Card added!" }; })
-			.catch(reason => { return { err: true, message: reason.message }; });
+		return { err: null, message: "Card added!" };
 	} catch (err) {
 		Sentry.captureException(err);
 		return { err: true, message: err.message };

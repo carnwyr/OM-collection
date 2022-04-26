@@ -306,7 +306,7 @@ exports.getEditCardPage = async function(req, res, next) {
 };
 
 exports.addNewCard = async function(req, res) {
-	var result = await cardService.addNewCard(req.body.cardData, req.body.images);
+	var result = await cardService.addNewCard(req.body.cardData, req.body.images, req.user.name);
 	return res.json(result);
 };
 
