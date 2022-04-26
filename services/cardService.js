@@ -9,11 +9,11 @@ const fileService = require("../services/fileService");
 const userService = require("../services/userService");
 
 exports.getCards = async function (query = {}, returnVal = {}) {
-  return await Cards.find(query, returnVal).sort({ number: -1 });
-}
+	return await Cards.find(query, returnVal).sort({ number: -1 });
+};
 
 exports.aggregateCards = async function(pipeline) {
-  return await Cards.aggregate(pipeline);
+	return await Cards.aggregate(pipeline);
 };
 
 exports.getHiddenCards = async function () {
@@ -133,67 +133,67 @@ function getCardCounts(card) {
 }
 
 exports.getTotalTreeStats = async function() {
-  try {
-    return await Cards.aggregate([
-      {
-          '$project': {
-              'dt': 1
-          }
-      }, {
-          '$unwind': {
-              'path': '$dt',
-              'preserveNullAndEmptyArrays': false
-          }
-      }, {
-          '$replaceRoot': {
-              'newRoot': {
-                  '$mergeObjects': [
-                      '$dt'
-                  ]
-              }
-          }
-      }, {
-          '$match': {
-              'type': 'item', 'reward': { $not: { $regex: /\)$/g } }
-          }
-      }, {
-          '$group': {
-              '_id': '$reward',
-              'count': {
-                  '$count': {}
-              }
-          }
-      }, {
-        '$sort': {
-          '_id': 1
-        }
-      }
-    ]);
-  } catch(e) {
-    console.error(e);
-    Sentry.captureException(e);
-    return [];
-  }
+	try {
+		return await Cards.aggregate([
+			{
+				"$project": {
+					"dt": 1
+				}
+			}, {
+				"$unwind": {
+					"path": "$dt",
+					"preserveNullAndEmptyArrays": false
+				}
+			}, {
+				"$replaceRoot": {
+					"newRoot": {
+						"$mergeObjects": [
+							"$dt"
+						]
+					}
+				}
+			}, {
+				"$match": {
+					"type": "item", "reward": { $not: { $regex: /\)$/g } }
+				}
+			}, {
+				"$group": {
+					"_id": "$reward",
+					"count": {
+						"$count": {}
+					}
+				}
+			}, {
+				"$sort": {
+					"_id": 1
+				}
+			}
+		]);
+	} catch(e) {
+		console.error(e);
+		Sentry.captureException(e);
+		return [];
+	}
 };
 
 exports.getCardsWithItem = async function(matchStage) {
 	try {
 		return await Cards.aggregate([
 			matchStage, {
-				'$unwind': {
-					'path': '$dt',
-					'preserveNullAndEmptyArrays': false
+				"$unwind": {
+					"path": "$dt",
+					"preserveNullAndEmptyArrays": false
 				}
 			}, matchStage, {
-				'$sort': {
-					'number': -1
+				"$sort": {
+					"number": -1
 				}
 			}, {
-				'$project': {
-					'name': 1,
-					'ja_name': 1,
-					'uniqueName': 1,
-					'dt': 1
+				"$project": {
+					"name": 1,
+					"ja_name": 1,
+					"uniqueName": 1,
+					"dt": 1
 				}
 			}
 		]);
@@ -206,18 +206,18 @@ exports.getCardsWithItem = async function(matchStage) {
 exports.updateCard = async function(data) {
 	var originalUniqueName = data.originalUniqueName;
 	var newUniqueName = data.cardData.uniqueName;
-  var promiseList = [];
-  var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData, { returnDocument: "after" });
-  var promiseCard2 = promiseCard.then((result) => {
-    return Revisions.create({
-      title: result.name,
-      type: "card",
-    	user: data.user,
-      timestamp: new Date(),
-      data: result
-    });
-  });
-  promiseList.push(promiseCard2);
+	var promiseList = [];
+	var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData, { returnDocument: "after" });
+	var promiseCard2 = promiseCard.then((result) => {
+		return Revisions.create({
+			title: result.name,
+			type: "card",
+			user: data.user,
+			timestamp: new Date(),
+			data: result
+		});
+	});
+	promiseList.push(promiseCard2);
 
 	if (newUniqueName !== originalUniqueName) {
 		var promiseCollections = userService.renameCardInCollections(originalUniqueName, newUniqueName);
@@ -248,13 +248,13 @@ exports.addNewCard = async function(cardData, images = "", creator) {
 				cardData.number = await getLatestCardNum(cardData.rarity);
 			}
 			await Cards.create(cardData);
-      await Revisions.create({
-        title: cardData.name,
-        type: "card",
-      	user: creator,
-        timestamp: new Date(),
-        data: cardData
-      });
+			await Revisions.create({
+				title: cardData.name,
+				type: "card",
+				user: creator,
+				timestamp: new Date(),
+				data: cardData
+			});
 		}
 
 		if (images) {
