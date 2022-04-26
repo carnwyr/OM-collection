@@ -87,7 +87,7 @@ exports.getCalculatorPage = function (req, res, next) {
 		case "bonus_(general)":
 			return exports.getGeneralBonusCalculator(req, res, next);
 			break;
-		case "ap":
+		case "ap_recovery":
 			return exports.getAPCalculator(req, res, next);
 			break;
 		default:
