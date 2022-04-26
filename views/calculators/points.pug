@@ -59,10 +59,10 @@ block content
               h5#apreq --
       -
         function ended() {
-          return new Date() > new Date(JSON.stringify(data.end));
+          return new Date() > new Date(data.end);
         }
       if ended()
-        div.w-100.h-100(style="position:absolute;background:rgba(255,255,255,.8);border-radius:4px;")
+        div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
             h5 This event has ended.
 
