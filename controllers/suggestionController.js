@@ -1,3 +1,4 @@
+const miscController = require("../controllers/miscController");
 const suggestionService = require("../services/suggestionService");
 const cardService = require("../services/cardService");
 const eventService = require("../services/eventService");
@@ -54,7 +55,7 @@ exports.addSuggestion = async function(req, res) {
 	});
 
 	if (!result.err) {
-		notifyAdmin(`New suggestion from \`\`${req.user.name}\`\` on \`\`${req.body.page}\`\`.`);
+		miscController.notifyAdmin(`New suggestion from \`\`${req.user.name}\`\` on \`\`${req.body.page}\`\`.`);
 	}
 
 	return res.json(result);
@@ -90,27 +91,3 @@ exports.approveSuggestion = async function(req, res) {
 exports.refuseSuggestion = async function(req, res) {
 	return res.json(await suggestionService.updateSuggestionStatus(req.body._id, "refused", req.body.reason));
 };
-
-function notifyAdmin(message) {
-	const https = require("https");
-	const data = JSON.stringify({ content: message });
-	const options = {
-		hostname: "discord.com",
-		port: 443,
-		path: process.env.WEBHOOK,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			"Content-Length": data.length
-		}
-	};
-
-	const r = https.request(options);
-
-	r.on("error", error => {
-		Sentry.captureException(error);
-	});
-
-	r.write(data);
-	r.end();
-}

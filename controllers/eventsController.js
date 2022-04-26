@@ -200,6 +200,8 @@ exports.updateEvent = async function (req, res) {
 	try {
 		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		let result = await eventService.updateEvent(eventName, req.body.data, req.body.img);
+		if (result.err) throw new Error(result.message);
+		miscController.notifyAdmin(`Event updated. \`\`${req.user.name}\`\` just updated: \`\`${originalUniqueName}\`\`.`);
 		return res.json(result);
 	} catch(e) {
 		Sentry.captureException(e);

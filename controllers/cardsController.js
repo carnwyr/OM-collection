@@ -3,6 +3,8 @@ const async = require("async");
 const fs = require("fs");
 const Sentry = require("@sentry/node");
 
+const miscController = require("../controllers/miscController");
+
 const cardService = require("../services/cardService");
 const eventService = require("../services/eventService");
 const userService = require("../services/userService");
@@ -296,7 +298,7 @@ exports.getEditCardPage = async function(req, res, next) {
 		return res.render("cardEdit", {
 			title: "Edit Card: " + cardData.name,
 			card: cardData,
-			pendingSuggestion: await suggestionService.getSuggestion({ status: "pending", page: "/card/" + cardData.uniqueName }),
+			pendingSuggestion: await suggestionService.getSuggestion({ status: "pending", page: "/card/" + cardData.uniqueName, user: { "$ne": req.user.name } }),
 			user: req.user
 		});
 	} catch (e) {
@@ -322,6 +324,8 @@ exports.updateCard = async function(req, res) {
 		if (result.err) {
 			throw new Error(result.message);
 		}
+
+		miscController.notifyAdmin(`Card updated. \`\`${req.user.name}\`\` just updated: \`\`${originalUniqueName}\`\`.`);
 
 		return res.json({ err: null, message: "Card updated!" });
 	} catch(e) {
