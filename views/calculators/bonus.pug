@@ -39,7 +39,7 @@ block content
                 tbody
                   each card in cards
                     tr
-                      td: a(href="/card/" + getURL(card.uniqueName)): img(src="/images/cards/S/" + card.uniqueName + ".jpg" style="width:80px;")
+                      td: a(href="/card/" + getURL(card.name)): img(src="/images/cards/S/" + card.uniqueName + ".jpg" style="width:80px;")
                       td
                         div.form-group: input.form-control.w-auto.mx-auto(type="number" name=card.rarity)
                         span 0
