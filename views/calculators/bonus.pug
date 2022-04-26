@@ -12,10 +12,22 @@ block content
           |
           | while we work on updating data!
       else
-        div.card.card-body
-          h5.card-title Information
-          p.card-text
         div.row.justify-content-center
+          div.col-12.col-md-4
+            div.p-3(style="border:2px solid var(--secondary);border-radius:5px;")
+              h5.card-title How to use
+              p.card-text Input your cards' skill level after each individual box.
+              p.card-text Just the level.
+              p.card-text For example, if the level is LV 9/10, then just input 9 into the box.
+              br
+              h5.card-title Disclaimer
+              p.card-text The calculator is only as accurate as your input.
+              p.card-text Because we are only fans, we do not have access to dev's data. This means that it is possible that the result might be wrong.
+              p.card-text In case of mistakes, please screenshot your in-game card level and karasu-os.com webpage. Then, report to our discord server
+                |
+                |
+                a(href="https://discord.gg/Y3KMW7U") here
+                | . Thank you!
           // TODO: use div instead
           div.col-12.col-md-8.table-responsive
             form#input
@@ -31,11 +43,11 @@ block content
                       td
                         div.form-group: input.form-control.w-auto.mx-auto(type="number" name=card.rarity)
                         span 0
-        div.text-center
-          h5 Total bonus
-          p#totalbonus 0
-          h5 Total points per stage clear
-          p#total 120
+            div.text-center
+              h5 Total bonus
+              p#totalbonus 0
+              h5 Total points per stage clear
+              p#total 120
   style.
     td {
       vertical-align: middle !important;
