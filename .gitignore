@@ -104,8 +104,8 @@ dist
 .tern-port
 
 # project specific files
-# entire image folder
-public/images/
+public/images/cards/
+public/images/events/
 
 # temp files
 temp/
