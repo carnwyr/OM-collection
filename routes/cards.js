@@ -9,11 +9,11 @@ var userController = require('../controllers/userController');
 
 // Get card edit page
 router.get('/new', userController.hasAccess("Admin"), cardsController.getEditCardPage);
-router.get('/:card/edit', userController.canEdit(), cardsController.getEditCardPage);
+router.get('/:card/edit', userController.canEdit("regular"), cardsController.getEditCardPage);
 
 // Edit or add card
 router.post('/new', userController.hasAccess("Admin"), cardsController.addNewCard);
-router.post('/:card/edit', userController.hasAccess("Admin"), cardsController.updateCard);
+router.post('/:card/edit', userController.canEdit("trusted"), cardsController.updateCard);
 
 // Make hidden card available to everyone
 router.get('/:card/makePublic', userController.hasAccess("Admin"), cardsController.makeCardPublic);

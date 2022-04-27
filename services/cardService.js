@@ -1,5 +1,6 @@
 const Cards = require("../models/cards");
 const HiddenCards = require("../models/hiddenCards.js");
+const Revisions = require("../models/revisions");
 
 const Sentry = require("@sentry/node");
 const createError = require("http-errors");
@@ -8,11 +9,11 @@ const fileService = require("../services/fileService");
 const userService = require("../services/userService");
 
 exports.getCards = async function (query = {}, returnVal = {}) {
-  return await Cards.find(query, returnVal).sort({ number: -1 });
-}
+	return await Cards.find(query, returnVal).sort({ number: -1 });
+};
 
 exports.aggregateCards = async function(pipeline) {
-  return await Cards.aggregate(pipeline);
+	return await Cards.aggregate(pipeline);
 };
 
 exports.getHiddenCards = async function () {
@@ -132,67 +133,67 @@ function getCardCounts(card) {
 }
 
 exports.getTotalTreeStats = async function() {
-  try {
-    return await Cards.aggregate([
-      {
-          '$project': {
-              'dt': 1
-          }
-      }, {
-          '$unwind': {
-              'path': '$dt',
-              'preserveNullAndEmptyArrays': false
-          }
-      }, {
-          '$replaceRoot': {
-              'newRoot': {
-                  '$mergeObjects': [
-                      '$dt'
-                  ]
-              }
-          }
-      }, {
-          '$match': {
-              'type': 'item', 'reward': { $not: { $regex: /\)$/g } }
-          }
-      }, {
-          '$group': {
-              '_id': '$reward',
-              'count': {
-                  '$count': {}
-              }
-          }
-      }, {
-        '$sort': {
-          '_id': 1
-        }
-      }
-    ]);
-  } catch(e) {
-    console.error(e);
-    Sentry.captureException(e);
-    return [];
-  }
+	try {
+		return await Cards.aggregate([
+			{
+				"$project": {
+					"dt": 1
+				}
+			}, {
+				"$unwind": {
+					"path": "$dt",
+					"preserveNullAndEmptyArrays": false
+				}
+			}, {
+				"$replaceRoot": {
+					"newRoot": {
+						"$mergeObjects": [
+							"$dt"
+						]
+					}
+				}
+			}, {
+				"$match": {
+					"type": "item", "reward": { $not: { $regex: /\)$/g } }
+				}
+			}, {
+				"$group": {
+					"_id": "$reward",
+					"count": {
+						"$count": {}
+					}
+				}
+			}, {
+				"$sort": {
+					"_id": 1
+				}
+			}
+		]);
+	} catch(e) {
+		console.error(e);
+		Sentry.captureException(e);
+		return [];
+	}
 };
 
 exports.getCardsWithItem = async function(matchStage) {
 	try {
 		return await Cards.aggregate([
 			matchStage, {
-				'$unwind': {
-					'path': '$dt',
-					'preserveNullAndEmptyArrays': false
+				"$unwind": {
+					"path": "$dt",
+					"preserveNullAndEmptyArrays": false
 				}
 			}, matchStage, {
-				'$sort': {
-					'number': -1
+				"$sort": {
+					"number": -1
 				}
 			}, {
-				'$project': {
-					'name': 1,
-					'ja_name': 1,
-					'uniqueName': 1,
-					'dt': 1
+				"$project": {
+					"name": 1,
+					"ja_name": 1,
+					"uniqueName": 1,
+					"dt": 1
 				}
 			}
 		]);
@@ -205,50 +206,64 @@ exports.getCardsWithItem = async function(matchStage) {
 exports.updateCard = async function(data) {
 	var originalUniqueName = data.originalUniqueName;
 	var newUniqueName = data.cardData.uniqueName;
-	var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData);
-	var promiseList = [promiseCard];
+	var promiseList = [];
+	var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData, { returnDocument: "after" });
+	var promiseCard2 = promiseCard.then((result) => {
+		return Revisions.create({
+			title: result.name,
+			type: "card",
+			user: data.user,
+			timestamp: new Date(),
+			data: result
+		});
+	});
+	promiseList.push(promiseCard2);
 
 	if (newUniqueName !== originalUniqueName) {
 		var promiseCollections = userService.renameCardInCollections(originalUniqueName, newUniqueName);
 		promiseList.push(promiseCollections);
 	}
 
-	var promiseL = fileService.saveImage(data.images.L, originalUniqueName, newUniqueName, "cards/L");
-	var promiseLB = fileService.saveImage(data.images.LB, originalUniqueName + "_b", newUniqueName + "_b", "cards/L");
-	var promiseS = fileService.saveImage(data.images.S, originalUniqueName, newUniqueName, "cards/S");
-	promiseList.push(promiseL, promiseLB, promiseS);
+	if (data.images) {
+		var promiseL = fileService.saveImage(data.images.L, originalUniqueName, newUniqueName, "cards/L");
+		var promiseLB = fileService.saveImage(data.images.LB, originalUniqueName + "_b", newUniqueName + "_b", "cards/L");
+		var promiseS = fileService.saveImage(data.images.S, originalUniqueName, newUniqueName, "cards/S");
+		promiseList.push(promiseL, promiseLB, promiseS);
+	}
 
 	return await Promise.all(promiseList)
 		.then(() => { return { err: false, message: "Card successfully updated!" }; })
 		.catch(reason => { return { err: true, message: reason.message }; });
 };
 
-exports.addNewCard = async function(cardData, images = "") {
+exports.addNewCard = async function(cardData, images = "", creator) {
 	try {
-		var promiseList = [];
-
 		if (cardData.isHidden == "true") {
 			if (cardData.number === "") {
 				cardData.number = await HiddenCards.estimatedDocumentCount() + 1;
 			}
-			promiseList.push(HiddenCards.create(cardData));
+			await HiddenCards.create(cardData);
 		} else {
 			if (cardData.number === "") {
 				cardData.number = await getLatestCardNum(cardData.rarity);
 			}
-			promiseList.push(Cards.create(cardData));
+			await Cards.create(cardData);
+			await Revisions.create({
+				title: cardData.name,
+				type: "card",
+				user: creator,
+				timestamp: new Date(),
+				data: cardData
+			});
 		}
 
 		if (images) {
-			var promiseL = fileService.saveImage(images.L, null, cardData.uniqueName, "cards/L");
-			var promiseLB = fileService.saveImage(images.LB, null, cardData.uniqueName + "_b", "cards/L");
-			var promiseS = fileService.saveImage(images.S, null, cardData.uniqueName, "cards/S");
-			promiseList.push(promiseL, promiseLB, promiseS);
+			await fileService.saveImage(images.L, null, cardData.uniqueName, "cards/L");
+			await fileService.saveImage(images.LB, null, cardData.uniqueName + "_b", "cards/L");
+			await fileService.saveImage(images.S, null, cardData.uniqueName, "cards/S");
 		}
 
-		return await Promise.all(promiseList)
-			.then(() => { return { err: false, message: "Card added!" }; })
-			.catch(reason => { return { err: true, message: reason.message }; });
+		return { err: null, message: "Card added!" };
 	} catch (err) {
 		Sentry.captureException(err);
 		return { err: true, message: err.message };

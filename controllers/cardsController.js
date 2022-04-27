@@ -3,10 +3,13 @@ const async = require("async");
 const fs = require("fs");
 const Sentry = require("@sentry/node");
 
+const miscController = require("../controllers/miscController");
+
 const cardService = require("../services/cardService");
 const eventService = require("../services/eventService");
 const userService = require("../services/userService");
 const fileService = require("../services/fileService");
+const suggestionService = require("../services/suggestionService");
 
 exports.index = function (req, res, next) {
 	return res.render("index", {
@@ -286,28 +289,33 @@ exports.getEditCardPage = async function(req, res, next) {
 	}
 
 	try {
-		var cardData = await cardService.getCard({ uniqueName: req.params.card });
+		let cardData = await cardService.getCard({ uniqueName: req.params.card });
 
 		if (!cardData) {
 			throw createError(404, "Card not found");
 		}
 
-		return res.render("cardEdit", { title: "Edit Card", card: cardData, user: req.user });
+		return res.render("cardEdit", {
+			title: "Edit Card: " + cardData.name,
+			card: cardData,
+			pendingSuggestion: await suggestionService.getSuggestion({ status: "pending", page: "/card/" + cardData.uniqueName, user: { "$ne": req.user.name } }),
+			user: req.user
+		});
 	} catch (e) {
-		console.error(e.message);
 		Sentry.captureException(e);
-		next(e);
+		return next(e);
 	}
 };
 
 exports.addNewCard = async function(req, res) {
-	var result = await cardService.addNewCard(req.body.cardData, req.body.images);
+	var result = await cardService.addNewCard(req.body.cardData, req.body.images, req.user.name);
 	return res.json(result);
 };
 
 exports.updateCard = async function(req, res) {
 	try {
 		let result = await cardService.updateCard({
+			user: req.user.name,
 			originalUniqueName: req.params.card,
 			cardData: req.body.cardData,
 			images: req.body.images
@@ -317,9 +325,11 @@ exports.updateCard = async function(req, res) {
 			throw new Error(result.message);
 		}
 
+		miscController.notifyAdmin(`Card updated. \`\`${req.user.name}\`\` just updated: \`\`${req.params.card}\`\`.`);
+
 		return res.json({ err: null, message: "Card updated!" });
 	} catch(e) {
-		console.log(e);
+		Sentry.captureException(e);
 		return res.json({ err: true, message: e.message });
 	}
 };

@@ -1,18 +1,19 @@
-const Sentry = require('@sentry/node');
+const Sentry = require("@sentry/node");
 const async = require("async");
-const dayjs = require('dayjs');
+const dayjs = require("dayjs");
 const createError = require("http-errors");
 
-const customParseFormat = require('dayjs/plugin/customParseFormat')
-const utc = require('dayjs/plugin/utc')
-const timezone = require('dayjs/plugin/timezone')
+const customParseFormat = require("dayjs/plugin/customParseFormat");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
 
-dayjs.extend(customParseFormat)
-dayjs.extend(utc)
-dayjs.extend(timezone)
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const Events = require("../models/events");
 const APPresets = require("../models/apPresets");
+const Revisions = require("../models/revisions");
 
 const cacheService = require("../services/cacheService");
 const fileService = require("../services/fileService");
@@ -24,11 +25,11 @@ exports.getEvents = async function(condition = {}, sort = { start: 1 }) {
 		Sentry.captureException(e);
 		return [];
 	}
-}
+};
 
 exports.getEvent = async function(query = {}) {
 	return await Events.findOne(query);
-}
+};
 
 exports.getLatestEvent = async function(t) {
 	return (await Events.find({ type: t }).sort({ start: -1 }).limit(1))[0];
@@ -36,101 +37,101 @@ exports.getLatestEvent = async function(t) {
 
 /*
 exports.getCalculatorEvent = async function(eventName) {
-	var event = cacheService.getCachedEvent();
-	if (!event || eventName != event.name) {
-		event = await getFullEventData(eventName);
-	}
+var event = cacheService.getCachedEvent();
+if (!event || eventName != event.name) {
+event = await getFullEventData(eventName);
+}
 
-	return event;
+return event;
 }
 
 exports.getLatestEvent = async function () {
-	var latestEventName = await getLatestEventName();
+var latestEventName = await getLatestEventName();
 
-	var cachedEvent = cacheService.getCachedEvent();
-	if (cachedEvent && cachedEvent.name === latestEventName) {
-		return cachedEvent;
-	}
+var cachedEvent = cacheService.getCachedEvent();
+if (cachedEvent && cachedEvent.name === latestEventName) {
+return cachedEvent;
+}
 
-	try {
-		var latestEventData = await getFullEventData(latestEventName);
-		cacheService.setCachedEvent(latestEventData);
-		return latestEventData;
-	} catch (e) {
-		// console.error(e);
-		Sentry.captureException(e);
-		return {};
-	}
+try {
+var latestEventData = await getFullEventData(latestEventName);
+cacheService.setCachedEvent(latestEventData);
+return latestEventData;
+} catch (e) {
+// console.error(e);
+Sentry.captureException(e);
+return {};
+}
 }
 
 async function getLatestEventName() {
-	var currentTime = new Date();
-	try {
-		var latestEvent = await Events.find({
-			start: { "$lte": currentTime },
-			type: { "$ne": "Nightmare" }
-		}).sort({ end: -1 }).limit(1);
-		if (!latestEvent[0] || !latestEvent[0].name) return;
+var currentTime = new Date();
+try {
+var latestEvent = await Events.find({
+start: { "$lte": currentTime },
+type: { "$ne": "Nightmare" }
+}).sort({ end: -1 }).limit(1);
+if (!latestEvent[0] || !latestEvent[0].name) return;
 
-		return latestEvent[0].name.en;
-	} catch (e) {
-		console.error(e);
-		Sentry.captureException(e);
-	}
+return latestEvent[0].name.en;
+} catch (e) {
+console.error(e);
+Sentry.captureException(e);
+}
 }
 
 exports.getLatestEventData = async function () {
-	var latestEventName = await getLatestEventName();
-	if (!latestEventName) return;
+var latestEventName = await getLatestEventName();
+if (!latestEventName) return;
 
-	var latestEventData = await getFullEventData(latestEventName);
-	return latestEventData;
+var latestEventData = await getFullEventData(latestEventName);
+return latestEventData;
 }
 
 async function getFullEventData(eventName) {
-	try {
-		var event = await Events.aggregate([
-			{ $match: { "name.en": eventName }},
-			{
-				$unwind: {
-					"path": "$rewards",
-					"preserveNullAndEmptyArrays": true
-				}},
-			{ $lookup: {
-				from: "cards",
-				localField: "rewards.card",
-				foreignField: "name",
-				as: "rewards.card"
-			}},
-			{ $unwind: { path: "$rewards.card", preserveNullAndEmptyArrays: true }},
-			{ $project: {
-				"rewards.card.attribute": 0,
-				"rewards.card.type": 0,
-				"rewards.card.rarity": 0,
-				"rewards.card.characters": 0
-			}},
-			{
-				$sort: {
-					"rewards.points": -1,
-					"rewards.card.number": -1
-			}},
-			{ $group: {
-				_id: "$_id",
-				temp: { "$first": "$$ROOT" },
-				rewards: { "$push": "$rewards" }
-			}},
-			{ $replaceRoot: { "newRoot": { "$mergeObjects": ["$temp", { rewards: "$rewards" }]}}}
-		]);
+try {
+var event = await Events.aggregate([
+{ $match: { "name.en": eventName }},
+{
+$unwind: {
+"path": "$rewards",
+"preserveNullAndEmptyArrays": true
+}},
+{ $lookup: {
+from: "cards",
+localField: "rewards.card",
+foreignField: "name",
+as: "rewards.card"
+}},
+{ $unwind: { path: "$rewards.card", preserveNullAndEmptyArrays: true }},
+{ $project: {
+"rewards.card.attribute": 0,
+"rewards.card.type": 0,
+"rewards.card.rarity": 0,
+"rewards.card.characters": 0
+}},
+{
+$sort: {
+"rewards.points": -1,
+"rewards.card.number": -1
+}},
+{ $group: {
+_id: "$_id",
+temp: { "$first": "$$ROOT" },
+rewards: { "$push": "$rewards" }
+}},
+{ $replaceRoot: { "newRoot": { "$mergeObjects": ["$temp", { rewards: "$rewards" }]}}}
+]);
 
-		return event?.length ? event[0] : null;
-	} catch (e) {
-		console.error(e);
-		Sentry.captureException(e);
-	}
+return event?.length ? event[0] : null;
+} catch (e) {
+console.error(e);
+Sentry.captureException(e);
+}
 }
 */
 
-exports.addEvent = async function(data, img) {
+exports.addEvent = async function(data, img, user) {
 	try {
 		let event = await Events.findOne({ "name.en": data.name.en });
 		if (event) {
@@ -138,6 +139,13 @@ exports.addEvent = async function(data, img) {
 		}
 
 		await Events.create(data);
+		await Revisions.create({
+			title: data.name.en,
+			type: "event",
+			user: user,
+			timestamp: new Date(),
+			data: data
+		});
 		await fileService.saveImage(img, null, data.name.en, "events");
 
 		return { err: null, message: "Event created!" };
@@ -145,7 +153,7 @@ exports.addEvent = async function(data, img) {
 		Sentry.captureException(e);
 		return { err: true, message: e.message };
 	}
-}
+};
 
 exports.updateEvent = async function(originalName, data, img = null) {
 	try {
@@ -170,7 +178,7 @@ exports.updateEvent = async function(originalName, data, img = null) {
 		Sentry.captureException(e);
 		return { err: true, message: e.message };
 	}
-}
+};
 
 exports.deleteEvent = async function(eventName) {
 	try {
@@ -183,15 +191,15 @@ exports.deleteEvent = async function(eventName) {
 		Sentry.captureException(err);
 		return { err: true, message: err.message };
 	}
-}
+};
 
 exports.getChangeStream = function() {
 	return Events.watch();
-}
+};
 
 exports.getDefaultEventData = function() {
-	var start = dayjs.utc().startOf('day').hour(1);
-	var end = dayjs.utc().startOf('day').hour(6);
+	var start = dayjs.utc().startOf("day").hour(1);
+	var end = dayjs.utc().startOf("day").hour(6);
 	var data = {
 		name: {},
 		start: start,
@@ -201,10 +209,10 @@ exports.getDefaultEventData = function() {
 		pageCost: 100000
 	};
 	return data;
-}
+};
 
 function stringToDateTime(dateString) {
-	return dayjs(dateString).format('YYYY-MM-DDTHH:mm:ss.000+00:00');
+	return dayjs(dateString).format("YYYY-MM-DDTHH:mm:ss.000+00:00");
 }
 
 exports.getAPPresets = async function () {
@@ -212,4 +220,4 @@ exports.getAPPresets = async function () {
 	var apPresetsMap = {};
 	apPresets.forEach(x => apPresetsMap[x.name] = x.rewards);
 	return apPresetsMap;
-}
+};

@@ -1,4 +1,5 @@
 const cacheService = require("../services/cacheService");
+const https = require("https");
 
 exports.privacyPolicy = function(req, res, next) {
 	return res.render("policies", { title: "Privacy Policy", user: req.user });
@@ -14,4 +15,27 @@ exports.surpriseGuest = async function(req, res, next) {
 	} catch(e) {
 		return next(e);
 	}
+};
+
+exports.notifyAdmin = function(message) {
+	const data = JSON.stringify({ content: message });
+	const options = {
+		hostname: "discord.com",
+		port: 443,
+		path: process.env.WEBHOOK,
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Content-Length": data.length
+		}
+	};
+
+	const r = https.request(options);
+
+	r.on("error", error => {
+		Sentry.captureException(error);
+	});
+
+	r.write(data);
+	r.end();
 };

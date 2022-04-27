@@ -202,3 +202,15 @@ function getCardSkills() {
 
 	return skills.filter(x => x.skillType && x.title && x.description);
 }
+
+function setCD(countdown) {
+	$("button#submit").prop("disabled", true);
+	let cd = setInterval(() => {
+		$("span#cd").text(--countdown + 's');
+		if (countdown === 0) {
+			clearInterval(cd);
+			$("span#cd").text('');
+			$("button#submit").prop("disabled", false);
+		}
+	}, 1000);
+}
