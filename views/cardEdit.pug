@@ -79,7 +79,7 @@ block content
 			if pendingSuggestion
 				div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);z-index:10;")
 			div.card-body
-				if !user.supportStatus.some(badge => badge.name === "trustedContributor")
+				if user.supportStatus.some(badge => badge.name === "trustedContributor")
 					p.text-center Congratulations on becoming Karasu's trusted contributor! Your edits will be automatically approved from now on. Please maintain your good work :)
 				if !user.isAdmin
 					p.text-center If in doubt, ask for help in our
