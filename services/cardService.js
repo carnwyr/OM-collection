@@ -203,6 +203,40 @@ exports.getCardsWithItem = async function(matchStage) {
 	}
 };
 
+exports.findSkills = async function (keyword) {
+	try {
+		return await Cards.aggregate([
+			{
+				'$sort': {
+					'number': -1
+				}
+			}, {
+				'$project': {
+					'name': 1,
+					'uniqueName': 1,
+					'ja_name': 1,
+					'skills': 1
+				}
+			}, {
+				'$unwind': {
+					'path': '$skills',
+					'preserveNullAndEmptyArrays': false
+				}
+			}, {
+				'$match': {
+					'skills.description': {
+						'$regex': keyword,
+						'$options': 'i'
+					}
+				}
+			}
+		]);
+	} catch(e) {
+		Sentry.captureException(e);
+		return [];
+	}
+};
+
 exports.updateCard = async function(data) {
 	var originalUniqueName = data.originalUniqueName;
 	var newUniqueName = data.cardData.uniqueName;

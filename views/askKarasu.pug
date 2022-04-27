@@ -19,21 +19,39 @@ block content
           include mixins/ask/majolishCards
         else if path === "skill_charge_time"
           include mixins/ask/skillChargeSpeed
+        else if path === "skills"
+          include mixins/ask/skills
         +question(query)
         div.custom-control.custom-checkbox.custom-control-inline
           input#showOwned.custom-control-input(type="checkbox" name="owned" checked=(user && query.owned === "on") disabled=(!user))
           label.custom-control-label(for="showOwned") Only show cards I own.
-        if path !== "skill_charge_time"
+        if path !== "skill_charge_time" && path !== "skills"
           div.custom-control.custom-checkbox.custom-control-inline
             input#hideUnlocked.custom-control-input(type="checkbox" name="locked" disabled)
             label.custom-control-label(for="hideUnlocked") Hide nodes I've already unlocked. (Coming soon)
     p.text-center.text-muted If you like this feature, please share it with others! We will add more questions only if people are interested.
+
     if path === "skill_charge_time"
       p.small.text-center.text-muted *Only SSR and above is displayed.
       div.d-flex.flex-wrap.justify-content-center
         each i in cards
           a(href="/card/" + getURL(i.name)): img.lazy.m-2(src="/images/reward_placeholder.png" data-src="/images/cards/S/" + i.uniqueName + ".jpg" style="width:110px;")
-
+    else if path === "skills"
+      div.d-flex.flex-wrap.justify-content-around
+        each i in cards
+          div.card.mb-3(style="max-width: 540px;")
+            div.row.no-gutters
+              div.col-4
+                a(href="/card/" + i.uniqueName)
+                  img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg")
+              div.col-8
+                div.card-body
+                  p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
+                  p.card-text
+                    small.text-muted= i.skills.skillType
+                    br
+                    | #{i.skills.title}
+                  p.card-text= i.skills.description
     else
       div.d-flex.flex-wrap.justify-content-around
         each i in cards
