@@ -5,31 +5,32 @@ block content
     h1= title
     div.card.card-body
       div.row
-        div.col-12.col-md-4.mb-3.mb-md-0
+        div.col-12.col-lg-4.mb-3.mb-lg-0
           div.p-3(style="border:2px solid var(--secondary);border-radius:5px;")
             h5.card-title Information
             p.card-text First input field is the amount of unique cards from the related nightmare. For example, the nightmare have 3 UR/UR+ cards and you got 2 of them. You would input 2 into the first field.
             p.card-text Second input field is the total level of all cheat cards of that rarity. For example, you only got 1 copy of 2 UR/UR+ cards from the nightmare. You would input 2 input the second field. If you got 1 level 6 UR/UR+ and another level 1 UR/UR+, then you would put 7 into the second input field.
-        div.col-12.col-md-8
-          form#input
-            div.form-row
-              div.form-group.col-2: label.col-form-label UR/UR+
-              div.form-group.col-5: input.form-control(type="number" name="count" placeholder="number of UR/UR+ cards")
-              div.form-group.col-5: input.form-control(type="number" name="lv" placeholder="total level")
-            div.form-row
-              div.form-group.col-2: label.col-form-label SSR
-              div.form-group.col-5: input.form-control(type="number" name="count" placeholder="number of SSR cards")
-              div.form-group.col-5: input.form-control(type="number" name="lv" placeholder="total level")
-            div.form-row
-              div.form-group.col-2: label.col-form-label SR
-              div.form-group.col-5: input.form-control(type="number" name="count" placeholder="number of SR cards")
-              div.form-group.col-5: input.form-control(type="number" name="lv" placeholder="total level")
-            br
-            div.text-center
-              h5 Total bonus
-              p#totalbonus 0
-              h5 Total points per stage clear
-              p#total 120
+        div.col-12.col-lg-8
+          div.d-flex.w-100.h-100.justify-content-center.align-items-center
+            form#input
+              div.form-row
+                div.form-group.col-2: label.col-form-label UR/UR+
+                div.form-group.col-5: input.form-control(type="number" name="count" placeholder="number of UR/UR+ cards")
+                div.form-group.col-5: input.form-control(type="number" name="lv" placeholder="total level")
+              div.form-row
+                div.form-group.col-2: label.col-form-label SSR
+                div.form-group.col-5: input.form-control(type="number" name="count" placeholder="number of SSR cards")
+                div.form-group.col-5: input.form-control(type="number" name="lv" placeholder="total level")
+              div.form-row
+                div.form-group.col-2: label.col-form-label SR
+                div.form-group.col-5: input.form-control(type="number" name="count" placeholder="number of SR cards")
+                div.form-group.col-5: input.form-control(type="number" name="lv" placeholder="total level")
+              br
+              div.text-center
+                h5 Total bonus
+                p#totalbonus 0
+                h5 Total points per stage clear
+                p#total 120
   style.
     div.form-group.col-2 {
       text-align: center;

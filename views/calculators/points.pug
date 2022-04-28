@@ -1,6 +1,13 @@
 extends ../layout
 
 block content
+  -
+    function started() {
+      return new Date() > new Date(data.start);
+    }
+    function ended() {
+      return new Date() > new Date(data.end);
+    }
   div.container
     h1= title
     div.card.card-body.mb-3
@@ -25,13 +32,17 @@ block content
     div.card
       div.card-body
         div.row
-          div#pqinfo.col-12.col-md-4
+          div#pqinfo.col-12.col-md-4.text-center
             //- h5 On-going
-            h5.text-center= t("lang") === "ja" ? data.name.ja : data.name.en
-            a(href="/event/" + getURL(data.name.en)): img.img-fluid.rounded.mb-3(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg")
-            div.text-center
+            h5= t("lang") === "ja" ? data.name.ja : data.name.en
+            a(href="/event/" + getURL(data.name.en)): img.img-fluid.rounded.mb-3(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
+            if started()
+              - timerDate = data.end;
               p Ending in
-              h5#cd --
+            else
+              - timerDate = data.start;
+              p Starting in
+            h5#cd --
             hr.d-md-none
           div.col-12.col-md-8
             //- h5 Calculator
@@ -57,13 +68,6 @@ block content
               br
               p Required AP
               h5#apreq --
-      -
-        function started() {
-          return new Date() > new Date(data.start);
-        }
-        function ended() {
-          return new Date() > new Date(data.end);
-        }
       if !started()
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
@@ -117,7 +121,7 @@ block content
       $("#apreq").text((dailyBattles * 8).toLocaleString("en"));
     }
     function countdown() {
-      let countDownDate = new Date(!{JSON.stringify(data.end)}).getTime();
+      let countDownDate = new Date(!{JSON.stringify(timerDate)}).getTime();
       let timer = setInterval(function () {
         let now = new Date().getTime();
         let distance = countDownDate - now;
