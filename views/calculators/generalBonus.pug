@@ -51,7 +51,8 @@ block content
         "lv": []
       }, bonus = 0;
       for (const pair of formData.entries()) {
-        data[pair[0]].push(pair[1]);
+        let val = pair[1] ? parseInt(pair[1]) : 0;
+        data[pair[0]].push(val);
       }
       for (const [index, value] of Object.entries(data.rarity)) {
         let c = data.count[index], lv = data.lv[index];
