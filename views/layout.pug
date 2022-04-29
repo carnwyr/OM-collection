@@ -65,16 +65,14 @@ html(lang=t("lang"))
           li(class="nav-item dropdown")
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.tools")
             div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
-              a.mb-2(class="dropdown-item" href='/SurpriseGuest')= t("common.spg")
-              div(class="dropdown-divider" style="opacity:50%;")
-              span.overline ask karasu
-              a.pt-0(class="dropdown-item" href="/ask/dt_rewards") Devil's tree rewards
+              a(class="dropdown-item" href='/SurpriseGuest')= t("common.spg")
+              .mt-3.overline ask karasu
+              a(class="dropdown-item" href="/ask/dt_rewards") Devil's tree rewards
               a(class="dropdown-item" href="/ask/card_unlock_items") Card unlock items
               a(class="dropdown-item" href="/ask/majolish_cards") Majolish cards
               a(class="dropdown-item" href="/ask/skill_charge_time") Skill charging time
               a(class="dropdown-item" href="/ask/skills") Card skills
-              div(class="dropdown-divider" style="opacity:50%;")
-              span.overline calculator
+              .mt-3.overline calculator
               a(class="dropdown-item" href="/calculator/points") Points
               a(class="dropdown-item" href="/calculator/bonus") Cheat Card Bonus
               a(class="dropdown-item" href="/calculator/ap_recovery") AP Recovery
@@ -93,7 +91,6 @@ html(lang=t("lang"))
         ul(class="navbar-nav ml-auto")
           li(class="nav-item d-none d-md-block")
             div(class="nav-link" style="position:relative;bottom:1px") <svg width=".95em" height=".95em" viewBox="0 0 16 16" class="bi bi-person text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg>
-          div(class="dropdown-divider" style="opacity:32%;")
           if !user
             li(class="nav-item")
               a(class="nav-link" href='/signup')= t("common.signup")
@@ -103,12 +100,12 @@ html(lang=t("lang"))
             li(class="nav-item dropdown")
               a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Karasu
               div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="collectionDropdown")
-                a.mb-2.mb-1(class="dropdown-item" href='/' + user.name + '/profile')= t("common.profile")
-                span.overline collections
-                a.pt-0(class="dropdown-item" href='/' + user.name + '/collection')= t("collection.cards")
-                a.mb-2(class="dropdown-item" href='/' + user.name + '/favourites')= t("collection.favourites")
-                span.overline trackers
-                a.pt-0(class="dropdown-item" href="/user/tree_progress") Tree progress
+                a(class="dropdown-item" href='/' + user.name + '/profile')= t("common.profile")
+                .mt-3.overline collections
+                a(class="dropdown-item" href='/' + user.name + '/collection')= t("collection.cards")
+                a(class="dropdown-item" href='/' + user.name + '/favourites')= t("collection.favourites")
+                .mt-3.overline trackers
+                a(class="dropdown-item" href="/user/tree_progress") Tree progress
                 a(class="dropdown-item" href="/user/edits") Edits
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link text-white" role='button' id='accountDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.account")
@@ -128,7 +125,6 @@ html(lang=t("lang"))
 
     main.mb-5(style="position:relative;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
-      - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
       if title !== "Karasu OS"
         //- div.container
         //-   <div id="announcementToast" class="d-none alert alert-info alert-dismissible fade show" style="z-index:0!important" role="alert">
@@ -140,7 +136,7 @@ html(lang=t("lang"))
         //-     </button>
         //-   </div>
         if (!user || !user.isSupporter)
-          .kool-aid.container.text-center.mt-3(data-fallback="kool-fallback-template-small")
+          .kool-aid.container.text-center.mt-3.mb-3(data-fallback="kool-fallback-template-small")
             .row.justify-content-center
               #ezoic-pub-ad-placeholder-109
                 <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
