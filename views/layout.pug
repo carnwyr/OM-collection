@@ -37,7 +37,7 @@ html(lang=t("lang"))
     - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
     
     template#kool-fallback-template-big
-      .card.rounded
+      .card.rounded.shadow-sm
         .card-body.mx-auto
           .h5.card-title Using an ad-blocker?
           img(style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png")
@@ -45,7 +45,7 @@ html(lang=t("lang"))
           p Please consider whitelisting karasu-os.com to keep the website free for everyone!
     
     template#kool-fallback-template-small
-      .card.rounded(style="height:90px")
+      .card.rounded.shadow-sm(style="height:90px")
         img.img-fluid.h-100.mx-auto.py-2(src="/images/adblocked.png")
     
     nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white" style="z-index:1032;")
