@@ -99,6 +99,7 @@ footer ul {
   background-repeat: no-repeat;
   background-position: center;
   background-size: auto 75%;
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
 }
 
 #alert {
