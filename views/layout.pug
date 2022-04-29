@@ -35,13 +35,12 @@ html(lang=t("lang"))
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TQRDPDG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
     nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white" style="z-index:1032;")
-      a(class="navbar-brand" href='/' style="font-family:Nunito;font-weight:bold;") Karasu-OS.com
+      a.bg-white.rounded-pill.navbar-brand.py-1.logo-bg(href='/')
+        .logo.px-2 Karasu-OS
       button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerMenu" aria-controls="navbarTogglerMenu" aria-expanded="false" aria-label="Toggle navigation")
         span(class="navbar-toggler-icon")
       div(class="collapse navbar-collapse" id="navbarTogglerMenu")
         ul(class="navbar-nav")
-          li(class="nav-item")
-            a(class="nav-link" href='/')= t("common.home")
           li(class="nav-item")
             a(class="nav-link" href='/cards')= t("common.gallery")
           li.nav-item

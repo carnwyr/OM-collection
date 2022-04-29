@@ -131,3 +131,23 @@ p.section-title {
 	margin-bottom: 1rem;
 	letter-spacing: .08em;
 }
+
+.logo {
+  font-family: Nunito;
+  font-weight: 700;
+  line-height: 1.65rem;
+  background-color: rgb(243,156,255);
+  background-image: linear-gradient(130deg, rgba(243,156,255,1) 0%, rgba(144,194,255,1) 100%);
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+}
+
+.logo-bg {
+  transition: 300ms;
+}
+
+.logo-bg:hover {
+  scale: 110%;
+}
