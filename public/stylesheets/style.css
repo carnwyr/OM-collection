@@ -88,20 +88,6 @@ footer ul {
   }
 }
 
-.ddd {
-  position: relative;
-  z-index: -1;
-  text-align: center;
-  margin-bottom: .5rem;
-  border-radius: 16px;
-  background-image: url("/images/adblocked.png");
-  background-color: rgba(255, 255, 255, .8);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: auto 75%;
-  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-}
-
 #alert {
   position: fixed;
   right: 20px;
