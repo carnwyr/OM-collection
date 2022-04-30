@@ -4,11 +4,11 @@ block scripts
   link(rel="stylesheet" href="/stylesheets/homepage.css")
 
 block content
-  div.hovercard
-    div.cardheader
-    div.avatar
-      img(alt="karasu_profile" src="/images/karasu.png")
-  div.container
+  .hovercard
+    .cardheader
+    .avatar.d-flex
+      img.shadow-sm.mx-auto(alt="karasu_profile" src="/images/karasu.png")
+  div.container.mt-4
     div.row
       div.col-12.mb-3.text-center
         a(href="/cards" type="button" class="btn btn-primary m-1")= t("common.cards")

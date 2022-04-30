@@ -26,7 +26,6 @@ html(lang=t("lang"))
     link(rel='stylesheet' href='/stylesheets/style.css')
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352" crossorigin="anonymous" onerror="document.dispatchEvent(new CustomEvent('koolAid'));"></script>
     script(src='/javascripts/commonFunctions.js')
     block scripts
 
@@ -34,14 +33,29 @@ html(lang=t("lang"))
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TQRDPDG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+    - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
+    - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
+    
+    template#kool-fallback-template-big
+      .card.rounded.shadow-sm
+        .card-body.mx-auto
+          .h5.card-title Using an ad-blocker?
+          img(style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png")
+          p Advertisements help us cover the cost to keep karasu-os online.
+          p Please consider whitelisting karasu-os.com to keep the website free for everyone!
+    
+    template#kool-fallback-template-small
+      .card.rounded.shadow-sm(style="height:90px")
+        img.img-fluid.h-100.mx-auto.py-2(src="/images/adblocked.png")
+    
     nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white" style="z-index:1032;")
-      a(class="navbar-brand" href='/' style="font-family:Nunito;font-weight:bold;") Karasu-OS.com
+      a.navbar-brand.logo-bg.d-flex.align-items-center(href='/')
+        img(src="/images/logo.png" style="height:25px;width:25px;")
+        span.logo.pl-1 karasu-os
       button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerMenu" aria-controls="navbarTogglerMenu" aria-expanded="false" aria-label="Toggle navigation")
         span(class="navbar-toggler-icon")
       div(class="collapse navbar-collapse" id="navbarTogglerMenu")
         ul(class="navbar-nav")
-          li(class="nav-item")
-            a(class="nav-link" href='/')= t("common.home")
           li(class="nav-item")
             a(class="nav-link" href='/cards')= t("common.gallery")
           li.nav-item
@@ -52,15 +66,13 @@ html(lang=t("lang"))
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.tools")
             div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
               a(class="dropdown-item" href='/SurpriseGuest')= t("common.spg")
-              div(class="dropdown-divider" style="opacity:50%;")
-              span.overline ask karasu
+              .mt-3.overline ask karasu
               a(class="dropdown-item" href="/ask/dt_rewards") Devil's tree rewards
               a(class="dropdown-item" href="/ask/card_unlock_items") Card unlock items
               a(class="dropdown-item" href="/ask/majolish_cards") Majolish cards
               a(class="dropdown-item" href="/ask/skill_charge_time") Skill charging time
               a(class="dropdown-item" href="/ask/skills") Card skills
-              div(class="dropdown-divider" style="opacity:50%;")
-              span.overline calculator
+              .mt-3.overline calculator
               a(class="dropdown-item" href="/calculator/points") Points
               a(class="dropdown-item" href="/calculator/bonus") Cheat Card Bonus
               a(class="dropdown-item" href="/calculator/ap_recovery") AP Recovery
@@ -79,7 +91,6 @@ html(lang=t("lang"))
         ul(class="navbar-nav ml-auto")
           li(class="nav-item d-none d-md-block")
             div(class="nav-link" style="position:relative;bottom:1px") <svg width=".95em" height=".95em" viewBox="0 0 16 16" class="bi bi-person text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg>
-          div(class="dropdown-divider" style="opacity:32%;")
           if !user
             li(class="nav-item")
               a(class="nav-link" href='/signup')= t("common.signup")
@@ -89,14 +100,13 @@ html(lang=t("lang"))
             li(class="nav-item dropdown")
               a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Karasu
               div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="collectionDropdown")
-                span.overline collections
+                a(class="dropdown-item" href='/' + user.name + '/profile')= t("common.profile")
+                .mt-3.overline collections
                 a(class="dropdown-item" href='/' + user.name + '/collection')= t("collection.cards")
                 a(class="dropdown-item" href='/' + user.name + '/favourites')= t("collection.favourites")
-                div(class="dropdown-divider" style="opacity:50%;")
-                a(class="dropdown-item" href='/' + user.name + '/profile')= t("common.profile")
-                div(class="dropdown-divider" style="opacity:50%;")
-                a(class="dropdown-item" href="/user/tree_progress") My tree progress
-                a(class="dropdown-item" href="/user/edits") My edits
+                .mt-3.overline trackers
+                a(class="dropdown-item" href="/user/tree_progress") Tree progress
+                a(class="dropdown-item" href="/user/edits") Edits
             li(class="nav-item dropdown d-none d-md-block")
               a(class="dropdown-toggle nav-link text-white" role='button' id='accountDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.account")
                 if !user.email
@@ -115,7 +125,6 @@ html(lang=t("lang"))
 
     main.mb-5(style="position:relative;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
-      - const ALL_CHARACTERS = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael", "LittleD"];
       if title !== "Karasu OS"
         //- div.container
         //-   <div id="announcementToast" class="d-none alert alert-info alert-dismissible fade show" style="z-index:0!important" role="alert">
@@ -127,10 +136,11 @@ html(lang=t("lang"))
         //-     </button>
         //-   </div>
         if (!user || !user.isSupporter)
-          div.container.ddd
-            div#ezoic-pub-ad-placeholder-109
-              <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
-              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          .kool-aid.container.text-center.mt-3.mb-3(data-fallback="kool-fallback-template-small")
+            .row.justify-content-center
+              #ezoic-pub-ad-placeholder-109
+                <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         if t("lang") === "ja"
           div.container
             div.alert.alert-info.text-center(style="z-index:0!important;" role="alert")
@@ -147,9 +157,9 @@ html(lang=t("lang"))
 
       block content
       if (!user || !user.isSupporter)
-        div#kool-aid.container(style="margin:2rem auto;text-align:center;")
-          div.row.justify-content-center
-            div#ezoic-pub-ad-placeholder-122.w-100
+        .kool-aid.container.text-center.mt-4(data-fallback="kool-fallback-template-big")
+          .row.justify-content-center
+            #ezoic-pub-ad-placeholder-122.w-100
               <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4992362293" data-ad-format="auto" data-full-width-responsive="true"></ins>
               <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
       //- toasts

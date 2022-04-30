@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).on("koolAid", showFallback);
+
+$(document).ready(function () {
 	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
 	$("head").append(`<link rel="alternate" hreflang="${$("select#language").val()}" href="${window.location.href}">`);
 	$("select#language").on("change", function() {
@@ -39,30 +41,43 @@ $(document).ready(function() {
 	$("#b2t").on("click", () => { $("html, body").animate({scrollTop:0}, 500); });
 });
 
-async function detectAdBlock() {
+async function detectAdBlock(callback) {
   let adBlockEnabled = false;
   const googleAdUrl = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
   try {
     await fetch(new Request(googleAdUrl)).catch((_) => (adBlockEnabled = true));
   } catch(e) {
     adBlockEnabled = true;
-  } finally {
-    if (adBlockEnabled) {
-			showFallback();
+	} finally {
+		if (callback) {
+			callback(adBlockEnabled);
 		}
   }
 }
 
 $(window).on("load", function() {
-  detectAdBlock();
+	detectAdBlock(adBlockEnabled => {
+		if (adBlockEnabled) {
+			showFallback();
+		}
+		else {
+			let script = document.createElement('script');
+			script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352";
+			script.crossorigin = "anonymous";
+			script.onerror = () => document.dispatchEvent(new CustomEvent('koolAid'));
+			document.head.append(script);
+		}
+	});
 });
 
-$(document).on("koolAid", showFallback);
 
 function showFallback() {
-	$("#kool-aid>.row").hide();
-	if ($("#kool-fallback")[0] === undefined) $("#kool-aid").append(`<div id="kool-fallback" class="card shadow-none" style="background:rgba(255,255,255,.8)"><div class="card-body col-md-8 mx-auto" style="border-radius:1rem;"><h5 class="card-title">Using an ad-blocker?</h5><img style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png"><p>Advertisements help us cover the cost to keep karasu-os online.</p><p>Please consider whitelisting karasu-os.com to keep the website free for everyone!</p></div></div>`);
-	console.log("Ad-block detected. Karasu-os.com relies on advertisements to stay online for you to use. Please disable ad-block for karasu-os.com. Thank you.");
+	$(".kool-aid>.row").hide();
+	$(".kool-aid").each(function() {
+		let templateId = "#" + $(this).attr("data-fallback");
+		var fallback = $(templateId).first().html();
+		$(this).append(fallback);
+	});
 }
 
 $(window).on("scroll", () => {

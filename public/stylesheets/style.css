@@ -99,6 +99,7 @@ footer ul {
   background-repeat: no-repeat;
   background-position: center;
   background-size: auto 75%;
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
 }
 
 #alert {
@@ -130,4 +131,18 @@ p.section-title {
 	color: var(--primary);
 	margin-bottom: 1rem;
 	letter-spacing: .08em;
+}
+
+.logo {
+  font-family: Nunito;
+  color: white;
+}
+
+.logo-bg {
+  /*height:32px;*/
+  transition: 300ms;
+}
+
+.logo-bg:hover {
+  scale: 110%;
 }
