@@ -59,8 +59,7 @@ $(window).on("load", function() {
 	detectAdBlock(adBlockEnabled => {
 		if (adBlockEnabled) {
 			showFallback();
-		}
-		else {
+		} else {
 			let script = document.createElement('script');
 			script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352";
 			script.crossorigin = "anonymous";
@@ -72,10 +71,11 @@ $(window).on("load", function() {
 
 
 function showFallback() {
-	$(".kool-aid>.row").hide();
 	$(".kool-aid").each(function() {
 		let templateId = "#" + $(this).attr("data-fallback");
-		var fallback = $(templateId).first().html();
+		let fallback = $.parseHTML($(templateId).html());
+		$(fallback[0]).height($(this).height());
+		$(this).find(".row").hide();
 		$(this).append(fallback);
 	});
 }

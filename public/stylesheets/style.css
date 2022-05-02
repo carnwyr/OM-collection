@@ -132,3 +132,7 @@ p.section-title {
 .logo-bg:hover {
   scale: 110%;
 }
+
+.big-fb {
+  min-height: 270px !important;
+}
