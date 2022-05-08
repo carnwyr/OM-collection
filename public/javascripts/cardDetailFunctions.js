@@ -11,16 +11,8 @@ $(document).ready(function() {
     $(".favourites").addClass("removeCardButton");
   }
 
-  let collapseTree = localStorage.getItem("#collapseTree");
-  let collapseStrength = localStorage.getItem("#collapseStrength");
-  if (collapseTree === "true") {
-    $("#collapseTree").collapse("hide");
-  }
-  if (collapseStrength === "true") {
-    $("#collapseStrength").collapse("hide");
-  }
   $("a[data-toggle='collapse']").click(function() {
-    localStorage.setItem($(this).attr("href"), $(this).attr("aria-expanded"));
+    setCookie($(this).attr("href").replace("#", ''), $(this).attr("aria-expanded"));
   });
 });
 
