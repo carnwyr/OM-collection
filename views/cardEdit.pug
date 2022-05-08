@@ -32,6 +32,7 @@ mixin treeCostTemplate(item)
 mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
 	div
 		form.form-row
+			div.d-none: input(type="text" name="_id" value=node._id readonly)
 			div.form-inline.col-12.align-items-center.mb-2
 				label.mr-2 No.
 				input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder placeholder="???" style="width:80px;")
@@ -318,6 +319,7 @@ block content
 									- levelUpNodes.push({ reward: `Lv.${levelUpNodes.length + 1}0 Rank Up`, requirements: [], grimmCost: '' });
 							each node in levelUpNodes
 								form.form-row
+									div.d-none: input(type="text" name="_id" value=node._id readonly)
 									div.d-none: input(type="number" name="nodeOrder" value=0)
 									div.form-group.col-12.col-md-6.col-lg-3
 										label Level

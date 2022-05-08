@@ -34,9 +34,13 @@ mixin dtTemplate(node)
         p.text-center ???
       p.text-center Grimm: #{node.grimmCost ? node.grimmCost.toLocaleString("en") : "???"}
       hr
-      div.form-check.text-center
-        input.form-check-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" disabled)
-        label.form-check-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
+      if !node._id || node.reward === "???"
+        - missingInfo = true;
+      div.custom-control.custom-checkbox.text-center
+        input.custom-control-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" data-treeid=node._id disabled=(missingInfo?true:false))
+        label.custom-control-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
+          if missingInfo
+            | <sup>*</sup>
 
 block content
   div#alert(role="alert")
@@ -167,34 +171,39 @@ block content
         h5.card-title.d-flex.flex-wrap.justify-content-between.align-items-center Devil's tree
           a.btn.btn-link(data-toggle="collapse" href="#collapseTree" role="button" aria-expanded="true" aria-controls="collapseTree") (collapse)
         div#collapseTree.collapse.show
-          div.text-center
-            p Devil's tree tracker will be ready when there's more data. Help us add missing data so the tracker can be ready sooner.
-            a(href=card.uniqueName+"/edit") Click here to edit data.
-            hr
           if card.dt
-            p.section-title Rewards
-            div.row.justify-content-center
-              - let rewards = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower");
-              if rewards.length === 0
-                p.text-center.p-5 Looks like we're missing devil's tree data.
-                  |
-                  |
-                  a(href=card.uniqueName+"/edit") Add missing data!
-              else
-                each i in rewards
-                  +dtTemplate(i)
-            br
-            p.section-title Level up
-            div.row.justify-content-center
-              - let levelNodes = card.dt.filter(x => x.type === "level_up" || x.type === "flower");
-              if levelNodes.length === 0
-                p.text-center.p-5 Looks like we're missing devil's tree data.
-                  |
-                  |
-                  a(href=card.uniqueName+"/edit") Add missing data!
-              else
-                each i in levelNodes
-                  +dtTemplate(i)
+            form#tree
+              p.section-title Rewards
+              div.row.justify-content-center
+                - let rewards = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower");
+                if rewards.length === 0
+                  p.text-center.p-5 Looks like we're missing devil's tree data.
+                    |
+                    |
+                    a(href=card.uniqueName+"/edit") Add missing data!
+                else
+                  each i in rewards
+                    +dtTemplate(i)
+              br
+              p.section-title Level up
+              div.row.justify-content-center
+                - let levelNodes = card.dt.filter(x => x.type === "level_up" || x.type === "flower");
+                if levelNodes.length === 0
+                  p.text-center.p-5 Looks like we're missing devil's tree data.
+                    |
+                    |
+                    a(href=card.uniqueName+"/edit") Add missing data!
+                else
+                  each i in levelNodes
+                    +dtTemplate(i)
+            if missingInfo
+              hr
+              div.small.text-center <sup>*</sup>This node cannot be tracked with the devil's tree tracker because it is missing required information. Please
+                |
+                |
+                a(href=card.uniqueName+"/edit") complete missing info
+                |
+                | to make it trackable.
           else
             p.text-center.p-5 Looks like we're missing devil's tree data.
               |

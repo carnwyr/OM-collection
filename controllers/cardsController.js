@@ -314,6 +314,8 @@ exports.addNewCard = async function(req, res) {
 
 exports.updateCard = async function(req, res) {
 	try {
+		await validateTreeData(req.params.card, req.body.cardData);
+
 		let result = await cardService.updateCard({
 			user: req.user.name,
 			originalUniqueName: req.params.card,
@@ -427,4 +429,18 @@ function formatAggPipeline(obj, language = "en") {
 	pipeline.push(sort, project);
 
 	return pipeline;
+}
+
+async function validateTreeData(name, data) {
+	try {
+		let card = await cardService.getCard({ name: name });
+		for (const node of data.dt) {
+			if (node._id && node.reward !== "???" && !card.dt.find(element => element._id == node._id && element.reward == node.reward)) {
+				throw new Error("Invalid node.");
+			};
+		}
+	} catch(e) {
+		Sentry.captureException(e);
+		throw e;
+	}
 }

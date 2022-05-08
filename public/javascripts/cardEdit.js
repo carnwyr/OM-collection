@@ -171,6 +171,8 @@ function getTreeRewards() {
 				name = pair[1];
 			} else if (pair[0] === "amount") {
 				node.requirements.push({ name: name, amount: pair[1] });
+			} else if (pair[0] === "_id" && pair[1] === '') {
+				continue;
 			} else {
 				node[pair[0]] = pair[1];
 			}
