@@ -218,3 +218,14 @@ exports.banUser = async function(name) {
     return { err: true, message: e.message };
   }
 };
+
+exports.updateTree = async function(username, changes) {
+  await Users.findOneAndUpdate(
+    { "info.name": username },
+    { $addToSet: { tree: { $each: changes.toAdd } } }
+  );
+  await Users.findOneAndUpdate(
+    { "info.name": username },
+    { $pullAll: { tree: changes.toRemove } }
+  );
+};

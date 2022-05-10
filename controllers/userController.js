@@ -270,3 +270,13 @@ exports.updateUserProfile = function(req, res) {
     }
   );
 }
+
+exports.updateUserTree = async function(req, res) {
+  try {
+    await userService.updateTree(req.user.name, JSON.parse(req.body.changes));
+    return res.json({ err: null, message: "Saved!" });
+  } catch(e) {
+    Sentry.captureException(e);
+    return res.json({ err: true, message: e.message });
+  }
+};

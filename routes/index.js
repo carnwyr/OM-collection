@@ -45,5 +45,7 @@ router.post("/updateSupport", loginController.hasAccess("Admin"), userController
 router.get('/getCards', cardsController.getCards);
 router.get("/animations", cardsController.getAnimationList);
 
+router.post("/update_tree", loginController.isLoggedIn(), userController.updateUserTree);
+
 
 module.exports = router;
