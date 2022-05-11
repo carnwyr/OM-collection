@@ -39,7 +39,7 @@ mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '
 				small.text-muted The order in which this node should appear on this page.
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Name
-				input.form-control.autocomplete(type="text" value=node.reward name="reward" placeholder="???")
+				input.form-control.autocomplete(type="text" value=node.reward name="reward" placeholder="???" readonly=(node._id && node.reward !== "???"))
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Amount
 				input.form-control(type="number" value=node.count name="count" placeholder="???")
