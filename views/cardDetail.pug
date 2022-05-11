@@ -37,7 +37,7 @@ mixin dtTemplate(node)
       if !node._id || node.reward === "???"
         - missingInfo = true;
       div.custom-control.custom-checkbox.text-center
-        input.custom-control-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" value=node._id checked=(user.tree.includes(node._id)) disabled=(missingInfo?true:false))
+        input.custom-control-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" value=node._id checked=(user && user.tree.includes(node._id)) disabled=(missingInfo || !user?true:false))
         label.custom-control-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
           if missingInfo
             | <sup>*</sup>
