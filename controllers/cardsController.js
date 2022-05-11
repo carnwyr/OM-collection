@@ -55,12 +55,8 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 		if (isPrivate) {
 			pageParams.isPrivate = true;
 		} else {
-			// get collection stats
-			var allCards = await cardService.getCards();
-			var ownedCards = await userService.getOwnedCards(user.info.name);
-
-			pageParams.ownedStats = cardService.getCollectionStats(ownedCards);
-			pageParams.totalStats = cardService.getCollectionStats(allCards);
+			pageParams.ownedStats = await userService.getOwnedCardsStats(user.info.name);
+			pageParams.totalStats = await cardService.getGlobalStats();
 
 			for ([category, entries] of Object.entries(pageParams.totalStats)) {
 				for (entry in entries) {

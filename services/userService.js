@@ -23,26 +23,70 @@ exports.getFaveCards = async function (username) {
   return await getCardCollection(username, "faved");
 }
 
-getCardCollection = function (username, collection) {
+getCardCollection = function (username, collectionType) {
   try {
     return Users.aggregate([
       { $match: { "info.name": username } },
-      { $unwind: `$cards.${collection}` },
+      { $unwind: `$cards.${collectionType}` },
       { $lookup: {
         from: "cards",
-        localField: `cards.${collection}`,
+        localField: `cards.${collectionType}`,
         foreignField: "uniqueName",
         as: "cardData"
       }},
-      { $unwind: "$cardData" },
-      { $replaceWith: "$cardData"},
-      { $sort: { number : -1 } }
+      { $sort: { "cardData.number": -1 } },
+      { $limit: 15 },
+      { $project: { name: "$cardData.name", uniqueName: `$cards.${collectionType}`, _id: false } },
+      { $unwind: "$name" }
     ]);
   } catch (e) {
     console.error(e.message);
     Sentry.captureException(e);
   }
 };
+
+exports.getOwnedCardsStats = async function (username) {
+  let collectionType = "owned";
+  try {
+    return (await Users.aggregate([
+      { $match: { "info.name": username } },
+      { $unwind: `$cards.${collectionType}` },
+      { $lookup: {
+        from: "cards",
+        localField: `cards.${collectionType}`,
+        foreignField: "uniqueName",
+        as: "cardData"
+      }},
+      { $unwind: "$cardData" },
+      { $replaceWith: "$cardData" },
+      { $facet: {
+				characters: [
+					{ $unwind: "$characters"},
+					{ $group: { _id: "$characters", count: { $sum: 1 } } },
+					{ $project: { k: "$_id", v: "$count", _id: false } }
+				],
+				rarity: [
+					{ $group: { _id: "$rarity", count: { $sum: 1 } } },
+					{ $project: { k: "$_id", v: "$count", _id: false } }],
+				attribute: [
+					{ $group: { _id: "$attribute", count: { $sum: 1 } } },
+					{ $project: { k: "$_id", v: "$count", _id: false } }],
+				cards: [
+					{ $group: { _id: "$type", count: { $sum: 1 } } },
+					{ $project: { k: "$_id", v: "$count", _id: false } }]
+			}},
+			{ $project: {
+				characters: { $arrayToObject: "$characters" },
+				rarity: { $arrayToObject: "$rarity" },
+				attribute: { $arrayToObject: "$attribute" },
+				cards: { $arrayToObject: "$cards" },
+			}}
+    ]))[0];
+  } catch (e) {
+    console.error(e.message);
+    Sentry.captureException(e);
+  }
+}
 
 exports.getProfileInfo = async function(username, language) {
   try {

@@ -36,27 +36,37 @@ exports.isHidden = async function (cardName) {
 	return Boolean(card);
 };
 
-exports.getCollectionStats = function (cards) {
-	var stats = {
-		characters: {},
-		rarity: {},
-		attribute: {},
-		cards: {}
-	};
-
-	cards.forEach(card => {
-		card.characters.forEach(character => incrementOrInit(stats, "characters", character));
-		incrementOrInit(stats, "rarity", card.rarity);
-		incrementOrInit(stats, "attribute", card.attribute);
-		incrementOrInit(stats, "cards", card.type);
-	});
-
-	return stats;
+exports.getGlobalStats = async function () {
+	try {
+    return (await Cards.aggregate([
+			{ $facet: {
+				characters: [
+					{ $unwind: "$characters"},
+					{ $group: { _id: "$characters", count: { $sum: 1 } } },
+					{ $project: { k: "$_id", v: "$count", _id: false } }
+				],
+				rarity: [
+					{ $group: { _id: "$rarity", count: { $sum: 1 } } },
+					{ $project: { k: "$_id", v: "$count", _id: false } }],
+				attribute: [
+					{ $group: { _id: "$attribute", count: { $sum: 1 } } },
+					{ $project: { k: "$_id", v: "$count", _id: false } }],
+				cards: [
+					{ $group: { _id: "$type", count: { $sum: 1 } } },
+					{ $project: { k: "$_id", v: "$count", _id: false } }]
+			}},
+			{ $project: {
+				characters: { $arrayToObject: "$characters" },
+				rarity: { $arrayToObject: "$rarity" },
+				attribute: { $arrayToObject: "$attribute" },
+				cards: { $arrayToObject: "$cards" },
+			}}
+		]))[0];
+  } catch (e) {
+    console.error(e.message);
+    Sentry.captureException(e);
+  }
 };
-
-function incrementOrInit(stats, type, key) {
-	stats[type][key] = (stats[type][key] || 0) + 1;
-}
 
 exports.encodeCardName = function (cardName) {
 	return encodeURIComponent(cardName.replace(/ /g, "_"));
