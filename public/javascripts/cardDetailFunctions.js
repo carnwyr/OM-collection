@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  clearTimer();
+
   $(".owned, .favourites").on("click", updateCollection);
   if (stats.ownsCard === false) {
     $(".owned").addClass("addCardButton");
@@ -14,10 +16,12 @@ $(document).ready(function() {
   $("a[data-toggle='collapse']").click(function() {
     setCookie($(this).attr("href").replace("#", ''), $(this).attr("aria-expanded"));
   });
+
+  $("form#tree input").on("change", updateUserTree);
 });
 
 function updateCollection() {
-  var collectionType, updateType;
+  let collectionType, updateType;
   if ($(this).hasClass("owned")) {
     collectionType = "owned";
   } else {
@@ -48,4 +52,48 @@ function updateCollection() {
       showAlert("danger", data.message);
     }
   });
+}
+
+
+let timer, toastTimer, distance = 5;
+
+function clearTimer() {
+  clearInterval(timer);
+  clearTimeout(toastTimer);
+  timer = null;
+  toastTimer = null;
+  distance = 5;
+
+  $("#treeToast .progress-bar").width("100%").attr('aria-valuenow', 100);
+}
+
+let changes = {};
+
+function updateUserTree() {
+  clearTimer();
+  $("#treeToast").toast("show");
+  $("#treeToast .progress").css("visibility", "visible");
+
+  changes[$(this).val()] = $(this).is(":checked");
+
+  timer = setInterval(function() {
+    if (distance-- > 0) {
+      $("#treeToast strong").text("Saving... (do not close tab)");
+      $("#treeToast .progress-bar").width(distance/5 * 100 + "%").attr('aria-valuenow', distance * 10);
+    } else {
+      clearInterval(timer);
+      $.post("/update_tree", { changes: changes })
+        .done(function(result) {
+          if (result.err) {
+            $("#treeToast strong").text("Something went wrong.");
+          } else {
+            $("#treeToast strong").text("Saved!");
+            $("#treeToast .progress").css("visibility", "hidden");
+          }
+          clearTimer();
+          toastTimer = setTimeout(() => { $("#treeToast").toast("hide"); }, 5000);
+          changes = {};
+        });
+    }
+  }, 1000);
 }

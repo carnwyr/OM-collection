@@ -273,7 +273,13 @@ exports.updateUserProfile = function(req, res) {
 
 exports.updateUserTree = async function(req, res) {
   try {
-    await userService.updateTree(req.user.name, JSON.parse(req.body.changes));
+    let changedIDs = Object.keys(req.body.changes);
+    await userService.updateTree(req.user.name,
+      {
+        toAdd: changedIDs.filter(x => req.body.changes[x] == "true"),
+        toRemove: changedIDs.filter(x => req.body.changes[x] == "false") 
+      }
+    );
     return res.json({ err: null, message: "Saved!" });
   } catch(e) {
     Sentry.captureException(e);

@@ -122,12 +122,16 @@ exports.getCardDetailPage = async function(req, res, next) {
 			cardData.source = await getSourceInLanguage(cardData.source, "ja");
 		}
 
+		// TODO: add a list of tree nodes user unlocked from this card.
+		let user = await userService.getUser(req.user.name);
+
 		return res.render("cardDetail", {
 			title: title,
 			description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
 			card: cardData,
 			isHidden: false,
-			user: req.user,
+			// user: req.user,
+			user: user,
 			stats: stats
 		});
 	} catch (e) {

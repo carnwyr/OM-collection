@@ -37,7 +37,7 @@ mixin dtTemplate(node)
       if !node._id || node.reward === "???"
         - missingInfo = true;
       div.custom-control.custom-checkbox.text-center
-        input.custom-control-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" data-treeid=node._id disabled=(missingInfo?true:false))
+        input.custom-control-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" value=node._id checked=(user.tree.includes(node._id)) disabled=(missingInfo?true:false))
         label.custom-control-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
           if missingInfo
             | <sup>*</sup>
@@ -172,6 +172,19 @@ block content
           a.btn.btn-link(data-toggle="collapse" href="#collapseTree" role="button" aria-expanded=(cookies.collapseTree=="true"?"false":"true") aria-controls="collapseTree") (collapse)
         div#collapseTree.collapse(class=(cookies.collapseTree=="true"?"":"show"))
           if card.dt
+            div.position-fixed.p-3(style="z-index:5;right:0;top:58px;")
+              div#treeToast.toast(style="width:280px;" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false")
+                <div class="toast-header">
+                  <strong class="mr-auto">Saving... (do not close tab)</strong>
+                  <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="toast-body">
+                  <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width:100%;transition:width 1s linear;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
             form#tree
               p.section-title Rewards
               div.row.justify-content-center
