@@ -27,8 +27,8 @@ block content
           label.custom-control-label(for="showOwned") Only show cards I own.
         if path !== "skill_charge_time" && path !== "skills"
           div.custom-control.custom-checkbox.custom-control-inline
-            input#hideUnlocked.custom-control-input(type="checkbox" name="locked" disabled)
-            label.custom-control-label(for="hideUnlocked") Hide nodes I've already unlocked. (Coming soon)
+            input#hideUnlocked.custom-control-input(type="checkbox" name="locked" checked=(user && query.locked === "on"))
+            label.custom-control-label(for="hideUnlocked") Hide nodes I've already unlocked.
     p.text-center.text-muted If you like this feature, please share it with others! We will add more questions only if people are interested.
 
     if path === "skill_charge_time"

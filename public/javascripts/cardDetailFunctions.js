@@ -91,7 +91,10 @@ function updateUserTree() {
             $("#treeToast .progress").css("visibility", "hidden");
           }
           clearTimer();
-          toastTimer = setTimeout(() => { $("#treeToast").toast("hide"); }, 5000);
+          toastTimer = setTimeout(() => {
+            $("#treeToast").toast("hide");
+            $("#treeToast strong").text("");
+          }, 5000);
           changes = {};
         });
     }
