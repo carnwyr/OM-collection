@@ -101,6 +101,11 @@ app.use(flash());
 app.use("/images/cards/:size", cardsController.directImage, express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(function (req, res, next) {
+	res.locals.cookies = req.cookies;
+	next();
+});
+
 app.use("/", indexRouter);
 app.use("/card", cardsRouter);
 app.use("/user", userRouter);

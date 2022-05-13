@@ -11,21 +11,11 @@ $(document).ready(function() {
     $(".favourites").addClass("removeCardButton");
   }
 
-  let collapseTree = localStorage.getItem("#collapseTree");
-  let collapseStrength = localStorage.getItem("#collapseStrength");
-  if (collapseTree === "true") {
-    $("#collapseTree").collapse("hide");
-  }
-  if (collapseStrength === "true") {
-    $("#collapseStrength").collapse("hide");
-  }
-  $("a[data-toggle='collapse']").click(function() {
-    localStorage.setItem($(this).attr("href"), $(this).attr("aria-expanded"));
-  });
+  $("form#tree input").on("change", updateUserTreeNode);
 });
 
 function updateCollection() {
-  var collectionType, updateType;
+  let collectionType, updateType;
   if ($(this).hasClass("owned")) {
     collectionType = "owned";
   } else {
@@ -56,4 +46,15 @@ function updateCollection() {
       showAlert("danger", data.message);
     }
   });
+}
+
+function updateUserTreeNode() {
+  $.post("/update_tree", { node: $(this).val(), isUnlocked: $(this).is(":checked") })
+    .done(function(result) {
+      if (result.err) {
+        showAlert("danger", result.message);
+      } else {
+        showAlert("success", result.message);
+      }
+    });
 }

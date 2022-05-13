@@ -17,9 +17,16 @@ exports.getDTRewardsPage = async function (req, res, next) {
 			item = req.query.item;
 		}
 
-		if (req.user && req.query.owned === "on") {
+		if (req.user) {
 			let user = await userService.getUser(req.user.name);
-			cards = cards.filter(x => user.cards.owned.includes(x.uniqueName));
+
+			if (req.query.owned === "on") {
+				cards = cards.filter(x => user.cards.owned.includes(x.uniqueName));
+			}
+
+			if (req.query.locked === "on") {
+				cards = cards.filter(x => !user.tree.includes(x.dt._id));
+			}
 		}
 
 		return res.render("askKarasu", {
@@ -46,9 +53,16 @@ exports.getUnlockItemsPage = async function (req, res, next) {
 			item = req.query.item;
 		}
 
-		if (req.user && req.query.owned === "on") {
+		if (req.user) {
 			let user = await userService.getUser(req.user.name);
-			cards = cards.filter(x => user.cards.owned.includes(x.uniqueName));
+
+			if (req.query.owned === "on") {
+				cards = cards.filter(x => user.cards.owned.includes(x.uniqueName));
+			}
+
+			if (req.query.locked === "on") {
+				cards = cards.filter(x => !user.tree.includes(x.dt._id));
+			}
 		}
 
 		return res.render("askKarasu", {
@@ -75,9 +89,16 @@ exports.getMajolishCardsPage = async function (req, res, next) {
 			item = req.query.item;
 		}
 
-		if (req.user && req.query.owned === "on") {
+		if (req.user) {
 			let user = await userService.getUser(req.user.name);
-			cards = cards.filter(x => user.cards.owned.includes(x.uniqueName));
+
+			if (req.query.owned === "on") {
+				cards = cards.filter(x => user.cards.owned.includes(x.uniqueName));
+			}
+
+			if (req.query.locked === "on") {
+				cards = cards.filter(x => !user.tree.includes(x.dt._id));
+			}
 		}
 
 		return res.render("askKarasu", {

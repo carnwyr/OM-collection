@@ -1,29 +1,30 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var userController = require('../controllers/userController');
+const userController = require('../controllers/userController');
+const loginController = require("../controllers/loginController");
 
 // Restore password
-router.post('/restorePassword', userController.restorePassword);
+router.post('/restorePassword', loginController.restorePassword);
 
 // Email verification
-router.post('/:name/sendVerificationEmail', userController.isSameUser(), userController.sendVerificationEmail);
-router.get('/:name/confirmEmail/:code', userController.isSameUser(), userController.verifyEmail);
+router.post('/:name/sendVerificationEmail', loginController.isSameUser(), loginController.sendVerificationEmail);
+router.get('/:name/confirmEmail/:code', loginController.isSameUser(), loginController.verifyEmail);
 
 // Password change
-router.post('/:name/changePassword', userController.isSameUser(), userController.changePassword);
+router.post('/:name/changePassword', loginController.isSameUser(), loginController.changePassword);
 
 // update profile
-router.post('/:name/updateUserProfile', userController.isSameUser(), userController.updateUserProfile);
+router.post('/:name/updateUserProfile', loginController.isSameUser(), userController.updateUserProfile);
 
-router.post("/issueBan", userController.hasAccess("Admin"), userController.banUser);
+router.post("/issueBan", loginController.hasAccess("Admin"), userController.banUser);
 
 //
-router.get("/tree_progress", userController.isSameUser(), userController.getTreeProgressPage);
-router.get("/edits", userController.isSameUser(), userController.getUserSuggestionPage);
+router.get("/tree_progress", loginController.isSameUser(), userController.getTreeProgressPage);
+router.get("/edits", loginController.isSameUser(), userController.getUserSuggestionPage);
 
 // Account settings page
-router.get('/', userController.isSameUser(), userController.getAccountPage);
+router.get('/', loginController.isSameUser(), userController.getAccountPage);
 
 
 module.exports = router;
