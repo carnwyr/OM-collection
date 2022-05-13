@@ -219,13 +219,10 @@ exports.banUser = async function(name) {
   }
 };
 
-exports.updateTree = async function(username, changes) {
-  await Users.findOneAndUpdate(
-    { "info.name": username },
-    { $addToSet: { tree: { $each: changes.toAdd } } }
-  );
-  await Users.findOneAndUpdate(
-    { "info.name": username },
-    { $pullAll: { tree: changes.toRemove } }
-  );
+exports.updateUserTree = async function(username, node, isUnlocked) {
+  if (isUnlocked && isUnlocked == "true") {
+    await Users.findOneAndUpdate({ "info.name": username }, { $addToSet: { tree: new ObjectId(node) } });
+  } else {
+    await Users.findOneAndUpdate({ "info.name": username }, { $pull: { tree: new ObjectId(node) } });
+  }
 };

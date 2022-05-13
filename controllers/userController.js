@@ -4,8 +4,6 @@ const createError = require("http-errors");
 // TODO: fix structure
 const Users = require("../models/users.js");
 
-const ObjectId = require("mongodb").ObjectID;
-
 const userService = require("../services/userService");
 const cardService = require("../services/cardService");
 const suggestionService = require("../services/suggestionService");
@@ -273,25 +271,10 @@ exports.updateUserProfile = function(req, res) {
 
 exports.updateUserTree = async function(req, res) {
   try {
-    let changedIDs = formatTreeIDs(req.body.changes);
-    await userService.updateTree(req.user.name, changedIDs);
+    await userService.updateUserTree(req.user.name, req.body.node, req.body.isUnlocked);
     return res.json({ err: null, message: "Saved!" });
   } catch(e) {
     Sentry.captureException(e);
     return res.json({ err: true, message: e.message });
   }
 };
-
-function formatTreeIDs(changes) {
-  let add = [], remove = [];
-
-  for (const [key, value] of Object.entries(changes)) {
-    if (value == "true") {
-      add.push(new ObjectId(key));
-    } else {
-      remove.push(new ObjectId(key));
-    }
-  }
-
-  return { toAdd: add, toRemove: remove };
-}

@@ -177,19 +177,6 @@ block content
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up mb-1" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
         div#collapseTree.collapse(class=(cookies.collapseTree=="true"?"":"show"))
           if card.dt
-            div.position-fixed.p-3(style="z-index:5;right:0;top:58px;")
-              div#treeToast.toast(style="width:280px;" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false")
-                <div class="toast-header">
-                  <strong class="mr-auto">Saving... (do not close tab)</strong>
-                  <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="toast-body">
-                  <div class="progress">
-                  <div class="progress-bar" role="progressbar" style="width:100%;transition:width 1s linear;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
             form#tree
               p.section-title Rewards
               div.row.justify-content-center
