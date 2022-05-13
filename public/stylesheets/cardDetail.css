@@ -72,11 +72,11 @@ svg.bi-star-fill:hover {
 	}
 }
 
-#info .row>div {
+#info>div {
 	margin-bottom: 1.5rem;
 }
 
-#info .row>div:nth-child(odd) {
+#info>div:nth-child(odd) {
 	border-radius: 50px;
 	background: linear-gradient(to right, rgb(184,121,252), rgb(223,130,246));
 	color: white;
@@ -86,13 +86,13 @@ svg.bi-star-fill:hover {
 }
 
 @media (max-width: 768px) {
-	#info .card-title {
+	#cardstats .card-title {
 		align-items: center;
 	}
-	#info .row>div {
+	#info>div {
 		margin-bottom: 1rem;
 	}
-	#info .row>div:nth-child(even) {
+	#info>div:nth-child(even) {
 		text-align: center;
 	}
 
@@ -122,4 +122,18 @@ table#strength thead th, #strength td {
 	.dt-node span {
 		padding: 0 36px;
 	}
+}
+
+#cardstats a[data-toggle="collapse"] {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #e5e5e5;
+	padding-bottom: .5rem;
+	margin-bottom: 1rem;
+}
+
+a[data-toggle="collapse"][aria-expanded="false"] .bi.bi-chevron-up {
+	transform: rotate(180deg);
 }

@@ -13,10 +13,6 @@ $(document).ready(function() {
     $(".favourites").addClass("removeCardButton");
   }
 
-  $("a[data-toggle='collapse']").click(function() {
-    setCookie($(this).attr("href").replace("#", ''), $(this).attr("aria-expanded"));
-  });
-
   $("form#tree input").on("change", updateUserTree);
 });
 
