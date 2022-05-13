@@ -440,7 +440,7 @@ async function validateTreeData(name, data) {
 	try {
 		let card = await cardService.getCard({ name: name });
 		for (const node of data.dt) {
-			if (node._id && node.reward !== "???" && !card.dt.find(element => element._id == node._id && element.reward == node.reward)) {
+			if (node._id && node.reward !== "???" && !data.dt.find(element => element._id == node._id && element.reward == node.reward)) {
 				throw new Error("Invalid node.");
 			};
 		}
