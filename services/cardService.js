@@ -248,6 +248,7 @@ exports.findSkills = async function (keyword) {
 };
 
 exports.updateCard = async function(data) {
+	await validateTreeData(data.originalUniqueName, data.cardData);
 	var originalUniqueName = data.originalUniqueName;
 	var newUniqueName = data.cardData.uniqueName;
 	var promiseList = [];
@@ -345,3 +346,27 @@ exports.makeCardPublic = async function(cardName) {
 	newCard.number = await getLatestCardNum(newCard.rarity);
 	return await newCard.save();
 };
+
+async function validateTreeData(name, data) {
+	try {
+		let card = await Cards.findOne({ uniqueName: name });
+		for (const node of data.dt) {
+			let nodeExists = card.dt.find(element => element.reward === node.reward);
+
+			if (!nodeExists || node.reward === "???") {
+				continue;
+			}
+
+			if (nodeExists && nodeExists._id) {
+				if (!node._id) {
+					node._id = nodeExists._id;
+				} else if (node._id && node._id != nodeExists._id) {
+					throw new Error("Invalid node id.");
+				}
+			}
+		}
+	} catch(e) {
+		Sentry.captureException(e);
+		throw e;
+	}
+}
