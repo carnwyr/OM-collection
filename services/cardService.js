@@ -248,36 +248,37 @@ exports.findSkills = async function (keyword) {
 };
 
 exports.updateCard = async function(data) {
-	try {
-		let originalUniqueName = data.originalUniqueName;
-		let newUniqueName = data.cardData.uniqueName;
-
-		await validateTreeData(originalUniqueName, data.cardData);
-
-		let oldCard = await Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData, { returnDocument: "after" });
-		await Revisions.create({
-			title: oldCard.name,
+	await validateTreeData(data.originalUniqueName, data.cardData);
+	var originalUniqueName = data.originalUniqueName;
+	var newUniqueName = data.cardData.uniqueName;
+	var promiseList = [];
+	var promiseCard = Cards.findOneAndUpdate({ uniqueName: originalUniqueName }, data.cardData, { returnDocument: "after" });
+	var promiseCard2 = promiseCard.then((result) => {
+		return Revisions.create({
+			title: result.name,
 			type: "card",
 			user: data.user,
 			timestamp: new Date(),
-			data: oldCard
+			data: result
 		});
+	});
+	promiseList.push(promiseCard2);
 
-		if (newUniqueName !== originalUniqueName) {
-			await userService.renameCardInCollections(originalUniqueName, newUniqueName);
-		}
-
-		if (data.images) {
-			await fileService.saveImage(data.images.L, originalUniqueName, newUniqueName, "cards/L");
-			await fileService.saveImage(data.images.LB, originalUniqueName + "_b", newUniqueName + "_b", "cards/L");
-			await fileService.saveImage(data.images.S, originalUniqueName, newUniqueName, "cards/S");
-		}
-
-		return { err: null, message: "Card successfully updated!" };
-	} catch(e) {
-		Sentry.captureException(e);
-		throw e;
+	if (newUniqueName !== originalUniqueName) {
+		var promiseCollections = userService.renameCardInCollections(originalUniqueName, newUniqueName);
+		promiseList.push(promiseCollections);
 	}
+
+	if (data.images) {
+		var promiseL = fileService.saveImage(data.images.L, originalUniqueName, newUniqueName, "cards/L");
+		var promiseLB = fileService.saveImage(data.images.LB, originalUniqueName + "_b", newUniqueName + "_b", "cards/L");
+		var promiseS = fileService.saveImage(data.images.S, originalUniqueName, newUniqueName, "cards/S");
+		promiseList.push(promiseL, promiseLB, promiseS);
+	}
+
+	return await Promise.all(promiseList)
+		.then(() => { return { err: false, message: "Card successfully updated!" }; })
+		.catch(reason => { return { err: true, message: reason.message }; });
 };
 
 exports.addNewCard = async function(cardData, images = "", creator) {

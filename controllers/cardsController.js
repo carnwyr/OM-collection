@@ -315,12 +315,16 @@ exports.addNewCard = async function(req, res) {
 
 exports.updateCard = async function(req, res) {
 	try {
-		await cardService.updateCard({
+		let result = await cardService.updateCard({
 			user: req.user.name,
 			originalUniqueName: req.params.card,
 			cardData: req.body.cardData,
 			images: req.body.images
 		});
+
+		if (result.err) {
+			throw new Error(result.message);
+		}
 
 		miscController.notifyAdmin(`Card updated. \`\`${req.user.name}\`\` just updated: \`\`${req.params.card}\`\`.`);
 
