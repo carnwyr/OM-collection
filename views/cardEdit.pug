@@ -55,7 +55,10 @@ mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '
 			div.form-group.col-12
 				label Requirements
 				+treeCostTemplate(node.requirements)
-		button.btn.btn-outline-secondary.remove-item(type="button") Remove node
+		if node.reward == '' ? true : false
+			button.btn.btn-outline-secondary.remove-item(type="button") Remove node
+		else
+			small.text-muted Contact admin if you need to remove pre-existing nodes.
 		hr
 
 mixin skillTemplate(skill = { skillType: '', title: '', description: '' })
