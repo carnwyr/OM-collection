@@ -314,26 +314,22 @@ exports.addNewCard = async function(req, res) {
 };
 
 exports.updateCard = async function(req, res) {
-	try {
-		await validateTreeData(req.params.card, req.body.cardData);
+	if (!(await exports.isVerifiedTreeData(req.params.card, req.body.cardData))) {
+		return res.json({ err: true, message: "Invalid tree data" });
+	}
 
-		let result = await cardService.updateCard({
-			user: req.user.name,
-			originalUniqueName: req.params.card,
-			cardData: req.body.cardData,
-			images: req.body.images
-		});
+	let result = await cardService.updateCard({
+		user: req.user.name,
+		originalUniqueName: req.params.card,
+		cardData: req.body.cardData,
+		images: req.body.images
+	});
 
-		if (result.err) {
-			throw new Error(result.message);
-		}
-
-		miscController.notifyAdmin(`Card updated. \`\`${req.user.name}\`\` just updated: \`\`${req.params.card}\`\`.`);
-
-		return res.json({ err: null, message: "Card updated!" });
-	} catch(e) {
-		Sentry.captureException(e);
+	if (result.err) {
 		return res.json({ err: true, message: e.message });
+	} else {
+		miscController.notifyAdmin(`Card updated. \`\`${req.user.name}\`\` just updated: \`\`${req.params.card}\`\`.`);
+		return res.json({ err: null, message: "Card updated!" });
 	}
 };
 
@@ -432,16 +428,34 @@ function formatAggPipeline(obj, language = "en") {
 	return pipeline;
 }
 
-async function validateTreeData(name, data) {
+exports.isVerifiedTreeData = async function (name, data) {
 	try {
-		let card = await cardService.getCard({ name: name });
-		for (const node of data.dt) {
-			if (node._id && node.reward !== "???" && !data.dt.find(element => element._id == node._id && element.reward == node.reward)) {
-				throw new Error("Invalid node.");
-			};
+		let card = await cardService.getCard({ uniqueName: name });
+
+		if (!card.dt || card.dt.length === 0) {
+			return true;
 		}
+
+		for (const node of card.dt) {
+			// NOTE: newNode = same node reward in new data
+			let newNode = data.dt.find(element => element.reward === node.reward);
+
+			if (!newNode) {
+				return false;
+			}
+
+			if (newNode.reward !== "???") {
+				if (!newNode._id) {
+					newNode._id = node._id;
+				} else if (newNode._id && newNode._id != node._id) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	} catch(e) {
 		Sentry.captureException(e);
-		throw e;
+		return false;
 	}
 }

@@ -1,4 +1,5 @@
 const miscController = require("../controllers/miscController");
+const cardController = require("../controllers/cardsController");
 const suggestionService = require("../services/suggestionService");
 const cardService = require("../services/cardService");
 const eventService = require("../services/eventService");
@@ -70,6 +71,9 @@ exports.approveSuggestion = async function(req, res) {
 		let data = JSON.parse(req.body.data);
 
 		if (db === "card") {
+			if (!(await cardController.isVerifiedTreeData(docName, data))) {
+				return res.json({ err: true, message: "Invalid tree data" });
+			}
 			let result = await cardService.updateCard({
 				user: suggestion.user,
 				originalUniqueName: docName,
