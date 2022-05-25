@@ -449,7 +449,7 @@ exports.isVerifiedTreeData = async function (name, data) {
 				if (!newNode._id) {
 					newNode._id = node._id;
 				} else if (newNode._id && newNode._id != node._id) {
-					return { err: true, message: "Mismatched node id." };
+					return { err: true, message: node.reward + " has mismatched id." };
 				}
 			}
 		}
