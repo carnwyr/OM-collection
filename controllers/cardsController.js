@@ -439,7 +439,7 @@ exports.isVerifiedTreeData = async function (name, data) {
 
 		for (const node of card.dt) {
 			// NOTE: newNode = same node reward in new data
-			let newNode = data.dt.find(element => element.reward === node.reward);
+			let newNode = data.dt.find(element => element.reward === node.reward && element.type === node.type);
 
 			if (!newNode) {
 				return { err: true, message: node.reward + " is removed."};
