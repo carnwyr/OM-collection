@@ -71,8 +71,9 @@ exports.approveSuggestion = async function(req, res) {
 		let data = JSON.parse(req.body.data);
 
 		if (db === "card") {
-			if (!(await cardController.isVerifiedTreeData(docName, data))) {
-				return res.json({ err: true, message: "Invalid tree data" });
+			let verifyTree = await cardController.isVerifiedTreeData(docName, data);
+			if (verifyTree.err) {
+				return res.json({ err: true, message: verifyTree.message });
 			}
 			let result = await cardService.updateCard({
 				user: suggestion.user,

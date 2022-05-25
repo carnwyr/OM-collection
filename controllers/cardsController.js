@@ -314,8 +314,9 @@ exports.addNewCard = async function(req, res) {
 };
 
 exports.updateCard = async function(req, res) {
-	if (!(await exports.isVerifiedTreeData(req.params.card, req.body.cardData))) {
-		return res.json({ err: true, message: "Invalid tree data" });
+	let verifyTree = await exports.isVerifiedTreeData(req.params.card, req.body.cardData);
+	if (verifyTree.err) {
+		return res.json({ err: true, message: verifyTree.message });
 	}
 
 	let result = await cardService.updateCard({
@@ -433,7 +434,7 @@ exports.isVerifiedTreeData = async function (name, data) {
 		let card = await cardService.getCard({ uniqueName: name });
 
 		if (!card.dt || card.dt.length === 0) {
-			return true;
+			return { err: null };
 		}
 
 		for (const node of card.dt) {
@@ -441,21 +442,21 @@ exports.isVerifiedTreeData = async function (name, data) {
 			let newNode = data.dt.find(element => element.reward === node.reward);
 
 			if (!newNode) {
-				return false;
+				return { err: true, message: node.reward + " is removed."};
 			}
 
 			if (newNode.reward !== "???") {
 				if (!newNode._id) {
 					newNode._id = node._id;
 				} else if (newNode._id && newNode._id != node._id) {
-					return false;
+					return { err: true, message: "Mismatched node id." };
 				}
 			}
 		}
 
-		return true;
+		return { err: null };
 	} catch(e) {
 		Sentry.captureException(e);
-		return false;
+		return { err: true, message: e.message };
 	}
 }
