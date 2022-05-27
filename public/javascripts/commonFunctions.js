@@ -43,7 +43,7 @@ $(document).ready(function () {
 
 async function detectAdBlock(callback) {
   let adBlockEnabled = false;
-  const googleAdUrl = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+  const googleAdUrl = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=";
   try {
     await fetch(new Request(googleAdUrl)).catch((_) => (adBlockEnabled = true));
   } catch(e) {
@@ -59,13 +59,14 @@ $(window).on("load", function() {
 	detectAdBlock(adBlockEnabled => {
 		if (adBlockEnabled) {
 			showFallback();
-		} else {
-			let script = document.createElement('script');
-			script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352";
-			script.crossorigin = "anonymous";
-			script.onerror = () => document.dispatchEvent(new CustomEvent('koolAid'));
-			document.head.append(script);
 		}
+		// else {
+		// 	let script = document.createElement('script');
+		// 	script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352";
+		// 	script.crossorigin = "anonymous";
+		// 	script.onerror = () => document.dispatchEvent(new CustomEvent('koolAid'));
+		// 	document.head.append(script);
+		// }
 	});
 });
 
