@@ -15,6 +15,12 @@ exports.getUser = async function (username) {
 	}
 };
 
+exports.getAccountData = async function (username) {
+  var usernameRegexp = new RegExp('^' + username + '$', "i");
+  var user = await Users.findOne({ "info.name": { $regex: usernameRegexp } });
+  return user;
+};
+
 exports.getOwnedCards = async function (username) {
   return await getCardCollection(username, "owned");
 }
