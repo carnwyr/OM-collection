@@ -10,26 +10,13 @@ const suggestionService = require("../services/suggestionService");
 const revisionService = require("../services/revisionService");
 
 
-exports.getAccountPage = function(req, res, next) {
-  Users.find({ "info.name": req.user.name }, function(err, result) {
-    if (err) { return next(err) }
-    var u = result[0].info;
-    u.profile = result[0].profile;
-
-    if (!u.profile.joined) {
-      u.profile.joined = Date();
-    }
-
-    if (!u.profile.display) {
-      u.profile.display = "The_Mammon_Way";
-    }
-
-    if (!u.profile.isPrivate) {
-      u.profile.isPrivate = false;
-    }
-
-    return res.render("account", { title: req.i18n.t("title.settings"), user: Object.assign(req.user, u) });
-  });
+// TODO unauthorized error when not logged in
+exports.getAccountPage = async function (req, res, next) {
+  var user = await userService.getAccountData(req.user.name);
+  if (!user) {
+    return next(createError(404, "User not found"));
+  }
+  return res.render("account", { title: req.i18n.t("title.settings"), user: user });
 };
 
 exports.updateSupport = async function(req, res) {
