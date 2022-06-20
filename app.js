@@ -67,14 +67,9 @@ app.use(flash());
 app.use("/images/cards/:size", cardsController.directImage, express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/public"));
 
-// TODO handle errors in async controllers
 app.use((req, res, next) => {
 	res.locals.cookies = req.cookies;
-	try {
-		next();
-	} catch (err) {
-		next(err);
-	}
+	next();
 });
 
 app.use("/", indexRouter);
@@ -94,7 +89,7 @@ app.use(function (err, req, res, next) {
 			Sentry.captureException(err);
 		}
 	}
-	// TODO check if needed
+	
 	res.locals.message = err.message;
 	res.locals.error = req.app.get("env") === "development" ? err : {};
 
