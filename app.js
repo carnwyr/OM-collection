@@ -14,6 +14,8 @@ const compression = require("compression");
 // TODO remove
 const flash = require("connect-flash");
 
+const utils = require("./services/utils");
+
 const indexRouter = require("./routes/index");
 const cardsRouter = require("./routes/cards");
 const userRouter = require("./routes/user");

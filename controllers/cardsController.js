@@ -19,7 +19,7 @@ exports.index = function (req, res, next) {
 	});
 };
 
-exports.getCardsListPage = async function(req, res, next) {
+exports.getCardsListPage = function (req, res, next) {
 	try {
 		return res.render("cardsList", {
 			title: req.i18n.t("title.cards"),

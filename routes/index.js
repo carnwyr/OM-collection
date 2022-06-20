@@ -7,7 +7,6 @@ const miscController = require("../controllers/miscController");
 const eventsController = require("../controllers/eventsController");
 const loginController = require("../controllers/loginController");
 
-
 // Static pages
 router.get("/", cardsController.index);
 router.get("/policies", miscController.privacyPolicy);
