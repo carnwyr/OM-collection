@@ -19,8 +19,8 @@ exports.getAccountPage = async function (req, res, next) {
 };
 
 exports.updateSupport = async function(req, res) {
+  let user = req.body.user;
   try {
-    let user = req.body.user;
     let newstatus = JSON.parse(req.body.newstatus);
     return res.json(await userService.updateSupport(user, newstatus));
   } catch(e) {

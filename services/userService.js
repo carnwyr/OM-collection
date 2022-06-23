@@ -259,13 +259,11 @@ exports.deleteCardInCollections = function(cardName) {
 };
 
 exports.updateSupport = async function(user, status) {
-  try {
-    let result = await Users.updateOne({ "info.name": user }, { $set: { "info.supportStatus": status }});
-    if (result.n !== 1 || result.nModified !== 1) throw "Something went wrong!"
-    return { err: null, message: "Status updated!"}
-  } catch(e) {
-    return { err: true, message: e.message };
+  let result = await Users.updateOne({ "info.name": user }, { $set: { "info.supportStatus": status } });
+  if (!result.ok) {
+    return { err: true, message: "Something went wrong!" };
   }
+  return { err: false, message: "Status updated!"}
 };
 
 exports.banUser = async function(name) {
