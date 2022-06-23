@@ -10,11 +10,10 @@ const suggestionService = require("../services/suggestionService");
 const revisionService = require("../services/revisionService");
 
 
-// TODO unauthorized error when not logged in
 exports.getAccountPage = async function (req, res, next) {
   var user = await userService.getAccountData(req.user.name);
   if (!user) {
-    return next(createError(404, "User not found"));
+    return next(createError(404, properties = { title: "User not found" }));
   }
   return res.render("account", { title: req.i18n.t("title.settings"), user: user });
 };

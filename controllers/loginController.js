@@ -148,7 +148,7 @@ exports.isSameUser = function() {
 		if (req.user && (req.user.name == req.params.name || exports.hasAccess("Admin"))) {
 			return next();
 		}
-		return next(createError(401, "Please log in and try again!"));
+		return next(createError(401, properties = { errorMessage: "Please log in and try again!" }));
 	}
 };
 
@@ -156,7 +156,7 @@ exports.canEdit = function(type = "regular") {
   return function(req, res, next) {
     if (!req.user || req.user.supportStatus.some(badge => badge.name === "bannedFromMakingSuggestions") ||
         (type === "trusted" && (req.user.type !== "Admin" && !req.user.supportStatus.some(badge => badge.name === "trustedContributor")))) {
-      return next(createError(401, "Please log in to access this page."));
+			return next(createError(401, properties = { errorMessage: "Please log in to access this page." }));
     }
     return next();
   }
@@ -217,7 +217,7 @@ exports.verifyEmail = function(req, res, next) {
 			return next(err);
 		}
 		if (!record) {
-			return next(createError(404, "Invalid link."));
+			return next(createError(404, properties = { errorMessage: "Invalid link." }));
 		}
 		var setEmail = Users.updateOne({"info.name": req.user.name}, {"info.email": record.email}, (err) => {
 			if (err) {

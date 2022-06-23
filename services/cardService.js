@@ -26,7 +26,7 @@ exports.getCard = async function(query = {}) {
 
 exports.getHiddenCard = async function (cardName, user) {
 	if (!user || !user.isAdmin) {
-		throw createError(404, "Card not found");
+		throw createError(404, properties = { title: "Card not found" });
 	}
 	return await HiddenCards.findOne({name: cardName});
 };
@@ -319,7 +319,7 @@ exports.deleteCard = async function (cardName) {
 	if (!card) {
 		card = await HiddenCards.findOneAndRemove({ uniqueName: cardName });
 		if (!card) {
-			return createError("Card not found");
+			return createError(404, properties = { title: "Card not found" });
 		}
 	}
 	return removeCardDependencies(cardName);
@@ -339,7 +339,7 @@ async function removeCardDependencies(cardName) {
 exports.makeCardPublic = async function(cardName) {
 	var card = await HiddenCards.findOneAndRemove({ uniqueName: cardName });
 	if (!card) {
-		throw createError(404, "No such card");
+		throw createError(404, properties = { title: "No such card" });
 	}
 	var newCard = new Cards(card.toObject());
 	newCard.number = await getLatestCardNum(newCard.rarity);

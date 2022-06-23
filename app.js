@@ -78,20 +78,21 @@ app.use("/user", userRouter);
 app.use("/event", eventsRouter);
 app.use("/suggestion", suggestionRouter);
 app.use("/ask", askKarasuRouter);
-app.use((req, res, next) => next(createError(404, "Not found")));
+app.use((req, res, next) => next(createError(404, { title: "Page not found" })));
 
 app.use(Sentry.Handlers.errorHandler());
 
 app.use(function (err, req, res, next) {
-	if (err.status != 404) {
+	let ignoredErrors = [401, 404];
+	if (!ignoredErrors.includes(err.status)) {
 		console.error(err)
 		if (req.app.get("env") === "production") {
 			Sentry.captureException(err);
 		}
 	}
 	
-	res.locals.message = "Something went wrong";
-	res.locals.error = req.app.get("env") === "development" ? err : {};
+	res.locals.error = err.title || "Something went wrong";
+	res.locals.message = err.errorMessage || "Oops, looks like you found our error page. Double check the link, maybe?";
 
 	res.status(err.status || 500);
 	res.render("error", { title: "Error", user: req.user });
