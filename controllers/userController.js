@@ -28,8 +28,13 @@ exports.updateSupport = async function(req, res) {
   }
 };
 
-exports.banUser = async function(req, res) {
-  return res.json(await userService.banUser(req.body.name));
+// TODO test
+exports.banUser = async function (req, res) {
+  try {
+    return res.json(await userService.banUser(req.body.name));
+  } catch(e) {
+    return res.json({ err: true, message: e.message });
+  }
 }
 
 // as array of uniqueName

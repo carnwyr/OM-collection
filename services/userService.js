@@ -3,6 +3,7 @@ const ObjectId = require("mongodb").ObjectID;
 
 const suggestionService = require("../services/suggestionService");
 const Users = require("../models/users.js");
+const { updateSupport } = require('../controllers/userController');
 
 exports.getUser = async function (username) {
   var usernameRegexp = new RegExp('^' + username + '$', "i");
@@ -266,15 +267,13 @@ exports.updateSupport = async function(user, status) {
   return { err: false, message: "Status updated!"}
 };
 
-exports.banUser = async function(name) {
-  try {
-    let banResult = await Users.findOneAndUpdate({ "info.name": name }, { $push: { "info.supportStatus": { 'name': 'bannedFromMakingSuggestions' } }});
-    let deleteSuggestionResult = await suggestionService.refuseSuggestionsFrom({ user: name });
-    if (banResult.err || deleteSuggestionResult.err) throw "Something went wrong.";
-    return { err: null, message: "User banned."};
-  } catch(e) {
-    return { err: true, message: e.message };
+exports.banUser = async function (name) {
+  let banResult = await Users.findOneAndUpdate({ "info.name": name }, { $push: { "info.supportStatus": { 'name': 'bannedFromMakingSuggestions' } }});
+  let deleteSuggestionResult = await suggestionService.refuseSuggestionsFrom(name);
+  if (!banResult.ok || !deleteSuggestionResult.ok) {
+    return { err: true, message: "Something went wrong!" };
   }
+  return { err: false, message: "User banned"};
 };
 
 exports.updateUserTree = async function(username, node, isUnlocked) {

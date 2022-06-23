@@ -44,10 +44,6 @@ exports.updateSuggestionStatus = async function(id, status, reason = "") {
   }
 };
 
-exports.refuseSuggestionsFrom = async function(query) {
-  try {
-    return await Suggestions.updateMany(query, { $set: { status: "refused" }});
-  } catch(e) {
-    return { err: true, message: e.message };
-  }
+exports.refuseSuggestionsFrom = async function (name) {
+  return await Suggestions.updateMany({ user: name }, { $set: { status: "refused" }});
 };
