@@ -203,8 +203,8 @@ exports.getProfilePage = async function(req, res, next) {
 		}
 
 		var cards = {
-			owned: (await userService.getOwnedCards(user.info.name)).slice(0, 15),
-			faved: (await userService.getFaveCards(user.info.name)).slice(0, 15)
+			owned: (await userService.getOwnedCardsPreview(user.info.name)),
+			faved: (await userService.getFaveCardsPreview(user.info.name))
 		};
 
 		var profileInfo = await userService.getProfileInfo(user.info.name, req.i18n.t("lang"));

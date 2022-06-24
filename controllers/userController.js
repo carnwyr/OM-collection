@@ -20,25 +20,16 @@ exports.getAccountPage = async function (req, res, next) {
 
 exports.updateSupport = async function(req, res) {
   let user = req.body.user;
-  try {
-    let newstatus = JSON.parse(req.body.newstatus);
-    return res.json(await userService.updateSupport(user, newstatus));
-  } catch(e) {
-    return res.json({ err: true, message: e.message });
-  }
+  let newstatus = JSON.parse(req.body.newstatus);
+  return res.json(await userService.updateSupport(user, newstatus));
 };
 
 // TODO test
 exports.banUser = async function (req, res) {
-  try {
-    return res.json(await userService.banUser(req.body.name));
-  } catch(e) {
-    return res.json({ err: true, message: e.message });
-  }
+  return res.json(await userService.banUser(req.body.name));
 }
 
-// as array of uniqueName
-exports.getOwnedCards = async function (req, res, next) {
+exports.getOwnedUniqueNames = async function (req, res, next) {
 	try {
 		let user = await userService.getUser(req.user.name);
 		return res.send(user.cards.owned);

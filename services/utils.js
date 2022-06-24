@@ -14,3 +14,11 @@ const asyncHandler = fn => (req, res, next) => {
     return proxied.apply(this, [path, args]);
   };
 })();
+
+(function() {
+  var proxied = express.Router.post;
+  express.Router.post = function (path, ...handlers) {
+    let args = handlers.map(fn => asyncHandler(fn));
+    return proxied.apply(this, [path, args]);
+  };
+})();

@@ -32,34 +32,29 @@ exports.getAccountData = async function (username) {
   return user[0];
 };
 
-exports.getOwnedCards = async function (username) {
+exports.getOwnedCardsPreview = async function (username) {
   return await getCardCollection(username, "owned");
 }
 
-exports.getFaveCards = async function (username) {
+exports.getFaveCardsPreview = async function (username) {
   return await getCardCollection(username, "faved");
 }
 
-getCardCollection = function (username, collectionType) {
-  try {
-    return Users.aggregate([
-      { $match: { "info.name": username } },
-      { $unwind: `$cards.${collectionType}` },
-      { $lookup: {
-        from: "cards",
-        localField: `cards.${collectionType}`,
-        foreignField: "uniqueName",
-        as: "cardData"
-      }},
-      { $sort: { "cardData.number": -1 } },
-      { $limit: 15 },
-      { $project: { name: "$cardData.name", uniqueName: `$cards.${collectionType}`, _id: false } },
-      { $unwind: "$name" }
-    ]);
-  } catch (e) {
-    console.error(e.message);
-    Sentry.captureException(e);
-  }
+getCardCollectionPreview = function (username, collectionType) {
+  return Users.aggregate([
+    { $match: { "info.name": username } },
+    { $unwind: `$cards.${collectionType}` },
+    { $lookup: {
+      from: "cards",
+      localField: `cards.${collectionType}`,
+      foreignField: "uniqueName",
+      as: "cardData"
+    }},
+    { $sort: { "cardData.number": -1 } },
+    { $limit: 15 },
+    { $project: { name: "$cardData.name", uniqueName: `$cards.${collectionType}`, _id: false } },
+    { $unwind: "$name" }
+  ]);
 };
 
 exports.getOwnedCardsStats = async function (username) {
@@ -267,6 +262,7 @@ exports.updateSupport = async function(user, status) {
   return { err: false, message: "Status updated!"}
 };
 
+// TODO combine with updateSupport
 exports.banUser = async function (name) {
   let banResult = await Users.findOneAndUpdate({ "info.name": name }, { $push: { "info.supportStatus": { 'name': 'bannedFromMakingSuggestions' } }});
   let deleteSuggestionResult = await suggestionService.refuseSuggestionsFrom(name);

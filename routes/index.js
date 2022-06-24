@@ -30,7 +30,7 @@ router.post("/signup", loginController.signup);
 router.post("/signup/checkUsername", loginController.signupCheckUsername);
 
 // User's personal collection
-router.get('/collection/getOwnedCards', loginController.isLoggedIn(), userController.getOwnedCards);
+router.get('/collection/getOwnedCards', loginController.isLoggedIn(), userController.getOwnedUniqueNames);
 router.post('/collection/modifyCollection', loginController.isLoggedIn(), userController.modifyCollection);
 router.get('/:username/collection', cardsController.getOwnedCardsPage);
 router.get('/:username/favourites', cardsController.getFavouriteCardsPage);

@@ -90,12 +90,18 @@ app.use(function (err, req, res, next) {
 			Sentry.captureException(err);
 		}
 	}
-	
-	res.locals.error = err.title || "Something went wrong";
-	res.locals.message = err.errorMessage || "Oops, looks like you found our error page. Double check the link, maybe?";
 
-	res.status(err.status || 500);
-	res.render("error", { title: "Error", user: req.user });
+	let errorTitle = err.title || "Something went wrong";
+	let errorMessage = err.errorMessage || "Oops, looks like you found our error page. Double check the link, maybe?";
+	
+	if (req.is('application/*')) {
+		res.json({ err: true, message: errorTitle });
+	} else {
+		res.status(err.status || 500);
+		res.locals.error = errorTitle;
+		res.locals.message = errorMessage;
+		res.render("error", { title: "Error", user: req.user });
+	}
 });
 
 cacheService.init();
