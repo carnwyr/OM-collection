@@ -29,14 +29,9 @@ exports.banUser = async function (req, res) {
   return res.json(await userService.banUser(req.body.name));
 }
 
+// TODO test
 exports.getOwnedUniqueNames = async function (req, res, next) {
-	try {
-		let user = await userService.getUser(req.user.name);
-		return res.send(user.cards.owned);
-	} catch (e) {
-		Sentry.captureException(e);
-		return res.send([]);
-	}
+  return res.json(await userService.getOwnedUniqueNames(req.user.name));
 }
 
 exports.modifyCollection = async function(req, res, callback) {

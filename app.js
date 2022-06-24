@@ -94,7 +94,8 @@ app.use(function (err, req, res, next) {
 	let errorTitle = err.title || "Something went wrong";
 	let errorMessage = err.errorMessage || "Oops, looks like you found our error page. Double check the link, maybe?";
 	
-	if (req.is('application/*')) {
+	console.log(req.is('application/*'))
+	if (req.is('application/*') || req.headers['content-type'].includes('application/json')) {
 		res.json({ err: true, message: errorTitle });
 	} else {
 		res.status(err.status || 500);

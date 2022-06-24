@@ -57,6 +57,14 @@ getCardCollectionPreview = function (username, collectionType) {
   ]);
 };
 
+exports.getOwnedUniqueNames = async function (username) {
+  let uniqueNames = await Users.aggregate([
+    { $match: { "info.name": username } },
+    { $project: { ownedUniqueNames: '$cards.owned', _id: false } }
+  ]);
+  return uniqueNames[0]?.ownedUniqueNames ?? [];
+};
+
 exports.getOwnedCardsStats = async function (username) {
   let collectionType = "owned";
   try {
