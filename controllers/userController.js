@@ -34,52 +34,27 @@ exports.getOwnedUniqueNames = async function (req, res, next) {
   return res.json(await userService.getOwnedUniqueNames(req.user.name));
 }
 
-exports.modifyCollection = async function(req, res, callback) {
-	try {
-		var addedCards = [];
-		var removedCards = [];
+// TODO safeguard from adding fake card names
+exports.modifyCollection = async function(req, res, next) {
+  let addedCards = [];
+  let removedCards = [];
 
-		for (let key in req.body.changedCards) {
-			if (req.body.changedCards[key]) {
-				addedCards.push(key);
-			} else {
-				removedCards.push(key);
-			}
-		}
+  for (let key in req.body.changedCards) {
+    if (req.body.changedCards[key]) {
+      addedCards.push(key);
+    } else {
+      removedCards.push(key);
+    }
+  }
 
-		var collection = req.body.collection === "owned" ? "owned" : "faved";
+  let modificationFunction = req.body.collection === "owned" ? userService.modifyOwnedCollection : userService.modifyFaveCollection;
+  let result = await modificationFunction(req.user.name, addedCards, removedCards);
 
-		var result = await changeCardsInCollection(req.user.name, collection, addedCards, removedCards);
+  if (result.err) {
+    throw createError(result.err.message, properties= {title: "Something went wrong. Try refreshing the page"});
+  }
 
-		if (!result.err) {
-			return res.json({ err: false });
-		} else {
-			var e = new Error(result.err);
-			e.clientMessage = "Something went wrong. Try refreshing the page";
-			throw e;
-		}
-	} catch (e) {
-		// console.error(e.message);
-    Sentry.captureException(e);
-		return res.json({ err: true, message: e.clientMessage ? e.clientMessage : e.message });
-	}
-};
-
-function changeCardsInCollection(user, collection, addedCards, removedCards) {
-	var addPipeline = { $addToSet: { } };
-	addPipeline.$addToSet[`cards.${collection}`] = { $each: addedCards };
-
-	var removePipeline = { $pullAll: { } };
-	removePipeline.$pullAll[`cards.${collection}`] = removedCards;
-
-	var addPromise = Users.findOneAndUpdate({"info.name": user}, addPipeline);
-	var removePromise = Users.findOneAndUpdate({"info.name": user}, removePipeline);
-
-	return Promise.all([addPromise, removePromise]).then(value => {
-		return { err: false };
-	}).catch(e => {
-		return { err: true, message: e };
-	});
+  return res.json(result);
 };
 
 exports.modifyCollectionFromDetails = async function(req, res) {

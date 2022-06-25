@@ -3,7 +3,6 @@ const ObjectId = require("mongodb").ObjectID;
 
 const suggestionService = require("../services/suggestionService");
 const Users = require("../models/users.js");
-const { updateSupport } = require('../controllers/userController');
 
 exports.getUser = async function (username) {
   var usernameRegexp = new RegExp('^' + username + '$', "i");
@@ -32,13 +31,9 @@ exports.getAccountData = async function (username) {
   return user[0];
 };
 
-exports.getOwnedCardsPreview = async function (username) {
-  return await getCardCollection(username, "owned");
-}
+exports.getOwnedCardsPreview = async username => await getCardCollection(username, "owned");
 
-exports.getFaveCardsPreview = async function (username) {
-  return await getCardCollection(username, "faved");
-}
+exports.getFaveCardsPreview = async username => await getCardCollection(username, "faved");
 
 getCardCollectionPreview = function (username, collectionType) {
   return Users.aggregate([
@@ -64,6 +59,25 @@ exports.getOwnedUniqueNames = async function (username) {
   ]);
   return uniqueNames[0]?.ownedUniqueNames ?? [];
 };
+
+exports.modifyOwnedCollection = (username, addedCards, removedCards) => modifyCollection(username, "owned", addedCards, removedCards);
+
+exports.modifyFaveCollection = (username, addedCards, removedCards) => modifyCollection(username, "faved", addedCards, removedCards);
+
+modifyCollection = function (username, collectionType, addedCards, removedCards) {
+  let addPipeline = { $addToSet: { } };
+	addPipeline.$addToSet[`cards.${collectionType}`] = { $each: addedCards };
+
+	let removePipeline = { $pullAll: { } };
+	removePipeline.$pullAll[`cards.${collectionType}`] = removedCards;
+
+	let addPromise = Users.findOneAndUpdate({"info.name": username}, addPipeline);
+	let removePromise = Users.findOneAndUpdate({"info.name": username}, removePipeline);
+
+  return Promise.all([addPromise, removePromise])
+    .then(value => { return { err: false } })
+    .catch(e => { return { err: true, message: e.message } });
+}
 
 exports.getOwnedCardsStats = async function (username) {
   let collectionType = "owned";
