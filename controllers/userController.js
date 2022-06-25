@@ -35,6 +35,7 @@ exports.getOwnedUniqueNames = async function (req, res, next) {
 }
 
 // TODO safeguard from adding fake card names
+// TODO test error
 exports.modifyCollection = async function(req, res, next) {
   let addedCards = [];
   let removedCards = [];
@@ -51,7 +52,7 @@ exports.modifyCollection = async function(req, res, next) {
   let result = await modificationFunction(req.user.name, addedCards, removedCards);
 
   if (result.err) {
-    throw createError(result.err.message, properties= {title: "Something went wrong. Try refreshing the page"});
+    return next(createError(result.err.message, properties= {title: "Something went wrong. Try refreshing the page"}));
   }
 
   return res.json(result);
