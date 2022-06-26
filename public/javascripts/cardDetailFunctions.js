@@ -54,7 +54,7 @@ function updateUserTreeNode() {
       if (result.err) {
         showAlert("danger", result.message);
       } else {
-        showAlert("success", result.message);
+        showAlert("success", "Saved!");
       }
     });
 }
