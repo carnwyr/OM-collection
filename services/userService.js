@@ -335,3 +335,24 @@ exports.updateUserTree = async function(username, node, isUnlocked) {
     await Users.findOneAndUpdate({ "info.name": username }, { $pull: { tree: new ObjectId(node) } });
   }
 };
+
+// TODO only retrieve name of the correct language
+exports.getRankingData = async function () {
+  return await Users.aggregate([
+    { $unwind: "$cards.faved" },
+    { $group: { _id: "$cards.faved", total: { $sum: 1 } } },
+    { $sort: { total: -1, _id: 1 } },
+    { $limit: 10 },
+    {
+      $lookup: {
+        from: "cards",
+        localField: "_id",
+        foreignField: "uniqueName",
+        as: "cardData"
+      }
+    },
+    { $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
+    { $set: { name: "$name.name", ja_name: "$name.ja_name" } },
+    { $unset: ["cardData"] }
+  ]);
+};

@@ -83,29 +83,9 @@ exports.getUserListPage = async function(req, res) {
   res.render('userList', { userList: result, user: req.user});
 };
 
-exports.getRankingsPage = async function(req, res, next) {
-  try {
-    var cards = await Users.aggregate([
-      { $unwind: "$cards.faved" },
-      { $group: { _id: "$cards.faved", total: { $sum: 1 } } },
-      { $sort: { total: -1, _id: 1 } },
-      { $limit: 10 },
-      {
-        $lookup: {
-          from: "cards",
-          localField: "_id",
-          foreignField: "uniqueName",
-          as: "cardData"
-        }
-      },
-      { $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
-      { $set: { name: "$name.name", ja_name: "$name.ja_name" } },
-      { $unset: ["cardData"] }
-    ]);
-    return res.render("rankings", { title: req.i18n.t("common.rankings"), description: "Ranking of most liked obey me cards.", ranking: cards, user: req.user });
-  } catch (e) {
-    return next(e);
-  }
+exports.getRankingsPage = async function (req, res, next) {
+  let rankingData = await userService.getRankingData();
+  return res.render("rankings", { description: "Ranking of most liked obey me cards.", ranking: rankingData, user: req.user });
 };
 
 exports.getTreeProgressPage = async function(req, res, next) {
