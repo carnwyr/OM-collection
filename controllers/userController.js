@@ -15,7 +15,7 @@ exports.getAccountPage = async function (req, res, next) {
   if (!user) {
     return next(createError(404, properties = { title: "User not found" }));
   }
-  return res.render("account", { user: user });
+  return res.render("account", { title: req.i18n.t("title.settings"), user: user });
 };
 
 exports.updateSupport = async function(req, res) {
@@ -80,12 +80,12 @@ exports.getUserListPage = async function(req, res) {
   result.nextPage = page < result.totalPages ? page + 1 : 0;
   result.previousPage = page > 1 ? page - 1 : 0;
 
-  res.render('userList', { userList: result, user: req.user});
+  res.render('userList', { title: "User List", userList: result, user: req.user});
 };
 
 exports.getRankingsPage = async function (req, res, next) {
   let rankingData = await userService.getRankingData();
-  return res.render("rankings", { description: "Ranking of most liked obey me cards.", ranking: rankingData, user: req.user });
+  return res.render("rankings", { title: req.i18n.t("common.rankings"), description: "Ranking of most liked obey me cards.", ranking: rankingData, user: req.user });
 };
 
 exports.getTreeProgressPage = async function(req, res, next) {
