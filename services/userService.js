@@ -31,6 +31,23 @@ exports.getAccountData = async function (username) {
   return user[0];
 };
 
+exports.getUserList = async function (sortField, sortOrder, limit, startIndex) {
+  let query = Users.find({}, "info.name info.email info.supportStatus");
+
+  let sortBy = sortField ? `info.${sortField}` : "_id";
+  let sort = {};
+  sort[sortBy] = sortOrder ?? 1;
+  query.sort(sort);
+
+  if (limit) {
+    query.limit(limit);
+  }
+
+  query.skip(startIndex);
+
+  return await query;
+};
+
 exports.getOwnedCardsPreview = async username => await getCardCollection(username, "owned");
 
 exports.getFaveCardsPreview = async username => await getCardCollection(username, "faved");

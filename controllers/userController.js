@@ -15,7 +15,7 @@ exports.getAccountPage = async function (req, res, next) {
   if (!user) {
     return next(createError(404, properties = { title: "User not found" }));
   }
-  return res.render("account", { title: req.i18n.t("title.settings"), user: user });
+  return res.render("account", { user: user });
 };
 
 exports.updateSupport = async function(req, res) {
@@ -68,43 +68,19 @@ async function getUpdatedCount(card, collection) {
 };
 
 exports.getUserListPage = async function(req, res) {
-  const page = req.query.page?req.query.page:1;
-  const order = req.query.order?req.query.order:1;
-  const limit = 50;
+  let page = req.query.page ?? 1;
+  let limit = 50;
 
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
+  let startIndex = (page - 1) * limit;
 
-  var result = {};
+  let result = {};
+  result.users = await userService.getUserList(req.query.sortby, req.query.order, limit, startIndex);
+  result.totalUsers = await userService.getNumberOfUsers();
+  result.totalPages = Math.ceil(result.totalUsers / limit);
+  result.nextPage = page < result.totalPages ? page + 1 : 0;
+  result.previousPage = page > 1 ? page - 1 : 0;
 
-  try {
-    var sort = {};
-    if (req.query.sortby && req.query.sortby !== '') {
-      sort[`info.${req.query.sortby}`] = order;
-    } else {
-      sort = { "_id": order };
-    }
-    result.users = await Users.find({},"info").sort(sort).limit(limit).skip(startIndex);
-    var totalusers = await userService.getNumberOfUsers();
-  } catch(e) {
-    return res.status(500).json({ message: e.message });
-  }
-
-  if (endIndex < totalusers) {
-    result.nextpage = {
-      page: page + 1
-    };
-  }
-
-  if (startIndex > 0) {
-    result.previouspage = {
-      page: page - 1
-    };
-  }
-
-  result.totalpage = Math.ceil(totalusers/limit);
-  result.totalusers = totalusers;
-  res.render('userpage', { title: 'User List', userList: result, user: req.user});
+  res.render('userpage', { userList: result, user: req.user});
 };
 
 exports.getRankingsPage = async function(req, res, next) {
