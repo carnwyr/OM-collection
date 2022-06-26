@@ -37,7 +37,7 @@ router.get('/:username/favourites', cardsController.getFavouriteCardsPage);
 router.get('/:username/profile', cardsController.getProfilePage);
 
 // User Management
-router.get("/userpage", loginController.hasAccess("Admin"), userController.getUserListPage);
+router.get("/userList", loginController.hasAccess("Admin"), userController.getUserListPage);
 router.post("/updateSupport", loginController.hasAccess("Admin"), userController.updateSupport);
 
 // Misc.

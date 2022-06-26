@@ -80,7 +80,7 @@ exports.getUserListPage = async function(req, res) {
   result.nextPage = page < result.totalPages ? page + 1 : 0;
   result.previousPage = page > 1 ? page - 1 : 0;
 
-  res.render('userpage', { userList: result, user: req.user});
+  res.render('userList', { userList: result, user: req.user});
 };
 
 exports.getRankingsPage = async function(req, res, next) {
