@@ -180,82 +180,42 @@ exports.getProfileInfo = async function(username, language) {
 }
 
 exports.getUserTreeStats = async function(username) {
-  try {
-    let user = await Users.findOne({ "info.name": username });
-    if (!user.tree || user.tree.length === 0) {
-      return [];
-    }
-
-    // { _id: item name, count: amount unlocked }
-    return await Users.aggregate([
-      {
-        '$match': {
-          'info.name': username
-        }
-      }, {
-        '$project': {
-          'tree': 1
-        }
-      }, {
-        '$unwind': {
-          'path': '$tree',
-          'preserveNullAndEmptyArrays': false
-        }
-      }, {
-        '$lookup': {
-          'from': 'cards',
-          'let': {
-            'tree_id': '$tree'
-          },
-          'pipeline': [
-            {
-              '$project': {
-                'dt': 1
-              }
-            }, {
-              '$unwind': {
-                'path': '$dt',
-                'preserveNullAndEmptyArrays': false
-              }
-            }, {
-              '$replaceRoot': {
-                'newRoot': {
-                  '$mergeObjects': [
-                    '$dt'
-                  ]
-                }
-              }
-            }, {
-              '$match': {
-                '$expr': {
-                  '$eq': [
-                    '$_id', '$$tree_id'
-                  ]
-                }
-              }
-            }
-          ],
-          'as': 'item'
-        }
-      }, {
-        '$unwind': {
-          'path': '$item',
-          'preserveNullAndEmptyArrays': false
-        }
-      }, {
-        '$group': {
-          '_id': '$item.reward',
-          'count': {
-            '$count': {}
-          }
-        }
-      }
-    ]);
-  } catch(e) {
-    console.error(e);
-    Sentry.captureException(e);
+  let user = await Users.findOne({ "info.name": username });
+  if (!user.tree || user.tree.length === 0) {
     return [];
   }
+
+  // TODO rework?
+  return await Users.aggregate([
+    { '$match': { 'info.name': username } },
+    { '$project': { 'tree': 1 } },
+    { '$unwind': {
+        'path': '$tree',
+        'preserveNullAndEmptyArrays': false
+    }}, 
+    { '$lookup': {
+        'from': 'cards',
+        'let': { 'tree_id': '$tree' },
+        'pipeline': [
+          { '$project': { 'dt': 1 } },
+          { '$unwind': {
+              'path': '$dt',
+              'preserveNullAndEmptyArrays': false
+          }}, 
+          { '$replaceRoot': { 'newRoot': { '$mergeObjects': ['$dt'] } } },
+          { '$match': { '$expr': { '$eq': [ '$_id', '$$tree_id' ] } } }
+        ],
+        'as': 'item'
+    }},
+    { '$unwind': {
+        'path': '$item',
+        'preserveNullAndEmptyArrays': false
+    }},
+    { '$group': {
+        '_id': '$item.reward',
+        'count': { '$count': {} }
+    }}
+  ]);
 };
 
 function sortObjArrayByKey(array, key) {

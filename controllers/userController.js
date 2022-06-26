@@ -89,20 +89,15 @@ exports.getRankingsPage = async function (req, res, next) {
 };
 
 exports.getTreeProgressPage = async function(req, res, next) {
-  try {
-    let totalTreeStats = await cardService.getTotalTreeStats();
-    let userTreeStats = await userService.getUserTreeStats(req.user.name);
+  let totalTreeStats = await cardService.getTotalTreeStats();
+  let userTreeStats = await userService.getUserTreeStats(req.user.name);
 
-    return res.render("user/treeProgress", {
-      title: "My tree progress",
-      description: "My tree progress on Karasu-OS.com",
-      stats: { total: totalTreeStats, user: userTreeStats },
-      user: req.user
-    });
-  } catch(e) {
-    Sentry.captureException(e);
-    return next(e);
-  }
+  return res.render("user/treeProgress", {
+    title: "My tree progress",
+    description: "My tree progress on Karasu-OS.com",
+    stats: { total: totalTreeStats, user: userTreeStats },
+    user: req.user
+  });
 };
 
 exports.getUserSuggestionPage = async function(req, res, next) {
