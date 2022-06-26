@@ -11,14 +11,7 @@ exports.getSuggestion = async function(query = {}) {
 	}
 };
 
-exports.getSuggestionList = async function(query = {}, sort = {}) {
-  try {
-    return await Suggestions.find(query).sort(sort);
-  } catch(e) {
-    Sentry.captureException(e);
-    return [];
-  }
-};
+exports.getSuggestionList = async (query = {}, sort = {}) => await Suggestions.find(query).sort(sort);
 
 exports.addSuggestion = async function(data) {
   try {

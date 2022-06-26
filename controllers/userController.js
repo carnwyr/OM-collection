@@ -101,20 +101,15 @@ exports.getTreeProgressPage = async function(req, res, next) {
 };
 
 exports.getUserSuggestionPage = async function(req, res, next) {
-  try {
-    let suggestions = await suggestionService.getSuggestionList({ user: req.user.name });
-    let revisions = await revisionService.getRevisions({ user: req.user.name });
-    return res.render("user/suggestions", {
-      title: "My edits",
-      description: "My edits on karasu-os.com",
-      suggestions: suggestions,
-      count: suggestions.length + revisions.length,
-      user: req.user
-    });
-  } catch(e) {
-    Sentry.captureException(e);
-    return next(e);
-  }
+  let suggestions = await suggestionService.getSuggestionList({ user: req.user.name });
+  let revisions = await revisionService.getRevisions({ user: req.user.name });
+  return res.render("user/suggestions", {
+    title: "My edits",
+    description: "My edits on karasu-os.com",
+    suggestions: suggestions,
+    count: suggestions.length + revisions.length,
+    user: req.user
+  });
 };
 
 exports.updateUserProfile = function(req, res) {
