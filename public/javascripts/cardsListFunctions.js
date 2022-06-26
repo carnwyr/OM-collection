@@ -311,7 +311,7 @@ function switchSelectionMode() {
 		if (Object.keys(changedCards).length > 0) {
 			$.ajax({
 				type: 'post',
-				url: '/collection/modifyCollection',
+				url: '/collection/submitCollectionChanges',
 				contentType: 'application/json',
 				data: JSON.stringify({changedCards: changedCards, collection: "owned"}),
 				cache: false

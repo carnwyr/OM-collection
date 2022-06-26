@@ -60,11 +60,18 @@ exports.getOwnedUniqueNames = async function (username) {
   return uniqueNames[0]?.ownedUniqueNames ?? [];
 };
 
-exports.modifyOwnedCollection = (username, addedCards, removedCards) => modifyCollection(username, "owned", addedCards, removedCards);
+exports.modifyCollection = function (username, collectionType, changedCards) {
+  let addedCards = [];
+  let removedCards = [];
 
-exports.modifyFaveCollection = (username, addedCards, removedCards) => modifyCollection(username, "faved", addedCards, removedCards);
+  for (let key in changedCards) {
+    if (changedCards[key]) {
+      addedCards.push(key);
+    } else {
+      removedCards.push(key);
+    }
+  }
 
-modifyCollection = function (username, collectionType, addedCards, removedCards) {
   let addPipeline = { $addToSet: { } };
 	addPipeline.$addToSet[`cards.${collectionType}`] = { $each: addedCards };
 
@@ -251,6 +258,16 @@ exports.favesCard = function(username, card) {
 
 exports.getNumberOfUsers = function() {
 	return Users.estimatedDocumentCount();
+};
+
+exports.getOwnedCardCount = card => getCardCountInCollections(card, "owned");
+
+exports.getFavedCardCount = card => getCardCountInCollections(card, "faved");
+
+getCardCountInCollections = function (card, collection) {
+  let countCondition = {};
+	countCondition[`cards.${collection}`] = card;
+	return Users.countDocuments(countCondition);
 };
 
 exports.renameCardInCollections = function(oldName, newName) {

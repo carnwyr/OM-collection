@@ -36,20 +36,8 @@ exports.getOwnedUniqueNames = async function (req, res, next) {
 
 // TODO safeguard from adding fake card names
 // TODO test error
-exports.modifyCollection = async function(req, res, next) {
-  let addedCards = [];
-  let removedCards = [];
-
-  for (let key in req.body.changedCards) {
-    if (req.body.changedCards[key]) {
-      addedCards.push(key);
-    } else {
-      removedCards.push(key);
-    }
-  }
-
-  let modificationFunction = req.body.collection === "owned" ? userService.modifyOwnedCollection : userService.modifyFaveCollection;
-  let result = await modificationFunction(req.user.name, addedCards, removedCards);
+exports.submitCollectionChanges = async function(req, res, next) {
+  let result = await userService.modifyCollection(req.user.name, req.body.collection, req.body.changedCards);
 
   if (result.err) {
     return next(createError(result.err.message, properties= {title: "Something went wrong. Try refreshing the page"}));
@@ -58,45 +46,25 @@ exports.modifyCollection = async function(req, res, next) {
   return res.json(result);
 };
 
-exports.modifyCollectionFromDetails = async function(req, res) {
-	try {
-		var collection = req.body.collection === "owned" ? "owned" : "faved";
-		var add = req.body.modify === "add";
+exports.submitCardStatusChange = async function (req, res) {
+  let changedCards = {};
+  changedCards[req.params.card] = req.body.modify === "add";
 
-		var addedCards = add ? [req.params.card] : [];
-		var removedCards = !add ? [req.params.card] : [];
+  let result = await userService.modifyCollection(req.user.name, req.body.collection, changedCards);
 
-		var result = await changeCardsInCollection(req.user.name, collection, addedCards, removedCards);
+  if (result.err) {
+    return next(createError(result.err.message, properties= {title: "Something went wrong. Try refreshing the page"}));
+  }
 
-		if (result.err) {
-			var e = new Error(result.err);
-			e.clientMessage = "Something went wrong. Try refreshing the page";
-			throw e;
-		}
+  result.updatedVal = await getUpdatedCount(req.params.card, req.body.collection);
 
-		updateCountOnPage(res, req.params.card, collection);
-	} catch (e) {
-		console.error(e.message);
-		return res.json({ err: true, message: e.clientMessage ? e.clientMessage : e.message });
-	}
+  return res.json(result);
 };
 
-async function updateCountOnPage(res, card, collection) {
-	try {
-		var updatedVal = await exports.countCardInCollections(card, collection);
-		var totalusers = await userService.getNumberOfUsers();
-
-		return res.json({ err: false, message: "Collection updated!", updatedVal: (updatedVal/totalusers*100).toFixed(2) });
-	} catch (e) {
-		console.error(e.message);
-		return res.json({ err: true, message: e.message });
-	}
-};
-
-exports.countCardInCollections = function(card, collection) {
-	var targetCard = {};
-	targetCard[`cards.${collection}`] = card;
-	return Users.countDocuments(targetCard);
+async function getUpdatedCount(card, collection) {
+  let updatedVal = collection == "owned" ? await userService.getOwnedCardCount(card) : await userService.getFavedCardCount(card);
+  let totalusers = await userService.getNumberOfUsers();
+  return (updatedVal / totalusers * 100).toFixed(2);
 };
 
 exports.getUserListPage = async function(req, res) {
