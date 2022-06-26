@@ -112,28 +112,16 @@ exports.getUserSuggestionPage = async function(req, res, next) {
   });
 };
 
-exports.updateUserProfile = function(req, res) {
+// TODO data validation
+exports.updateUserProfile = async function(req, res) {
   var update = {};
   for (const field in req.body.updatedInfo) {
     update[`profile.${field}`] = req.body.updatedInfo[field];
   }
 
-  Users.updateOne(
-    { "info.name": req.user.name },
-    { $set: update },
-    function(err, result) {
-      if (err) {
-        Sentry.captureException(err);
-        return res.json({ err: true, message: "Something went wrong :(" });
-      }
-
-      if (result.nModified === 1) {
-        return res.json({ err: null, message: "Updated!" });
-      } else {
-        return res.json({ err: true, message: "Something went wrong :(" });
-      }
-    }
-  );
+  await userService.updateUserData(req.user.name, update);
+  
+  return res.json({ err: false });
 }
 
 exports.updateUserTree = async function(req, res) {

@@ -48,9 +48,9 @@ exports.getUserList = async function (sortField, sortOrder, limit, startIndex) {
   return await query;
 };
 
-exports.getOwnedCardsPreview = async username => await getCardCollection(username, "owned");
+exports.getOwnedCardsPreview = async username => await getCardCollectionPreview(username, "owned");
 
-exports.getFaveCardsPreview = async username => await getCardCollection(username, "faved");
+exports.getFaveCardsPreview = async username => await getCardCollectionPreview(username, "faved");
 
 getCardCollectionPreview = function (username, collectionType) {
   return Users.aggregate([
@@ -102,6 +102,8 @@ exports.modifyCollection = function (username, collectionType, changedCards) {
     .then(value => { return { err: false } })
     .catch(e => { return { err: true, message: e.message } });
 }
+
+exports.updateUserData = async (username, data) => await Users.updateOne({ "info.name": username }, { $set: data });
 
 exports.getOwnedCardsStats = async function (username) {
   let collectionType = "owned";
