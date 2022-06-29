@@ -37,7 +37,7 @@ block content
 												input(type="text" class="form-control" id="inputFriendID" name="id" placeholder="???" value=user.profile.id maxlength="20")
 											div.form-group.col-md-6
 												label(for="inputJoinOM")= t("profile.entered_rad")
-												- let joinDate = user.profile.joined ?? Date();
+												- let joinDate = user.profile.joined ?? new Date();
 												input(type="date" class="form-control" id="inputJoinOM" name="joined" value=joinDate.toISOString().split("T")[0] min="2019-12-11")
 											div.col-md-6
 												span= t("profile.language")
