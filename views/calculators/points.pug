@@ -1,5 +1,13 @@
 extends ../layout
 
+block scripts
+  script(src="/javascripts/calculator1.js")
+  script.
+    const END_DATE = !{JSON.stringify(data.end)};
+    const TOTAL_STAGES = 26;
+    const DAILY_FREE_AP = 288;
+    const DAILY_FREE_BATTLES = TOTAL_STAGES * 3;
+
 block content
   -
     function started() {
@@ -23,6 +31,7 @@ block content
           li can only be as accurate as your input.
           li evenly spreads necessary battles throughout remaining days. Even if you can complete the goal today with free battles, it will still divide remaining battles among remaining days.
           li currently do not support boosting periods. Please be careful when using during those times.
+          li have a higher chance of making mistakes until you unlock all stages with keys.
         h5.card-title Assumptions
         span.card-text This calculator assumes that:
         ul
@@ -33,7 +42,6 @@ block content
       div.card-body
         div.row
           div#pqinfo.col-12.col-md-4.text-center
-            //- h5 On-going
             h5= t("lang") === "ja" ? data.name.ja : data.name.en
             a(href="/event/" + getURL(data.name.en)): img.img-fluid.rounded.mb-3(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
             if started()
@@ -45,29 +53,145 @@ block content
             h5#cd --
             hr.d-md-none
           div.col-12.col-md-8
-            //- h5 Calculator
             form#calculator
               div.form-row
                 div.form-group.col-12.col-md-4
                   label Goal
-                  input.form-control(type="number" name="goal")
+                  input.form-control(type="number" min=0 name="goal")
                 div.form-group.col-12.col-md-4
-                  label Current pts
-                  input.form-control(type="number" name="currpts")
+                  label Current points
+                  input.form-control(type="number" min=0 name="currpts")
                 div.form-group.col-12.col-md-4
-                  label Pts per battle
-                  input.form-control(type="number" name="ppb" readonly=data.isBirthday value=(data.isBirthday?12:''))
-            hr
-            //- h5 Result
-            div.text-center
-              p Today's goal
-              h5#goaltoday --
-              br
-              p Required battles
-              h5#dailybattles --
-              br
-              p Required AP
-              h5#apreq --
+                  label Points per battle
+                  input.form-control(type="number" name="ppb" readonly=data.isBirthday min=(data.isBirthday?12:120) value=(data.isBirthday?12:''))
+            <ul class="nav nav-tabs" id="resultTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="true">Today</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="false">Total</a>
+              </li>
+            </ul>
+            div#resultTabContent.tab-content.pt-3
+              div#daily.tab-pane.show.active(role="tabpanel" aria-labelledby="daily-tab")
+                h5 Result
+                div.simple-r.row.text-center
+                  div.col-12.col-md-6
+                    p Today's goal
+                    h5.goal --
+                  div.col-12.col-md-6
+                    p Required battles
+                    h5.dailybattles --
+                  div.col-12.col-md-6
+                    p Required AP
+                    h5.apreq --
+                  div.col-12.col-md-6
+                    p Required DP
+                    h5.dpreq --
+                h5 Breakdown
+                div#results.row.justify-content-center
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p AP
+                      div
+                        div
+                          span= t("calculator.free")
+                          span.freeap --
+                        div
+                          span= t("calculator.buy")
+                          span.buyap --
+                        hr
+                        div
+                          span Total
+                          span.aptot --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Battles
+                      div
+                        div
+                          span= t("calculator.free")
+                          span.freebattles --
+                        div
+                          span= t("calculator.buy")
+                          span.buybattles --
+                        hr
+                        div
+                          span Total
+                          span.battlestot 20,000
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Devil Points
+                      div
+                        div
+                          span AP
+                          span.apcost --
+                        div
+                          span Battles
+                          span.battlescost --
+                        hr
+                        div
+                          span Total
+                          span.totcost --
+              div#total.tab-pane(role="tabpanel" aria-labelledby="total-tab")
+                h5 Result
+                div.simple-r.row.text-center
+                  div.col-12.col-md-6
+                    p Goal
+                    h5.goal --
+                  div.col-12.col-md-6
+                    p Required battles
+                    h5.dailybattles --
+                  div.col-12.col-md-6
+                    p Required AP
+                    h5.apreq --
+                  div.col-12.col-md-6
+                    p Required DP
+                    h5.dpreq --
+                h5 Breakdown
+                div#results.row.justify-content-center
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p AP
+                      div
+                        div
+                          span= t("calculator.free")
+                          span.freeap --
+                        div
+                          span= t("calculator.buy")
+                          span.buyap --
+                        hr
+                        div
+                          span Total
+                          span.aptot --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Battles
+                      div
+                        div
+                          span= t("calculator.free")
+                          span.freebattles --
+                        div
+                          span= t("calculator.buy")
+                          span.buybattles --
+                        hr
+                        div
+                          span Total
+                          span.battlestot 20,000
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Devil Points
+                      div
+                        div
+                          span AP
+                          span.apcost --
+                        div
+                          span Battles
+                          span.battlescost --
+                        hr
+                        div
+                          span Total
+                          span.totcost --
+
       if !started()
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
@@ -76,8 +200,31 @@ block content
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
             h5 This event has ended.
-
   style.
+    .simple-r p {
+      margin-bottom: .75rem;
+    }
+    .simple-r h5 {
+      margin-bottom: 1.25rem;
+    }
+    #results p {
+      text-align: center;
+    }
+    #results .result-container {
+      border-radius: 1rem;
+      border: 2px solid var(--secondary);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    #results .result-container>div>div {
+      display: flex;
+      justify-content: space-between;
+    }
+    #results hr {
+      margin: .5rem 0;
+      border: 1px solid var(--secondary);
+    }
+
     @media (min-width: 768px) {
       #pqinfo {
         border-right:1px solid #e5e5e5;
@@ -85,56 +232,4 @@ block content
     }
     a[data-toggle="collapse"][aria-expanded="false"] .bi.bi-chevron-up {
       transform: rotate(180deg);
-    }
-  script.
-    let collapseinfo = localStorage.getItem("#collapseinfo");
-    if (collapseinfo === "false") {
-      $("#collapseinfo").collapse("show");
-    }
-    $("a[data-toggle='collapse']").click(function() {
-      localStorage.setItem($(this).attr("href"), $(this).attr("aria-expanded"));
-    });
-    $(function() {
-      countdown();
-      calculate();
-      $("form#calculator").on("change", calculate);
-    });
-    function calculate() {
-      let goal = parseInt($("input[name='goal']").val());
-      let currentPts = parseInt($("input[name='currpts']").val());
-      let ptsPerBattle = parseInt($("input[name='ppb']").val());
-
-      if (isNaN(goal) || isNaN(currentPts) || isNaN(ptsPerBattle) ||
-          goal < 0 || currentPts < 0 || ptsPerBattle < 0 ||
-          goal < currentPts) return;
-
-      let countDownDate = new Date(!{JSON.stringify(data.end)}).getTime();
-      let now = new Date().getTime();
-      let distance = countDownDate - now;
-      let daysLeft = Math.floor(distance / (1000 * 60 * 60 * 24));
-
-      let dailyGoal =  Math.ceil((goal - currentPts) / daysLeft);
-      let dailyBattles = Math.ceil(dailyGoal / ptsPerBattle);
-
-      $("#goaltoday").text(currentPts + dailyBattles * ptsPerBattle);
-      $("#dailybattles").text(`${dailyBattles} (${Math.floor(dailyBattles/3)} stages ${dailyBattles%3} battles)`);
-      $("#apreq").text((dailyBattles * 8).toLocaleString("en"));
-    }
-    function countdown() {
-      let countDownDate = new Date(!{JSON.stringify(timerDate)}).getTime();
-      let timer = setInterval(function () {
-        let now = new Date().getTime();
-        let distance = countDownDate - now;
-        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toLocaleString('en-US', { minimumIntegerDigits: 2 });
-        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toLocaleString('en-US', { minimumIntegerDigits: 2 });
-        let seconds = Math.floor((distance % (1000 * 60)) / 1000).toLocaleString('en-US', { minimumIntegerDigits: 2 });
-
-        document.getElementById("cd").innerHTML = `${days} days ${hours}:${minutes}:${seconds}`;
-
-        if (distance < 0) {
-          clearInterval(timer);
-          document.getElementById("cd").innerHTML = "--";
-        }
-      }, 1000);
     }
