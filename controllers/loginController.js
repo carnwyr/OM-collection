@@ -46,61 +46,68 @@ exports.getSignupPage = function(req, res, next) {
   res.render('signup', { title: req.i18n.t("common.signup"), user: req.user });
 };
 
-exports.signup = [
-	body('username')
-		.notEmpty().withMessage("Username can't be empty")
-		.matches(/^[A-Za-z0-9._-]+$/).withMessage('Username contains invalid characters'),
-	body('password')
-		.isLength({ min: 8 })
-		.matches(/^[0-9a-zA-Z!@#$%^]+$/).withMessage('Password contains invalid characters'),
-	body('username').escape(),
-	body('password').escape(),
-	async function(req, res, next) {
-		const errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			res.render('signup', { title: 'Signup', user: req.user, errors: errors.array()});
-			return;
-		}
+exports.validateSignupInput = async (req, res, next) => {
+	const validations = [
+		body('username')
+			.notEmpty().withMessage("Username can't be empty")
+			.matches(/^[A-Za-z0-9._-]+$/).withMessage('Username contains invalid characters'),
+		body('password')
+			.isLength({ min: 8 })
+			.matches(/^[0-9a-zA-Z!@#$%^]+$/).withMessage('Password contains invalid characters'),
+		body('username').escape(),
+		body('password').escape()
+	];
 
-		let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection', "image", "images", "character", "characters", "rankings", "surpriseguest", "userpage", "calculator"];
-		if (blacklist.includes(req.body.username.toLowerCase())) {
-			req.flash('message', 'Username invalid');
-			res.render('signup', { title: 'Signup', user: req.user });
-			return;
-		}
-		try {
-			var  exists = await userService.getUser(req.body.username);
-		} catch (e) {
-			return next(e);
-		}
+	await Promise.all(validations.map(validation => validation.run(req)));
 
-    if (exists) {
-      req.flash("message", "Username taken");
-      res.render("signup", { title: "Signup", user: req.user });
-    } else {
-      bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
-        if (err) return next(err);
-        bcrypt.hash(req.body.password, salt, function(err, hash) {
-          if (err) return next(err);
-          var user = new Users({
-            info: {
-              name: req.body.username,
-              password: hash,
-              type: "User"
-            }
-          });
-          user.save(function(err) {
-            if (err) return next(err);
-            req.login(user, function(err) {
-              if (err) return next(err);
-              res.redirect("/");
-            });
-          });
-        });
-      });
-    }
+	const errors = validationResult(req);
+	if (errors.isEmpty()) {
+		return next();
 	}
-];
+
+	return next(errors.array());
+}
+
+exports.signup = async (req, res, next) => {
+
+	let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection', "image", "images", "character", "characters", "rankings", "surpriseguest", "userpage", "calculator"];
+	if (blacklist.includes(req.body.username.toLowerCase())) {
+		req.flash('message', 'Username invalid');
+		res.render('signup', { title: 'Signup', user: req.user });
+		return;
+	}
+	try {
+		var  exists = await userService.getUser(req.body.username);
+	} catch (e) {
+		return next(e);
+	}
+
+	if (exists) {
+		req.flash("message", "Username taken");
+		res.render("signup", { title: "Signup", user: req.user });
+	} else {
+		bcrypt.genSalt(Number.parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+			if (err) return next(err);
+			bcrypt.hash(req.body.password, salt, function(err, hash) {
+				if (err) return next(err);
+				var user = new Users({
+					info: {
+						name: req.body.username,
+						password: hash,
+						type: "User"
+					}
+				});
+				user.save(function(err) {
+					if (err) return next(err);
+					req.login(user, function(err) {
+						if (err) return next(err);
+						res.redirect("/");
+					});
+				});
+			});
+		});
+	}
+};
 
 exports.signupCheckUsername = async function (req, res) {
 	let blacklist = ['card', 'user', 'cards', 'hiddenCards', 'login', 'logout', 'signup', 'collection'];

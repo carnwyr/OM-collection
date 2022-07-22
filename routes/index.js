@@ -26,7 +26,7 @@ router.get("/login", loginController.getLoginPage);
 router.post("/login", loginController.login);
 router.get("/logout", loginController.isLoggedIn(), loginController.logout);
 router.get("/signup", loginController.getSignupPage);
-router.post("/signup", loginController.signup);
+router.post("/signup", loginController.validateSignupInput, loginController.signup);
 router.post("/signup/checkUsername", loginController.signupCheckUsername);
 
 // User's personal collection
