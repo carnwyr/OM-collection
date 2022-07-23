@@ -173,7 +173,7 @@ function updateProfile(e) {
 			showAlert("danger", result.message);
 		} else {
 			updatedInfo = {};
-			showAlert("success", result.message);
+			showAlert("success", "Changes saved");
 		}
 	});
 }

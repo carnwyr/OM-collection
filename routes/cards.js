@@ -26,7 +26,7 @@ router.post('/delete', loginController.hasAccess("Admin"), cardsController.delet
 /* General */
 
 // "Add to/ remove from collection" on card detail page
-router.post('/:card/modifyCollectionFromDetails', loginController.isLoggedIn(), userController.modifyCollectionFromDetails);
+router.post('/:card/submitCardStatusChange', loginController.isLoggedIn(), userController.submitCardStatusChange);
 
 // Get card detail page
 router.get('/:card', cardsController.getCardDetailPage);

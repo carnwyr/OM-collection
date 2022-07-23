@@ -15,35 +15,95 @@ exports.getUser = async function (username) {
 	}
 };
 
-exports.getOwnedCards = async function (username) {
-  return await getCardCollection(username, "owned");
-}
-
-exports.getFaveCards = async function (username) {
-  return await getCardCollection(username, "faved");
-}
-
-getCardCollection = function (username, collectionType) {
-  try {
-    return Users.aggregate([
-      { $match: { "info.name": username } },
-      { $unwind: `$cards.${collectionType}` },
-      { $lookup: {
-        from: "cards",
-        localField: `cards.${collectionType}`,
-        foreignField: "uniqueName",
-        as: "cardData"
-      }},
-      { $sort: { "cardData.number": -1 } },
-      { $limit: 15 },
-      { $project: { name: "$cardData.name", uniqueName: `$cards.${collectionType}`, _id: false } },
-      { $unwind: "$name" }
-    ]);
-  } catch (e) {
-    console.error(e.message);
-    Sentry.captureException(e);
-  }
+exports.getAccountData = async function (username) {
+  var usernameRegexp = new RegExp('^' + username + '$', "i");
+  var user = await Users.aggregate([
+    { $match: { "info.name": { $regex: usernameRegexp } } },
+    {
+      $project: {
+        name: "$info.name",
+        email: "$info.email",
+        profile: "$profile",
+        _id: false
+      }
+    }
+  ]);
+  return user[0];
 };
+
+exports.getUserList = async function (sortField, sortOrder, limit, startIndex) {
+  let query = Users.find({}, "info.name info.email info.supportStatus");
+
+  let sortBy = sortField ? `info.${sortField}` : "_id";
+  let sort = {};
+  sort[sortBy] = sortOrder ?? 1;
+  query.sort(sort);
+
+  if (limit) {
+    query.limit(limit);
+  }
+
+  query.skip(startIndex);
+
+  return await query;
+};
+
+exports.getOwnedCardsPreview = async username => await getCardCollectionPreview(username, "owned");
+
+exports.getFaveCardsPreview = async username => await getCardCollectionPreview(username, "faved");
+
+getCardCollectionPreview = function (username, collectionType) {
+  return Users.aggregate([
+    { $match: { "info.name": username } },
+    { $unwind: `$cards.${collectionType}` },
+    { $lookup: {
+      from: "cards",
+      localField: `cards.${collectionType}`,
+      foreignField: "uniqueName",
+      as: "cardData"
+    }},
+    { $sort: { "cardData.number": -1 } },
+    { $limit: 15 },
+    { $project: { name: "$cardData.name", uniqueName: `$cards.${collectionType}`, _id: false } },
+    { $unwind: "$name" }
+  ]);
+};
+
+exports.getOwnedUniqueNames = async function (username) {
+  let uniqueNames = await Users.aggregate([
+    { $match: { "info.name": username } },
+    { $project: { ownedUniqueNames: '$cards.owned', _id: false } }
+  ]);
+  return uniqueNames[0]?.ownedUniqueNames ?? [];
+};
+
+exports.modifyCollection = function (username, collectionType, changedCards) {
+  let addedCards = [];
+  let removedCards = [];
+
+  for (let key in changedCards) {
+    if (changedCards[key]) {
+      addedCards.push(key);
+    } else {
+      removedCards.push(key);
+    }
+  }
+
+  let addPipeline = { $addToSet: { } };
+	addPipeline.$addToSet[`cards.${collectionType}`] = { $each: addedCards };
+
+	let removePipeline = { $pullAll: { } };
+	removePipeline.$pullAll[`cards.${collectionType}`] = removedCards;
+
+	let addPromise = Users.findOneAndUpdate({"info.name": username}, addPipeline);
+	let removePromise = Users.findOneAndUpdate({"info.name": username}, removePipeline);
+
+  return Promise.all([addPromise, removePromise])
+    .then(value => { return { err: false } })
+    .catch(e => { return { err: true, message: e.message } });
+}
+
+exports.updateUserData = async (username, data) => await Users.updateOne({ "info.name": username }, { $set: data });
 
 exports.getOwnedCardsStats = async function (username) {
   let collectionType = "owned";
@@ -122,82 +182,42 @@ exports.getProfileInfo = async function(username, language) {
 }
 
 exports.getUserTreeStats = async function(username) {
-  try {
-    let user = await Users.findOne({ "info.name": username });
-    if (!user.tree || user.tree.length === 0) {
-      return [];
-    }
-
-    // { _id: item name, count: amount unlocked }
-    return await Users.aggregate([
-      {
-        '$match': {
-          'info.name': username
-        }
-      }, {
-        '$project': {
-          'tree': 1
-        }
-      }, {
-        '$unwind': {
-          'path': '$tree',
-          'preserveNullAndEmptyArrays': false
-        }
-      }, {
-        '$lookup': {
-          'from': 'cards',
-          'let': {
-            'tree_id': '$tree'
-          },
-          'pipeline': [
-            {
-              '$project': {
-                'dt': 1
-              }
-            }, {
-              '$unwind': {
-                'path': '$dt',
-                'preserveNullAndEmptyArrays': false
-              }
-            }, {
-              '$replaceRoot': {
-                'newRoot': {
-                  '$mergeObjects': [
-                    '$dt'
-                  ]
-                }
-              }
-            }, {
-              '$match': {
-                '$expr': {
-                  '$eq': [
-                    '$_id', '$$tree_id'
-                  ]
-                }
-              }
-            }
-          ],
-          'as': 'item'
-        }
-      }, {
-        '$unwind': {
-          'path': '$item',
-          'preserveNullAndEmptyArrays': false
-        }
-      }, {
-        '$group': {
-          '_id': '$item.reward',
-          'count': {
-            '$count': {}
-          }
-        }
-      }
-    ]);
-  } catch(e) {
-    console.error(e);
-    Sentry.captureException(e);
+  let user = await Users.findOne({ "info.name": username });
+  if (!user.tree || user.tree.length === 0) {
     return [];
   }
+
+  // TODO rework?
+  return await Users.aggregate([
+    { '$match': { 'info.name': username } },
+    { '$project': { 'tree': 1 } },
+    { '$unwind': {
+        'path': '$tree',
+        'preserveNullAndEmptyArrays': false
+    }}, 
+    { '$lookup': {
+        'from': 'cards',
+        'let': { 'tree_id': '$tree' },
+        'pipeline': [
+          { '$project': { 'dt': 1 } },
+          { '$unwind': {
+              'path': '$dt',
+              'preserveNullAndEmptyArrays': false
+          }}, 
+          { '$replaceRoot': { 'newRoot': { '$mergeObjects': ['$dt'] } } },
+          { '$match': { '$expr': { '$eq': [ '$_id', '$$tree_id' ] } } }
+        ],
+        'as': 'item'
+    }},
+    { '$unwind': {
+        'path': '$item',
+        'preserveNullAndEmptyArrays': false
+    }},
+    { '$group': {
+        '_id': '$item.reward',
+        'count': { '$count': {} }
+    }}
+  ]);
 };
 
 function sortObjArrayByKey(array, key) {
@@ -217,6 +237,16 @@ exports.favesCard = function(username, card) {
 
 exports.getNumberOfUsers = function() {
 	return Users.estimatedDocumentCount();
+};
+
+exports.getOwnedCardCount = card => getCardCountInCollections(card, "owned");
+
+exports.getFavedCardCount = card => getCardCountInCollections(card, "faved");
+
+getCardCountInCollections = function (card, collection) {
+  let countCondition = {};
+	countCondition[`cards.${collection}`] = card;
+	return Users.countDocuments(countCondition);
 };
 
 exports.renameCardInCollections = function(oldName, newName) {
@@ -243,24 +273,21 @@ exports.deleteCardInCollections = function(cardName) {
 };
 
 exports.updateSupport = async function(user, status) {
-  try {
-    let result = await Users.updateOne({ "info.name": user }, { $set: { "info.supportStatus": status }});
-    if (result.n !== 1 || result.nModified !== 1) throw "Something went wrong!"
-    return { err: null, message: "Status updated!"}
-  } catch(e) {
-    return { err: true, message: e.message };
+  let result = await Users.updateOne({ "info.name": user }, { $set: { "info.supportStatus": status } });
+  if (!result.ok) {
+    return { err: true, message: "Something went wrong!" };
   }
+  return { err: false, message: "Status updated!"}
 };
 
-exports.banUser = async function(name) {
-  try {
-    let banResult = await Users.findOneAndUpdate({ "info.name": name }, { $push: { "info.supportStatus": { 'name': 'bannedFromMakingSuggestions' } }});
-    let deleteSuggestionResult = await suggestionService.refuseSuggestionsFrom({ user: name });
-    if (banResult.err || deleteSuggestionResult.err) throw "Something went wrong.";
-    return { err: null, message: "User banned."};
-  } catch(e) {
-    return { err: true, message: e.message };
+// TODO combine with updateSupport
+exports.banUser = async function (name) {
+  let banResult = await Users.findOneAndUpdate({ "info.name": name }, { $push: { "info.supportStatus": { 'name': 'bannedFromMakingSuggestions' } }});
+  let deleteSuggestionResult = await suggestionService.refuseSuggestionsFrom(name);
+  if (!banResult.ok || !deleteSuggestionResult.ok) {
+    return { err: true, message: "Something went wrong!" };
   }
+  return { err: false, message: "User banned"};
 };
 
 exports.updateUserTree = async function(username, node, isUnlocked) {
@@ -269,4 +296,25 @@ exports.updateUserTree = async function(username, node, isUnlocked) {
   } else {
     await Users.findOneAndUpdate({ "info.name": username }, { $pull: { tree: new ObjectId(node) } });
   }
+};
+
+// TODO only retrieve name of the correct language
+exports.getRankingData = async function () {
+  return await Users.aggregate([
+    { $unwind: "$cards.faved" },
+    { $group: { _id: "$cards.faved", total: { $sum: 1 } } },
+    { $sort: { total: -1, _id: 1 } },
+    { $limit: 10 },
+    {
+      $lookup: {
+        from: "cards",
+        localField: "_id",
+        foreignField: "uniqueName",
+        as: "cardData"
+      }
+    },
+    { $addFields: { name: { $arrayElemAt: ["$cardData", 0] } } },
+    { $set: { name: "$name.name", ja_name: "$name.ja_name" } },
+    { $unset: ["cardData"] }
+  ]);
 };

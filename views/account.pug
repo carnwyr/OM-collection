@@ -13,7 +13,7 @@ block content
 	div.container
 		div.row
 			div.card.card-body
-				h1.text-center.text-md-left= title
+				h1.text-center.text-md-left= i18n.t("title.settings")
 				div.row.mb-4
 					div.col-12.col-md-3.text-center.text-md-left.mb-3.mb-md-0
 						div(class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical")
@@ -37,7 +37,8 @@ block content
 												input(type="text" class="form-control" id="inputFriendID" name="id" placeholder="???" value=user.profile.id maxlength="20")
 											div.form-group.col-md-6
 												label(for="inputJoinOM")= t("profile.entered_rad")
-												input(type="date" class="form-control" id="inputJoinOM" name="joined" value=user.profile.joined.toISOString().split("T")[0] min="2019-12-11")
+												- let joinDate = user.profile.joined ?? new Date();
+												input(type="date" class="form-control" id="inputJoinOM" name="joined" value=joinDate.toISOString().split("T")[0] min="2019-12-11")
 											div.col-md-6
 												span= t("profile.language")
 												div.form-check
@@ -80,7 +81,8 @@ block content
 											div.input-group-append
 												button(class="btn btn-outline-primary" style="border-radius:0 4px 4px 0;") <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search mb-1" viewBox="0 0 16 16">   <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/> </svg>
 										ul.list-group(style="position:absolute;width:100%;padding:inherit;left:0;")
-										img(src="/images/cards/L/" + user.profile.display + ".jpg" style="width:100%;")
+										- let displayedCard = user.profile.display ?? "The_Mammon_Way";
+										img(src=`/images/cards/L/${displayedCard}.jpg` style="width:100%;")
 								br
 								input#updateProfile.btn.btn-primary(type="submit" value=t("settings.update"))
 
@@ -131,10 +133,11 @@ block content
 								p= t("settings.collection_visibility")
 								form
 									div(class="form-check")
-										input(class="form-check-input" type="radio" name="isPrivate" id="publicProfileRadio" value="false" checked=(user.profile.isPrivate?false:true))
+										- let isPrivate = user.profile.isPrivate ?? false;
+										input(class="form-check-input" type="radio" name="isPrivate" id="publicProfileRadio" value="false" checked=!isPrivate)
 										label(class="form-check-label" for="publicProfileRadio")= t("settings.public")
 									div(class="form-check")
-										input(class="form-check-input" type="radio" name="isPrivate" id="privateProfileRadio" value="true" checked=(user.profile.isPrivate?true:false))
+										input(class="form-check-input" type="radio" name="isPrivate" id="privateProfileRadio" value="true" checked=isPrivate)
 										label(class="form-check-label" for="privateProfileRadio")= t("settings.private")
 								br
 								input#updatePrivacy.btn.btn-primary(type="submit" value=t("settings.update"))

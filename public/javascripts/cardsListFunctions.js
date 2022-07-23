@@ -290,13 +290,18 @@ function switchSelectionMode() {
 		$.ajax({
 			type: 'get',
 			url: '/collection/getOwnedCards',
+			contentType: 'application/json',
 			cache: false
 		})
-		.done(function (cardNames) {
-			ownedCards = cardNames;
+		.done(function (result) {
+			if (result.err) {
+				showAlert("danger", result.message);
+				return;
+			}
+			ownedCards = result;
 			selectionMode = true;
 			switchManagementButtons();
-			switchCardsVisualState(cardNames);
+			switchCardsVisualState(ownedCards);
 
 			selectedCardCount.demon = cardList.filter(x => (x.type === "Demon" && cardOwned(x.uniqueName))).length;
 			selectedCardCount.memory = cardList.filter(x => (x.type === "Memory" && cardOwned(x.uniqueName))).length
@@ -306,7 +311,7 @@ function switchSelectionMode() {
 		if (Object.keys(changedCards).length > 0) {
 			$.ajax({
 				type: 'post',
-				url: '/collection/modifyCollection',
+				url: '/collection/submitCollectionChanges',
 				contentType: 'application/json',
 				data: JSON.stringify({changedCards: changedCards, collection: "owned"}),
 				cache: false

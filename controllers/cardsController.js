@@ -19,7 +19,7 @@ exports.index = function (req, res, next) {
 	});
 };
 
-exports.getCardsListPage = async function(req, res, next) {
+exports.getCardsListPage = function (req, res, next) {
 	try {
 		return res.render("cardsList", {
 			title: req.i18n.t("title.cards"),
@@ -37,7 +37,7 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 	try {
 		var user = await userService.getUser(req.params.username);
 		if (!user) {
-			throw createError(404, "User not found");
+			throw createError(404, properties={ title: "User not found" });
 		}
 
 		let query = formatAggPipeline(req.query, req.i18n.t("lang"));
@@ -75,7 +75,7 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 	try {
 		var user = await userService.getUser(req.params.username);
 		if (!user) {
-			throw createError(404, "User not found");
+			throw createError(404, properties={ title: "User not found" });
 		}
 
 		let query = formatAggPipeline(req.query, req.i18n.t("lang"));
@@ -167,7 +167,7 @@ async function getHiddenCardDetailPage(req, res, next) {
 	var cardName = req.params.card.replace(/_/g, " ");
 	var cardData = await cardService.getHiddenCard(cardName, req.user);
 	if (!cardData) {
-		throw createError(404, "Card not found");
+		throw createError(404, properties = { title: "Card not found" });
 	}
 	cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g, "_")));
 	return res.render("cardDetail", {
@@ -192,7 +192,7 @@ exports.getProfilePage = async function(req, res, next) {
 	try {
 		var user = await userService.getUser(decodeURIComponent(req.params.username));
 		if (!user) {
-			throw createError(404, "User not found");
+			throw createError(404, properties = { title: "User not found" });
 		}
 
 		var title;
@@ -203,8 +203,8 @@ exports.getProfilePage = async function(req, res, next) {
 		}
 
 		var cards = {
-			owned: (await userService.getOwnedCards(user.info.name)).slice(0, 15),
-			faved: (await userService.getFaveCards(user.info.name)).slice(0, 15)
+			owned: (await userService.getOwnedCardsPreview(user.info.name)),
+			faved: (await userService.getFaveCardsPreview(user.info.name))
 		};
 
 		var profileInfo = await userService.getProfileInfo(user.info.name, req.i18n.t("lang"));
@@ -293,7 +293,7 @@ exports.getEditCardPage = async function(req, res, next) {
 		let cardData = await cardService.getCard({ uniqueName: req.params.card });
 
 		if (!cardData) {
-			throw createError(404, "Card not found");
+			throw createError(404, properties = { title: "Card not found" });
 		}
 
 		return res.render("cardEdit", {

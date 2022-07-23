@@ -30,7 +30,7 @@ function updateCollection() {
 
   $.ajax({
     type: "post",
-    url: "/card/" + CARD_NAME + "/modifyCollectionFromDetails",
+    url: "/card/" + CARD_NAME + "/submitCardStatusChange",
     contentType: "application/json",
     data: JSON.stringify({ collection: collectionType, modify: updateType })
   }).done(function(data) {
@@ -41,7 +41,7 @@ function updateCollection() {
       } else {
         $(".favedCount").html(i18next.favourite_count.replace("undefined", data.updatedVal));
       }
-      showAlert("success", data.message);
+      showAlert("success", "Collection updated!");
     } else {
       showAlert("danger", data.message);
     }
@@ -54,7 +54,7 @@ function updateUserTreeNode() {
       if (result.err) {
         showAlert("danger", result.message);
       } else {
-        showAlert("success", result.message);
+        showAlert("success", "Saved!");
       }
     });
 }

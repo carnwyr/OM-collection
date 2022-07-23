@@ -53,7 +53,9 @@ exports.getEventDetail = async function (req, res, next) {
 		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		let event = await eventService.getEvent({ "name.en": eventName });
 
-		if (!event) throw createError(404, "Event not found");
+		if (!event) throw createError(404, properties = { title: "Event not found", errorMessage: `We're still adding to our event database. Please help us by contributing to
+		<a href="https://docs.google.com/spreadsheets/d/1BcTf4jVsw6dtvu8U7vmP0LVB_yVDYXyl3KdeHLtPmxo/edit?usp=sharing" target="_blank"> this spreadsheet</a>.
+		Thank you!` });
 
 		let locals = {
 			title: event.name.en,
@@ -218,7 +220,7 @@ exports.getEventEditPage = async function(req, res, next) {
 	try {
 		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		let data = await eventService.getEvent({ "name.en": eventName });
-		if (!data) throw createError(404, "Event not found");
+		if (!data) throw createError(404, properties = { title: "Event not found" });
 
 		var cards = await cardService.getCards();
 		var cardNames = cards.map(x => x.name);

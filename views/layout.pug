@@ -61,9 +61,8 @@ html(lang=t("lang"))
             a(class="nav-link" href='/cards')= t("common.gallery")
           li.nav-item
             a.nav-link(href="/events") Events
-          //-
-            li(class="nav-item")
-              a(class="nav-link" href='/rankings')= t("common.rankings")
+          li(class="nav-item")
+            a(class="nav-link" href='/rankings')= t("common.rankings")
           li(class="nav-item")
             a(class="nav-link" href="/SurpriseGuest")= t("common.spg")
           li(class="nav-item dropdown")
@@ -89,7 +88,7 @@ html(lang=t("lang"))
                 if user.type === "Admin"
                   a(class="dropdown-item" href='/hiddenCards') Hidden cards
                 if user.type === "Admin"
-                  a(class="dropdown-item" href='/userpage') User List
+                  a(class="dropdown-item" href='/userList') User List
                 a(class="dropdown-item" href="/event/new") Add new event
         ul(class="navbar-nav ml-auto")
           li(class="nav-item d-none d-md-block")

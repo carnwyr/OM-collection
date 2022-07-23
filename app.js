@@ -1,90 +1,48 @@
-const express = require("express");
-const compression = require("compression");
-const Sentry = require("@sentry/node");
-const helmet = require("helmet");
-
-const createError = require("http-errors");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const passport = require("passport");
-const flash = require("connect-flash");
-const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
 require("dotenv").config();
 
-var cardsController = require("./controllers/cardsController");
+const express = require("express");
+const session = require("express-session");
+const mongoose = require("mongoose");
+const MongoStore = require("connect-mongo")(session);
+const createError = require("http-errors");
+const cookieParser = require("cookie-parser");
+const Sentry = require("@sentry/node");
+const logger = require("morgan");
+const helmet = require("helmet");
+const passport = require("passport");
+const compression = require("compression");
+// TODO remove
+const flash = require("connect-flash");
 
-var indexRouter = require("./routes/index");
-var cardsRouter = require("./routes/cards");
-var userRouter = require("./routes/user");
-var eventsRouter = require("./routes/events");
-var suggestionRouter = require("./routes/suggestions");
-var askKarasuRouter = require("./routes/askKarasu");
+const utils = require("./services/utils");
 
-const app = express();
+const indexRouter = require("./routes/index");
+const cardsRouter = require("./routes/cards");
+const userRouter = require("./routes/user");
+const eventsRouter = require("./routes/events");
+const suggestionRouter = require("./routes/suggestions");
+const askKarasuRouter = require("./routes/askKarasu");
 
-let i18next = require("i18next");
-let i18nextMiddleware = require("i18next-http-middleware");
-const Backend = require("i18next-fs-backend");
+const localizationService = require("./services/localizationService");
+const cacheService = require("./services/cacheService");
+const cardsController = require("./controllers/cardsController");
 
 Sentry.init({ environment: process.env.NODE_ENV, dsn: process.env.SENTRY });
 
-var mongoose = require("mongoose");
-var mongoDB = process.env.URI;
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
-mongoose.Promise = global.Promise;
-var db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
-
-const cacheService = require("./services/cacheService");
-cacheService.init();
-
-app.set("views", path.join(__dirname, "views"));
+const app = express();
+app.set("views", __dirname + "/views");
 app.set("view engine", "pug");
 
-app.use(helmet({ contentSecurityPolicy: false }));
+mongoose.connect(process.env.URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+mongoose.Promise = global.Promise;
+mongoose.connection.on("error", console.error.bind(console, "MongoDB connection error:"));
+
 app.use(Sentry.Handlers.requestHandler());
-
-let languageDetector = new i18nextMiddleware.LanguageDetector();
-languageDetector.addDetector({
-	name: "subdomain",
-	lookup: function(req, res, options) {
-		let subdomain = options.getHeaders(req).host.split(".")[0];
-		if (subdomain === "ja" || subdomain === "zh") {
-			return subdomain;
-		}
-		return "en";
-	}
-});
-
-i18next
-	.use(languageDetector)
-	.use(Backend)
-	.init({
-		// debug: true,
-		backend: {
-			loadPath: __dirname + "/locales/{{lng}}/{{ns}}.json",
-			addPath: __dirname + "/locales/{{lng}}/{{ns}}.missing.json"
-		},
-		fallbackLng: "en",
-		preload: ["en", "ja", "zh"],
-		// saveMissing: true,
-		detection: { order: ["subdomain"] }
-	});
-
-app.use(i18nextMiddleware.handle(i18next));
-
-app.use(compression());
-app.use(logger("dev"));
-app.use(cookieParser());
-
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json({ limit: "50mb" }));
-
 app.use(
 	session({
-		store: new MongoStore({ url: mongoDB }),
+		store: new MongoStore({ url: process.env.URI }),
 		secret: process.env.SECRET,
 		resave: false,
 		saveUninitialized: false,
@@ -94,14 +52,22 @@ app.use(
 		}
 	})
 );
+
+app.use(cookieParser());
+app.use(compression());
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(logger("dev", { skip: (req, res) => req.app.get("env") !== "production" }));
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(localizationService.getLocalizationMiddleware(false));
 app.use(flash());
 
-app.use("/images/cards/:size", cardsController.directImage, express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, "public")));
+app.use("/images/cards/:size", cardsController.directImage, express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/public"));
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
 	res.locals.cookies = req.cookies;
 	next();
 });
@@ -112,19 +78,32 @@ app.use("/user", userRouter);
 app.use("/event", eventsRouter);
 app.use("/suggestion", suggestionRouter);
 app.use("/ask", askKarasuRouter);
-
-app.use(function (req, res, next) { next(createError(404)); });
+app.use((req, res, next) => next(createError(404, { title: "Page not found" })));
 
 app.use(Sentry.Handlers.errorHandler());
 
 app.use(function (err, req, res, next) {
-	//console.error(err)
-	res.locals.message = err.message;
-	res.locals.error = req.app.get("env") === "development" ? err : {};
+	let ignoredErrors = [401, 404];
+	if (!ignoredErrors.includes(err.status)) {
+		console.error(err)
+		if (req.app.get("env") === "production") {
+			Sentry.captureException(err);
+		}
+	}
 
-	res.status(err.status || 500);
-	res.render("error", { title: "Page not found", user: req.user });
+	let errorTitle = err.title || "Something went wrong";
+	let errorMessage = err.errorMessage || "Oops, looks like you found our error page. Double check the link, maybe?";
+	
+	if (req.is('application/*') || (req.headers['content-type'] && req.headers['content-type'].includes('application/json'))) {
+		res.json({ err: true, message: errorTitle });
+	} else {
+		res.status(err.status || 500);
+		res.locals.error = errorTitle;
+		res.locals.message = errorMessage;
+		res.render("error", { title: "Error", user: req.user });
+	}
 });
 
+cacheService.init();
 
 module.exports = app;

@@ -7,7 +7,6 @@ const miscController = require("../controllers/miscController");
 const eventsController = require("../controllers/eventsController");
 const loginController = require("../controllers/loginController");
 
-
 // Static pages
 router.get("/", cardsController.index);
 router.get("/policies", miscController.privacyPolicy);
@@ -27,18 +26,18 @@ router.get("/login", loginController.getLoginPage);
 router.post("/login", loginController.login);
 router.get("/logout", loginController.isLoggedIn(), loginController.logout);
 router.get("/signup", loginController.getSignupPage);
-router.post("/signup", loginController.signup);
+router.post("/signup", loginController.validateSignupInput, loginController.signup);
 router.post("/signup/checkUsername", loginController.signupCheckUsername);
 
 // User's personal collection
-router.get('/collection/getOwnedCards', loginController.isLoggedIn(), userController.getOwnedCards);
-router.post('/collection/modifyCollection', loginController.isLoggedIn(), userController.modifyCollection);
+router.get('/collection/getOwnedCards', loginController.isLoggedIn(), userController.getOwnedUniqueNames);
+router.post('/collection/submitCollectionChanges', loginController.isLoggedIn(), userController.submitCollectionChanges);
 router.get('/:username/collection', cardsController.getOwnedCardsPage);
 router.get('/:username/favourites', cardsController.getFavouriteCardsPage);
 router.get('/:username/profile', cardsController.getProfilePage);
 
 // User Management
-router.get("/userpage", loginController.hasAccess("Admin"), userController.getUserListPage);
+router.get("/userList", loginController.hasAccess("Admin"), userController.getUserListPage);
 router.post("/updateSupport", loginController.hasAccess("Admin"), userController.updateSupport);
 
 // Misc.
