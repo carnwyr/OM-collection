@@ -6,7 +6,6 @@ block scripts
 	script(src="/javascripts/accountFunctions.js")
 	script.
 		var username = !{JSON.stringify(user.name)};
-		var card = !{JSON.stringify(user.profile.display)};
 
 block content
 	div#alert(role="alert")
