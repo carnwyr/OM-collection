@@ -165,31 +165,75 @@ exports.getTotalTreeStats = async function() {
 	]);
 };
 
-exports.getCardsWithItem = async function(matchStage) {
-	try {
-		return await Cards.aggregate([
-			matchStage, {
-				"$unwind": {
-					"path": "$dt",
-					"preserveNullAndEmptyArrays": false
-				}
-			}, matchStage, {
-				"$sort": {
-					"number": -1
-				}
-			}, {
-				"$project": {
-					"name": 1,
-					"ja_name": 1,
-					"uniqueName": 1,
-					"dt": 1
-				}
-			}
-		]);
-	} catch(e) {
-		Sentry.captureException(e);
-		return [];
+exports.getCardsWithItem = async function (item, user, owned, locked) {
+	let pipeline = [
+		{	$unwind: {
+				path: "$dt",
+				preserveNullAndEmptyArrays: false
+		}},
+		{ $match: { "dt.reward": item } }];
+	
+	if (user && owned) {
+		let ownedFilter = [
+			{ $lookup: {
+					from: "users",
+					let: { cardUniqueName: "$uniqueName" },
+					pipeline: [
+						{
+							$match: {
+								$expr: {
+									$and: [
+										{ $eq: ["$info.name", user.name] },
+										{ $in: ["$$cardUniqueName", "$cards.owned"] }]
+								}
+							}
+						}
+					],
+					as: "owned"
+			}},
+			{	$unwind: {
+					path: "$owned",
+					preserveNullAndEmptyArrays: false}},
+			{ $project: {"owned": 0} }];
+	 
+		pipeline = pipeline.concat(ownedFilter);
 	}
+	
+	if (user && locked) {
+		let lockedFilter = [
+			{ $lookup: {
+					from: "users",
+					let: { nodeId: "$dt._id" },
+					pipeline: [
+						{ $match: { $expr: { $eq: ["$info.name", user.name] } } },
+						{	$unwind: {
+							path: "$tree",
+							preserveNullAndEmptyArrays: false}},
+						{ $match: { $expr: { $not: { $eq: ["$$nodeId", "$tree"] } } } }
+					],
+					as: "locked"
+			}},
+			{ $project: {"locked": 0} }];
+	 
+		pipeline = pipeline.concat(lockedFilter);
+	}
+
+	pipeline.push(
+		{ $sort: { number: -1 } },
+		{
+			$project: {
+				"name": 1,
+				"ja_name": 1,
+				"uniqueName": 1,
+				"dt.reward": 1,
+				"dt.type": 1,
+				"dt.count": 1,
+				"dt.requirements": 1,
+				"dt.grimmCost": 1
+			}
+		});
+
+	return await Cards.aggregate(pipeline);
 };
 
 exports.findSkills = async function (keyword) {

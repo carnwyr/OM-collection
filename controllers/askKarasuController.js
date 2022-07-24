@@ -1,46 +1,40 @@
 const createError = require("http-errors");
-const Sentry = require("@sentry/node");
 
 const cardService = require("../services/cardService");
 const userService = require("../services/userService");
 
-const skillCharge = require("../data/speed.json");
+const skillCharge = require("../staticData/skills.json");
 
 // TODO: merge ?
 exports.getDTRewardsPage = async function (req, res, next) {
-	try {
-		let cards = [], item = "???";
-		if (req.query.item && req.query.item !== "") {
-			cards = await cardService.getCardsWithItem({
-				"$match": { 'dt.reward': req.query.item }
-			});
-			item = req.query.item;
-		}
-
-		if (req.user) {
+	let cards = [];
+	let item = "???";
+	if (req.query.item) {
+		/*if (req.user && (req.query.owned || req.query.locked)) {
 			let user = await userService.getUser(req.user.name);
-
-			if (req.query.owned === "on") {
+	
+			if (req.query.owned) {
 				cards = cards.filter(x => user.cards.owned.includes(x.uniqueName));
 			}
-
-			if (req.query.locked === "on") {
+	
+			if (req.query.locked) {
 				cards = cards.filter(x => !user.tree.includes(x.dt._id));
 			}
-		}
+		}*/
 
-		return res.render("askKarasu", {
-			title: req.i18n.t("title.dt_rewards", { "item": item.replace('_', ' ') }),
-			description: "",
-			cards: cards,
-			path: "dt_rewards",
-			query: req.query,
-			user: req.user
-		});
-	} catch(e) {
-		Sentry.captureException(e);
-		return next(e);
+		cards = await cardService.getCardsWithItem(req.query.item, req.user, req.query.owned, req.query.locked);
+		item = req.query.item;
+		console.log(cards)
 	}
+
+	return res.render("askKarasu", {
+		title: req.i18n.t("title.dt_rewards", { "item": item.replace('_', ' ') }),
+		description: "",
+		cards: cards,
+		path: "dt_rewards",
+		query: req.query,
+		user: req.user
+	});
 };
 
 exports.getUnlockItemsPage = async function (req, res, next) {
