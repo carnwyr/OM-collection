@@ -161,7 +161,11 @@ function getCards(query) {
 	if (PATH === "fav" || PATH === "collection") {
 		query.set("user", window.location.pathname.split('/').at(-2));
 	}
-	$.get("/getCards?" + query.toString(), function(data) {
+	$.ajax({
+		type: "get",
+		url: "/getCards?" + query.toString(),
+		cache: false
+	}).done(function (data) {
 		if (data.err) {
 			showAlert("danger", "Something went wrong");
 		}

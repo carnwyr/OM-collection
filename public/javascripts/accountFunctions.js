@@ -12,7 +12,8 @@ $(document).ready(function() {
 		if (lst.length === 0) {
 			$.ajax({
 				type: "get",
-				url: "/getCards"
+				url: "/getCards",
+				cache: false
 			}).done(function(result) {
 				if (result.err) {
 					showAlert("danger", result.message);
