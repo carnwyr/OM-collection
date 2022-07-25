@@ -1,14 +1,14 @@
 $(document).ready(function() {
-  $(".owned, .favourites").on("click", updateCollection);
+  $(".owned, .faved").on("click", updateCollection);
   if (stats.ownsCard === false) {
     $(".owned").addClass("addCardButton");
   } else {
     $(".owned").addClass("removeCardButton");
   }
   if (stats.favesCard === false) {
-    $(".favourites").addClass("addCardButton");
+    $(".faved").addClass("addCardButton");
   } else {
-    $(".favourites").addClass("removeCardButton");
+    $(".faved").addClass("removeCardButton");
   }
 
   $("form#tree input").on("change", updateUserTreeNode);
@@ -19,7 +19,7 @@ function updateCollection() {
   if ($(this).hasClass("owned")) {
     collectionType = "owned";
   } else {
-    collectionType = "favourites";
+    collectionType = "faved";
   }
 
   if ($(this).hasClass("addCardButton")) {

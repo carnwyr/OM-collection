@@ -17,7 +17,7 @@ svg.bi-star-fill:hover {
 	content: "Remove from ";
 }
 
-.favourites.removeCardButton {
+.faved.removeCardButton {
 	stroke: #FFC300;
 	fill: #FFC300;
 }
