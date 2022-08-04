@@ -161,6 +161,11 @@ exports.updateEvent = async function(originalName, data, img = null) {
 		data.start = stringToDateTime(data.start);
 		data.end = stringToDateTime(data.end);
 
+		if (data.hasBoosting) {
+			data.boostingStart = stringToDateTime(data.boostingStart);
+			data.boostingEnd = stringToDateTime(data.boostingEnd);
+		}
+
 		let event = await Events.findOne({ "name.en": originalName });
 
 		if (!event) {
