@@ -1,6 +1,7 @@
 const createError = require("http-errors");
 const async = require("async");
 const dayjs = require("dayjs");
+const Sentry = require("@sentry/node");
 
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 const utc = require('dayjs/plugin/utc')
@@ -13,6 +14,7 @@ dayjs.extend(timezone)
 const eventService = require("../services/eventService");
 const eventCalculatorService = require("../services/eventCalculatorService");
 const cardService = require("../services/cardService");
+const miscController = require("../controllers/miscController");
 
 exports.getEventsPage = async function(req, res, next) {
 	// TODO: add method to only retrieve a certain type of event
