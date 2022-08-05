@@ -57,7 +57,10 @@ const popQuizSchema = new Schema({
 	boxRewards: { type: [boxSetSchema] },
 	listRewards: { type: [rewardSchema] },
 	ap: { type: [APSchema] },
-	pageCost: { type: Number }
+	pageCost: { type: Number },
+	hasBoosting: { type: Boolean, required: true },
+	boostingStart: { type: Date },
+	boostingEnd: { type: Date }
 });
 
 const PopQuiz = Event.discriminator("PopQuiz", popQuizSchema);

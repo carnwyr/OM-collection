@@ -20,23 +20,26 @@ mixin treeCostTemplate(item)
 		- item = Array(3).fill({ name: '', amount: '' });
 	each i, index in item
 		div.form-row.align-items-center.mb-2
-			label.col-12.col-md-2.col-lg-1.text-center= index + 1
-			div.col-12.col-md-5.col-lg-3.mb-2.mb-md-0
-				select.item-select.custom-select.form-control(name="name")
-					option(value='' data-subtext='--')
-					each x in ITEMS
-						option(value=x selected=(i.name===x))= x
-			div.col-12.col-md-5.col-lg-3
-				input.form-control(type="number" name="amount" value=i.amount placeholder="how many?")
+			label.col-2.text-center= index + 1
+			div.col-10
+				div.row
+					div.col-md-6.col-lg-4.mb-1.mb-md-0
+						select.item-select.custom-select.form-control(name="name")
+							option(value='' data-subtext='--')
+							each x in ITEMS
+								option(value=x selected=(i.name===x))= x
+					div.col-md-6.col-lg-4.mb-1.mb-md-0
+						input.form-control(type="number" name="amount" value=i.amount placeholder="how many?")
 
 mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
 	div
 		form.form-row
 			div.d-none: input(type="text" name="_id" value=node._id readonly)
-			div.form-inline.col-12.align-items-center.mb-2
-				label.mr-2 No.
-				input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder placeholder="???" style="width:80px;")
-				small.text-muted The order in which this node should appear on this page.
+			div.d-none
+				div.form-inline.col-12.align-items-center.mb-2
+					label.mr-2 No.
+					input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder placeholder="???" style="width:80px;")
+					small.text-muted The order in which this node should appear on this page.
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Name
 				input.form-control.autocomplete(type="text" value=node.reward name="reward" placeholder="???" readonly=(node._id && node.reward !== "???"))

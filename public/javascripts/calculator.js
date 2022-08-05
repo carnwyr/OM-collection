@@ -1,124 +1,143 @@
-var settings = {};
-const DEFAULT_SETTINGS = '{"stagesCleared":"0","adBattles":"0","denergy":"0","adAP":"0","spg":"0","friends":"0","toDo":"0","fridgeMission":{"isVIP":false,"count":"0"},"other":"0","popquiz":false}';
 $(function() {
-	recallTab();
-	$("#rewards>li>a").click(function() { sessionStorage.setItem("selected", $(this).attr("id")); });
+	let collapseinfo = localStorage.getItem("#collapseinfo");
+	if (collapseinfo === "false") {
+		$("#collapseinfo").collapse("show");
+	}
+	$("a[POPQUIZ-toggle='collapse']").click(function() {
+		localStorage.setItem($(this).attr("href"), $(this).attr("aria-expanded"));
+	});
 
-	$("input#stagesCleared").change(() => $("input.custom-range").prop("value", $("input#stagesCleared").prop("value")));
-	$("input.custom-range").on("input", () => $("input#stagesCleared").prop("value", $("input.custom-range").prop("value")));
-
-	checkAdditionalSettings();
-	$("[data-dismiss='modal']").on("click", checkAdditionalSettings);
-	$("button#apply").on("click", applyAdditionalSettings);
+	countdown(POPQUIZ.end, "cd");
+	if (POPQUIZ.hasBoosting && new Date() < POPQUIZ.boostingEnd) {
+		if (new Date() < POPQUIZ.boostingStart) {
+			countdown(POPQUIZ.boostingStart, "boostingcd");
+		} else {
+			countdown(POPQUIZ.boostingEnd, "boostingcd");
+		}
+	}
+	calculate();
+	$("form#calculator").on("change", calculate);
 });
 
-function startCountdown() {
-	var today = new Date();
-	var daysLeft = Math.floor((endDate - today) / (1000 * 60 * 60 * 24));
-	var noun = "day";
-
-	// set to jst midnight if not last day of pop quiz.
-	if (daysLeft > 0) {
-		endDate.setUTCHours(15);
-		noun = "days";
-	}
-
-	var x = setInterval(function() {
-		var now = new Date();
-		var distance = endDate - now;
-
-	  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-	  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-	  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-	  $("p.countdown").text(`${hours}:${minutes}:${seconds}`);
-		$("small.total-countdown").text(`${daysLeft} ${noun} ${hours}:${minutes}:${seconds}`)
-	}, 1000);
+function resetResult() {
+	$("#resultTabContent span, #absfree").text('--');
 }
 
-function recallTab() {
-	var params = new URLSearchParams(document.location.search.substring(1));
-	var custom = params.get("customGoal");
-	var selected = sessionStorage.getItem("selected");
+function getBattleCost(battles) {
+	return Math.ceil(battles / 3) * 5;
+}
 
-	if (custom) { selected = "Custom-tab"; }
+function getAPCost(ap) {
+	return Math.ceil(ap / 10);
+}
 
-	if (selected && $('#'+selected).parent().length !== 0) {
-		$('#'+selected).tab("show");
+function remainingFreeAP(daysLeft) {
+	let mintuesLeft, fridgeMissionAP = 0;
+
+	if (daysLeft === 0) {
+		minutesLeft = (new Date(END_DATE) - new Date()) / 1000 / 60;
 	} else {
-		$("#rewards>li:first-child>a").tab("show");
-	}
-}
-
-function checkAdditionalSettings() {
-	var cookie = getCookie("calculator");
-	if (cookie) {  // set values
-		settings = JSON.parse(cookie);
-		for (let key in settings) {
-			switch (key) {
-				case "fridgeMission":
-					$("#fridgeMission").val(settings[key].count);
-					$("#isVIP").prop("checked", settings[key].isVIP);
-					break;
-				case "popquiz":
-					$("#popquiz").prop("checked", settings[key]);
-					break;
-				case "stagesCleared":
-					$("#stagesCleared, #stagesClearedRange").val(settings[key]);
-					break;
-				default:
-					$('#'+key).val(settings[key]);
-			}
+		let endTime = new Date();
+		let timezoneOffset = endTime.getTimezoneOffset() / 60 + 9;
+		endTime.setHours(24 - timezoneOffset,0,0,0);
+		if (new Date() > endTime) {
+			endTime.setDate(endTime.getDate() + 1);
 		}
-	} else {
-		applyAdditionalSettings();  // set default values
+		minutesLeft = (endTime - new Date()) / 1000 / 60;
 	}
-	updateIndicator();
-}
 
-function applyAdditionalSettings() {
-	settings = {
-		stagesCleared: $("#stagesCleared").val(),
-		adBattles: $("#adBattles").val(),
-		denergy: $("#denergy").val(),
-		adAP: $("#adAP").val(),
-		spg: $("#spg").val(),
-		friends: $("#friends").val(),
-		toDo: $("#toDo").val(),
-		fridgeMission: {
-			isVIP: $("#isVIP").is(":checked"),
-			count: $("#fridgeMission").val(),
-		},
-		other: $("#other").val(),
-		popquiz: $("#popquiz").is(":checked")
-	};
-
-	document.cookie = `calculator=${JSON.stringify(settings)};expires=${endDate};path=/calculator;`;
-
-	$("#settingsModal").modal("hide");
-	updateIndicator();
-}
-
-function updateIndicator() {
-	if (JSON.stringify(settings) === DEFAULT_SETTINGS) {
-		$("#indicator").removeClass().addClass("badge badge-warning").text("OFF");
-	} else {
-		$("#indicator").removeClass().addClass("badge badge-success").text("ON");
+	if ((new Date()).getHours() < 14) {
+		fridgeMissionAP += 60;
+	} else if ((new Date()).getHours() < 20) {
+		fridgeMissionAP += 30;
 	}
+
+	return Math.floor(minutesLeft / 5) + 20 * 2 + 10 * 3 + fridgeMissionAP;
 }
 
-// sourced from w3schools https://www.w3schools.com/js/js_cookies.asp
-function getCookie(cname) {
-  let name = cname + "=";
-  let ca = document.cookie.split(';');
-  for(let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
+/**
+ * 1. Find how many "free" points can be obtained.
+ * 2. Divide "paid" points among remaining days. (incomplete code)
+ */
+function calculate() {
+	let goal = parseInt($("input[name='goal']").val());
+	let currentPts = parseInt($("input[name='currpts']").val());
+	let ptsPerBattle = parseInt($("input[name='ppb']").val());
+
+	if (isNaN(goal) || isNaN(currentPts) || isNaN(ptsPerBattle) ||
+			goal <= 0 || currentPts < 0 || ptsPerBattle < 0 || goal <= currentPts)
+	{
+		resetResult();
+		return;
+	}
+
+	let pointsNeeded = goal - currentPts;
+
+	if (goal % ptsPerBattle !== 0) {
+		goal += (ptsPerBattle - pointsNeeded % ptsPerBattle);
+	}
+
+	let distance = new Date(POPQUIZ.end).getTime() - new Date().getTime();
+	let daysLeft = Math.floor(distance / (1000 * 60 * 60 * 24));
+
+	/* Overview */
+
+	let dailyFreePoints = DAILY_FREE_BATTLES * ptsPerBattle;
+	let totalFreePoints = dailyFreePoints * daysLeft + currentPts;
+
+	let additionalPoints = Math.max(pointsNeeded - totalFreePoints, 0);
+
+	$("#freepts").text(totalFreePoints.toLocaleString("en"));
+	$("#additionalpts").text(additionalPoints.toLocaleString("en"));
+	$("#absfree").text((DAILY_FREE_AP / 8 * ptsPerBattle * daysLeft).toLocaleString("en"));
+
+	let additionalBattles = Math.ceil(additionalPoints / ptsPerBattle);
+	let additionalBattlesCost = getBattleCost(additionalBattles);
+	let additionalAP = additionalBattles * 8;
+	let additionalAPCost = getAPCost(additionalAP);
+
+	$("#overview-regular>li>span.ap").text(`${additionalAP.toLocaleString("en")} (${additionalAPCost.toLocaleString("en")} DP)`);
+	$("#overview-regular>li>span.battle").text(`${additionalBattles.toLocaleString("en")} (${additionalBattlesCost.toLocaleString("en")} DP or ${(additionalBattlesCost / 5).toLocaleString("en")} D-Energy)`);
+
+	/* Daily breakdown */
+
+	let todaysGoal = Math.ceil(pointsNeeded / daysLeft);
+	let totalBattles = Math.round(todaysGoal / ptsPerBattle);
+	let buyBattles = Math.max(totalBattles - DAILY_FREE_BATTLES, 0);
+	let freeBattles = totalBattles - buyBattles;
+	let battlesCost = getBattleCost(buyBattles);
+	let totalAP = totalBattles * 8;
+	let freeAP = remainingFreeAP();
+	let buyAP = Math.max(totalAP - freeAP, 0);
+	let apCost = getAPCost(buyAP);
+
+	$("#goal").text((todaysGoal + currentPts).toLocaleString("en"));
+	$("#freeap").text(freeAP.toLocaleString("en"));
+	$("#buyap").text(buyAP.toLocaleString("en"));
+	$("#aptot").text(totalAP.toLocaleString("en"));
+	$("#freebattles").text(freeBattles.toLocaleString("en"));
+	$("#buybattles").text(buyBattles.toLocaleString("en"));
+	$("#battlestot").text(totalBattles.toLocaleString("en"));
+	$("#apcost").text(apCost.toLocaleString("en"));
+	$("#battlescost").text(battlesCost.toLocaleString("en"));
+	$("#totcost").text((apCost + battlesCost).toLocaleString("en"));
+}
+
+function countdown(d, id) {
+	let countDownDate = new Date(d).getTime();
+	let timer = setInterval(function () {
+		let now = new Date().getTime();
+		let distance = countDownDate - now;
+		let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+		let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toLocaleString("en-US", { minimumIntegerDigits: 2 });
+		let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toLocaleString("en-US", { minimumIntegerDigits: 2 });
+		let seconds = Math.floor((distance % (1000 * 60)) / 1000).toLocaleString("en-US", { minimumIntegerDigits: 2 });
+
+		document.getElementById(id).innerHTML = `${days} days ${hours}:${minutes}:${seconds}`;
+
+		if (distance < 0) {
+			clearInterval(timer);
+			document.getElementById(id).innerHTML = "--";
+		}
+	}, 1000);
 }

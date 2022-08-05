@@ -19,7 +19,7 @@ $(document).ready(function () {
 });
 
 function createMasks() {
-	var maskOptions = {
+	let maskOptions = {
 		mask: 'YYYY.MM.DD, hh:mm:ss',
 		lazy: false,
 		blocks: {
@@ -53,19 +53,23 @@ function createMasks() {
 				maxLength: 2
 			},
 			ss: {
-				mask: IMask.MaskedRange,
-				from: 0,
-				to: 60,
-				maxLength: 2
+				mask: IMask.MaskedEnum,
+				enum: ["00"]
 			}
 		}
 	};
-	var start = document.getElementById('start');
-	var end = document.getElementById('end');
-	var maskStart = IMask(start, maskOptions);
-	var maskEnd = IMask(end, maskOptions);
-	maskStart.value = start.getAttribute('value');
-	maskEnd.value = end.getAttribute('value');
+	let start = $("#start")[0];
+	let end = $("#end")[0];
+	let boostingStart = $("#boostingStart")[0];
+	let boostingEnd = $("#boostingEnd")[0];
+	let maskStart = IMask(start, maskOptions);
+	let maskEnd = IMask(end, maskOptions);
+	let mbs = IMask(boostingStart, maskOptions);
+	let mbe = IMask(boostingEnd, maskOptions);
+	maskStart.value = start.value;
+	maskEnd.value = end.value;
+	mbs.value = boostingStart.value;
+	mbe.value = boostingEnd.value;
 }
 
 function removeItem() {
@@ -123,6 +127,7 @@ function prepareEventData() {
 			isLonelyDevil: $("input#lonelydevil").is(":checked"),
 			isBirthday: $("input#birthday").is(":checked"),
 			hasKeys: $("input#has-keys").is(":checked"),
+			hasBoosting: $("#boosting").is(":checked"),
 			rewardListType: rewardType,
 			stages: $("input#stages").val()
 		};
@@ -140,6 +145,11 @@ function prepareEventData() {
 			popQuizData.pageCost = $("input[name='pageCost']").val();
 		} else {
 			popQuizData.boxRewards = getBoxRewards();
+		}
+
+		if (popQuizData.hasBoosting) {
+			popQuizData.boostingStart = $("#boostingStart").val();
+			popQuizData.boostingEnd = $("#boostingEnd").val();
 		}
 
 		data = Object.assign(popQuizData, data);

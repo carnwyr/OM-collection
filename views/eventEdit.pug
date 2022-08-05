@@ -79,14 +79,17 @@ block content
 		style.
 			@media screen and (max-width: 720px) {
 				body {
-					background: rgb(255,254,255) !important;
+					background: white !important;
 				}
 				.card {
 					box-shadow: none !important;
 					background: transparent !important;
 				}
 				.card-body {
-					padding: 0 !important;
+					padding: 0;
+				}
+				#collapseEventDetails .card-body {
+					padding: 1rem;
 				}
 			}
 		div.card.shadow
@@ -152,10 +155,22 @@ block content
 									div.form-check.form-check-inline
 										input#birthday.form-check-input(type="checkbox" checked=(data&&data.isBirthday))
 										label.form-check-label(for="birthday") Birthday
+									div.form-check.form-check-inline
+										input#boosting.form-check-input(type="checkbox" checked=(data&&data.hasBoosting))
+										label.form-check-label(for="boosting") Boosting
 								div.form-row
-									div.col-12.col-md-3.form-group
-										label(for="stages") Number of stages
-										input#stages.form-control(type="number" name="stages" value=data.stages)
+									div.col-12.col-md-4
+										div.form-group
+											label(for="stages") Number of stages
+											input#stages.form-control(type="number" name="stages" value=data.stages)
+									div.col-12.col-md-4
+										div.form-group
+											label(for="boostingStart") Boosting start (UTC)
+											input#boostingStart.form-control(type="text" name="boostingStart" value=data.boostingStart)
+									div.col-12.col-md-4
+										div.form-group
+											label(for="boostingEnd") Boosting end (UTC)
+											input#boostingEnd.form-control(type="text" name="boostingEnd" value=data.boostingEnd)
 								ul.nav.nav-tabs(role="tablist")
 									li.nav-item
 										a#points-tab.nav-link.active(data-toggle="tab" href="#points" role="tab" aria-controls="points" aria-selected="true") Point-based
