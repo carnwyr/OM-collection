@@ -79,14 +79,17 @@ block content
 		style.
 			@media screen and (max-width: 720px) {
 				body {
-					background: rgb(255,254,255) !important;
+					background: white !important;
 				}
 				.card {
 					box-shadow: none !important;
 					background: transparent !important;
 				}
 				.card-body {
-					padding: 0 !important;
+					padding: 0;
+				}
+				#collapseEventDetails .card-body {
+					padding: 1rem;
 				}
 			}
 		div.card.shadow
