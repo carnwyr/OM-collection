@@ -42,12 +42,20 @@ block content
             h5= t("lang") === "ja" ? data.name.ja : data.name.en
             a(href="/event/" + getURL(data.name.en)): img.img-fluid.rounded.mb-3(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
             if started()
-              - timerDate = data.end;
               p Ending in
             else
-              - timerDate = data.start;
               p Starting in
-            h5#cd --
+            h5#cd.mb-3 --
+            if data.hasBoosting
+              - let dateNow = new Date();
+              if dateNow < data.boostingStart
+                p Boosting starting in
+                h5#boostingcd --
+              else if dateNow < data.boostingEnd
+                p Boosting ending in
+                h5#boostingcd --
+              else
+                p Boosting has ended.
             hr.d-md-none
           div.col-12.col-md-8
             form#calculator
@@ -61,6 +69,9 @@ block content
                 div.form-group.col-12.col-md-4
                   label Points per battle
                   input.form-control(type="number" name="ppb" readonly=data.isBirthday min=(data.isBirthday?12:120) value=(data.isBirthday?12:''))
+            //-
+              if data.rewardListType == "boxes"
+                p You need #{} points at most to clear each box.
             <ul class="nav nav-tabs" id="resultTab" role="tablist">
               <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
@@ -176,7 +187,7 @@ block content
       h5.card-title Tips
       ul
         li If you have remaining battles and AP, use them all up before the next day begins.
-        li Always purchase the 99 DP flash sale! If you purchase the flash sale, then you will need less DP than the calculated result.
+        li Always purchase the daily flash sale that only cost 10 DP! If you purchase the flash sale, then you will need less DP than the calculated result.
 
   style.
     #results p {

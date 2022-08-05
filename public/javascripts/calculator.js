@@ -7,7 +7,14 @@ $(function() {
 		localStorage.setItem($(this).attr("href"), $(this).attr("aria-expanded"));
 	});
 
-	countdown();
+	countdown(POPQUIZ.end, "cd");
+	if (POPQUIZ.hasBoosting && new Date() < POPQUIZ.boostingEnd) {
+		if (new Date() < POPQUIZ.boostingStart) {
+			countdown(POPQUIZ.boostingStart, "boostingcd");
+		} else {
+			countdown(POPQUIZ.boostingEnd, "boostingcd");
+		}
+	}
 	calculate();
 	$("form#calculator").on("change", calculate);
 });
@@ -116,8 +123,8 @@ function calculate() {
 	$("#totcost").text((apCost + battlesCost).toLocaleString("en"));
 }
 
-function countdown() {
-	let countDownDate = new Date(POPQUIZ.end).getTime();
+function countdown(d, id) {
+	let countDownDate = new Date(d).getTime();
 	let timer = setInterval(function () {
 		let now = new Date().getTime();
 		let distance = countDownDate - now;
@@ -126,11 +133,11 @@ function countdown() {
 		let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toLocaleString("en-US", { minimumIntegerDigits: 2 });
 		let seconds = Math.floor((distance % (1000 * 60)) / 1000).toLocaleString("en-US", { minimumIntegerDigits: 2 });
 
-		document.getElementById("cd").innerHTML = `${days} days ${hours}:${minutes}:${seconds}`;
+		document.getElementById(id).innerHTML = `${days} days ${hours}:${minutes}:${seconds}`;
 
 		if (distance < 0) {
 			clearInterval(timer);
-			document.getElementById("cd").innerHTML = "--";
+			document.getElementById(id).innerHTML = "--";
 		}
 	}, 1000);
 }
