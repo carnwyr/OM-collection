@@ -1,12 +1,11 @@
 extends ../layout
 
 block scripts
-  script(src="/javascripts/calculator1.js")
   script.
-    const END_DATE = !{JSON.stringify(data.end)};
-    const TOTAL_STAGES = 26;
-    const DAILY_FREE_AP = 288;
-    const DAILY_FREE_BATTLES = TOTAL_STAGES * 3;
+    const POPQUIZ = !{JSON.stringify(data)};
+    const DAILY_FREE_BATTLES = POPQUIZ.stages * 3;
+    const DAILY_FREE_AP = 288 + 20 * 2 + 10 * 3 + 30 * 2;
+  script(src="/javascripts/calculator.js")
 
 block content
   -
@@ -27,11 +26,9 @@ block content
         h5.card-title A few things about how it works
         span.card-text This calculator:
         ul
-          li always round up in calculation.
+          li always round up its calculation.
           li can only be as accurate as your input.
-          li evenly spreads necessary battles throughout remaining days. Even if you can complete the goal today with free battles, it will still divide remaining battles among remaining days.
-          li currently do not support boosting periods. Please be careful when using during those times.
-          li have a higher chance of making mistakes until you unlock all stages with keys.
+          li currently do not support boosting periods.
         h5.card-title Assumptions
         span.card-text This calculator assumes that:
         ul
@@ -66,132 +63,101 @@ block content
                   input.form-control(type="number" name="ppb" readonly=data.isBirthday min=(data.isBirthday?12:120) value=(data.isBirthday?12:''))
             <ul class="nav nav-tabs" id="resultTab" role="tablist">
               <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="true">Today</a>
+                <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
               </li>
               <li class="nav-item" role="presentation">
-                <a class="nav-link" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="false">Total</a>
+                <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Today</a>
               </li>
             </ul>
             div#resultTabContent.tab-content.pt-3
-              div#daily.tab-pane.show.active(role="tabpanel" aria-labelledby="daily-tab")
-                h5 Result
-                div.simple-r.row.text-center
-                  div.col-12.col-md-6
-                    p Today's goal
-                    h5.goal --
-                  div.col-12.col-md-6
-                    p Required battles
-                    h5.dailybattles --
-                  div.col-12.col-md-6
-                    p Required AP
-                    h5.apreq --
-                  div.col-12.col-md-6
-                    p Required DP
-                    h5.dpreq --
-                h5 Breakdown
-                div#results.row.justify-content-center
-                  div.col-12.col-md-6.col-lg-4
-                    div.result-container
-                      p AP
-                      div
-                        div
-                          span= t("calculator.free")
-                          span.freeap --
-                        div
-                          span= t("calculator.buy")
-                          span.buyap --
-                        hr
-                        div
-                          span Total
-                          span.aptot --
-                  div.col-12.col-md-6.col-lg-4
-                    div.result-container
-                      p Battles
-                      div
-                        div
-                          span= t("calculator.free")
-                          span.freebattles --
-                        div
-                          span= t("calculator.buy")
-                          span.buybattles --
-                        hr
-                        div
-                          span Total
-                          span.battlestot 20,000
-                  div.col-12.col-md-6.col-lg-4
-                    div.result-container
-                      p Devil Points
-                      div
-                        div
-                          span AP
-                          span.apcost --
-                        div
-                          span Battles
-                          span.battlescost --
-                        hr
-                        div
-                          span Total
-                          span.totcost --
-              div#total.tab-pane(role="tabpanel" aria-labelledby="total-tab")
-                h5 Result
-                div.simple-r.row.text-center
-                  div.col-12.col-md-6
-                    p Goal
-                    h5.goal --
-                  div.col-12.col-md-6
-                    p Required battles
-                    h5.dailybattles --
-                  div.col-12.col-md-6
-                    p Required AP
-                    h5.apreq --
-                  div.col-12.col-md-6
-                    p Required DP
-                    h5.dpreq --
-                h5 Breakdown
-                div#results.row.justify-content-center
-                  div.col-12.col-md-6.col-lg-4
-                    div.result-container
-                      p AP
-                      div
-                        div
-                          span= t("calculator.free")
-                          span.freeap --
-                        div
-                          span= t("calculator.buy")
-                          span.buyap --
-                        hr
-                        div
-                          span Total
-                          span.aptot --
-                  div.col-12.col-md-6.col-lg-4
-                    div.result-container
-                      p Battles
-                      div
-                        div
-                          span= t("calculator.free")
-                          span.freebattles --
-                        div
-                          span= t("calculator.buy")
-                          span.buybattles --
-                        hr
-                        div
-                          span Total
-                          span.battlestot 20,000
-                  div.col-12.col-md-6.col-lg-4
-                    div.result-container
-                      p Devil Points
-                      div
-                        div
-                          span AP
-                          span.apcost --
-                        div
-                          span Battles
-                          span.battlescost --
-                        hr
-                        div
-                          span Total
-                          span.totcost --
+              div#overview.tab-pane.show.active(role="tabpanel" aria-labelledby="overview-tab")
+                p.text-center You can get a total of
+                  |
+                  |
+                  span#freepts.h5 --
+                  |
+                  | points for free
+                  a(href="#note1") *
+                  | .
+                p.text-center An additional
+                  |
+                  |
+                  span#additionalpts.h5 --
+                  |
+                  | points is needed to reach your goal.
+                hr
+                //-
+                  if data.hasBoosting
+                    p If you get additional points during boosting, you will need:
+                    ul#overview-boosting
+                      li AP: --
+                      li Battles: --
+                p Getting additional points during regular (no boosting) event time will require at least:
+                ul#overview-regular
+                  li AP:
+                    |
+                    |
+                    span.ap --
+                  li Battles:
+                    |
+                    |
+                    span.battle --
 
+              div#daily.tab-pane(role="tabpanel" aria-labelledby="daily-tab")
+                div.text-center
+                  p Today's goal
+                  h5#goal --
+                h5 Breakdown
+                div#results.row.justify-content-center
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p AP
+                      div
+                        div
+                          p.mb-0= t("calculator.free")
+                          span#freeap --
+                        div
+                          p.mb-0= t("calculator.buy")
+                          span#buyap --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#aptot --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Battles
+                      div
+                        div
+                          p.mb-0= t("calculator.free")
+                          span#freebattles --
+                        div
+                          p.mb-0= t("calculator.buy")
+                          span#buybattles --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#battlestot --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Devil Points
+                      div
+                        div
+                          p.mb-0 AP
+                          span#apcost --
+                        div
+                          p.mb-0 Battles
+                          span#battlescost --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#totcost --
+                //-
+                  small.text-muted.text-center If you saved some AP and D-Energy, then you can use the
+                    |
+                    |
+                    a(href='') akuzon calculator
+                    |
+                    | to find out how much less DP you need.
       if !started()
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
@@ -200,13 +166,19 @@ block content
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
             h5 This event has ended.
+    div.card.card-body.mt-3
+      p#note1 *Free points means the final amount of points you will have if you clear all free battles from now until the end of pop quiz, without spending a single DP/D-Energy on battles. If you do not want to spend anything on this pop quiz, then you can still get
+        |
+        |
+        span#absfree --
+        |
+        | points for absoluately free.
+      h5.card-title Tips
+      ul
+        li If you have remaining battles and AP, use them all up before the next day begins.
+        li Always purchase the 99 DP flash sale! If you purchase the flash sale, then you will need less DP than the calculated result.
+
   style.
-    .simple-r p {
-      margin-bottom: .75rem;
-    }
-    .simple-r h5 {
-      margin-bottom: 1.25rem;
-    }
     #results p {
       text-align: center;
     }
