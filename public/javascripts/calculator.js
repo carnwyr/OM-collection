@@ -101,7 +101,7 @@ function calculate() {
 
 	/* Daily breakdown */
 
-	let todaysGoal = Math.min(Math.ceil(pointsNeeded / daysLeft), ptsPerBattle);
+	let todaysGoal = Math.max(Math.ceil(pointsNeeded / daysLeft), ptsPerBattle);
 	let totalBattles = Math.round(todaysGoal / ptsPerBattle);
 	let buyBattles = Math.max(totalBattles - DAILY_FREE_BATTLES, 0);
 	let freeBattles = totalBattles - buyBattles;
