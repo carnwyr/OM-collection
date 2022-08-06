@@ -82,6 +82,13 @@ function calculate() {
 
 	/* Overview */
 
+	let absTotalBattles = Math.ceil(goal / ptsPerBattle);
+	let absTotalAP = absTotalBattles * 8;
+
+	// TODO: display somewhere on page
+	console.log("Total battles:", absTotalBattles);
+	console.log("Total AP:", absTotalAP);
+
 	let dailyFreePoints = DAILY_FREE_BATTLES * ptsPerBattle;
 	let totalFreePoints = dailyFreePoints * daysLeft + currentPts;
 
@@ -107,8 +114,8 @@ function calculate() {
 	let freeBattles = totalBattles - buyBattles;
 	let battlesCost = getBattleCost(buyBattles);
 	let totalAP = totalBattles * 8;
-	let freeAP = remainingFreeAP();
-	let buyAP = Math.max(totalAP - freeAP, 0);
+	let freeAP = Math.min(remainingFreeAP(), totalAP);
+	let buyAP = totalAP - freeAP;
 	let apCost = getAPCost(buyAP);
 
 	$("#goal").text((todaysGoal + currentPts).toLocaleString("en"));
