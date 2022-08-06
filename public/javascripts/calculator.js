@@ -8,7 +8,7 @@ $(function() {
 	});
 
 	countdown(POPQUIZ.end, "cd");
-	if (POPQUIZ.hasBoosting && new Date() < POPQUIZ.boostingEnd) {
+	if (POPQUIZ.hasBoosting && new Date() < new Date(POPQUIZ.boostingEnd)) {
 		if (new Date() < POPQUIZ.boostingStart) {
 			countdown(POPQUIZ.boostingStart, "boostingcd");
 		} else {
