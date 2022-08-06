@@ -116,10 +116,10 @@ table#strength thead th, #strength td {
 }
 
 @media (min-width: 768px) {
-	.dt-node img {
+	.dt-node .header>img {
 		position: absolute;
 	}
-	.dt-node span {
+	.dt-node .header>span {
 		padding: 0 36px;
 	}
 }

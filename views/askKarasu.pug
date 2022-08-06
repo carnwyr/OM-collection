@@ -57,23 +57,29 @@ block content
         each i in cards
           div.card.mb-3(style="max-width: 540px;")
             div.row.no-gutters
-              div.col-4
+              div.col-4.d-none.d-md-block
                 a(href="/card/" + i.uniqueName)
-                  img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg")
-              div.col-8
-                div.card-body
+                  img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg" style="border-radius:4px 0 0 4px;")
+              div.col-12.d-flex.justify-content-center.d-md-none
+                img.img-fluid.lazy.pt-4(src="/images/reward_placeholder.jpg" data-src="/images/cards/S/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg" style="width:6rem;height:auto;")
+              div.col-12.col-md-8
+                div.card-body.node-detail
                   p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
-                  p.card-text.mb-0.mb-md-3 #{i.dt.reward}
+                  p.card-text Reward: #{i.dt.reward}
                     if i.dt.type === "item"
                       |
                       | x#{i.dt.count?i.dt.count.toLocaleString("en"):"???"}
                   if i.dt.requirements && i.dt.requirements.length > 0
-                    ul.d-none.d-md-block
-                      each j in i.dt.requirements
-                        li #{j.name ? j.name : "???"} x#{j.amount ? j.amount.toLocaleString("en") : "???" }
+                    div.d-flex
+                      each req in i.dt.requirements
+                        figure(style="margin:0 4px 0 0;")
+                          img(src="/images/" + (req.name ? "items/tree/" + req.name : "reward_placeholder") + ".png" style="width:3.5rem;height:auto;")
+                          figcaption.text-center= req.amount ? 'x' + req.amount : "???"
                   else
-                    p.card-text.d-none.d-md-block Requirements ???
-                  p.card-text.d-none.d-md-block Grimm: #{i.dt.grimmCost ? i.dt.grimmCost.toLocaleString("en") : "???"}
+                    p.card-text Requirements ???
+                  div.d-flex.align-items-center
+                    img.mr-1(src="/images/items/grimm.png" style="width:1.25rem;")
+                    p.card-text= i.dt.grimmCost ? i.dt.grimmCost.toLocaleString("en") : "???"
 
   script.
     $(function() {
@@ -88,8 +94,14 @@ block content
     .bootstrap-select > .dropdown-menu {
         box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     }
-    @media (max-width: 540px) {
+    @media (max-width: 576px) {
       #question {
         padding: 2rem;
+      }
+      .node-detail {
+        text-align: center;
+      }
+      .node-detail>div {
+        justify-content: center;
       }
     }

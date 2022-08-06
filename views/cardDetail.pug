@@ -18,18 +18,20 @@ block scripts
       });
 
 mixin dtTemplate(node)
-  div.col-12.col-md-4.mb-3
+  div.col-12.col-md-6.col-lg-4.mb-3
     div(class="p-3 dt-node " + node.type)
-      div.d-flex.flex-wrap.align-items-center
+      div.header.d-flex.flex-wrap.align-items-center
         img.mb-2.mb-md-0(src="/images/nodes/" + node.type + ".png" alt=node.type style="width:32px;height:32px;")
         span.text-center.w-100= node.reward
           if node.type === "item" && node.count
             small= ' x' + node.count
       hr
       if node.requirements.length !== 0
-        ul
+        div.d-flex.justify-content-center
           each i in node.requirements
-            li= i.name && i.amount ? i.name + ' x' + i.amount : "???"
+            figure(style="margin:4px;")
+              img(src="/images/" + (i.name ? "items/tree/" + i.name : "reward_placeholder") + ".png" style="width:64px;height:auto;")
+              figcaption.text-center= i.amount ? 'x' + i.amount : "???"
       else
         p.text-center ???
       p.text-center Grimm: #{node.grimmCost ? node.grimmCost.toLocaleString("en") : "???"}
