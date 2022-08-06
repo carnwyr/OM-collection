@@ -34,7 +34,10 @@ mixin dtTemplate(node)
               figcaption.text-center= i.amount ? 'x' + i.amount : "???"
       else
         p.text-center ???
-      p.text-center Grimm: #{node.grimmCost ? node.grimmCost.toLocaleString("en") : "???"}
+      div.d-flex.justify-content-center.align-items-center
+        img.mr-1(src="/images/items/grimm.png" style="width:1.25rem;")
+        p.card-text= node.grimmCost ? node.grimmCost.toLocaleString("en") : "???"
+
       hr
       if !node._id || node.reward === "???"
         - missingInfo = true;
