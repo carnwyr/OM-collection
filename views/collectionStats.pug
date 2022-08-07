@@ -8,12 +8,12 @@
     return percentage;
   }
   const mainCharas = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor"];
-  const sideCharas = ["Diavolo", "Barbatos", "Luke", "Simeon", "Solomon", "Little D"];
+  const sideCharas = ["Diavolo", "Barbatos", "Luke", "Simeon", "Solomon", "LittleD"];
   const rarities = ["N", "R", "SR", "SSR", "UR", "UR+"];
   const attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"];
 
 mixin percentBar(owned, total, name)
-  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "Little D":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", 'UR+':"#ffe16b", Pride:"rgb(52,123,253)", Greed:"#ffbc11", Envy:"#ff7e00", Wrath:"#21c38c", Lust:"rgb(240,84,177)", Gluttony:"rgb(230,64,56)", Sloth:"rgb(181,65,230)"};
+  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "LittleD":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", 'UR+':"#ffe16b", Pride:"rgb(52,123,253)", Greed:"#ffbc11", Envy:"#ff7e00", Wrath:"#21c38c", Lust:"rgb(240,84,177)", Gluttony:"rgb(230,64,56)", Sloth:"rgb(181,65,230)"};
   - var percentage = roundPercentage(owned / total * 100);
   span= t(name)
   small(style='display:inline-flex;') &nbsp;- #{owned} of #{total} (#{percentage}%)
@@ -33,7 +33,7 @@ mixin statsTab(cardType, entries, category)
   if cardType === "memory" && category === "rarity"
     - entries = ["N", "R", "SR", "SSR", "UR"];
   else if cardType === "demon" && category === "characters"
-    - let i = entries.indexOf("Little D")
+    - let i = entries.indexOf("LittleD")
     if i !== -1
       - entries = ["Diavolo", "Barbatos", "Luke", "Simeon", "Solomon"];
   - const sliceInChunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size))
