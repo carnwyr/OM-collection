@@ -36,9 +36,10 @@ exports.isHidden = async function (cardName) {
 	return Boolean(card);
 };
 
-exports.getGlobalStats = async function () {
+exports.getGlobalStats = async function (cardType) {
 	try {
     return (await Cards.aggregate([
+			{ $match: { type: cardType } },
 			{ $facet: {
 				characters: [
 					{ $unwind: "$characters"},

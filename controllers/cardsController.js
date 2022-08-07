@@ -55,14 +55,22 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 		if (isPrivate) {
 			pageParams.isPrivate = true;
 		} else {
-			pageParams.ownedStats = await userService.getOwnedCardsStats(user.info.name);
-			pageParams.totalStats = await cardService.getGlobalStats();
+			pageParams.ownedStats = {
+				demon: await userService.getOwnedCardsStats(user.info.name, "Demon"),
+				memory: await userService.getOwnedCardsStats(user.info.name, "Memory"),
+			};
+			pageParams.totalStats = {
+				demon: await cardService.getGlobalStats("Demon"),
+				memory: await cardService.getGlobalStats("Memory"),
+			};
 
-			for ([category, entries] of Object.entries(pageParams.totalStats)) {
-				for (entry in entries) {
-					pageParams.ownedStats[category][entry] = pageParams.ownedStats[category][entry] || 0;
+			["demon", "memory"].forEach((t) => {
+				for ([category, entries] of Object.entries(pageParams.totalStats[t])) {
+					for (entry in entries) {
+						pageParams.ownedStats[t][category][entry] = pageParams.ownedStats[t][category][entry] || 0;
+					}
 				}
-			}
+			});
 		}
 
 		return res.render("cardsList", pageParams);

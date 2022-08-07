@@ -105,7 +105,7 @@ exports.modifyCollection = function (username, collectionType, changedCards) {
 
 exports.updateUserData = async (username, data) => await Users.updateOne({ "info.name": username }, { $set: data });
 
-exports.getOwnedCardsStats = async function (username) {
+exports.getOwnedCardsStats = async function (username, cardType) {
   let collectionType = "owned";
   try {
     return (await Users.aggregate([
@@ -119,6 +119,7 @@ exports.getOwnedCardsStats = async function (username) {
       }},
       { $unwind: "$cardData" },
       { $replaceWith: "$cardData" },
+      { $match: { type: cardType } },
       { $facet: {
 				characters: [
 					{ $unwind: "$characters"},
@@ -194,7 +195,7 @@ exports.getUserTreeStats = async function(username) {
     { '$unwind': {
         'path': '$tree',
         'preserveNullAndEmptyArrays': false
-    }}, 
+    }},
     { '$lookup': {
         'from': 'cards',
         'let': { 'tree_id': '$tree' },
@@ -203,7 +204,7 @@ exports.getUserTreeStats = async function(username) {
           { '$unwind': {
               'path': '$dt',
               'preserveNullAndEmptyArrays': false
-          }}, 
+          }},
           { '$replaceRoot': { 'newRoot': { '$mergeObjects': ['$dt'] } } },
           { '$match': { '$expr': { '$eq': [ '$_id', '$$tree_id' ] } } }
         ],
