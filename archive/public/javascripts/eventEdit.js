@@ -7,9 +7,15 @@ $(document).ready(function () {
 	$(document).on("click", ".add-item", addItem);
 	$(document).on("click", ".remove-item", removeItem);
 
+	$(".add-ap").click(addAP);
+
 	$("#submit").click(saveChanges);  // function is in pug file
 
+	// $("select[name='tag']").change(checkIfCustom);
+
 	$('.card-select').autocomplete({ source: cardNames });
+
+	$('.preset').click(applyPreset);
 });
 
 function createMasks() {
@@ -79,6 +85,14 @@ function addItem() {
 	}
 }
 
+function checkIfCustom() {
+	if ($(this).val() === "custom") {
+		$("input[name='customTag']").show();
+	} else {
+		$("input[name='customTag']").hide();
+	}
+}
+
 function validateFields() {
   if (!$('#en-name').val()) {
     showAlert("danger", 'English name must be filled');
@@ -127,6 +141,7 @@ function prepareEventData() {
 
 		if (rewardType === "points") {
 			popQuizData.listRewards = getRewards();
+			popQuizData.ap = getAP();
 			popQuizData.pageCost = $("input[name='pageCost']").val();
 		} else {
 			popQuizData.boxRewards = getBoxRewards();
@@ -148,12 +163,30 @@ function getRewards() {
 		var formData = new FormData(form);
 		var reward = {};
 		formData.forEach((value, key) => reward[key] = value);
+		if (reward.tag === "custom") {
+			reward.tag = reward.customTag;
+		}
+
+		delete reward.customTag;
 		return reward;
 	}).toArray();
 
 	rewards = rewards.filter(r => r.card && r.points);
 
 	return rewards;
+}
+
+function getAP() {
+	var apRewards = $("#AP form").map((index, form) => {
+		var formData = new FormData(form);
+		var ap = {};
+		formData.forEach((value, key) => { if (value) ap[key] = value });
+		return ap;
+	}).toArray();
+
+	apRewards = apRewards.filter(r => r.amount && r.points);
+
+	return apRewards;
 }
 
 function getBoxRewards() {
@@ -208,4 +241,31 @@ function formatRewards(f, end) {
 		}
 	}
 	return lst;
+}
+
+function addAP() {
+	var parentForm = $(this).data("target");
+	var template = $(this).data("clone");
+	var newItem = $($(template).html()).appendTo($(parentForm));
+
+	// newItem.find(".remove-item").click(removeItem);
+	// newItem.find(".tag-select").change(switchCustomTagDisplay);
+	// newItem.find(".card-select").selectpicker(selectPickerOptions);
+
+	return newItem;
+}
+
+function applyPreset() {
+	var presetName = $(this).val();
+	var presetData = apPresets[presetName];
+
+	$("#AP").empty();
+
+	presetData.forEach(ap => {
+		let newItem = addAP.call($("#addAP"));
+		newItem.find('[name="amount"]').val(ap.amount);
+		newItem.find('[name="points"]').val(ap.points);
+		if (ap.page)
+			newItem.find('[name="page"]').val(ap.page);
+	});
 }

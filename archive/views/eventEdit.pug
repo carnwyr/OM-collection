@@ -7,12 +7,25 @@ block scripts
 	script(src="https://unpkg.com/imask@6.2.2/dist/imask.min.js")
 	script(src="/javascripts/eventEdit.js")
 	script.
+		var apPresets = !{JSON.stringify(apPresets)};
 		var cardNames = !{JSON.stringify(cardData)};
 
-mixin rewardEntry(reward = { points: '', card: '' })
+mixin rewardEntry(reward = { tag: '', points: '', card: '' })
 	form.form-inline
 		input.card-select.form-control(name="card" value=card placeholder="name")
 		input.form-control(type="number" placeholder="points required" name="points" value=reward.points)
+		select.custom-select.form-control(name="tag" placeholder="Reward tag")
+			each option in rewardOptions
+				option(value=option selected=checkSelectedTag(option, reward.tag))= option
+			option(value='custom' selected=checkSelectedTag('Custom', reward.tag)) Custom
+		input.form-control(type="text" placeholder="Custom tag (if applicable)" name="customTag" value=(rewardOptions.includes(reward.tag)?"":reward.tag))
+		button.btn.btn-outline-secondary.remove-item(type="button") Remove
+
+mixin apEntry(ap = {amount:null, points:null, page:null})
+	form.form-inline
+		input.form-control(type="number" placeholder="AP amount" name="amount" value=ap.amount)
+		input.form-control(type="number" placeholder="AP cost" name="points" value=ap.points)
+		input.form-control(type="number" placeholder="Part _ only" name="page" value=ap.page)
 		button.btn.btn-outline-secondary.remove-item(type="button") Remove
 
 mixin boxEntry(box = { name: '', itemsCount: '', ultimateReward: '' })
@@ -175,7 +188,30 @@ block content
 														+rewardEntry(reward)
 												else
 													+rewardEntry()
-											button.btn.btn-secondary.add-item(data-clone="#rewardTemplate") Add reward
+											button.btn.btn-secondary.mb-4.add-item(data-clone="#rewardTemplate") Add reward
+										hr
+										a.btn.btn-primary(data-toggle="collapse" href="#collapseAP" role="button" aria-expanded="false" aria-controls="collapseAP") Open AP Settings
+										div#collapseAP.collapse.pt-2
+											div.p-2
+												h5 AP Rewards
+												div.form-row
+													div.col-12.col-md-3.form-group
+														label(for="pageCost") Page cost
+														input#pageCost.form-control(type="number" name="pageCost" value=data.pageCost)
+
+												div.dropdown.mb-3
+													button.btn.btn-secondary.dropdown-toggle#APpresets(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Presets
+													div.dropdown-menu.shadow(aria-labelledby="APpresets")
+														each [key, value] of Object.entries(apPresets)
+															button.dropdown-item.preset(type="button" value=key)= key
+													small.text-muted.align-middle.ml-2.pt-2 Actual rewards often differ from the presets
+												div#AP
+													if data.ap && data.ap.length !== 0
+														each ap in data.ap
+															+apEntry(ap)
+													else
+														+apEntry()
+												button.btn.btn-secondary.mb-2.add-ap(data-target="#AP" data-clone="#APTemplate") Add AP reward
 									div#box-set.tab-pane(role="tabpanel" aria-labelledby="box-set-tab")
 										p Ultimate rewards format: name/amount. (i.e., card pieces x25/2 )
 										div#boxset-container
@@ -229,6 +265,9 @@ block content
 
 			template#rewardTemplate
 				+rewardEntry()
+
+			template#APTemplate
+				+apEntry()
 
 			template#box
 				+boxEntry()
