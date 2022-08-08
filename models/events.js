@@ -42,7 +42,7 @@ const boxSetSchema = new Schema({
 
 const lockedStageSchema = new Schema({
 	name: String,
-	requirement: Number
+	req: Number
 }, { _id: false });
 
 const stageSchema = new Schema({

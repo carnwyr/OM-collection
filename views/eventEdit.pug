@@ -165,6 +165,8 @@ block content
 										a#box-set-tab.nav-link(data-toggle="tab" href="#box-set" role="tab" aria-controls="box-set" aria-selected="false") Boxes
 									li.nav-item
 										a#key-tab.nav-link(data-toggle="tab" href="#keys" role="tab" aria-controls="keys" aria-selected="false") Keys
+									li.nav-item
+										a#stageList-tab.nav-link(data-toggle="tab" href="#stageList" role="tab" aria-controls="stageList" aria-selected="false") Stages
 								div.tab-content.pt-3
 									div#points.tab-pane.show.active(role="tabpanel" aria-labelledby="points-tab")
 										h5.border-bottom Rewards
@@ -177,8 +179,8 @@ block content
 													+rewardEntry()
 											button.btn.btn-secondary.add-item(data-clone="#rewardTemplate") Add reward
 									div#box-set.tab-pane(role="tabpanel" aria-labelledby="box-set-tab")
-										p Ultimate rewards format: name/amount. (i.e., card pieces x25/2 )
-										div#boxset-container
+										h5 Under maintenance.
+										div#boxset-container.d-none
 											div
 												if data && data.rewardListType === "boxes"
 													each set in data.boxRewards
@@ -187,16 +189,28 @@ block content
 													+boxSetEntry()
 											button.btn.btn-secondary.mb-2.add-item(data-clone="template#boxset") Add box set
 									div#keys.tab-pane(role="tabpanel" aria-labelledby="key-tab")
-										input.form-control.mb-3(type="text" name="keydrops" value=data&&data.keyDroppingStages?data.keyDroppingStages.toString():'' placeholder="Key dropping stages, separated by comma. i.e. 1-1, 1-2, 1-3")
 										h5.border-bottom Locked stages
-										if data && data.hasKeys
-											div
-												each stage in data.lockedStages
-													+lockedStageEntry(stage)
-										else
-											div
-												+lockedStageEntry()
-										button.btn.btn-secondary.mb-2.add-item(data-clone="template#locked-stages") Add locked stage
+										-
+											function formatStages(stages) {
+												let str = '';
+												stages.forEach(i => {
+													str += i.name;
+													if (i.rewards) {
+														i.rewards.forEach(j => {
+															str += ', ' + j;
+														})
+													} else {
+														str += ', ' + i.req;
+													}
+													str += "\n";
+												});
+												return str;
+											}
+										textarea.form-control(rows='7' placeholder="Format:\nstage name, keys needed\n\nExample (1-10 needs 5 keys):\n1-10, 5")= formatStages(data.lockedStages||[])
+									div#stageList.tab-pane(role="tabpanel" aria-labelledby="stageList-tab")
+										h5.border-bottom Stages
+										p No need to add Grimm and reward point item (pop quiz), because all stages give that.
+										textarea.form-control(rows='7' placeholder="Format:\nstage name, reward 1, reward 2, ...\n\nExample (1-10 drops Gem (Pride) and Watch (Greed)):\n1-10, Gem (Pride), Watch (Greed)")= formatStages(data.stageList||[])
 						</div>
 					</div>
 					<div class="card">
