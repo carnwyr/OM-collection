@@ -19,8 +19,7 @@ const Event = mongoose.model("Event", eventSchema);
 
 const rewardSchema = new Schema({
 	card: { type: String, required: true },
-	points: { type: String },
-	tag: { type: String }
+	points: { type: String }
 });
 
 const boxSchema = new Schema({
@@ -35,32 +34,41 @@ const boxSetSchema = new Schema({
 	boxes: [boxSchema]
 });
 
-var APSchema = new Schema({
-	amount: { type: Number, required: true },
-	points: { type: Number, required: true },
-	page: { type: Number }
-});
+// var APSchema = new Schema({
+// 	amount: { type: Number, required: true },
+// 	points: { type: Number, required: true },
+// 	page: { type: Number }
+// });
 
 const lockedStageSchema = new Schema({
 	name: String,
 	requirement: Number
 }, { _id: false });
 
+const stageSchema = new Schema({
+	name: String,
+	rewards: Array
+}, { _id: false });
+
 const popQuizSchema = new Schema({
+	rewardListType: { type: String, required: true, enum: ["points", "boxes"] },
+	hasKeys:{ type: Boolean, required: true },
 	isLonelyDevil: { type: Boolean, required: true },
 	isBirthday: { type: Boolean, required: true },
-	hasKeys:{ type: Boolean, required: true },
-	rewardListType: { type: String, required: true, enum: ["points", "boxes"] },
-	stages: { type: Number, required: true },
-	lockedStages: { type: [lockedStageSchema] },
-	keyDroppingStages: { type: Array },
-	boxRewards: { type: [boxSetSchema] },
-	listRewards: { type: [rewardSchema] },
-	ap: { type: [APSchema] },
-	pageCost: { type: Number },
 	hasBoosting: { type: Boolean, required: true },
+
+	listRewards: { type: [rewardSchema] },
+	boxRewards: { type: [boxSetSchema] },
+
+	stages: { type: Number, required: true },
+	stageList: { type: [stageSchema] },
+	lockedStages: { type: [lockedStageSchema] },
+
 	boostingStart: { type: Date },
-	boostingEnd: { type: Date }
+	boostingEnd: { type: Date },
+
+	// pageCost: { type: Number },
+	// ap: { type: [APSchema] }
 });
 
 const PopQuiz = Event.discriminator("PopQuiz", popQuizSchema);
@@ -71,4 +79,4 @@ const Other = Event.discriminator("Other", new mongoose.Schema({}));
 
 
 module.exports = Event;
-exports.APSchema = APSchema;
+// exports.APSchema = APSchema;
