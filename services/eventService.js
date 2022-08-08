@@ -161,7 +161,7 @@ exports.updateEvent = async function(originalName, data, img = null) {
 		data.start = stringToDateTime(data.start);
 		data.end = stringToDateTime(data.end);
 
-		if (data.hasBoosting) {
+		if (data.hasBoosting == "true") {
 			data.boostingStart = stringToDateTime(data.boostingStart);
 			data.boostingEnd = stringToDateTime(data.boostingEnd);
 		}
@@ -206,12 +206,14 @@ exports.getDefaultEventData = function() {
 	var start = dayjs.utc().startOf("day").hour(1);
 	var end = dayjs.utc().startOf("day").hour(6);
 	var data = {
-		name: {},
+		name: {
+			ja: "???",
+			zh: "???"
+		},
 		start: start,
 		end: end,
 		stages: 26,
-		type: "Pop Quiz",
-		pageCost: 100000
+		type: "PopQuiz"
 	};
 	return data;
 };

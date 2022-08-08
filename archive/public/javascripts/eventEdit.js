@@ -7,9 +7,15 @@ $(document).ready(function () {
 	$(document).on("click", ".add-item", addItem);
 	$(document).on("click", ".remove-item", removeItem);
 
+	$(".add-ap").click(addAP);
+
 	$("#submit").click(saveChanges);  // function is in pug file
 
+	// $("select[name='tag']").change(checkIfCustom);
+
 	$('.card-select').autocomplete({ source: cardNames });
+
+	$('.preset').click(applyPreset);
 });
 
 function createMasks() {
@@ -79,6 +85,14 @@ function addItem() {
 	}
 }
 
+function checkIfCustom() {
+	if ($(this).val() === "custom") {
+		$("input[name='customTag']").show();
+	} else {
+		$("input[name='customTag']").hide();
+	}
+}
+
 function validateFields() {
   if (!$('#en-name').val()) {
     showAlert("danger", 'English name must be filled');
@@ -110,21 +124,25 @@ function prepareEventData() {
 	if (data.type === "PopQuiz") {
 		let rewardType = $("input[name='rewardListType']:checked").val();
 		let popQuizData = {
-			rewardListType: rewardType,
-			hasKeys: $("input#has-keys").is(":checked"),
 			isLonelyDevil: $("input#lonelydevil").is(":checked"),
 			isBirthday: $("input#birthday").is(":checked"),
+			hasKeys: $("input#has-keys").is(":checked"),
 			hasBoosting: $("#boosting").is(":checked"),
-			stages: $("input#stages").val(),
-			stageList: getStages()
+			rewardListType: rewardType,
+			stages: $("input#stages").val()
 		};
 
 		if (popQuizData.hasKeys) {
 			data.lockedStages = getLockedStages();
+			data.keyDroppingStages = $("input[name='keydrops']").val().split(',').map(element => {
+				return element.trim();
+			});
 		}
 
 		if (rewardType === "points") {
 			popQuizData.listRewards = getRewards();
+			popQuizData.ap = getAP();
+			popQuizData.pageCost = $("input[name='pageCost']").val();
 		} else {
 			popQuizData.boxRewards = getBoxRewards();
 		}
@@ -141,13 +159,34 @@ function prepareEventData() {
 }
 
 function getRewards() {
-	let rewards = $("#rewards form").map((index, form) => {
-		const formData = new FormData(form);
-		let reward = {};
+	var rewards = $("#rewards form").map((index, form) => {
+		var formData = new FormData(form);
+		var reward = {};
 		formData.forEach((value, key) => reward[key] = value);
+		if (reward.tag === "custom") {
+			reward.tag = reward.customTag;
+		}
+
+		delete reward.customTag;
 		return reward;
 	}).toArray();
-	return rewards.filter(r => r.card && r.points);
+
+	rewards = rewards.filter(r => r.card && r.points);
+
+	return rewards;
+}
+
+function getAP() {
+	var apRewards = $("#AP form").map((index, form) => {
+		var formData = new FormData(form);
+		var ap = {};
+		formData.forEach((value, key) => { if (value) ap[key] = value });
+		return ap;
+	}).toArray();
+
+	apRewards = apRewards.filter(r => r.amount && r.points);
+
+	return apRewards;
 }
 
 function getBoxRewards() {
@@ -175,28 +214,58 @@ function getBoxRewards() {
 	return sets;
 }
 
-function getStages() {
-	let stages = [];
-	let str = $("div#stageList textarea").val();
-	str.split("\n").forEach(item => {
-		let d = item.split(',');
-		stages.push({
-			name: d.shift().trim(),
-			rewards: d.map(e => e.trim())
-		});
-	});
-	return stages.filter(e => e.name && e.rewards);
-}
-
 function getLockedStages() {
 	let stages = [];
-	let str = $("div#keys textarea").val();
-	str.split("\n").forEach(item => {
-		let i = item.split(',');
-		stages.push({
-			name: i[0].trim(),
-			req: parseInt(i[1])
-		});
+
+	$("div#keys form").each(function() {
+		let formData = new FormData(this);
+		let lockedStage = {};
+		for(var pair of formData.entries()) {
+			lockedStage[pair[0]] = pair[1];
+		}
+		stages.push(lockedStage);
 	});
-	return stages.filter(e => e.name && e.req);
+
+	stages = stages.filter(r => r.name && r.requirement);
+
+	return stages;
+}
+
+function formatRewards(f, end) {
+	var temp = {}, lst = [];
+	for (let pair of f.entries()) {
+		temp[pair[0]] = pair[1];
+		if (pair[0] === end) {
+			lst.push(temp);
+			temp = {};
+		}
+	}
+	return lst;
+}
+
+function addAP() {
+	var parentForm = $(this).data("target");
+	var template = $(this).data("clone");
+	var newItem = $($(template).html()).appendTo($(parentForm));
+
+	// newItem.find(".remove-item").click(removeItem);
+	// newItem.find(".tag-select").change(switchCustomTagDisplay);
+	// newItem.find(".card-select").selectpicker(selectPickerOptions);
+
+	return newItem;
+}
+
+function applyPreset() {
+	var presetName = $(this).val();
+	var presetData = apPresets[presetName];
+
+	$("#AP").empty();
+
+	presetData.forEach(ap => {
+		let newItem = addAP.call($("#addAP"));
+		newItem.find('[name="amount"]').val(ap.amount);
+		newItem.find('[name="points"]').val(ap.points);
+		if (ap.page)
+			newItem.find('[name="page"]').val(ap.page);
+	});
 }
