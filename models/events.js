@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 const options = { discriminatorKey: "type" };
+const noID = { _id: false };
 
 const eventSchema = new Schema({
 	name: {
@@ -20,12 +21,22 @@ const Event = mongoose.model("Event", eventSchema);
 const rewardSchema = new Schema({
 	card: { type: String, required: true },
 	points: { type: Number }
-}, { _id: false });
+}, noID);
+
+const generalReqSchema = new Schema({
+	name: String,
+	req: Number
+}, noID);
+
+const stageSchema = new Schema({
+	name: String,
+	rewards: Array
+}, noID);
 
 const boxSchema = new Schema({
 	name: String,
 	itemsCount: Number,
-	ultimateReward: String
+	specialRewards: [generalReqSchema]
 });
 
 const boxSetSchema = new Schema({
@@ -40,16 +51,6 @@ const boxSetSchema = new Schema({
 // 	page: { type: Number }
 // });
 
-const lockedStageSchema = new Schema({
-	name: String,
-	req: Number
-}, { _id: false });
-
-const stageSchema = new Schema({
-	name: String,
-	rewards: Array
-}, { _id: false });
-
 const popQuizSchema = new Schema({
 	rewardListType: { type: String, required: true, enum: ["points", "boxes"] },
 	hasKeys:{ type: Boolean, required: true },
@@ -62,7 +63,7 @@ const popQuizSchema = new Schema({
 
 	stages: { type: Number, required: true },
 	stageList: { type: [stageSchema] },
-	lockedStages: { type: [lockedStageSchema] },
+	lockedStages: { type: [generalReqSchema] },
 
 	boostingStart: { type: Date },
 	boostingEnd: { type: Date },

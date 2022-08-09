@@ -220,16 +220,14 @@ exports.updateEvent = async function (req, res) {
 
 exports.getEventEditPage = async function(req, res, next) {
 	try {
-		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		let data = await eventService.getEvent({ "name.en": eventName });
 		if (!data) throw createError(404, properties = { title: "Event not found" });
 
-		var cards = await cardService.getCards();
-		var cardNames = cards.map(x => x.name);
+		let cards = await cardService.getCards({ source: [eventName] });
+		let cardNames = cards.map(x => x.name);
 
-		var apPresets = await eventService.getAPPresets();
-
-		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
+		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames });
 	} catch(e) {
 		return next(e);
 	}

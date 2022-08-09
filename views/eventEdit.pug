@@ -10,27 +10,23 @@ block scripts
 		var cardNames = !{JSON.stringify(cardData)};
 
 mixin rewardEntry(reward = { points: '', card: '' })
-	form.form-inline
+	form.form-inline.item-container
 		input.card-select.form-control(name="card" value=card placeholder="name")
 		input.form-control(type="number" placeholder="points required" name="points" value=reward.points)
 		button.btn.btn-outline-secondary.remove-item(type="button") Remove
 
-mixin boxEntry(box = { name: '', itemsCount: '', ultimateReward: '' })
-	form.form-inline
-		input.form-control(type="text" name="name" placeholder="box name" value=box.name)
-		input.form-control(type="text" name="itemsCount" placeholder="total items" value=box.itemsCount)
-		input.form-control(type="text" name="ultimateReward" placeholder="ultimate reward" value=box.ultimateReward)
-		button.btn.btn-outline-danger.remove-item(type="button") Remove
+mixin boxEntry(box = { name: '', itemsCount: '', specialRewards: [] })
+	form.form-row.item-container
+		div.col-6: input.form-control(type="text" name="name" placeholder="box name" value=box.name)
+		div.col-6: input.form-control(type="text" name="itemsCount" placeholder="total items" value=box.itemsCount)
+		div.col-12: textarea.form-control(rows="5" name="specialRewards" placeholder="Format:\nreward name / amount\nThe Mammon Way Card Piece x25 / 2")= formatStages(box.specialRewards, ' / ')
+		div.col-12: button.btn.btn-outline-danger.remove-item(type="button") Remove
 
 mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
-	div.boxset(style="border-radius:8px;border:2px solid var(--primary);padding:16px;margin-bottom:.5rem;")
-		div.form-row
-			div.form-group.col
-				label Box set name:
-				input.form-control(type="text" name="box-set-name" value=set.name)
-			div.form-group.col
-				label Individual box cost:
-				input.form-control(type="number" name="box-set-cost" value=set.cost step="100")
+	div.boxset.item-container
+		div.form-inline
+			input.form-control(type="text" name="box-set-name" placeholder="box set name" value=set.name)
+			input.form-control(type="number" name="box-set-cost" placeholder="individual box cost" value=set.cost step="100")
 		div.p-2.mb-2(style="border-radius:8px;border:2px solid var(--secondary);")
 			div
 				if set.boxes.length !== 0
@@ -40,9 +36,10 @@ mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
 					+boxEntry()
 			button.btn.btn-secondary.add-item(data-clone="template#box") Add box
 		button.btn.btn-outline-danger.remove-item(type="button") Remove box set
+	hr
 
 mixin lockedStageEntry(stage = { name: '', requirement: '' })
-	form.form-inline
+	form.form-inline.item-container
 		input.form-control(type="text" name="name" placeholder="stage name" value=stage.name)
 		input.form-control(type="number" name="requirement" placeholder="required keys" value=stage.requirement)
 		button.btn.btn-outline-danger.remove-item(type="button") Remove
@@ -50,15 +47,20 @@ mixin lockedStageEntry(stage = { name: '', requirement: '' })
 block content
 	include mixins/imageUpload
 	-
-		var rewardOptions = ['Demon SSR', 'Memory SSR', 'Memory UR', 'Demon UR'];
-		function checkSelectedTag(optionTag, rewardTag) {
-			if (rewardOptions.includes(rewardTag)) {
-				return rewardTag === optionTag;
-			}
-			if (!rewardTag) {
-				return optionTag === 'Demon SSR';
-			}
-			return optionTag === 'Custom';
+		function formatStages(stages, delimiter = ", ") {
+			let str = '';
+			stages.forEach(i => {
+				str += i.name;
+				if (i.req) {
+					str += delimiter + i.req;
+				} else {
+					i.rewards.forEach(j => {
+						str += delimiter + j;
+					})
+				}
+				str += "\n";
+			});
+			return str;
 		}
 	div#alert(role="alert")
 	div.container
@@ -179,8 +181,8 @@ block content
 													+rewardEntry()
 											button.btn.btn-secondary.add-item(data-clone="#rewardTemplate") Add reward
 									div#box-set.tab-pane(role="tabpanel" aria-labelledby="box-set-tab")
-										h5 Under maintenance.
-										div#boxset-container.d-none
+										p Only add rewards that are needed to get to next box.
+										div#boxset-container
 											div
 												if data && data.rewardListType === "boxes"
 													each set in data.boxRewards
@@ -190,25 +192,8 @@ block content
 											button.btn.btn-secondary.mb-2.add-item(data-clone="template#boxset") Add box set
 									div#keys.tab-pane(role="tabpanel" aria-labelledby="key-tab")
 										h5.border-bottom Locked stages
-										-
-											function formatStages(stages) {
-												let str = '';
-												stages.forEach(i => {
-													str += i.name;
-													if (i.rewards) {
-														i.rewards.forEach(j => {
-															str += ', ' + j;
-														})
-													} else {
-														str += ', ' + i.req;
-													}
-													str += "\n";
-												});
-												return str;
-											}
 										textarea.form-control(rows='7' placeholder="Format:\nstage name, keys needed\n\nExample (1-10 needs 5 keys):\n1-10, 5")= formatStages(data.lockedStages||[])
 									div#stageList.tab-pane(role="tabpanel" aria-labelledby="stageList-tab")
-										h5.border-bottom Stages
 										p No need to add Grimm and reward point item (pop quiz), because all stages give that.
 										textarea.form-control(rows='7' placeholder="Format:\nstage name, reward 1, reward 2, ...\n\nExample (1-10 drops Gem (Pride) and Watch (Greed)):\n1-10, Gem (Pride), Watch (Greed)")= formatStages(data.stageList||[])
 						</div>

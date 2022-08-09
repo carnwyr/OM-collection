@@ -67,7 +67,7 @@ function createMasks() {
 }
 
 function removeItem() {
-	$(this).parent().remove();
+	$(this).closest(".item-container").remove();
 }
 
 function addItem() {
@@ -151,7 +151,7 @@ function getRewards() {
 }
 
 function getBoxRewards() {
-	var sets = []
+	let sets = []
 
 	$("div.boxset").each(function() {
 		let set = {
@@ -161,18 +161,22 @@ function getBoxRewards() {
 		};
 
 		$(this).find("form").each(function() {
-			var formData = new FormData(this);
-			var boxData = {};
+			let formData = new FormData(this);
+			let boxData = {};
 			formData.forEach((value, key) => boxData[key] = value);
+			let rewards = [];
+			boxData.specialRewards.split('\n').forEach(item => {
+				let t = item.split('/');
+				rewards.push({ name: t[0].trim(), req: parseInt(t[1]) });
+			});
+			boxData.specialRewards = rewards.filter(i => i.name && i.req);
 			set.boxes.push(boxData);
 		});
 
 		sets.push(set);
 	});
 
-	sets = sets.filter(r => r.name && r.cost);
-
-	return sets;
+	return sets.filter(r => r.name && r.cost);
 }
 
 function getStages() {
