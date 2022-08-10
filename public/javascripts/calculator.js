@@ -95,7 +95,7 @@ function calculateTotalGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
 
 	console.log((totalBattlesCost / 5).toLocaleString("en") + " D-Energy");
 
-	calculateAdditional(buyBattles, additionalPoints, ptsPerBattle);
+	calculateAdditional(buyBattles, purchasedPoints, ptsPerBattle);
 }
 
 function calculateDailyGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
