@@ -161,7 +161,7 @@ exports.updateEvent = async function(originalName, data, img = null) {
 		data.start = stringToDateTime(data.start);
 		data.end = stringToDateTime(data.end);
 
-		if (data.boostingMultiplier > 1) {
+		if (data.hasBoosting == "true") {
 			data.boostingStart = stringToDateTime(data.boostingStart);
 			data.boostingEnd = stringToDateTime(data.boostingEnd);
 		}

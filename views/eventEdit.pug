@@ -15,14 +15,14 @@ mixin rewardEntry(reward = { points: '', card: '' })
 		input.form-control(type="number" placeholder="points required" name="points" value=reward.points)
 		button.btn.btn-outline-secondary.remove-item(type="button") Remove
 
-mixin boxEntry(box = { name: 'Box 1', itemsCount: '', specialRewards: [] })
+mixin boxEntry(box = { name: '', itemsCount: '', specialRewards: [] })
 	form.form-row.item-container
 		div.col-6: input.form-control(type="text" name="name" placeholder="box name" value=box.name)
 		div.col-6: input.form-control(type="text" name="itemsCount" placeholder="total items" value=box.itemsCount)
 		div.col-12: textarea.form-control(rows="5" name="specialRewards" placeholder="Format:\nreward name / amount\nThe Mammon Way Card Piece x25 / 2")= formatStages(box.specialRewards, ' / ')
 		div.col-12: button.btn.btn-outline-danger.remove-item(type="button") Remove
 
-mixin boxSetEntry(set = { name: 'Set A', cost: '', boxes: [] })
+mixin boxSetEntry(set = { name: '', cost: '', boxes: [] })
 	div.boxset.item-container
 		div.form-inline
 			input.form-control(type="text" name="box-set-name" placeholder="box set name" value=set.name)
@@ -144,23 +144,19 @@ block content
 									div.form-check.form-check-inline
 										input#birthday.form-check-input(type="checkbox" checked=(data&&data.isBirthday))
 										label.form-check-label(for="birthday") Birthday
+									div.form-check.form-check-inline
+										input#boosting.form-check-input(type="checkbox" checked=(data&&data.hasBoosting))
+										label.form-check-label(for="boosting") Boosting
 								div.form-row
-									div.col-12.col-md-3
+									div.col-12.col-md-4
 										div.form-group
 											label(for="stages") Number of stages
 											input#stages.form-control(type="number" name="stages" value=data.stages)
-									div.col-12.col-md-3
-										div.form-group
-											label(for="boostingMultiplier") Boosting
-											select#boostingMultiplier.form-control
-												option(value='1' selected=data.boostingMultiplier==1) No boosting
-												option(value='2' selected=data.boostingMultiplier==2) x2 rewards
-												option(value='3' selected=data.boostingMultiplier==3) x3 rewards
-									div.col-12.col-md-3
+									div.col-12.col-md-4
 										div.form-group
 											label(for="boostingStart") Boosting start (UTC)
 											input#boostingStart.form-control(type="text" name="boostingStart" value=data.boostingStart)
-									div.col-12.col-md-3
+									div.col-12.col-md-4
 										div.form-group
 											label(for="boostingEnd") Boosting end (UTC)
 											input#boostingEnd.form-control(type="text" name="boostingEnd" value=data.boostingEnd)
@@ -185,10 +181,7 @@ block content
 													+rewardEntry()
 											button.btn.btn-secondary.add-item(data-clone="#rewardTemplate") Add reward
 									div#box-set.tab-pane(role="tabpanel" aria-labelledby="box-set-tab")
-										ul
-											li Only add rewards that are needed to get to next box.
-											li Name rewards exactly as in-game, except for card pieces.
-											li Name card pieces as: Card name Piece x20 <-- number of pieces
+										p Only add rewards that are needed to get to next box.
 										div#boxset-container
 											div
 												if data && data.rewardListType === "boxes"
@@ -199,10 +192,10 @@ block content
 											button.btn.btn-secondary.mb-2.add-item(data-clone="template#boxset") Add box set
 									div#keys.tab-pane(role="tabpanel" aria-labelledby="key-tab")
 										h5.border-bottom Locked stages
-										textarea.form-control(rows='7' placeholder="Format:\nstage name, keys needed\n1-10, 5\n1-12, 5\n1-15, 15")= formatStages(data.lockedStages||[])
+										textarea.form-control(rows='7' placeholder="Format:\nstage name, keys needed\n\nExample (1-10 needs 5 keys):\n1-10, 5")= formatStages(data.lockedStages||[])
 									div#stageList.tab-pane(role="tabpanel" aria-labelledby="stageList-tab")
 										p No need to add Grimm and reward point item (pop quiz), because all stages give that.
-										textarea.form-control(rows='7' placeholder="Format:\nstage name, reward 1, reward 2, ...\n1-10, Gem (Pride), Watch (Greed)\n1-11, Gem (Greed), Watch (Envy)\n1-15, Gem (Envy), Watch (Wrath)")= formatStages(data.stageList||[])
+										textarea.form-control(rows='7' placeholder="Format:\nstage name, reward 1, reward 2, ...\n\nExample (1-10 drops Gem (Pride) and Watch (Greed)):\n1-10, Gem (Pride), Watch (Greed)")= formatStages(data.stageList||[])
 						</div>
 					</div>
 					<div class="card">

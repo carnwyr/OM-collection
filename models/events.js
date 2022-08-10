@@ -56,6 +56,7 @@ const popQuizSchema = new Schema({
 	hasKeys:{ type: Boolean, required: true },
 	isLonelyDevil: { type: Boolean, required: true },
 	isBirthday: { type: Boolean, required: true },
+	hasBoosting: { type: Boolean, required: true },
 
 	listRewards: { type: [rewardSchema] },
 	boxRewards: { type: [boxSetSchema] },
@@ -64,7 +65,6 @@ const popQuizSchema = new Schema({
 	stageList: { type: [stageSchema] },
 	lockedStages: { type: [generalReqSchema] },
 
-	boostingMultiplier: { type: Number, required: true },
 	boostingStart: { type: Date },
 	boostingEnd: { type: Date },
 
