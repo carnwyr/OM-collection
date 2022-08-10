@@ -17,36 +17,22 @@ block content
     }
   div.container
     h1= title
-    div.card.card-body.mb-3
-      a.h5.text-center.m-0(href="#collapseinfo" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseinfo") Information
-        |
-        |
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/> </svg>
-      div#collapseinfo.collapse
-        h5.card-title A few things about how it works
-        span.card-text This calculator:
-        ul
-          li always round up its calculation.
-          li can only be as accurate as your input.
-          li currently do not support boosting periods.
-        h5.card-title Assumptions
-        span.card-text This calculator assumes that:
-        ul
-          li you get three-stars on every battle.
-          li you have not cleared today's free battles.
-        h5.text-center.m-0 Please use your own calculation if you believe Karasu's results are wrong!
-    div.card
+    div.card.mb-3
       div.card-body
         div.row
+          div.col-12.text-center
+            p Please read the information section at the bottom of the page before using the calculator.
+            hr
           div#pqinfo.col-12.col-md-4.text-center
-            h5= t("lang") === "ja" ? data.name.ja : data.name.en
-            a(href="/event/" + getURL(data.name.en)): img.img-fluid.rounded.mb-3(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
+            a(href="/event/" + getURL(data.name.en))
+              h5= t("lang") === "ja" ? data.name.ja : data.name.en
+              img.img-fluid.rounded.mb-3(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
             if started()
               p Ending in
             else
               p Starting in
             h5#cd.mb-3 --
-            if data.hasBoosting
+            if data.boostingMultiplier > 1
               - let dateNow = new Date();
               if dateNow < data.boostingStart
                 p Boosting starting in
@@ -68,6 +54,7 @@ block content
                   input.form-control(type="number" min=0 name="currpts")
                 div.form-group.col-12.col-md-4
                   label Points per battle
+                    a(href="#note") *
                   input.form-control(type="number" name="ppb" readonly=data.isBirthday min=(data.isBirthday?12:120) value=(data.isBirthday?12:''))
             //-
               if data.rewardListType == "boxes"
@@ -77,7 +64,10 @@ block content
                 <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
               </li>
               <li class="nav-item" role="presentation">
-                <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Today</a>
+                <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Daily</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="daily-tab" data-toggle="tab" href="#additional" role="tab" aria-controls="additional" aria-selected="false">Additional</a>
               </li>
             </ul>
             div#resultTabContent.tab-content.pt-3
@@ -88,38 +78,64 @@ block content
                   span#freepts.h5 --
                   |
                   | points for free
-                  a(href="#note1") *
+                  a(href="#note") **
                   | .
                 p.text-center An additional
                   |
                   |
-                  span#additionalpts.h5 --
+                  span.additionalpts.h5 --
                   |
                   | points is needed to reach your goal.
                 hr
-                //-
-                  if data.hasBoosting
-                    p If you get additional points during boosting, you will need:
-                    ul#overview-boosting
-                      li AP: --
-                      li Battles: --
-                p Getting additional points during regular (no boosting) event time will require at least:
-                ul#overview-regular
-                  li AP:
-                    |
-                    |
-                    span.ap --
-                  li Battles:
-                    |
-                    |
-                    span.battle --
-
+                div.results.row.justify-content-center
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p AP
+                      div
+                        div
+                          p.mb-0= t("calculator.free")
+                          span#total-freeap --
+                        div
+                          p.mb-0= t("calculator.buy")
+                          span#total-buyap --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#total-ap --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Battles
+                      div
+                        div
+                          p.mb-0= t("calculator.free")
+                          span#total-freebattles --
+                        div
+                          p.mb-0= t("calculator.buy")
+                          span#total-buybattles --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#total-battles --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Devil Points
+                      div
+                        div
+                          p.mb-0= t("calculator.ap")
+                          span#total-ap-cost --
+                        div
+                          p.mb-0= t("calculator.battles")
+                          span#total-battle-cost --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#total-dp --
               div#daily.tab-pane(role="tabpanel" aria-labelledby="daily-tab")
                 div.text-center
                   p Today's goal
                   h5#goal --
                 h5 Daily breakdown
-                div#results.row.justify-content-center
+                div.results.row.justify-content-center
                   div.col-12.col-md-6.col-lg-4
                     div.result-container
                       p AP
@@ -133,7 +149,7 @@ block content
                         hr
                         div
                           p.mb-0 Total
-                          span#aptot --
+                          span#total-daily-ap --
                   div.col-12.col-md-6.col-lg-4
                     div.result-container
                       p Battles
@@ -147,7 +163,7 @@ block content
                         hr
                         div
                           p.mb-0 Total
-                          span#battlestot --
+                          span#total-daily-battles --
                   div.col-12.col-md-6.col-lg-4
                     div.result-container
                       p Devil Points
@@ -161,7 +177,7 @@ block content
                         hr
                         div
                           p.mb-0 Total
-                          span#totcost --
+                          span#total-daily-cost --
                 //-
                   small.text-muted.text-center If you saved some AP and D-Energy, then you can use the
                     |
@@ -169,6 +185,35 @@ block content
                     a(href='') akuzon calculator
                     |
                     | to find out how much less DP you need.
+              div#additional.tab-pane(role="tabpanel" aria-labelledby="additional-tab")
+                p If you don't want to follow the daily breakdown, here's how many battles you need to clear to get the additional
+                  |
+                  |
+                  big.additionalpts
+                  |
+                  | points.
+                div.table-responsive
+                  table.table
+                    <thead>
+                      <tr>
+                        th(scope="col")
+                        th(scope="col")= t("calculator.ap")
+                        th(scope="col")= t("calculator.battles")
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        th(scope="row") Non-boosting
+                        td#ap-non-boosting --
+                        td#battles-non-boosting --
+                      </tr>
+                      if data.boostingMultiplier > 1
+                        <tr>
+                          th(scope="row") Boosting
+                          td#ap-boosting --
+                          td#battles-boosting --
+                        </tr>
+                    </tbody>
       if !started()
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
@@ -178,7 +223,22 @@ block content
           div.row.w-100.h-100.justify-content-center.align-items-center
             h5 This event has ended.
     div.card.card-body.mt-3
-      p#note1 *Free points means the final amount of points you will have if you clear all free battles from now until the end of pop quiz, without spending a single DP/D-Energy on battles. If you do not want to spend anything on this pop quiz, then you can still get at least
+      h5.card-title Disclaimer
+      p.card-text Please use your own calculation if you believe Karasu's results are wrong! The website is not responsible for any loss you made. Please use at your own risk.
+      h5.card-title Information
+      p.card-text This calculator:
+      ul
+        li always round up its calculation.
+        li can only be as accurate as your input.
+        li considered boosting periods for the overview and additional section. Daily section does not consider boosting, so the actual amount of resources you need to spend is less resources than what's listed there.
+      p.card-text This calculator assumes that:
+      ul
+        li you get three-stars on every battle.
+        li you have not cleared today's free battles.
+        li you have not claimed your daily free AP, will use 200 AP from the 10DP flash sale, and spend all available "free" AP on this pop quiz.
+      h5#note.card-title Notes
+      p.card-text * Points per battle during non-boosting period.
+      p.card-text ** Free points means the final amount of points you will have if you clear all free battles from now until the end of pop quiz, without spending a single DP/D-Energy on battles. If you do not want to spend anything on this pop quiz, then you can still get at least
         |
         |
         span#absfree --
@@ -190,24 +250,27 @@ block content
         li Always purchase the daily flash sale that only cost 10 DP! If you purchase the flash sale, then you will need less DP than the calculated result.
 
   style.
-    #results p {
+    .results p {
       text-align: center;
     }
-    #results .result-container {
+    .results .result-container {
       border-radius: 1rem;
       border: 2px solid var(--secondary);
       padding: 1rem 1.5rem;
       margin-bottom: 1rem;
     }
-    #results .result-container>div>div {
+    .results .result-container>div>div {
       display: flex;
       justify-content: space-between;
     }
-    #results hr {
+    .results hr {
       margin: .5rem 0;
       border: 1px solid var(--secondary);
     }
-
+    #additional table td,
+    #additional table thead th {
+      text-align: center;
+    }
     @media (min-width: 768px) {
       #pqinfo {
         border-right:1px solid #e5e5e5;

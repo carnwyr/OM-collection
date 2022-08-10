@@ -114,7 +114,7 @@ function prepareEventData() {
 			hasKeys: $("input#has-keys").is(":checked"),
 			isLonelyDevil: $("input#lonelydevil").is(":checked"),
 			isBirthday: $("input#birthday").is(":checked"),
-			hasBoosting: $("#boosting").is(":checked"),
+			boostingMultiplier: parseInt($("#boostingMultiplier").val()),
 			stages: $("input#stages").val(),
 			stageList: getStages()
 		};
@@ -129,7 +129,7 @@ function prepareEventData() {
 			popQuizData.boxRewards = getBoxRewards();
 		}
 
-		if (popQuizData.hasBoosting) {
+		if (popQuizData.boostingMultiplier > 1) {
 			popQuizData.boostingStart = $("#boostingStart").val();
 			popQuizData.boostingEnd = $("#boostingEnd").val();
 		}
