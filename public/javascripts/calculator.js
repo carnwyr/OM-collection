@@ -60,18 +60,19 @@ function getBoostingDaysLeft() {
 }
 
 function calculateTotalGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
-	let dailyFreePoints = DAILY_FREE_BATTLES * ptsPerBattle;
-	dailyFreePoints += 120 * (POPQUIZ.boostingMultiplier - 1) * DAILY_FREE_BATTLES * getBoostingDaysLeft();
+	let freeBoostingPoints = 120 * (POPQUIZ.boostingMultiplier - 1) * DAILY_FREE_BATTLES * getBoostingDaysLeft();
+	let basePoints = DAILY_FREE_BATTLES * ptsPerBattle * daysLeft;
 
-	let totalFreePoints = dailyFreePoints * daysLeft + currentPts;
-	let additionalPoints = Math.max(pointsNeeded - totalFreePoints, 0);
+	let totalFreePoints = currentPts + basePoints + freeBoostingPoints;
+	let purchasedPoints = Math.max(pointsNeeded - totalFreePoints, 0);
 
 	$("#freepts").text(totalFreePoints.toLocaleString("en"));
-	$(".additionalpts").text(additionalPoints.toLocaleString("en"));
+	$(".additionalpts").text(purchasedPoints.toLocaleString("en"));
 
 	let absFreeBattles = Math.floor((DAILY_FREE_AP + 200) / 8);
 	$("#absfree").text((currentPts + absFreeBattles * ptsPerBattle * daysLeft + absFreeBattles * 120 * (POPQUIZ.boostingMultiplier - 1) * getBoostingDaysLeft()).toLocaleString("en"));
 
+	pointsNeeded = Math.max(pointsNeeded - freeBoostingPoints, 0)
 	let totalBattles = Math.ceil(pointsNeeded / ptsPerBattle);
 	let freeBattles = Math.min(DAILY_FREE_BATTLES * daysLeft, totalBattles);
 	let buyBattles = totalBattles - freeBattles;
