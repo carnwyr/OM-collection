@@ -288,9 +288,14 @@ block content
 					div#tree.tab-pane.fade(role="tabpanel" aria-labelledby="tree-tab")
 						h5 Devil's tree
 						if card && card.dt
-							- rewardNodes = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower");
-							- levelUpNodes = card.dt.filter(x => x.type === "level_up");
-							- flowerNode = card.dt.filter(x => x.type === "flower");
+							-
+								rewardNodes = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower").sort((a, b) => {
+									if (!a.grimmCost) return 1;
+									if (!b.grimmCost) return -1;
+									return a.grimmCost - b.grimmCost;
+								});
+								levelUpNodes = card.dt.filter(x => x.type === "level_up");
+								flowerNode = card.dt.filter(x => x.type === "flower");
 						else
 							- rewardNodes = [];
 							- levelUpNodes = [];
