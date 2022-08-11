@@ -61,7 +61,7 @@ block content
                 p You need #{} points at most to clear each box.
             <ul class="nav nav-tabs" id="resultTab" role="tablist">
               <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+                <a class="nav-link active" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">Total</a>
               </li>
               <li class="nav-item" role="presentation">
                 <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Daily</a>
@@ -71,7 +71,7 @@ block content
               </li>
             </ul>
             div#resultTabContent.tab-content.pt-3
-              div#overview.tab-pane.show.active(role="tabpanel" aria-labelledby="overview-tab")
+              div#total.tab-pane.show.active(role="tabpanel" aria-labelledby="total-tab")
                 p.text-center You can get a total of
                   |
                   |
@@ -230,7 +230,7 @@ block content
       ul
         li always round up its calculation.
         li can only be as accurate as your input.
-        li considered boosting periods for the overview and additional section. Daily section does not consider boosting, so the actual amount of resources you need to spend is less resources than what's listed there.
+        li considered boosting periods for the total and additional section. Daily section does not consider boosting, so the actual amount of resources you need to spend is less resources than what's listed there.
       p.card-text This calculator assumes that:
       ul
         li you get three-stars on every battle.
