@@ -70,7 +70,7 @@ function calculateTotalGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
 	$("#freepts").text(totalFreePoints.toLocaleString("en"));
 	$(".additionalpts").text(purchasedPoints.toLocaleString("en"));
 
-	let absFreeBattles = Math.floor((DAILY_FREE_AP + 200) / 8);
+	let absFreeBattles = Math.floor(DAILY_FREE_AP / 8);
 	$("#absfree").text((currentPts + absFreeBattles * ptsPerBattle * daysLeft + absFreeBattles * 120 * (POPQUIZ.boostingMultiplier - 1) * getBoostingDaysLeft()).toLocaleString("en"));
 
 	// NOTE: might need to rethink logic
