@@ -20,6 +20,7 @@ function getBattleCost(battles) {
 }
 
 function getAPCost(ap) {
+	if (ap === 0) return 0;
 	return ap <= 200 ? 10 : Math.ceil((ap - 200) / 10) + 10;
 }
 
@@ -72,7 +73,10 @@ function calculateTotalGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
 	let absFreeBattles = Math.floor((DAILY_FREE_AP + 200) / 8);
 	$("#absfree").text((currentPts + absFreeBattles * ptsPerBattle * daysLeft + absFreeBattles * 120 * (POPQUIZ.boostingMultiplier - 1) * getBoostingDaysLeft()).toLocaleString("en"));
 
-	pointsNeeded = Math.max(pointsNeeded - freeBoostingPoints, 0)
+	// NOTE: might need to rethink logic
+	if (pointsNeeded > basePoints) {
+		pointsNeeded = Math.max(pointsNeeded - freeBoostingPoints, 0);
+	}
 	let totalBattles = Math.ceil(pointsNeeded / ptsPerBattle);
 	let freeBattles = Math.min(DAILY_FREE_BATTLES * daysLeft, totalBattles);
 	let buyBattles = totalBattles - freeBattles;
@@ -93,7 +97,7 @@ function calculateTotalGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
 	$("#total-battle-cost").text(totalBattlesCost.toLocaleString("en"));
 	$("#total-dp").text((totalAPCost + totalBattlesCost).toLocaleString("en"));
 
-	console.log((totalBattlesCost / 5).toLocaleString("en") + " D-Energy");
+	// console.log((totalBattlesCost / 5).toLocaleString("en") + " D-Energy");  // put this somewhere on page
 
 	calculateAdditional(buyBattles, purchasedPoints, ptsPerBattle);
 }
@@ -142,7 +146,7 @@ function calculateAdditional(buyBattles, additionalPoints, ptsPerBattle) {
  * 1. Find how many "free" points can be obtained.
  * 2. Divide "paid" points among remaining days.
  */
-// TODO: clean up
+// TODO: clean up functions; reuse variables.
 function calculate() {
 	let goal = parseInt($("input[name='goal']").val());
 	let currentPts = parseInt($("input[name='currpts']").val());
