@@ -50,6 +50,9 @@ function remainingFreeAP(daysLeft) {
 }
 
 function getBoostingDaysLeft() {
+	if (POPQUIZ.boostingMultiplier == 1) {
+		return 0;
+	}
 	let now = new Date();
 	let start = new Date(POPQUIZ.boostingStart);
 	let end = new Date(POPQUIZ.boostingEnd);
