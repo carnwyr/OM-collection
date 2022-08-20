@@ -57,10 +57,10 @@ function remainingFreeAP(daysLeft) {
 }
 
 function getDaysLeft() {
-	let now = dayjs("2022-08-26T11:50:00");
+	let now = dayjs();
 	let end = dayjs.tz(POPQUIZ.end, utc);
 	let daysLeft = end.diff(now, "day") + 1;
-	let jstMidnight = dayjs("2022-08-27").tz(jst).set("hour", 0).set("minute", 0).set("second", 0);
+	let jstMidnight = dayjs().tz(jst).set("hour", 0).set("minute", 0).set("second", 0);
 
 	if (now < jstMidnight) { daysLeft++; }  // before daily refresh
 
