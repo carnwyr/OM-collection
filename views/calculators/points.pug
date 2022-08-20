@@ -26,6 +26,8 @@ block content
           div.col-12.text-center
             p Please read the information section at the bottom of the page before using the calculator.
             hr
+            a(href="https://forms.gle/dDTQDqyS5fqDxPL56" target="_blank") Should we include the 5 free battles from ADs as daily free battles?
+            hr
           div#pqinfo.col-12.col-md-4.text-center
             a(href="/event/" + getURL(data.name.en))
               h5= t("lang") === "ja" ? data.name.ja : data.name.en
@@ -217,9 +219,6 @@ block content
                           td#battles-boosting --
                         </tr>
                     </tbody>
-          div.col-12.text-center
-            hr
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdD-ALoHM2FH7z9B1gMpTjPn_wX0oRJV3dEyq4UrutIdUftuw/viewform?embedded=true" width="640" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
       if !started()
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
