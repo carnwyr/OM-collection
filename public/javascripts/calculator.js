@@ -68,7 +68,7 @@ function calculateTotalGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
 	let basePoints = DAILY_FREE_BATTLES * ptsPerBattle * daysLeft;
 
 	let totalFreePoints = currentPts + basePoints + freeBoostingPoints;
-	let purchasedPoints = Math.max(pointsNeeded - totalFreePoints, 0);
+	let purchasedPoints = Math.max(currentPts + pointsNeeded - totalFreePoints, 0);
 
 	$("#freepts").text(totalFreePoints.toLocaleString("en"));
 	$(".additionalpts").text(purchasedPoints.toLocaleString("en"));
