@@ -1,4 +1,11 @@
+const utc = "Etc/Greenwich";
+const jst = "Asia/Tokyo";
+
 $(function() {
+	dayjs().format();
+	dayjs.extend(window.dayjs_plugin_utc);
+	dayjs.extend(window.dayjs_plugin_timezone);
+
 	countdown(POPQUIZ.end, "cd");
 	if (POPQUIZ.boostingMultiplier > 1 && new Date() < new Date(POPQUIZ.boostingEnd)) {
 		if (new Date() < new Date(POPQUIZ.boostingStart)) {
@@ -47,6 +54,17 @@ function remainingFreeAP(daysLeft) {
 	}
 
 	return Math.floor(minutesLeft / 5) + 20 * 2 + 10 * 3 + fridgeMissionAP;
+}
+
+function getDaysLeft() {
+	let now = dayjs("2022-08-26T11:50:00");
+	let end = dayjs.tz(POPQUIZ.end, utc);
+	let daysLeft = end.diff(now, "day") + 1;
+	let jstMidnight = dayjs("2022-08-27").tz(jst).set("hour", 0).set("minute", 0).set("second", 0);
+
+	if (now < jstMidnight) { daysLeft++; }  // before daily refresh
+
+	return daysLeft;
 }
 
 function getBoostingDaysLeft() {
@@ -168,8 +186,7 @@ function calculate() {
 		goal += (ptsPerBattle - pointsNeeded % ptsPerBattle);
 	}
 
-	let distance = new Date(POPQUIZ.end).getTime() - new Date().getTime();
-	let daysLeft = Math.floor(distance / (1000 * 60 * 60 * 24));
+	let daysLeft = getDaysLeft();
 
 	calculateTotalGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft);
 	calculateDailyGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft);
