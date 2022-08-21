@@ -26,8 +26,6 @@ block content
           div.col-12.text-center
             p Please read the information section at the bottom of the page before using the calculator.
             hr
-            a(href="https://forms.gle/dDTQDqyS5fqDxPL56" target="_blank") Should we include the 5 free battles from ADs as daily free battles?
-            hr
           div#pqinfo.col-12.col-md-4.text-center
             a(href="/event/" + getURL(data.name.en))
               h5= t("lang") === "ja" ? data.name.ja : data.name.en
@@ -231,6 +229,7 @@ block content
       h5.card-title Disclaimer
       p.card-text Please use your own calculation if you believe Karasu's results are wrong! The website is not responsible for any loss you made. Please use at your own risk.
       h5.card-title Information
+      p.card-text We will add advanced settings in the future (include ADs battles/ AP or not, calculating before clearing today's battles or after you cleared today's battles, etc.). But for now, here's how it works.
       p.card-text This calculator:
       ul
         li always round up its calculation.
@@ -240,7 +239,7 @@ block content
       ul
         li you get three-stars on every battle.
         li you have not cleared today's free battles.
-        li you have not claimed your daily free AP, will use 200 AP from the 10DP flash sale, and spend all available "free" AP on this pop quiz.
+        li you have not claimed your daily free AP and spend all available "free" AP on this pop quiz.
       h5#note.card-title Notes
       p.card-text * Points per battle during non-boosting period.
       p.card-text ** Free points means the final amount of points you will have if you clear all free battles from now until the end of pop quiz, without spending a single DP/D-Energy on battles. If you do not want to spend anything on this pop quiz, then you can still get at least
