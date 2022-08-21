@@ -95,7 +95,7 @@ function getCardData() {
 		characters: getSelectedCharacters(),
 		dt: getTreeRewards(),
 		skills: getCardSkills(),
-		number: parseInt($("#number").val()),
+		number: $("#number").val(),
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};
 	if (data.rarity === "UR+") {
