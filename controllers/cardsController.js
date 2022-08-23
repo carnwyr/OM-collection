@@ -446,6 +446,10 @@ exports.isVerifiedTreeData = async function (name, data) {
 		}
 
 		for (const node of card.dt) {
+			if (node.reward === "???") {
+				continue;
+			}
+
 			// NOTE: newNode = same node reward in new data
 			let newNode = data.dt.find(element => element.reward === node.reward && element.type === node.type);
 
@@ -453,12 +457,10 @@ exports.isVerifiedTreeData = async function (name, data) {
 				return { err: true, message: node.reward + " is removed."};
 			}
 
-			if (newNode.reward !== "???") {
-				if (!newNode._id) {
-					newNode._id = node._id;
-				} else if (newNode._id && newNode._id != node._id) {
-					return { err: true, message: node.reward + " has mismatched id." };
-				}
+			if (!newNode._id) {
+				newNode._id = node._id;
+			} else if (newNode._id && newNode._id != node._id) {
+				return { err: true, message: node.reward + " has mismatched id." };
 			}
 		}
 

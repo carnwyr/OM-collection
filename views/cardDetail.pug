@@ -39,8 +39,7 @@ mixin dtTemplate(node)
         p.card-text= node.grimmCost ? node.grimmCost.toLocaleString("en") : "???"
 
       hr
-      if !node._id || node.reward === "???"
-        - missingInfo = true;
+      - missingInfo = (!node._id || node.reward === "???") ? true : false;
       div.custom-control.custom-checkbox.text-center
         input.custom-control-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" value=node._id checked=(user && user.tree.includes(node._id)) disabled=(missingInfo || !user?true:false))
         label.custom-control-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
