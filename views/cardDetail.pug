@@ -43,8 +43,6 @@ mixin dtTemplate(node)
       div.custom-control.custom-checkbox.text-center
         input.custom-control-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" value=node._id checked=(user && user.tree.includes(node._id)) disabled=(missingInfo || !user?true:false))
         label.custom-control-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
-          if missingInfo
-            | <sup>*</sup>
 
 block content
   div#alert(role="alert")
@@ -210,14 +208,6 @@ block content
                 else
                   each i in levelNodes
                     +dtTemplate(i)
-            if missingInfo
-              hr
-              div.small.text-center <sup>*</sup>This node cannot be tracked with the devil's tree tracker because it is missing required information. Please
-                |
-                |
-                a(href=card.uniqueName+"/edit") complete missing info
-                |
-                | to make it trackable.
           else
             p.text-center.p-5 Looks like we're missing devil's tree data.
               |

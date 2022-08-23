@@ -138,6 +138,6 @@ a[data-toggle="collapse"][aria-expanded="false"] .bi.bi-chevron-up {
 	transform: rotate(180deg);
 }
 
-.custom-control-label {
+#collapseTree .custom-control-input:not([disabled]) + .custom-control-label {
 	cursor: pointer;
 }
