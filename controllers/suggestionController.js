@@ -87,7 +87,7 @@ exports.approveSuggestion = async function(req, res) {
 		} else {
 			return res.json({ err: true, message: "Invalid suggestion path." });
 		}
-		return res.json(await suggestionService.updateSuggestionStatus(req.body._id, "approved"));
+		return res.json(await suggestionService.updateSuggestionStatus(req.body._id, "approved", req.body.reason));
 	} catch(e) {
 		return res.json({ err: true, message: e.message });
 	}

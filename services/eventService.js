@@ -155,7 +155,7 @@ exports.addEvent = async function(data, img, user) {
 	}
 };
 
-exports.updateEvent = async function(originalName, data, img = null) {
+exports.updateEvent = async function(originalName, data, img = null, user) {
 	try {
 
 		data.start = stringToDateTime(data.start);
@@ -173,6 +173,15 @@ exports.updateEvent = async function(originalName, data, img = null) {
 		}
 
 		await Events.replaceOne({ "name.en": originalName }, data);
+
+		// TODO: make function to create revision; refactor?
+		await Revisions.create({
+			title: data.name.en,
+			type: "event",
+			user: user,
+			timestamp: new Date(),
+			data: data
+		});
 
 		if (img) {
 			await fileService.saveImage(img, originalName, data.name.en, "events");

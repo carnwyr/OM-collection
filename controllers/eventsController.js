@@ -205,10 +205,11 @@ exports.deleteEvent = async function (req, res, next) {
 	}
 }
 
+// TODO:
 exports.updateEvent = async function (req, res) {
 	try {
 		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-		let result = await eventService.updateEvent(eventName, req.body.data, req.body.img);
+		let result = await eventService.updateEvent(eventName, req.body.data, req.body.img, req.user.name);
 		if (result.err) throw new Error(result.message);
 		miscController.notifyAdmin(`Event updated. \`\`${req.user.name}\`\` just updated: \`\`${eventName}\`\`.`);
 		return res.json(result);
