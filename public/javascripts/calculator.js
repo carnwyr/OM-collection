@@ -6,7 +6,11 @@ $(function() {
 	dayjs.extend(window.dayjs_plugin_utc);
 	dayjs.extend(window.dayjs_plugin_timezone);
 
-	countdown(POPQUIZ.end, "cd");
+	if (new Date() < new Date(POPQUIZ.end)) {
+		countdown(POPQUIZ.start, "cd");
+	} else {
+		countdown(POPQUIZ.end, "cd");
+	}
 	if (POPQUIZ.boostingMultiplier > 1 && new Date() < new Date(POPQUIZ.boostingEnd)) {
 		if (new Date() < new Date(POPQUIZ.boostingStart)) {
 			countdown(POPQUIZ.boostingStart, "boostingcd");
