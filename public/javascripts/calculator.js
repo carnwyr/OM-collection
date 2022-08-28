@@ -6,7 +6,7 @@ $(function() {
 	dayjs.extend(window.dayjs_plugin_utc);
 	dayjs.extend(window.dayjs_plugin_timezone);
 
-	if (new Date() < new Date(POPQUIZ.end)) {
+	if (new Date() < new Date(POPQUIZ.start)) {
 		countdown(POPQUIZ.start, "cd");
 	} else {
 		countdown(POPQUIZ.end, "cd");
