@@ -80,10 +80,10 @@ exports.approveSuggestion = async function(req, res) {
 				originalUniqueName: docName,
 				cardData: data
 			});
-			if (result.err) throw result.message;
+			if (result.err) throw new Error(result.message);
 		} else if (db === "event") {
-			let result = await eventService.updateEvent(docName.replace(/_/g, " "), data);
-			if (result.err) throw result.message;
+			let result = await eventService.updateEvent(docName.replace(/_/g, " "), data, null, suggestion.user);
+			if (result.err) throw new Error(result.message);
 		} else {
 			return res.json({ err: true, message: "Invalid suggestion path." });
 		}
