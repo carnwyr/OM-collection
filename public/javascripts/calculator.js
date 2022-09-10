@@ -1,10 +1,26 @@
 const utc = "Etc/Greenwich";
 const jst = "Asia/Tokyo";
+let dailyFreeBattles = POPQUIZ.stages * 3;
+let dailyFreeAP = 288;
+let resetsLeft;
+let settings = {
+	automaticRefill: true,
+	todo: true,
+	spg: true,
+	apAds: false,
+	friends: 50,
+	fridgeMission: 60,  // 0, non-vip 60, vip 120
+	dailyReset: true,
+	battleAds: false,
+	battlesCleared: false
+};  // default
 
 $(function() {
 	dayjs().format();
 	dayjs.extend(window.dayjs_plugin_utc);
 	dayjs.extend(window.dayjs_plugin_timezone);
+
+	getSavedSettings();
 
 	if (new Date() < new Date(POPQUIZ.start)) {
 		countdown(POPQUIZ.start, "cd");
@@ -18,12 +34,63 @@ $(function() {
 			countdown(POPQUIZ.boostingEnd, "boostingcd");
 		}
 	}
+
 	calculate();
+
+	$("form#settings").on("change", syncSettings);
 	$("form#calculator").on("change", calculate);
 });
 
+function getSavedSettings() {
+	let savedSettings = JSON.parse(localStorage.getItem("calculatorSettings"));
+	if (savedSettings) {
+		settings = savedSettings;
+		$("#automaticRefill").prop("checked", settings.automaticRefill);
+		$("#todo").prop("checked", settings.todo);
+		$("#spg").prop("checked", settings.spg);
+		$("#apAds").prop("checked", settings.apAds);
+		$("#friends").val(settings.friends);
+		$("#fridgeMission").val(settings.fridgeMission);
+		$("#dailyReset").prop("checked", settings.dailyReset);
+		$("#battleAds").prop("checked", settings.battleAds);
+		$("input[name='battlesCleared'][value=" + settings.battlesCleared + "]").prop("checked", true);
+	}
+	syncSettings();
+}
+
+function syncSettings() {
+	settings = {
+		automaticRefill: $("#automaticRefill").is(":checked"),
+		todo: $("#todo").is(":checked"),
+		spg: $("#spg").is(":checked"),
+		apAds: $("#apAds").is(":checked"),
+		friends: parseInt($("#friends").val()),
+		fridgeMission: parseInt($("#fridgeMission").val()),
+		dailyReset: $("#dailyReset").is(":checked"),
+		battleAds: $("#battleAds").is(":checked"),
+		battlesCleared: $("input[name='battlesCleared']:checked").val() === "true"
+	};
+
+	dailyFreeAP = 288;
+	if (settings.todo) dailyFreeAP += 30;
+	if (settings.spg) dailyFreeAP += 40;
+	if (settings.apAds) dailyFreeAP += 50;
+	dailyFreeAP += settings.friends;
+	dailyFreeAP += settings.fridgeMission;
+
+	dailyFreeBattles = POPQUIZ.stages * 3;
+	if (settings.battleAds) dailyFreeBattles += 5;
+
+	resetsLeft = getDaysLeft();
+	if (!settings.battlesCleared) resetsLeft += 1;
+
+	localStorage.setItem("calculatorSettings", JSON.stringify(settings));
+
+	calculate();
+}
+
 function resetResult() {
-	$("#resultTabContent span, #absfree, #goal, .table td").text('--');
+	$("#resultTabContent span, #absfree, #goal, .table td, .additionalpts").text('--');
 }
 
 function getBattleCost(battles) {
@@ -31,14 +98,14 @@ function getBattleCost(battles) {
 }
 
 function getAPCost(ap) {
-	if (ap === 0) return 0;
-	return ap <= 200 ? 10 : Math.ceil((ap - 200) / 10) + 10;
+	return Math.ceil(ap / 10);
 }
 
-function remainingFreeAP(daysLeft) {
-	let mintuesLeft, fridgeMissionAP = 0;
+/*
+function remainingFreeAP() {
+	let mintuesLeft;
 
-	if (daysLeft === 0) {
+	if (getDaysLeft() === 0) {
 		minutesLeft = (new Date(POPQUIZ.end) - new Date()) / 1000 / 60;
 	} else {
 		let endTime = new Date();
@@ -51,23 +118,33 @@ function remainingFreeAP(daysLeft) {
 		minutesLeft = (endTime - new Date()) / 1000 / 60;
 	}
 
-	if ((new Date()).getHours() < 14) {
-		fridgeMissionAP += 60;
-	} else if ((new Date()).getHours() < 20) {
-		fridgeMissionAP += 30;
-	}
+	return Math.floor(minutesLeft / 5);
+}*/
 
-	return Math.floor(minutesLeft / 5) + 20 * 2 + 10 * 3 + fridgeMissionAP;
-}
-
-function getDaysLeft() {
+function startResetCountdown() {
 	let now = dayjs();
 	let end = dayjs.tz(POPQUIZ.end, utc);
-	let daysLeft = end.diff(now, "day") + 1;
+	let daysLeft = end.diff(now, "day");
 	let jstMidnight = dayjs().tz(jst).set("hour", 0).set("minute", 0).set("second", 0);
 
-	if (now < jstMidnight) { daysLeft++; }  // before daily refresh
+	if (daysLeft > 0) {
+		if (now > jstMidnight) end = jstMidnight.add(1, 'day');
+		else end = jstMidnight;
+	}
 
+	let timer = setInterval(function () {
+		let h = end.diff(dayjs(), 'h').toLocaleString("en-US", { minimumIntegerDigits: 2 });
+		let m = (end.diff(dayjs(), 'm') % 60).toLocaleString("en-US", { minimumIntegerDigits: 2 });
+		let s = (end.diff(dayjs(), 's') % 60).toLocaleString("en-US", { minimumIntegerDigits: 2 });
+		$("#resetCd").text(`${h}:${m}:${s}`);
+	}, 1000);
+}
+
+function getDaysLeft(start = dayjs()) {
+	let end = dayjs.tz(POPQUIZ.end, utc);
+	let daysLeft = end.diff(start, "day");
+	let jstMidnight = dayjs().date(dayjs().date()).tz(jst).hour(0).minute(0).second(0);
+	if (start < jstMidnight) daysLeft++;  // before daily refresh
 	return daysLeft;
 }
 
@@ -85,60 +162,29 @@ function getBoostingDaysLeft() {
 	return Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24));
 }
 
-function calculateTotalGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
-	let freeBoostingPoints = 120 * (POPQUIZ.boostingMultiplier - 1) * DAILY_FREE_BATTLES * getBoostingDaysLeft();
-	let basePoints = DAILY_FREE_BATTLES * ptsPerBattle * daysLeft;
+function calculateDailyGoal(pointsToGoal /* already removed bonus */, ptsPerBattle, currentPts) {
+	let remainingFreePts = dailyFreeBattles * resetsLeft * ptsPerBattle;
+	let totalBattles, todaysFreeBattles;
 
-	let totalFreePoints = currentPts + basePoints + freeBoostingPoints;
-	let purchasedPoints = Math.max(currentPts + pointsNeeded - totalFreePoints, 0);
-
-	$("#freepts").text(totalFreePoints.toLocaleString("en"));
-	$(".additionalpts").text(purchasedPoints.toLocaleString("en"));
-
-	let absFreeBattles = Math.floor(DAILY_FREE_AP / 8);
-	$("#absfree").text((currentPts + absFreeBattles * ptsPerBattle * daysLeft + absFreeBattles * 120 * (POPQUIZ.boostingMultiplier - 1) * getBoostingDaysLeft()).toLocaleString("en"));
-
-	// NOTE: might need to rethink logic
-	if (pointsNeeded > basePoints) {
-		pointsNeeded = Math.max(pointsNeeded - freeBoostingPoints, 0);
+	if (settings.battlesCleared) {
+		todaysFreeBattles = 0;
+		totalBattles = 0;
+	} else {
+		totalBattles = Math.ceil(pointsToGoal / ptsPerBattle / resetsLeft);
+		todaysFreeBattles = dailyFreeBattles;
 	}
-	let totalBattles = Math.ceil(pointsNeeded / ptsPerBattle);
-	let freeBattles = Math.min(DAILY_FREE_BATTLES * daysLeft, totalBattles);
-	let buyBattles = totalBattles - freeBattles;
-	let totalBattlesCost = getBattleCost(buyBattles);
 
-	let totalAP = totalBattles * 8;
-	let freeAP = Math.min(DAILY_FREE_AP * daysLeft, totalAP);
-	let buyAP = totalAP - freeAP;
-	let totalAPCost = getAPCost(buyAP / daysLeft) * daysLeft;
+	let todaysGoal = currentPts + totalBattles * ptsPerBattle;
+	$("#goal").text(todaysGoal.toLocaleString("en"));
 
-	$("#total-freeap").text(freeAP.toLocaleString("en"));
-	$("#total-buyap").text(buyAP.toLocaleString("en"));
-	$("#total-ap").text(totalAP.toLocaleString("en"));
-	$("#total-freebattles").text(freeBattles.toLocaleString("en"));
-	$("#total-buybattles").text(buyBattles.toLocaleString("en"));
-	$("#total-battles").text(totalBattles.toLocaleString("en"));
-	$("#total-ap-cost").text(totalAPCost.toLocaleString("en"));
-	$("#total-battle-cost").text(totalBattlesCost.toLocaleString("en"));
-	$("#total-dp").text((totalAPCost + totalBattlesCost).toLocaleString("en"));
-
-	// console.log((totalBattlesCost / 5).toLocaleString("en") + " D-Energy");  // put this somewhere on page
-
-	calculateAdditional(buyBattles, purchasedPoints, ptsPerBattle);
-}
-
-function calculateDailyGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
-	let todaysGoal = Math.max(Math.ceil(pointsNeeded / daysLeft), ptsPerBattle);
-	let totalBattles = Math.round(todaysGoal / ptsPerBattle);
-	let buyBattles = Math.max(totalBattles - DAILY_FREE_BATTLES, 0);
+	let buyBattles = Math.max(totalBattles - todaysFreeBattles, 0);
 	let freeBattles = totalBattles - buyBattles;
 	let battlesCost = getBattleCost(buyBattles);
 	let totalAP = totalBattles * 8;
-	let freeAP = Math.min(DAILY_FREE_AP, totalAP);
+	let freeAP = Math.min(dailyFreeAP, totalAP);
 	let buyAP = totalAP - freeAP;
 	let apCost = getAPCost(buyAP);
 
-	$("#goal").text((todaysGoal + currentPts).toLocaleString("en"));
 	$("#freeap").text(freeAP.toLocaleString("en"));
 	$("#buyap").text(buyAP.toLocaleString("en"));
 	$("#total-daily-ap").text(totalAP.toLocaleString("en"));
@@ -150,7 +196,7 @@ function calculateDailyGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft) {
 	$("#total-daily-cost").text((apCost + battlesCost).toLocaleString("en"));
 }
 
-function calculateAdditional(buyBattles, additionalPoints, ptsPerBattle) {
+function calculateAdditional(buyBattles, pointsToPurchase, ptsPerBattle) {
 	let battlesCost = getBattleCost(buyBattles);
 	let totalAP = buyBattles * 8;
 	$("#ap-non-boosting").html(`${totalAP.toLocaleString("en")}<br>for ${Math.ceil(totalAP / 10).toLocaleString("en")} DP`);
@@ -159,7 +205,7 @@ function calculateAdditional(buyBattles, additionalPoints, ptsPerBattle) {
 	let multiplier = POPQUIZ.boostingMultiplier;
 	ptsPerBattle += 120 * (multiplier - 1);
 
-	let totalBattles = Math.ceil(additionalPoints / ptsPerBattle);
+	let totalBattles = Math.ceil(pointsToPurchase / ptsPerBattle);
 	battlesCost = getBattleCost(totalBattles);
 	totalAP = totalBattles * 8;
 
@@ -171,7 +217,6 @@ function calculateAdditional(buyBattles, additionalPoints, ptsPerBattle) {
  * 1. Find how many "free" points can be obtained.
  * 2. Divide "paid" points among remaining days.
  */
-// TODO: clean up functions; reuse variables.
 function calculate() {
 	let goal = parseInt($("input[name='goal']").val());
 	let currentPts = parseInt($("input[name='currpts']").val());
@@ -184,16 +229,44 @@ function calculate() {
 		return;
 	}
 
-	let pointsNeeded = goal - currentPts;
+	let pointsToGoal = goal - currentPts;
 
-	if (goal % ptsPerBattle !== 0) {
-		goal += (ptsPerBattle - pointsNeeded % ptsPerBattle);
-	}
+	let boostingFreePoints = dailyFreeBattles * 120 * (POPQUIZ.boostingMultiplier - 1) * getBoostingDaysLeft();
+	let baseFreePoints = dailyFreeBattles * ptsPerBattle * resetsLeft;
+	let totalFreePoints = baseFreePoints + boostingFreePoints;
 
-	let daysLeft = getDaysLeft();
+	let pointsToPurchase = Math.max(goal - currentPts - totalFreePoints, 0);
 
-	calculateTotalGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft);
-	calculateDailyGoal(pointsNeeded, ptsPerBattle, currentPts, daysLeft);
+	$("#freepts").text((currentPts + totalFreePoints).toLocaleString("en"));
+	$(".additionalpts").text(pointsToPurchase.toLocaleString("en"));
+
+	let absFreeBattles = Math.floor(dailyFreeAP / 8);
+	$("#absfree").text((currentPts + absFreeBattles * ptsPerBattle * resetsLeft + absFreeBattles * 120 * (POPQUIZ.boostingMultiplier - 1) * getBoostingDaysLeft()).toLocaleString("en"));
+
+	if (pointsToGoal > baseFreePoints) pointsToGoal = Math.max(pointsToGoal - boostingFreePoints, 0);
+
+	let totalBattles = Math.ceil(pointsToGoal / ptsPerBattle);
+	let freeBattles = Math.min(dailyFreeBattles * resetsLeft, totalBattles);
+	let buyBattles = totalBattles - freeBattles;
+	let totalBattlesCost = getBattleCost(buyBattles);
+
+	let totalAP = totalBattles * 8;
+	let freeAP = Math.min(dailyFreeAP * resetsLeft, totalAP);
+	let buyAP = totalAP - freeAP;
+	let totalAPCost = getAPCost(buyAP);
+
+	$("#total-freeap").text(freeAP.toLocaleString("en"));
+	$("#total-buyap").text(buyAP.toLocaleString("en"));
+	$("#total-ap").text(totalAP.toLocaleString("en"));
+	$("#total-freebattles").text(freeBattles.toLocaleString("en"));
+	$("#total-buybattles").text(buyBattles.toLocaleString("en"));
+	$("#total-battles").text(totalBattles.toLocaleString("en"));
+	$("#total-ap-cost").text(totalAPCost.toLocaleString("en"));
+	$("#total-battle-cost").text(totalBattlesCost.toLocaleString("en"));
+	$("#total-dp").text((totalAPCost + totalBattlesCost).toLocaleString("en"));
+
+	calculateDailyGoal(pointsToGoal, ptsPerBattle, currentPts);
+	calculateAdditional(buyBattles, pointsToPurchase, ptsPerBattle);
 }
 
 function countdown(d, id) {
