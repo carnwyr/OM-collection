@@ -7,9 +7,8 @@ block scripts
 
 block content
   div.container
-    h1.display-1.border-0.text-center.py-2
-      img(src="/images/karasu.png" style="width:99px;border:5px solid white;border-radius:50px;box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
-    div#question.card.card-body.text-center.mb-3(style="border-radius:5rem;box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
+    h1= title
+    div#question.card.card-body.text-center.mb-3(style="box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
       form
         if path === "dt_rewards"
           include mixins/ask/dtRewards
@@ -28,8 +27,7 @@ block content
         if path !== "skill_charge_time" && path !== "skills"
           div.custom-control.custom-checkbox.custom-control-inline
             input#hideUnlocked.custom-control-input(type="checkbox" name="locked" checked=(user && query.locked === "on") disabled=(!user))
-            label.custom-control-label(for="hideUnlocked") Hide nodes I've already unlocked.
-    p.text-center.text-muted If you like this feature, please share it with others! We will add more questions only if people are interested.
+            label.custom-control-label(for="hideUnlocked") Hide unlocked.
 
     if path === "skill_charge_time"
       p.small.text-center.text-muted *Only SSR and above is displayed.
@@ -53,15 +51,15 @@ block content
                     | #{i.skills.title}
                   p.card-text= i.skills.description
     else
-      div.d-flex.flex-wrap.justify-content-around
+      div.row.justify-content-around
         each i in cards
-          div.card.mb-3(style="max-width: 540px;")
+          div.col-md-6: div.card.w-100.mb-3
             div.row.no-gutters
               div.col-4.d-none.d-md-block
                 a(href="/card/" + i.uniqueName)
                   img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg" style="border-radius:4px 0 0 4px;")
-              div.col-12.d-flex.justify-content-center.d-md-none
-                img.img-fluid.lazy.pt-4(src="/images/reward_placeholder.jpg" data-src="/images/cards/S/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg" style="width:6rem;height:auto;")
+              div.col-12.text-center.d-md-none
+                img.img-fluid.lazy.mt-4(src="/images/reward_placeholder.jpg" data-src="/images/cards/S/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg" style="width:6rem;height:auto;")
               div.col-12.col-md-8
                 div.card-body.node-detail
                   p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
@@ -95,9 +93,6 @@ block content
         box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     }
     @media (max-width: 576px) {
-      #question {
-        padding: 2rem;
-      }
       .node-detail {
         text-align: center;
       }
