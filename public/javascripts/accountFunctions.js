@@ -1,54 +1,49 @@
-var lst = [], nameDict = {}, updatedInfo = {};
+let updatedInfo = {};
 $(document).ready(function() {
 	$("#inputJoinOM").attr("max", new Date().toISOString().split("T")[0]);
+
 	$("#sortable").sortable();
 	$("#sortable").disableSelection();
+	$("#sortable").on("DOMSubtreeModified", () => { updatedInfo["characters"] = true; });
+
+	$('#select-picker').selectpicker({
+		liveSearch: true,
+		style: '',
+		styleBase: 'form-control mb-3',
+		title: '--'
+	});
+	loadProfileCards();
+	$("#select-picker, input[name='card']").on("change", updateCardDisplay);
 
 	$("#sendVerification").on("click", sendVerificationMessage);
 	$("#changePassword").on("click", changePassword);
 	$("input#updateProfile, input#updatePrivacy").on("click", updateProfile);
-
-	$("#cardSearch input").on("focus", function() {
-		if (lst.length === 0) {
-			$.ajax({
-				type: "get",
-				url: "/getCards",
-				cache: false
-			}).done(function(result) {
-				if (result.err) {
-					showAlert("danger", result.message);
-				} else {
-					var lang = document.documentElement.lang;
-					lst = result.cards.map(card => {
-						return {
-							name: lang === "ja" ? card.ja_name : card.name,
-							uniqueName: card.uniqueName
-						}
-					});
-				}
-			});
-		}
-	});
-	$("#cardSearch button").on("click", searchCard);
-	$("#cardSearch .list-group").on("click", "li", updateDisplayCard);
 	$("form#profile, #v-pills-privacy form").on("change", (event) => {
 		updatedInfo[event.target.name] = event.target.value;
 	});
-	$("#sortable").on("DOMSubtreeModified", () => { updatedInfo["characters"] = true; });
 });
 
-$(document).on("click", function(e) {
-	/**
-	 * Checks that
-	 * 1) target isn't .list-group
-	 * 2) target isn't anything in the search button
-	 * 3) target isn't .list-group-item
-	 */
-	var $dropdown = $(".list-group");
-	if (!$dropdown.is(e.target) && !$("#cardSearch *").is(e.target) && $dropdown.has(e.target).length === 0) {
-		$(".list-group").slideUp();
-	}
-});
+function loadProfileCards() {
+	$.ajax({
+		type: "get",
+		url: "/getCards",
+		cache: false
+	}).done(function(result) {
+		if (result.err) {
+			showAlert("danger", result.message);
+		} else {
+			let lang = document.documentElement.lang;
+			result.cards.forEach((card) => {
+				$('#select-picker').append(`<option value="${card.uniqueName}" data-type="${card.type}">${lang === "ja" ? card.ja_name : card.name}</option>`);
+			});
+			$('#select-picker').selectpicker('refresh');
+			let c = profileCard;
+			if (c.endsWith("_b")) c = c.substring(0, c.length - 2);
+			$("#select-picker").val(c);
+			$('#select-picker').selectpicker('render');
+		}
+	});
+}
 
 $(window).on("beforeunload", () => {
 	if (Object.keys(updatedInfo).length !== 0) {
@@ -179,28 +174,11 @@ function updateProfile(e) {
 	});
 }
 
-function searchCard(e) {
-	e.preventDefault();
-
-	var search = $("#cardSearch input").val().replace(/[.*+?^${}()|[\]\\]/g, "");
-	var reg = new RegExp(search, "i");
-	var resultList = lst.filter(el => {
-		var name = el.name.replace(/[.*+?^${}()|[\]\\]/g, "");
-		return reg.test(name);
-	}).slice(0, 10);
-
-	$(".list-group").slideUp().empty();
-	for (let i = 0; i < resultList.length; i++) {
-		nameDict[resultList[i].name] = resultList[i].uniqueName;  // temp solution
-		$(".list-group").append(`<li class="list-group-item">${resultList[i].name}</li>`);
+function updateCardDisplay() {
+	let card = $("#select-picker").val();
+	if ($(`#select-picker option[value="${card}"]`).data("type") === "Demon") {
+		card += $("input[name='card']:checked").val()
 	}
-	$(".list-group").slideDown();
-}
-
-function updateDisplayCard() {
-	card = nameDict[$(this).text()];
-	updatedInfo["display"] = card;
-	$("#cardSearch input").val($(this).text());
 	$("#cardSearch img").attr("src",`/images/cards/L/${card}.jpg`);
-	$(".list-group").slideUp();
+	updatedInfo["display"] = card;
 }
