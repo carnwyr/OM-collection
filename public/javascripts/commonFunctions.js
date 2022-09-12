@@ -19,15 +19,15 @@ $(document).ready(function () {
 	});
 
 	/***/
-	// let cookieName = "0819";
-	// if (!document.cookie.split('; ').find(row => row.startsWith(cookieName))) {
-	// 	$("#announcementToast").removeClass("d-none").toast("show");  // if is toast
-	// 	// $("#announcementToast").removeClass("d-none");  // if is alert
-	// }
-	// $("#announcementToast .close").on("click", () => {
-	// 	document.cookie = cookieName + "=true; expires=" + cookieExpiryDate() + ";";
-	// 	$("#announcementToast").toast("hide");  // if is toast
-	// });
+	let cookieName = "1132";
+	if (!document.cookie.split('; ').find(row => row.startsWith(cookieName))) {
+		$("#announcementToast").removeClass("d-none").toast("show");  // if is toast
+		// $("#announcementToast").removeClass("d-none");  // if is alert
+	}
+	$("#announcementToast .close").on("click", () => {
+		document.cookie = cookieName + "=true; expires=" + cookieExpiryDate() + ";";
+		$("#announcementToast").toast("hide");  // if is toast
+	});
 	/***/
 
 	$(".navbar .dropdown").hover(function() {
