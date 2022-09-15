@@ -177,10 +177,8 @@ exports.calculate = async function(req, res) {
 exports.getEventAddPage = async function (req, res, next) {
 	try {
 		var data = eventService.getDefaultEventData();
-		var cards = await cardService.getCards();
-		var cardNames = cards.map(x => x.name);
 		var apPresets = await eventService.getAPPresets();
-		return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
+		return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user, apPresets: apPresets });
 	} catch(e) {
 		return next(e);
 	}
@@ -205,7 +203,6 @@ exports.deleteEvent = async function (req, res, next) {
 	}
 }
 
-// TODO:
 exports.updateEvent = async function (req, res) {
 	try {
 		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
@@ -224,11 +221,7 @@ exports.getEventEditPage = async function(req, res, next) {
 		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		let data = await eventService.getEvent({ "name.en": eventName });
 		if (!data) throw createError(404, properties = { title: "Event not found" });
-
-		let cards = await cardService.getCards({ source: [eventName] });
-		let cardNames = cards.map(x => x.name);
-
-		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames });
+		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user });
 	} catch(e) {
 		return next(e);
 	}

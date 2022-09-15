@@ -1,4 +1,4 @@
-let originalData;
+let originalData, cardNames;
 $(document).ready(function () {
 	createMasks();
 
@@ -9,8 +9,23 @@ $(document).ready(function () {
 
 	$("#submit").click(saveChanges);  // function is in pug file
 
-	$('.card-select').autocomplete({ source: cardNames });
+	loadCardRewardSelect();
 });
+
+function loadCardRewardSelect() {
+	$.ajax({
+		type: "get",
+		url: "/getCards",
+		cache: false
+	}).done(function(result) {
+		if (result.err) {
+			showAlert("danger", result.message);
+		} else {
+			cardNames = result.cards.map(x => x.name);
+			$('.card-select').autocomplete({ source: cardNames });
+		}
+	});
+}
 
 function createMasks() {
 	let maskOptions = {

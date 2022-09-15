@@ -6,8 +6,6 @@ block scripts
 	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	script(src="https://unpkg.com/imask@6.2.2/dist/imask.min.js")
 	script(src="/javascripts/eventEdit.js")
-	script.
-		var cardNames = !{JSON.stringify(cardData)};
 
 mixin rewardEntry(reward = { points: '', card: '' })
 	form.form-inline.item-container
@@ -176,6 +174,7 @@ block content
 								div.tab-content.pt-3
 									div#points.tab-pane.show.active(role="tabpanel" aria-labelledby="points-tab")
 										h5.border-bottom Rewards
+										p Only add card rewards.
 										div
 											div#rewards
 												if data.listRewards && data.listRewards.length !== 0
