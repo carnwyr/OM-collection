@@ -42,7 +42,7 @@ block content
 														- let r = event.listRewards.find(x => x.card === card.name);
 														p.mb-1= (r ? r.points.toLocaleString("en") : "???") + " pts"
 													else
-														span ???
+														p.mb-1 ??? pts
 												//- TODO: if event.rewardListType === "boxes"
 											else
 												p.mb-2.small.text-muted *Missing event data.
