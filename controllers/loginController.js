@@ -155,7 +155,7 @@ exports.isSameUser = function() {
 		if (req.user && (req.user.name == req.params.name || exports.hasAccess("Admin"))) {
 			return next();
 		}
-		return next(createError(401, properties = { errorMessage: "Please log in and try again!" }));
+    res.redirect("/login");
 	}
 };
 
