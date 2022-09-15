@@ -17,15 +17,41 @@ block content
 					| Edit
 			div.card-body
 				div.row
-					div.col-12.col-md-4.text-center.mb-3.mb-md-auto
-						img.img-fluid(src="/images/events/"+encodeURIComponent(event.name.en)+".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
-					div.col-12.col-md
-						div.row
-						p Type: #{t("events." + event.type)}
-						p Start: #{getFormatedDate(event.start)}
-						p End: #{getFormatedDate(event.end)}
+					div.col-12.col-md-4.text-center.mb-3.mb-md-0
+						img.img-fluid(src="/images/events/"+encodeURIComponent(event.name.en)+".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'" style="border-radius:2px;")
+					div.col-12.col-md-8
+						div.mb-2: span(style="border-radius:16px;background:aliceblue;padding:.25rem 1rem;font-size:small;text-align:center;")= t("events." + event.type)
+						p #{getFormatedDate(event.start)} &#8211; #{getFormatedDate(event.end)}
 						p Duration: #{Math.ceil((event.end - event.start)/1000/60/60/24)}#{t("common.days")}
 				if cards
+					hr
+					p.section-title Rewards
+					div.row
+						each card in cards
+							div.col-md-6.mb-3
+								div(style="border:2px solid rgba(212, 144, 189, .2);border-radius:8px;padding:16px;overflow:auto;")
+									img.mr-3(src="/images/cards/S/" + card.uniqueName + ".jpg" style="width:5em;height:auto;float:left;")
+									div
+										a(href="/card/" + getURL(card.name))= lang === "ja" ? card.ja_name : card.name
+										if event.type === "PopQuiz"
+											//- Temp if/else, because we don't have complete pop quiz data.
+											if event.rewardListType
+												if event.rewardListType === "points"
+													//- Again, many pop quizzes are missing these values :P
+													if event.listRewards.length > 0
+														- let r = event.listRewards.find(x => x.card === card.name);
+														p.mb-1= (r ? r.points.toLocaleString("en") : "???") + " pts"
+													else
+														span ???
+												//- TODO: if event.rewardListType === "boxes"
+											else
+												p.mb-2.small.text-muted *Missing event data.
+										div
+											- let rewardList = [...new Set(card.dt.map(x => x.type))].filter(x => x !== "level_up" && x !== "flower");
+											each reward in rewardList
+												img.img-fluid(src="/images/tree_rewards/" + reward + ".png" style="width:1.5em;height:auto;margin-right:2px;")
+											if rewardList.length < 2 || rewardList.indexOf("item") == -1
+												small.text-muted *Card have incomplete data.
 					hr
 					p.section-title= t("cards.demon_cards")
 					div.row.justify-content-center.mb-4

@@ -71,7 +71,7 @@ exports.getEventDetail = async function (req, res, next) {
 		}
 
 		if (event.type === "PopQuiz" || event.type === "Nightmare") {
-			locals.cards = await cardService.getCards({ source: { $in: [ eventName ] } });
+			locals.cards = await cardService.getCards({ source: { $in: [ eventName ] } }, { name: 1, ja_name: 1, uniqueName: 1, type: 1, dt: 1 });
 		}
 
 		return res.render("eventDetail", locals);
