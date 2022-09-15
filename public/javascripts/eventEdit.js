@@ -22,14 +22,14 @@ function loadCardRewardSelect() {
 			showAlert("danger", result.message);
 		} else {
 			cardNames = result.cards.map(x => x.name);
-			$('.card-select').autocomplete({ source: cardNames });
+			$(".card-select").autocomplete({ source: cardNames });
 		}
 	});
 }
 
 function createMasks() {
 	let maskOptions = {
-		mask: 'YYYY.MM.DD, hh:mm:ss',
+		mask: "YYYY.MM.DD, hh:mm:ss",
 		lazy: false,
 		blocks: {
 			YYYY: {
@@ -90,30 +90,30 @@ function addItem() {
 	$(this).parent().children("div:first-of-type").append($(template).html());
 
 	if (template === "#rewardTemplate") {
-		$('.card-select').autocomplete({ source: cardNames });
+		$(".card-select").autocomplete({ source: cardNames });
 	}
 }
 
 function validateFields() {
-  if (!$('#en-name').val()) {
-    showAlert("danger", 'English name must be filled');
-    return false;
-  }
-  let fileName = $('#uploadImage').val();
+	if (!$("#en-name").val()) {
+		showAlert("danger", "English name must be filled");
+		return false;
+	}
+	let fileName = $("#uploadImage").val();
 	if (fileName) {
-		let parts = fileName.split('.');
+		let parts = fileName.split(".");
 		let extension = parts[parts.length - 1];
-		if (extension !== 'jpg') {
-			showAlert("danger", 'Uploaded image must be jpg');
+		if (extension !== "jpg") {
+			showAlert("danger", "Uploaded image must be jpg");
 			return false;
 		}
 	}
-  return true;
+	return true;
 }
 
 function prepareEventData() {
 	let data = {};
-	let formData = new FormData(document.getElementById('info'));
+	let formData = new FormData(document.getElementById("info"));
 	formData.forEach((value, key) => data[key] = value);
 	data.name = {
 		en: data["en-name"],
@@ -166,7 +166,7 @@ function getRewards() {
 }
 
 function getBoxRewards() {
-	let sets = []
+	let sets = [];
 
 	$("div.boxset").each(function() {
 		let set = {
@@ -180,8 +180,8 @@ function getBoxRewards() {
 			let boxData = {};
 			formData.forEach((value, key) => boxData[key] = value);
 			let rewards = [];
-			boxData.specialRewards.split('\n').forEach(item => {
-				let t = item.split('/');
+			boxData.specialRewards.split("\n").forEach(item => {
+				let t = item.split("/");
 				rewards.push({ name: t[0].trim(), req: parseInt(t[1]) });
 			});
 			boxData.specialRewards = rewards.filter(i => i.name && i.req);
@@ -198,7 +198,7 @@ function getStages() {
 	let stages = [];
 	let str = $("div#stageList textarea").val();
 	str.split("\n").forEach(item => {
-		let d = item.split(',');
+		let d = item.split(",");
 		stages.push({
 			name: d.shift().trim(),
 			rewards: d.map(e => e.trim())
@@ -211,7 +211,7 @@ function getLockedStages() {
 	let stages = [];
 	let str = $("div#keys textarea").val();
 	str.split("\n").forEach(item => {
-		let i = item.split(',');
+		let i = item.split(",");
 		stages.push({
 			name: i[0].trim(),
 			req: parseInt(i[1])
