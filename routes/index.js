@@ -42,7 +42,7 @@ router.post("/updateSupport", loginController.hasAccess("Admin"), userController
 
 // Misc.
 router.get('/getCards', cardsController.getCards);
-router.get("/animations", cardsController.getAnimationList);
+// router.get("/animations", cardsController.getAnimationList);
 
 router.post("/update_tree", loginController.isLoggedIn(), userController.updateUserTree);
 

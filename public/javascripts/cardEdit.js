@@ -99,11 +99,7 @@ function getCardData() {
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};
 	if (data.rarity === "UR+") {
-		data.animation = {
-			type: $("input[name='animationType']:checked").val(),
-			link1: $("input#animation1").val(),
-			link2: $("input#animation2").val()
-		};
+		data.animation = $("input[name='animationType']:checked").val();
 	}
 	return data;
 }
