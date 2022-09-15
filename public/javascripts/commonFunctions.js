@@ -19,7 +19,7 @@ $(document).ready(function () {
 	});
 
 	/***/
-	let cookieName = "1132";
+	let cookieName = "1027";
 	if (!document.cookie.split('; ').find(row => row.startsWith(cookieName))) {
 		$("#announcementToast").removeClass("d-none").toast("show");  // if is toast
 		// $("#announcementToast").removeClass("d-none");  // if is alert
