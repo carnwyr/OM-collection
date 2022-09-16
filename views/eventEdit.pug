@@ -81,19 +81,12 @@ block content
 			}
 		div.card.shadow
 			div.card-body
-				if user.type !== "Admin"
-					h5.text-center Please upload images to
-						|
-						|
-						a(href="https://drive.google.com/drive/folders/1Tbo6bPrpp0aYb_YCMotNmQXVychxBseI" target="_blank") our google drive folder
-						| .
-					hr
 				form#info
 					div.form-row
 						div.col-12.col-md-4
 							div.form-group
 								label(for="en-name") Name
-								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en)
+								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en readonly=(user.isAdmin?false:true))
 						div.col-12.col-md-4
 							div.form-group
 								label(for="ja-name") Japanese name
