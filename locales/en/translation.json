@@ -142,7 +142,7 @@
 		"use_item": "Use items"
 	},
 	"title": {
-		"cards": "Card Gallery",
+		"cards": "Card List",
 		"my_collection": "My Collection",
 		"user_collection": "{{username}}'s Collection",
 		"my_favourites": "My Favourites",
