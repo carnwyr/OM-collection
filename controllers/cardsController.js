@@ -291,6 +291,108 @@ exports.getCards = async function (req, res) {
 	}
 }
 
+function getNodeData(card, cost) {
+	if (card.nodes.length === 0) return "?";
+	let node = card.nodes.find(x => x.grimmCost == cost && x.type != "level_up" && x.type != "flower");
+	// TODO: add exceptions
+	if (card.rarity === "N" && cost > 2000) return "--";
+	if (card.rarity === "R" && cost > 4500) return "--";
+	if (card.rarity === "SR" && cost > 6000) return "--";
+	if (card.rarity === "SSR" && cost > 15000) return "--";
+	if (node) {
+		let str = "<div style='position:relative;'>";
+		if (node.unlocked) {
+			str += `<div class="unlocked"></div>`;
+		}
+		if (node.type === "item" || node.type === "icon") {
+			str += `<img src="https://media.karasu-os.com/images/${node.type}/${node.reward}.png" onerror="this.src='/images/tree_rewards/${node.type}.png'" alt="${node.reward}" style="width:2em;height:2em;">`;
+		} else {
+			str += `<img src="/images/tree_rewards/${node.type}.png" alt="${node.reward}" style="width:2em;height:2em;">`;
+		}
+		return str + "</div>";
+	}
+	return "?";
+}
+
+function getRankUpNodeData(card, level) {
+	if (card.nodes.length === 0) return "?";
+	let node = card.nodes.find(x => x.reward.startsWith(level));
+
+	if (level !== "Devil's Flower") {
+		level = parseInt(level.substring(3, 5));
+		if (card.rarity === "N" && level > 10) return "--";
+		if (card.rarity === "R" && level > 20) return "--";
+		if (card.rarity === "SR" && level > 30) return "--";
+		if (card.rarity === "SSR" && level > 40) return "--";
+	}
+
+	if (node) {
+		let str = "<div style='position:relative;'>";
+		if (node.unlocked) {
+			str += `<div class="unlocked"></div>`;
+		}
+		str += `<img src="/images/nodes/${node.type}.png" style="width:2em;height:2em;">`;
+		return str + "</div>";
+	}
+
+	return "?";
+}
+
+exports.getTreeData = async function (req, res, next) {
+	try {
+		let sort = {};
+		if (req.query.name) {
+			sort["card"] = parseInt(req.query.name) === 0 ? -1 : 1;
+		} else {
+			sort['result.number'] = -1;
+		}
+
+		let keywords = "";
+		if (req.query.filter.length > 0) {
+			keywords = req.query.filter[0];
+		}
+
+		let match = { "result.name": { $regex: keywords, $options: "i" } };
+		if (req.query.rarity && req.query.rarity !== "All") {
+			match["result.rarity"] = req.query.rarity;
+		}
+
+		let username = req.user ? req.user.name : "KarasuOS";
+		let cards = await userService.getTreeTrackData({
+			username: username,
+			pageNum: req.query.page,
+			sort: sort,
+			match: match
+		});
+
+		let rows = [], td;
+		let isRankUp = req.query.path === "/tree_tracker/rank_up";
+		let headers = isRankUp ? ["Lv.10","Lv.20","Lv.30","Lv.40","Lv.50","Devil's Flower"] : [2000,3000,4500,6000,8000,10000,15000,20000];
+
+		cards.forEach((card, i) => {
+			td = [`<a href="/card/${encodeURIComponent(card.name.replace(/ /g, '_'))}"><img class="mr-2" src="https://karasu-os.com/images/cards/S/${card._id}.jpg" style="float:left;width:2em;height:2em;">${req.lang === "ja" ? card.ja_name : card.name}</a>`];
+			headers.forEach(i => {
+				if (isRankUp) {
+					td.push(getRankUpNodeData(card, i));
+				} else {
+					td.push(getNodeData(card, i));
+				}
+			});
+			rows.push(td);
+		});
+		headers.unshift("Name");
+
+		return res.json({
+		  total_rows: cards.length === 0 ? 0 : cards[0].totalCount,
+		  rows: rows,
+			headers: headers
+		});
+	} catch(e) {
+		Sentry.captureException(e);
+		return res.json({ err: true, message: e.message });
+	}
+};
+
 // Admin card management
 exports.getEditCardPage = async function(req, res, next) {
 	if (!req.params.card) {

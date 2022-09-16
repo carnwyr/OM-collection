@@ -221,6 +221,138 @@ exports.getUserTreeStats = async function(username) {
   ]);
 };
 
+exports.getTreeTrackData = async function(data) {
+  try {
+    // TODO: reduce pipeline?
+    let pipeline = [
+      {
+        '$facet': {
+          'totalCount': [
+            {
+              '$match': {
+                'info.name': data.username
+              }
+            }, {
+              '$unwind': {
+                'path': '$cards.owned'
+              }
+            }, {
+              '$project': {
+                'card': '$cards.owned',
+                'tree': 1
+              }
+            }, {
+              '$lookup': {
+                'from': 'cards',
+                'localField': 'card',
+                'foreignField': 'uniqueName',
+                'as': 'result'
+              }
+            }, {
+              '$match': data.match
+            }, {
+              '$count': 'value'
+            }
+          ],
+          'pipelineResults': [
+            {
+              '$match': {
+                'info.name': data.username
+              }
+            }, {
+              '$unwind': {
+                'path': '$cards.owned'
+              }
+            }, {
+              '$project': {
+                'card': '$cards.owned',
+                'tree': 1
+              }
+            }, {
+              '$lookup': {
+                'from': 'cards',
+                'localField': 'card',
+                'foreignField': 'uniqueName',
+                'as': 'result'
+              }
+            }, {
+              '$match': data.match
+            }, {
+              '$sort': data.sort
+            }, {
+              '$skip': data.pageNum * 25
+            }, {
+              '$limit': 25
+            }, {
+              '$unwind': {
+                'path': '$result',
+                'preserveNullAndEmptyArrays': false
+              }
+            }, {
+              '$unwind': {
+                'path': '$result.dt',
+                'preserveNullAndEmptyArrays': false
+              }
+            }, {
+              '$project': {
+                'card': 1,
+                'name': '$result.name',
+                'ja_name': '$result.ja_name',
+                'rarity': '$result.rarity',
+                'node': '$result.dt',
+                'unlocked': {
+                  '$in': [
+                    '$result.dt._id', '$tree'
+                  ]
+                }
+              }
+            }, {
+              '$addFields': {
+                'node.unlocked': '$unlocked'
+              }
+            }, {
+              '$group': {
+                '_id': '$card',
+                'name': {
+                  '$first': '$name'
+                },
+                'ja_name': {
+                  '$first': '$ja_name'
+                },
+                'rarity': {
+                  '$first': '$rarity'
+                },
+                'nodes': {
+                  '$push': '$node'
+                }
+              }
+            }
+          ]
+        }
+      }, {
+        '$unwind': '$pipelineResults'
+      }, {
+        '$unwind': '$totalCount'
+      }, {
+        '$replaceRoot': {
+          'newRoot': {
+            '$mergeObjects': [
+              '$pipelineResults', {
+                'totalCount': '$totalCount.value'
+              }
+            ]
+          }
+        }
+      }
+    ];
+    let nodes = await Users.aggregate(pipeline);
+    return nodes;
+  } catch(e) {
+    return [];
+  }
+};
+
+
 function sortObjArrayByKey(array, key) {
   return array.sort(function(a, b) {
     var x = a[key], y = b[key];

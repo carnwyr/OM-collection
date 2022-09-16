@@ -43,6 +43,9 @@ router.post("/updateSupport", loginController.hasAccess("Admin"), userController
 // Misc.
 router.get('/getCards', cardsController.getCards);
 // router.get("/animations", cardsController.getAnimationList);
+router.get('/getTreeData', cardsController.getTreeData);
+router.get("/tree_tracker/rank_up", miscController.getTreeTracker);
+router.get("/tree_tracker", miscController.getTreeTracker);
 
 router.post("/update_tree", loginController.isLoggedIn(), userController.updateUserTree);
 
