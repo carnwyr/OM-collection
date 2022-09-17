@@ -356,6 +356,12 @@ exports.getTreeData = async function (req, res, next) {
 		if (req.query.rarity && req.query.rarity !== "All") {
 			match["result.rarity"] = req.query.rarity;
 		}
+		if (req.query.attribute && req.query.attribute !== "All") {
+			match["result.attribute"] = req.query.attribute;
+		}
+		if (req.query.type && req.query.type !== "All") {
+			match["result.type"] = req.query.type;
+		}
 
 		let username = req.user ? req.user.name : "KarasuOS";
 		let cards = await userService.getTreeTrackData({

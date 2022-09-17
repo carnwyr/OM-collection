@@ -73,6 +73,24 @@ block content
           div.custom-control.custom-radio.custom-control-inline
             input#id6.custom-control-input(type="radio" name="rarity" value="N")
             label.custom-control-label(for="id6") N
+          br
+          div.custom-control.custom-radio.custom-control-inline
+            input#attribute.custom-control-input(type="radio" name="attribute" value="All" checked)
+            label.custom-control-label(for="attribute") All
+          each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+            div.custom-control.custom-radio.custom-control-inline
+              input.custom-control-input(id=attribute type="radio" name="attribute" value=attribute)
+              label.custom-control-label(for=attribute)= attribute
+          br
+          div.custom-control.custom-radio.custom-control-inline
+            input#type.custom-control-input(type="radio" name="type" value="All" checked)
+            label.custom-control-label(for="type") All
+          div.custom-control.custom-radio.custom-control-inline
+            input#demon.custom-control-input(type="radio" name="type" value="Demon")
+            label.custom-control-label(for="demon") Demon
+          div.custom-control.custom-radio.custom-control-inline
+            input#memory.custom-control-input(type="radio" name="type" value="Memory")
+            label.custom-control-label(for="memory") Memory
         hr
         div#loading.text-center
           div.spinner-border.text-primary(role="status")

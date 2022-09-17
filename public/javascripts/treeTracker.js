@@ -152,5 +152,9 @@ function initTableSorter() {
 
 function getFilters() {
 	$("#loading").removeClass("d-none");
-	return "&rarity=" + encodeURIComponent($("input[name='rarity']:checked").val());
+	let str = '';
+	str += "&rarity=" + encodeURIComponent($("input[name='rarity']:checked").val());
+	str += "&attribute=" + encodeURIComponent($("input[name='attribute']:checked").val());
+	str += "&type=" + encodeURIComponent($("input[name='type']:checked").val());
+	return str;
 }
