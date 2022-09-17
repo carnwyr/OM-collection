@@ -313,6 +313,9 @@ exports.getTreeTrackData = async function(data) {
             }, {
               '$group': {
                 '_id': '$card',
+                'card': {
+                  '$first': '$card'
+                },
                 'name': {
                   '$first': '$name'
                 },
@@ -326,6 +329,8 @@ exports.getTreeTrackData = async function(data) {
                   '$push': '$node'
                 }
               }
+            }, {
+              '$sort': data.sort
             }
           ]
         }
