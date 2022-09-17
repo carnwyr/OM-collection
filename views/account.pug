@@ -79,14 +79,13 @@ block content
 									div#cardSearch.col-12.col-md-4
 										div.mb-2= t("settings.card_display")
 										select#select-picker
-										- let displayedCard = user.profile.display ?? "The_Mammon_Way";
 										div.form-check.form-check-inline
 											input.form-check-input(type="radio" name="card" id="inlineRadio1" value="" checked=(!user.profile.display.endsWith("_b")))
 											<label class="form-check-label" for="inlineRadio1">Locked</label>
 										div.form-check.form-check-inline.mb-3
 											input.form-check-input(type="radio" name="card" id="inlineRadio2" value="_b" checked=(user.profile.display.endsWith("_b")))
 											<label class="form-check-label" for="inlineRadio2">Unlocked</label>
-										img(src=`/images/cards/L/${displayedCard}.jpg` style="width:100%;")
+										img(src=`/images/cards/L/${user.profile.display}.jpg` style="width:100%;")
 								br
 								input#updateProfile.btn.btn-primary(type="submit" value=t("settings.update"))
 

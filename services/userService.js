@@ -16,8 +16,8 @@ exports.getUser = async function (username) {
 };
 
 exports.getAccountData = async function (username) {
-  var usernameRegexp = new RegExp('^' + username + '$', "i");
-  var user = await Users.aggregate([
+  let usernameRegexp = new RegExp('^' + username + '$', "i");
+  let user = await Users.aggregate([
     { $match: { "info.name": { $regex: usernameRegexp } } },
     {
       $project: {
@@ -28,6 +28,9 @@ exports.getAccountData = async function (username) {
       }
     }
   ]);
+  if (!user[0].profile.display) {
+    user[0].profile.display = "The_Mammon_Way";
+  }
   return user[0];
 };
 
