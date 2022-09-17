@@ -370,7 +370,7 @@ exports.getTreeData = async function (req, res, next) {
 		let headers = isRankUp ? ["Lv.10","Lv.20","Lv.30","Lv.40","Lv.50","Devil's Flower"] : [2000,3000,4500,6000,8000,10000,15000,20000];
 
 		cards.forEach((card, i) => {
-			td = [`<a href="/card/${encodeURIComponent(card.name.replace(/ /g, '_'))}"><img class="mr-2" src="https://karasu-os.com/images/cards/S/${card._id}.jpg" style="float:left;width:2em;height:2em;">${req.lang === "ja" ? card.ja_name : card.name}</a>`];
+			td = [`<a href="/card/${encodeURIComponent(card.name.replace(/ /g, '_'))}"><img class="mr-2" src="/images/cards/S/${card._id}.jpg" style="float:left;width:2em;height:2em;">${req.lang === "ja" ? card.ja_name : card.name}</a>`];
 			headers.forEach(i => {
 				if (isRankUp) {
 					td.push(getRankUpNodeData(card, i));
