@@ -27,6 +27,26 @@ block content
 					hr
 					p.section-title Rewards
 					div.row
+						//- TODO: move this function to part of the db query.
+						if (event.type === "PopQuiz" && event.rewardListType === "points" && event.listRewards.length > 0)
+							-
+								cards.forEach((card, index) => {
+									let r = event.listRewards.find(x => x.card === card.name);
+									if (r) {
+										cards[index]["points"] = r.points;
+									} else {
+										cards[index]["points"] = 0;
+									}
+								});
+								cards.sort((a, b) => {
+									if (a.points > b.points) {
+										return -1;
+									}
+									if (a.points < b.points) {
+										return 1;
+									}
+									return 0;
+								});
 						each card in cards
 							div.col-md-6.mb-3
 								div(style="border:2px solid rgba(212, 144, 189, .2);border-radius:8px;padding:16px;overflow:auto;")
