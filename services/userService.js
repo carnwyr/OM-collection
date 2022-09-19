@@ -380,6 +380,16 @@ exports.getNumberOfUsers = function() {
 	return Users.estimatedDocumentCount();
 };
 
+exports.getNumberOfValidUsers = function() {
+  return Users.find({
+    $or: [
+      { "info.email": { $exists: true, $ne: "" } },
+      { "cards.owned": { $exists: true, $ne: [] } },
+      { "cards.faved": { $exists: true, $ne: [] } },
+    ]
+  }).count();
+};
+
 exports.getOwnedCardCount = card => getCardCountInCollections(card, "owned");
 
 exports.getFavedCardCount = card => getCardCountInCollections(card, "faved");
