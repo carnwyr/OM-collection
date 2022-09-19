@@ -7,10 +7,10 @@ block scripts
 	script(src="https://unpkg.com/imask@6.2.2/dist/imask.min.js")
 	script(src="/javascripts/eventEdit.js")
 
-mixin rewardEntry(reward = { points: '', card: '' })
+mixin rewardEntry(reward = { card: '', points: '' })
 	form.form-inline.item-container
-		input.card-select.form-control(name="card" value=card placeholder="name")
-		input.form-control(type="number" placeholder="points required" name="points" value=reward.points)
+		input.card-select.form-control(type="text" value=reward.card name="card" placeholder="name")
+		input.form-control(type="number" value=reward.points name="points" placeholder="points required")
 		button.btn.btn-outline-secondary.remove-item(type="button") Remove
 
 mixin boxEntry(box = { name: 'Box 1', itemsCount: '', specialRewards: [] })
