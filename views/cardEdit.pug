@@ -20,7 +20,7 @@ mixin treeCostTemplate(item)
 		- item = Array(3).fill({ name: '', amount: '' });
 	each i, index in item
 		div.form-row.align-items-center.mb-2
-			label.col-2.text-center= index + 1
+			label.col-2.col-md-1.text-center= index + 1
 			div.col-10
 				div.row
 					div.col-md-6.col-lg-4.mb-1.mb-md-0
@@ -38,14 +38,14 @@ mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '
 			div.d-none
 				div.form-inline.col-12.align-items-center.mb-2
 					label.mr-2 No.
-					input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder placeholder="???" style="width:80px;")
+					input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder style="width:80px;")
 					small.text-muted The order in which this node should appear on this page.
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Name
-				input.form-control.autocomplete(type="text" value=node.reward name="reward" placeholder="???" readonly=(node._id && node.reward !== "???"))
+				input.form-control.autocomplete(type="text" value=node.reward name="reward" readonly=(node._id && node.reward !== "???"))
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Amount
-				input.form-control(type="number" value=node.count name="count" placeholder="???")
+				input.form-control(type="number" value=node.count name="count")
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Type
 				select.custom-select.form-control(name="type")
@@ -54,7 +54,7 @@ mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '
 						option(value=t selected=(node.type===t))= t
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Grimm cost
-				input.form-control(type="number" name="grimmCost" value=node.grimmCost placeholder="???")
+				input.form-control(type="number" name="grimmCost" value=node.grimmCost)
 			div.form-group.col-12
 				label Requirements
 				+treeCostTemplate(node.requirements)
@@ -245,11 +245,11 @@ block content
 												- str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
 												th(scope="row")= t(str)
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].min:0))
+													input.form-control(type="number" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].min:0))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].max:0))
+													input.form-control(type="number" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].max:0))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:0))
+													input.form-control(type="number" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:0))
 					div#skills.tab-pane.fade(role="tabpanel" aria-labelledby="skills-tab")
 						div.alert.alert-info(style="z-index:0!important;")
 							strong Important!!
@@ -300,10 +300,11 @@ block content
 								- cardName = card.name
 							else
 								- cardName = "The Mammon Way"
-							div.alert.alert-info(style="z-index:0!important;") Note:
-								ul
-									li If you do not know the reward inside an Item node, then use <u>???</u> as the name.
-									li <u>#{cardName} (Locked)</u> means the original/ devil's flower locked icon, <u>#{cardName} (Unlocked)</u> means the flower unlocked icon.
+							div.alert.alert-info(style="z-index:0!important;")
+								div: strong Any nodes
+								p Use <u>???</u> as reward name if you don't know the name.
+								div: strong Icons and UR+ animations
+								p.mb-0 <u>#{cardName} (Locked)</u> means the original/ devil's flower locked icon, <u>#{cardName} (Unlocked)</u> means the flower unlocked icon.
 							div
 								div
 									each node in rewardNodes
@@ -338,7 +339,7 @@ block content
 									div.d-none: input(type="text" name="type" value="level_up")
 									div.form-group.col-12.col-md-6.col-lg-3
 										label Grimm cost
-										input.form-control(type="number" name="grimmCost" value=node.grimmCost placeholder="???")
+										input.form-control(type="number" name="grimmCost" value=node.grimmCost)
 									div.form-group.col-12.mb-0
 										label Requirements
 										+treeCostTemplate(node.requirements)
@@ -356,7 +357,7 @@ block content
 									div.d-none: input(type="text" name="type" value="flower")
 									div.form-group.col-12.col-md-6.col-lg-3
 										label Grimm cost
-										input.form-control(type="number" name="grimmCost" value=flowerNode.grimmCost placeholder="???")
+										input.form-control(type="number" name="grimmCost" value=flowerNode.grimmCost)
 									div.form-group.col-12.mb-0
 										label Requirements
 										+treeCostTemplate(flowerNode.requirements)
