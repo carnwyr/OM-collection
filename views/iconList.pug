@@ -2,9 +2,6 @@ extends layout
 
 block scripts
   script(src="/javascripts/iconList.js")
-  script.
-    const cards = !{JSON.stringify(cards)};
-    const character = !{JSON.stringify(character)};
 
 block content
   div(class="container")
@@ -15,3 +12,6 @@ block content
     hr
     h5= t("cards.Memory")
     div#memory.row
+    script.
+      const cards = !{JSON.stringify(cards)};
+      const character = !{JSON.stringify(character)};
