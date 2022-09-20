@@ -578,3 +578,29 @@ exports.isVerifiedTreeData = async function (name, data) {
 		return { err: true, message: e.message };
 	}
 }
+
+exports.getIconPage = async function (req, res, next) {
+	try {
+		// TODO: make req.params.character case insensitive?
+		const chara = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael"];
+		if (req.params.character && !chara.includes(req.params.character)) return next(createError(404, properties = { title: "404 Page not found" }));
+
+		let cards = await cardService.getCards({
+			characters: { $in: [ req.params.character ] },
+			$nor: [ { rarity: "N" }, { rarity: "R" } ]
+		}, { name: 1, type: 1, characters: 1, rarity: 1 });
+		let title = "Icons";
+		if (req.params.character) title = req.params.character + "'s Icons";
+
+		return res.render("iconList", {
+			title: title,
+			description: "A list of Obey Me icons on karasu-os.com.",
+			user: req.user,
+			character: req.params.character,
+			cards: cards
+		})
+	} catch(e) {
+		Sentry.captureException(e);
+		return next(e);
+	}
+};

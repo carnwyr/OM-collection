@@ -1,0 +1,17 @@
+extends layout
+
+block scripts
+  script(src="/javascripts/iconList.js")
+  script.
+    const cards = !{JSON.stringify(cards)};
+    const character = !{JSON.stringify(character)};
+
+block content
+  div(class="container")
+    h1= title
+    p.text-muted *Currently only have icons that's available from cards. Trying to figure out a way to track icons from events.
+    h5= t("cards.Demon")
+    div#demon.row
+    hr
+    h5= t("cards.Memory")
+    div#memory.row
