@@ -304,8 +304,22 @@ function getNodeData(card, cost) {
 		if (node.unlocked) {
 			str += `<div class="unlocked"></div>`;
 		}
-		if (node.type === "item" || node.type === "icon") {
-			str += `<img src="https://media.karasu-os.com/images/${node.type}/${node.reward}.png" onerror="this.src='/images/tree_rewards/${node.type}.png'" alt="${node.reward}" style="width:2em;height:2em;">`;
+		if (node.type === "icon") {
+			if (card.type === "Demon") {
+				let unlocked = "";
+				if (node.reward.indexOf("(Unlocked)") !== -1) {
+					unlocked = "_Unlocked";
+				}
+				str += `<img src="https://obey-me.fandom.com/wiki/Special:Redirect/file/${card.name.replace(/:/g, " -")}${unlocked}_icon.png?width=32" onerror="this.src='/images/tree_rewards/${node.type}.png'" alt="${node.reward}" style="width:2em;height:2em;">`;
+			} else {
+				// check wrong names
+				if (!node.reward.startsWith(card.name) || !node.reward.endsWith(")")) {
+					str += `<img src="/images/tree_rewards/${node.type}.png" alt="${node.reward}" style="width:2em;height:2em;">`;
+				} else {
+					let charNum = "_" + (card.characters.indexOf(node.reward.substring(node.reward.lastIndexOf("(") + 1, node.reward.length - 1)) + 1);
+					str += `<img src="https://obey-me.fandom.com/wiki/Special:Redirect/file/${card.name.replace(/:/g, " -")}${charNum}_icon.png?width=64" onerror="this.src='/images/tree_rewards/${node.type}.png'" alt="${node.reward}" style="width:2em;height:2em;">`;
+				}
+			}
 		} else {
 			str += `<img src="/images/tree_rewards/${node.type}.png" alt="${node.reward}" style="width:2em;height:2em;">`;
 		}
@@ -342,9 +356,9 @@ exports.getTreeData = async function (req, res, next) {
 	try {
 		let sort = {};
 		if (req.query.name) {
-			sort["card"] = parseInt(req.query.name) === 0 ? -1 : 1;
+			sort["name"] = parseInt(req.query.name) === 0 ? -1 : 1;
 		} else {
-			sort['result.number'] = -1;
+			sort["number"] = -1;
 		}
 
 		let keywords = "";
@@ -352,15 +366,15 @@ exports.getTreeData = async function (req, res, next) {
 			keywords = req.query.filter[0];
 		}
 
-		let match = { "result.name": { $regex: keywords, $options: "i" } };
+		let match = { "name": { $regex: keywords, $options: "i" } };
 		if (req.query.rarity && req.query.rarity !== "All") {
-			match["result.rarity"] = req.query.rarity;
+			match["rarity"] = req.query.rarity;
 		}
 		if (req.query.attribute && req.query.attribute !== "All") {
-			match["result.attribute"] = req.query.attribute;
+			match["attribute"] = req.query.attribute;
 		}
 		if (req.query.type && req.query.type !== "All") {
-			match["result.type"] = req.query.type;
+			match["type"] = req.query.type;
 		}
 
 		let username = req.user ? req.user.name : "KarasuOS";

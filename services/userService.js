@@ -226,7 +226,6 @@ exports.getUserTreeStats = async function(username) {
 
 exports.getTreeTrackData = async function(data) {
   try {
-    // TODO: reduce pipeline?
     let pipeline = [
       {
         '$facet': {
@@ -250,6 +249,22 @@ exports.getTreeTrackData = async function(data) {
                 'localField': 'card',
                 'foreignField': 'uniqueName',
                 'as': 'result'
+              }
+            }, {
+              '$unwind': {
+                'path': '$result',
+                'preserveNullAndEmptyArrays': false
+              }
+            }, {
+              '$replaceRoot': {
+                'newRoot': {
+                  '$mergeObjects': [
+                    {
+                      'tree': '$tree',
+                      'card': '$card'
+                    }, '$result'
+                  ]
+                }
               }
             }, {
               '$match': data.match
@@ -279,6 +294,22 @@ exports.getTreeTrackData = async function(data) {
                 'as': 'result'
               }
             }, {
+              '$unwind': {
+                'path': '$result',
+                'preserveNullAndEmptyArrays': false
+              }
+            }, {
+              '$replaceRoot': {
+                'newRoot': {
+                  '$mergeObjects': [
+                    {
+                      'tree': '$tree',
+                      'card': '$card'
+                    }, '$result'
+                  ]
+                }
+              }
+            }, {
               '$match': data.match
             }, {
               '$sort': data.sort
@@ -288,48 +319,37 @@ exports.getTreeTrackData = async function(data) {
               '$limit': 25
             }, {
               '$unwind': {
-                'path': '$result',
+                'path': '$dt',
                 'preserveNullAndEmptyArrays': false
               }
             }, {
-              '$unwind': {
-                'path': '$result.dt',
-                'preserveNullAndEmptyArrays': false
-              }
-            }, {
-              '$project': {
-                'card': 1,
-                'name': '$result.name',
-                'ja_name': '$result.ja_name',
-                'rarity': '$result.rarity',
-                'node': '$result.dt',
-                'unlocked': {
+              '$addFields': {
+                'dt.unlocked': {
                   '$in': [
-                    '$result.dt._id', '$tree'
+                    '$dt._id', '$tree'
                   ]
                 }
               }
             }, {
-              '$addFields': {
-                'node.unlocked': '$unlocked'
-              }
-            }, {
               '$group': {
                 '_id': '$card',
-                'card': {
-                  '$first': '$card'
-                },
                 'name': {
                   '$first': '$name'
                 },
                 'ja_name': {
                   '$first': '$ja_name'
                 },
+                'type': {
+                  '$first': '$type'
+                },
                 'rarity': {
                   '$first': '$rarity'
                 },
+                'characters': {
+                  '$first': '$characters'
+                },
                 'nodes': {
-                  '$push': '$node'
+                  '$push': '$dt'
                 }
               }
             }, {
@@ -356,6 +376,7 @@ exports.getTreeTrackData = async function(data) {
     let nodes = await Users.aggregate(pipeline);
     return nodes;
   } catch(e) {
+    console.error(e);
     return [];
   }
 };
