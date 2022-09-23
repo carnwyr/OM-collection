@@ -55,9 +55,7 @@ exports.getEventDetail = async function (req, res, next) {
 		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		let event = await eventService.getEvent({ "name.en": eventName });
 
-		if (!event) throw createError(404, properties = { title: "Event not found", errorMessage: `We're still adding to our event database. Please help us by contributing to
-		<a href="https://docs.google.com/spreadsheets/d/1BcTf4jVsw6dtvu8U7vmP0LVB_yVDYXyl3KdeHLtPmxo/edit?usp=sharing" target="_blank"> this spreadsheet</a>.
-		Thank you!` });
+		if (!event) throw createError(404, properties = { title: "Event not found", errorMessage: "Work in progress. Trying to figure out how to save this kind of events." });
 
 		let locals = {
 			title: event.name.en,
