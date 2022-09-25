@@ -167,24 +167,24 @@ html(lang=t("lang"))
             #ezoic-pub-ad-placeholder-122.w-100
               <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4992362293" data-ad-format="auto" data-full-width-responsive="true"></ins>
               <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-      //- toasts
-      div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
-        div(class="toast-body")
-          span This site uses cookies to improve your experience.
-            |
-            |
-            a(href="/policies") More information
-          button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
-            span(aria-hidden="true") Got it &#x1F44D
       //-
-      div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
-        div.toast-header
-          strong.mr-auto New Pop Quiz Section
-          button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
-            span(aria-hidden="true") &times;
-        div.toast-body
-          | We recently added a feature that many users have requested. Please check it out :)
-          a(href="/event/Cowboys_on_the_Range" class="btn btn-primary btn-sm btn-block mt-3") Take me there!
+        div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
+          div(class="toast-body")
+            span This site uses cookies to improve your experience.
+              |
+              |
+              a(href="/policies") More information
+            button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
+              span(aria-hidden="true") Got it &#x1F44D
+      //-
+        div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
+          div.toast-header
+            strong.mr-auto New Pop Quiz Section
+            button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
+              span(aria-hidden="true") &times;
+          div.toast-body
+            | We recently added a feature that many users have requested. Please check it out :)
+            a(href="/event/Cowboys_on_the_Range" class="btn btn-primary btn-sm btn-block mt-3") Take me there!
 
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
@@ -242,3 +242,11 @@ html(lang=t("lang"))
         div.row.col.justify-content-center.align-items-center Made with
           | <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-heart-fill mx-1" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/> </svg>
           | by Laele and char
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    script.
+      kofiWidgetOverlay.draw('karasu_os', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Donate',
+        'floating-chat.donateButton.background-color': '#5cc0df',
+        'floating-chat.donateButton.text-color': '#fff'
+      });
