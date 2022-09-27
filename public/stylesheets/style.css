@@ -135,6 +135,7 @@ p.section-title {
 
 .big-fb {
   min-height: 270px !important;
+  height: 100% !important;
 }
 
 .bootstrap-select > .dropdown-menu {
