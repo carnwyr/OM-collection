@@ -13,11 +13,13 @@ router.get("/policies", miscController.privacyPolicy);
 router.get("/surpriseGuest", miscController.surpriseGuest);
 router.get("/rankings", userController.getRankingsPage);
 router.get("/icons/:character", cardController.getIconPage);
-// router.get("/icons", cardController.getIconPage);
+router.get("/icons", cardController.getIconDirectory);
 
 // Cards lists
+router.get("/cards/:character", cardController.getCharacterCardPage);
 router.get("/cards", cardController.getCardsListPage);
 router.get("/hiddenCards", loginController.hasAccess("Admin"), cardController.getHiddenCardsListPage);
+router.get("/card_pages", cardController.getCardDirectory);
 
 // Events
 router.get("/events", eventsController.getEventsPage);
@@ -43,7 +45,8 @@ router.get("/userList", loginController.hasAccess("Admin"), userController.getUs
 router.post("/updateSupport", loginController.hasAccess("Admin"), userController.updateSupport);
 
 // Misc.
-router.get("/getCards", cardController.getCards);
+router.get("/getCards", cardController.getCards);   // TODO: refactor
+router.get("/getCards2", cardController.getCards2); // TODO: refactor
 // router.get("/animations", cardController.getAnimationList);
 router.get("/getTreeData", cardController.getTreeData);
 router.get("/tree_tracker/rank_up", miscController.getTreeTracker);

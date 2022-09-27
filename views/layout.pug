@@ -62,12 +62,11 @@ html(lang=t("lang"))
           li.nav-item
             a.nav-link(href="/events") Events
           li(class="nav-item")
-            a(class="nav-link" href='/rankings')= t("common.rankings")
-          li(class="nav-item")
             a(class="nav-link" href="/SurpriseGuest")= t("common.spg")
+          li(class="nav-item")
           li(class="nav-item dropdown")
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.tools")
-            div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
+            div(class="dropdown-menu shadow px-2" aria-labelledby="toolsDropdown")
               a(class="dropdown-item" href="/tree_tracker") Devil's tree tracker
               .mt-2.overline ask karasu
               a(class="dropdown-item" href="/ask/dt_rewards") Devil's tree rewards
@@ -79,6 +78,12 @@ html(lang=t("lang"))
               a(class="dropdown-item" href="/calculator/points") Pop Quiz Points
               a(class="dropdown-item" href="/calculator/bonus") Cheat Card Bonus
               a(class="dropdown-item" href="/calculator/ap_recovery") AP Recovery
+          li(class="nav-item dropdown")
+            a(class="dropdown-toggle nav-link" role='button' id='miscDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Misc.
+            div(class="dropdown-menu shadow px-2" aria-labelledby="miscDropdown")
+              a.dropdown-item(href='/rankings')= t("common.rankings")
+              a.dropdown-item(href="/card_pages") Card pages
+              a.dropdown-item(href="/icons") Icon pages
           //- TODO: use userController to check rights
           if user && (user.type === "Admin" || user.type === "Moderator")
             li(class="nav-item dropdown")

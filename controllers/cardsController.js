@@ -33,6 +33,26 @@ exports.getCardsListPage = function (req, res, next) {
 	}
 };
 
+exports.getCharacterCardPage = async function (req, res, next) {
+	const characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael"];
+	if (!characters.includes(req.params.character)) return next(createError(404));
+	let character = req.params.character;
+	return res.render("cardListCharacter", {
+		title: character + "'s Cards",
+		description: character + "'s card page.",
+		user: req.user,
+		character: character
+	});
+};
+
+exports.getIconDirectory = function (req, res, next) {
+	return res.render("iconDir", {
+		title: "Icons",
+		description: "Icons directory",
+		user: req.user
+	})
+};
+
 exports.getOwnedCardsPage = async function(req, res, next) {
 	try {
 		var user = await userService.getUser(req.params.username);
@@ -263,7 +283,6 @@ exports.directImage = async function (req, res, next) {
 
 
 // Collection functions
-// TODO: merge with getCardsListPage
 exports.getCards = async function (req, res) {
 	try {
 		let query = formatAggPipeline(req.query, req.i18n.t("lang"));
@@ -291,6 +310,17 @@ exports.getCards = async function (req, res) {
 				}
 		}
 
+		return res.json({ err: null, cards: cards });
+	} catch(e) {
+		Sentry.captureException(e);
+		return res.json({ err: true, cards: [], message: e.message });
+	}
+}
+// TODO: give getCards more flexibility
+exports.getCards2 = async function (req, res) {
+	try {
+		let pipeline = formatPipeline2(req.query);
+		let cards = await cardService.aggregateCards(pipeline);
 		return res.json({ err: null, cards: cards });
 	} catch(e) {
 		Sentry.captureException(e);
@@ -498,6 +528,7 @@ function escapeSearchString(str) {
 	return str.replace(/[.*+?^${}()|[\]\\'"]/g, '\\$&');
 }
 
+// TODO: refactor
 function formatAggPipeline(obj, language = "en") {
 	let query = {};
 	let sum = [];
@@ -566,6 +597,63 @@ function formatAggPipeline(obj, language = "en") {
 	return pipeline;
 }
 
+function formatPipeline2(query) {
+	let pipeline = [
+		{
+			$match: {
+				characters: {
+					$in: [query.characters]
+				},
+			}
+		}
+	];
+
+	if (query.attribute) {
+		pipeline.push({
+			$match: {
+				attribute: query.attribute
+			}
+		})
+	}
+
+	if (query.source) {
+		pipeline.push({
+	    '$unwind': {
+	      'path': '$source',
+	      'preserveNullAndEmptyArrays': false
+	    }
+	  },
+		{
+	    '$lookup': {
+	      'from': 'events',
+	      'localField': 'source',
+	      'foreignField': 'name.en',
+	      'as': 'result'
+	    }
+	  },
+		{
+	    '$match': {
+	      'result.type': query.source
+	    }
+	  });
+	}
+
+	pipeline.push({
+		$sort: {
+			number: -1
+		}
+	},
+	{
+		$project: {
+			name: 1,
+			uniqueName: 1,
+			type: 1
+		}
+	});
+
+	return pipeline;
+}
+
 exports.isVerifiedTreeData = async function (name, data) {
 	try {
 		let card = await cardService.getCard({ uniqueName: name });
@@ -600,28 +688,35 @@ exports.isVerifiedTreeData = async function (name, data) {
 	}
 }
 
+// TODO: use vue
 exports.getIconPage = async function (req, res, next) {
 	try {
-		// TODO: make req.params.character case insensitive?
-		const chara = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael"];
-		if (req.params.character && !chara.includes(req.params.character)) return next(createError(404, properties = { title: "404 Page not found" }));
+		const characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael"];
+		const character = req.params.character;
+		if (!characters.includes(character)) return next(createError(404, properties = { title: "404 Page not found" }));
 
 		let cards = await cardService.getCards({
-			characters: { $in: [ req.params.character ] },
+			characters: { $in: [ character ] },
 			$nor: [ { rarity: "N" }, { rarity: "R" } ]
 		}, { name: 1, type: 1, characters: 1, rarity: 1 });
-		let title = "Icons";
-		if (req.params.character) title = req.params.character + "'s Icons";
 
 		return res.render("iconList", {
-			title: title,
-			description: "A list of Obey Me icons on karasu-os.com.",
+			title: character + "'s Icons",
+			description: "A complete list of Obey Me " + character + "'s icons on karasu-os.com.",
 			user: req.user,
-			character: req.params.character,
+			character: character,
 			cards: cards
-		})
+		});
 	} catch(e) {
 		Sentry.captureException(e);
 		return next(e);
 	}
+};
+
+exports.getCardDirectory = function (req, res, next) {
+	return res.render("cardDir", {
+		title: "Card Directory",
+		description: "",
+		user: req.user
+	});
 };

@@ -1,0 +1,115 @@
+extends layout
+
+block scripts
+  link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
+  script(src="/javascripts/lazyload.js")
+
+block content
+  div.container
+    h1= title
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    script(type="module").
+      const { createApp } = Vue;
+      createApp({
+        data: () => ({
+          cards: {
+            demon: [],
+            memory: []
+          }
+        }),
+        created() {
+          this.fetchData()
+        },
+        methods: {
+          async fetchData() {
+            let url = "/getCards2?characters=!{character}";
+            let source = $("input[name='source']:checked").val();
+            let attribute = $("input[name='attribute']:checked").val();
+            if (source) url += "&source=" + source;
+            if (attribute) url += "&attribute=" + attribute;
+
+            console.log(url)
+
+            let cards = (await (await fetch(url)).json()).cards;
+            this.cards.demon = cards.filter(x => x.type === "Demon");
+            this.cards.memory = cards.filter(x => x.type === "Memory");
+
+            this.onSubmit();
+          },
+          onSubmit() {}
+        }
+      }).mount('#app')
+
+    div#app
+      div.card.card-body.mb-3
+        form#filters(@change="fetchData" @submit.prevent="onSubmit")
+          div.form-row
+            div.col-md-1.text-right Source
+            div.col
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="source1" name="source" class="custom-control-input" value="" checked>
+                <label class="custom-control-label" for="source1">All</label>
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="source2" name="source" class="custom-control-input" value="PopQuiz">
+                <label class="custom-control-label" for="source2">Pop Quiz</label>
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="source3" name="source" class="custom-control-input" value="Nightmare">
+                <label class="custom-control-label" for="source3">Nightmare</label>
+              </div>
+              <div class="custom-control custom-radio custom-control-inline" style="opacity:.5;">
+                <input type="radio" id="source4" name="source" class="custom-control-input" disabled>
+                <label class="custom-control-label" for="source4">Lonely Devil (missing too much data)</label>
+              </div>
+          hr
+          div.form-row
+            div.col-md-1.text-right Attributes
+            div.col
+              div.custom-control.custom-radio.custom-control-inline
+                input#checkAttributeAll.custom-control-input(type="radio" name="attribute" value="" checked)
+                label.custom-control-label(for="checkAttributeAll") All
+              each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+                div.custom-control.custom-radio.custom-control-inline
+                  //- TODO: change to checkbox
+                  input.custom-control-input(type="radio" id="checkAttribute"+attribute name="attribute" value=attribute)
+                  label.custom-control-label(for="checkAttribute"+attribute)= t(attribute)
+          hr
+          div.form-row
+            div.col-md-1.text-right Status
+            div.col(style="opacity:.5;")
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="user1" name="user" class="custom-control-input" disabled>
+                <label class="custom-control-label" for="user1">All</label>
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="user2" name="user" class="custom-control-input" disabled>
+                <label class="custom-control-label" for="user2">Owned</label>
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="user3" name="user" class="custom-control-input" disabled>
+                <label class="custom-control-label" for="user3">Not Owned (work in progress)</label>
+              </div>
+      ul.nav.nav-pills.nav-fill.shadow.mb-3(style="background:white;border-radius:.25rem;")
+        li.nav-item
+          a#demon-tab.nav-link.active(data-toggle="tab" href="#demoncards" role="tab" aria-controls="demoncards" aria-selected="true") Demon
+        li.nav-item
+          a#memory-tab.nav-link(data-toggle="tab" href="#memorycards" role="tab" aria-controls="memorycards" aria-selected="false") Memory
+      div.tab-content
+        div#demoncards.tab-pane.show.active(role="tabpanel" aria-labelledby="demon-tab")
+          div.d-flex.flex-wrap.justify-content-between
+            a.cardPreview.icon-container(v-for="{ name, uniqueName } in cards.demon" :href="'/card/' + encodeURIComponent(name)")
+              <img loading="lazy" :src="'/images/cards/S/' + uniqueName + '.jpg'">
+              <figcaption>{{name}}</figcaption>
+            div.cardPreview.icon-container(v-for="n in 9")
+          p.text-center.my-5(v-if="!cards.demon.length")= t("cards.no-cards")
+        div#memorycards.tab-pane(role="tabpanel" aria-labelledby="memory-tab")
+          div.d-flex.flex-wrap.justify-content-between
+            a.cardPreview.icon-container(v-for="{ name, uniqueName } in cards.memory" :href="'/card/' + encodeURIComponent(name)")
+              <img loading="lazy" :src="'/images/cards/S/' + uniqueName + '.jpg'">
+              <figcaption>{{name}}</figcaption>
+            div.cardPreview.icon-container(v-for="n in 9")
+          p.text-center.my-5(v-if="!cards.memory.length")= t("cards.no-cards")
+    div.card.card-body
+      h5.text-center Information
+      p Hi there. This is a work in progress page. Since events info is relatively new to the website, it has some missing information and we're still trying to figure out how to save permanent nightmares, charge missions, and other special challenges. Help with updating information on this website is very much appreciated!
