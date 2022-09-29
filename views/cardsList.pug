@@ -168,7 +168,7 @@ block content
                 div.custom-control.custom-radio.custom-control-inline
                   input#checkRarityAll.custom-control-input(type="radio" name="rarity" checked=!query.rarity value="")
                   label.custom-control-label(for="checkRarityAll") All
-                each rarity in ["N", "R", "SR", "SSR", "UR", "UR+"]
+                each rarity in ["UR+", "UR", "SSR", "SR", "R", "N"]
                   - query.rarity = [].concat(query.rarity)
                   div.custom-control.custom-checkbox.custom-control-inline
                     input.custom-control-input(type="checkbox" id="checkRarity"+rarity name="rarity" value=rarity checked=(query.rarity&&query.rarity.includes(rarity)?true:false))

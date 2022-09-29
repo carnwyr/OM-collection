@@ -24,8 +24,10 @@ block content
           async fetchData() {
             let url = "/getCards2?characters=!{character}";
             let source = $("input[name='source']:checked").val();
+            let rarity = $("input[name='rarity']:checked").val();
             let attribute = $("input[name='attribute']:checked").val();
             if (source) url += "&source=" + source;
+            if (rarity) url += "&rarity=" + rarity;
             if (attribute) url += "&attribute=" + attribute;
 
             console.log(url)
@@ -58,10 +60,22 @@ block content
                 <input type="radio" id="source3" name="source" class="custom-control-input" value="Nightmare">
                 <label class="custom-control-label" for="source3">Nightmare</label>
               </div>
-              <div class="custom-control custom-radio custom-control-inline" style="opacity:.5;">
-                <input type="radio" id="source4" name="source" class="custom-control-input" disabled>
-                <label class="custom-control-label" for="source4">Lonely Devil (missing too much data)</label>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="source4" name="source" class="custom-control-input" value="LonelyDevil">
+                <label class="custom-control-label" for="source4">Lonely Devil*</label>
               </div>
+          hr
+          div.form-row
+            div.col-md-1.text-right Rarities
+            div.col
+              div.custom-control.custom-radio.custom-control-inline
+                input#checkRarityAll.custom-control-input(type="radio" name="rarity" value="" checked)
+                label.custom-control-label(for="checkRarityAll") All
+              each rarity in ["UR+", "UR", "SSR", "SR", "R", "N"]
+                div.custom-control.custom-radio.custom-control-inline
+                  //- TODO: change to checkbox
+                  input.custom-control-input(type="radio" id="checkRarity"+rarity name="rarity" value=rarity)
+                  label.custom-control-label(for="checkRarity"+rarity)= t(rarity)
           hr
           div.form-row
             div.col-md-1.text-right Attributes
@@ -113,3 +127,4 @@ block content
     div.card.card-body
       h5.text-center Information
       p Hi there. This is a work in progress page. Since events info is relatively new to the website, it has some missing information and we're still trying to figure out how to save permanent nightmares, charge missions, and other special challenges. Help with updating information on this website is very much appreciated!
+      p *Caution: some event data are missing.

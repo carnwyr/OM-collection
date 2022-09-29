@@ -608,6 +608,14 @@ function formatPipeline2(query) {
 		}
 	];
 
+	if (query.rarity) {
+		pipeline.push({
+			$match: {
+				rarity: query.rarity
+			}
+		})
+	}
+
 	if (query.attribute) {
 		pipeline.push({
 			$match: {
@@ -617,6 +625,9 @@ function formatPipeline2(query) {
 	}
 
 	if (query.source) {
+		let source = query.source;
+		if (source === "LonelyDevil") query.source = "PopQuiz";
+
 		pipeline.push({
 	    '$unwind': {
 	      'path': '$source',
@@ -636,6 +647,14 @@ function formatPipeline2(query) {
 	      'result.type': query.source
 	    }
 	  });
+
+		if (source === "LonelyDevil") {
+			pipeline.push({
+				'$match': {
+		      'result.isLonelyDevil': true
+		    }
+			});
+		}
 	}
 
 	pipeline.push({
