@@ -50,7 +50,7 @@ exports.getIconDirectory = function (req, res, next) {
 		title: "Icons",
 		description: "Icons directory",
 		user: req.user
-	})
+	});
 };
 
 exports.getOwnedCardsPage = async function(req, res, next) {
@@ -169,23 +169,23 @@ async function getSourceInLanguage(sources, lng) {
 	for (const source of sources) {
 		// temporary exceptions
 		switch (source) {
-			case "Chapter M":
-				arr.push("Mの章");
-				break;
-			case "Chapter A":
-				arr.push("Aの章");
-				break;
-			case "Chapter G":
-				arr.push("Gの章");
-				break;
-			default: {
-				let relatedEvent = await eventService.getEvent({ "name.en": source });
-				if (!relatedEvent) {
-					arr.push(source);
-				} else if (relatedEvent.name[lng] !== "???" && relatedEvent.name[lng] !== "") {
-					arr.push(relatedEvent.name.ja);
-				}
+		case "Chapter M":
+			arr.push("Mの章");
+			break;
+		case "Chapter A":
+			arr.push("Aの章");
+			break;
+		case "Chapter G":
+			arr.push("Gの章");
+			break;
+		default: {
+			let relatedEvent = await eventService.getEvent({ "name.en": source });
+			if (!relatedEvent) {
+				arr.push(source);
+			} else if (relatedEvent.name[lng] !== "???" && relatedEvent.name[lng] !== "") {
+				arr.push(relatedEvent.name.ja);
 			}
+		}
 		}
 	}
 	return arr;
@@ -290,24 +290,24 @@ exports.getCards = async function (req, res) {
 
 		let user;
 		switch (req.query.path) {
-			case "collection":
-				user = await userService.getUser(req.query.user);
-				cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
-				break;
-			case "fav":
-				user = await userService.getUser(req.query.user);
-				cards = cards.filter(card => user.cards.faved.includes(card.uniqueName));
-				break;
-			default:
-				let type = req.query.cards;
-				if (type && req.user) {
-					user = await userService.getUser(req.user.name);
-					if (type === "owned") {
-						cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
-					} else if (type === "not_owned") {
-						cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
-					}
+		case "collection":
+			user = await userService.getUser(req.query.user);
+			cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+			break;
+		case "fav":
+			user = await userService.getUser(req.query.user);
+			cards = cards.filter(card => user.cards.faved.includes(card.uniqueName));
+			break;
+		default:
+			let type = req.query.cards;
+			if (type && req.user) {
+				user = await userService.getUser(req.user.name);
+				if (type === "owned") {
+					cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+				} else if (type === "not_owned") {
+					cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
 				}
+			}
 		}
 
 		return res.json({ err: null, cards: cards });
@@ -315,7 +315,7 @@ exports.getCards = async function (req, res) {
 		Sentry.captureException(e);
 		return res.json({ err: true, cards: [], message: e.message });
 	}
-}
+};
 // TODO: give getCards more flexibility
 exports.getCards2 = async function (req, res) {
 	try {
@@ -326,7 +326,7 @@ exports.getCards2 = async function (req, res) {
 		Sentry.captureException(e);
 		return res.json({ err: true, cards: [], message: e.message });
 	}
-}
+};
 
 function getNodeData(card, cost) {
 	if (card.nodes.length === 0) return "?";
@@ -339,7 +339,7 @@ function getNodeData(card, cost) {
 	if (node) {
 		let str = "<div style='position:relative;'>";
 		if (node.unlocked) {
-			str += `<div class="unlocked"></div>`;
+			str += "<div class=\"unlocked\"></div>";
 		}
 		if (node.type === "icon") {
 			if (card.type === "Demon") {
@@ -380,7 +380,7 @@ function getRankUpNodeData(card, level) {
 	if (node) {
 		let str = "<div style='position:relative;'>";
 		if (node.unlocked) {
-			str += `<div class="unlocked"></div>`;
+			str += "<div class=\"unlocked\"></div>";
 		}
 		str += `<img src="/images/nodes/${node.type}.png" style="width:2em;height:2em;">`;
 		return str + "</div>";
@@ -427,7 +427,7 @@ exports.getTreeData = async function (req, res, next) {
 		let headers = isRankUp ? ["Lv.10","Lv.20","Lv.30","Lv.40","Lv.50","Devil's Flower"] : [2000,3000,4500,6000,8000,10000,15000,20000];
 
 		cards.forEach((card, i) => {
-			td = [`<a href="/card/${encodeURIComponent(card.name.replace(/ /g, '_'))}"><img class="mr-2" src="/images/cards/S/${card._id}.jpg" style="float:left;width:2em;height:2em;">${req.lang === "ja" ? card.ja_name : card.name}</a>`];
+			td = [`<a href="/card/${encodeURIComponent(card.name.replace(/ /g, "_"))}"><img class="mr-2" src="/images/cards/S/${card._id}.jpg" style="float:left;width:2em;height:2em;">${req.lang === "ja" ? card.ja_name : card.name}</a>`];
 			headers.forEach(i => {
 				if (isRankUp) {
 					td.push(getRankUpNodeData(card, i));
@@ -440,8 +440,8 @@ exports.getTreeData = async function (req, res, next) {
 		headers.unshift("Name");
 
 		return res.json({
-		  total_rows: cards.length === 0 ? 0 : cards[0].totalCount,
-		  rows: rows,
+			total_rows: cards.length === 0 ? 0 : cards[0].totalCount,
+			rows: rows,
 			headers: headers
 		});
 	} catch(e) {
@@ -525,7 +525,7 @@ exports.makeCardPublic = async function (req, res, next) {
 
 /* helper */
 function escapeSearchString(str) {
-	return str.replace(/[.*+?^${}()|[\]\\'"]/g, '\\$&');
+	return str.replace(/[.*+?^${}()|[\]\\'"]/g, "\\$&");
 }
 
 // TODO: refactor
@@ -544,9 +544,9 @@ function formatAggPipeline(obj, language = "en") {
 			// query["name."+lang] = new RegExp(value, 'i');
 			value = escapeSearchString(value);
 			if (language === "ja") {
-				query["ja_name"] = new RegExp(value, 'i');
+				query["ja_name"] = new RegExp(value, "i");
 			} else {
-				query["name"] = new RegExp(value, 'i');
+				query["name"] = new RegExp(value, "i");
 			}
 		} else if (key === "sortby") {
 			if (!value.match(/^(min|max|fdt)_(-1|1)$/)) {
@@ -564,27 +564,27 @@ function formatAggPipeline(obj, language = "en") {
 	});
 
 
-	match = { '$match': query };
+	match = { "$match": query };
 
 	addFields = {
-		'$addFields': {
-			'total': { '$sum': sum }
+		"$addFields": {
+			"total": { "$sum": sum }
 		}
 	};
 
-	sort = { '$sort': {} };
+	sort = { "$sort": {} };
 	if (sortby) {
-		sort['$sort'][sortby] = order;
+		sort["$sort"][sortby] = order;
 	}
-	sort['$sort']["number"] = -1;
+	sort["$sort"]["number"] = -1;
 
 	project = {
-		'$project': {
-			'name': 1,
-			'ja_name': 1,
-			'uniqueName': 1,
-			'type': 1,
-			'total': 1
+		"$project": {
+			"name": 1,
+			"ja_name": 1,
+			"uniqueName": 1,
+			"type": 1,
+			"total": 1
 		}
 	};
 
@@ -613,7 +613,7 @@ function formatPipeline2(query) {
 			$match: {
 				rarity: query.rarity
 			}
-		})
+		});
 	}
 
 	if (query.attribute) {
@@ -621,7 +621,7 @@ function formatPipeline2(query) {
 			$match: {
 				attribute: query.attribute
 			}
-		})
+		});
 	}
 
 	if (query.source) {
@@ -629,30 +629,30 @@ function formatPipeline2(query) {
 		if (source === "LonelyDevil") query.source = "PopQuiz";
 
 		pipeline.push({
-	    '$unwind': {
-	      'path': '$source',
-	      'preserveNullAndEmptyArrays': false
-	    }
-	  },
+			"$unwind": {
+				"path": "$source",
+				"preserveNullAndEmptyArrays": false
+			}
+		},
 		{
-	    '$lookup': {
-	      'from': 'events',
-	      'localField': 'source',
-	      'foreignField': 'name.en',
-	      'as': 'result'
-	    }
-	  },
+			"$lookup": {
+				"from": "events",
+				"localField": "source",
+				"foreignField": "name.en",
+				"as": "result"
+			}
+		},
 		{
-	    '$match': {
-	      'result.type': query.source
-	    }
-	  });
+			"$match": {
+				"result.type": query.source
+			}
+		});
 
 		if (source === "LonelyDevil") {
 			pipeline.push({
-				'$match': {
-		      'result.isLonelyDevil': true
-		    }
+				"$match": {
+					"result.isLonelyDevil": true
+				}
 			});
 		}
 	}
@@ -705,7 +705,7 @@ exports.isVerifiedTreeData = async function (name, data) {
 		Sentry.captureException(e);
 		return { err: true, message: e.message };
 	}
-}
+};
 
 // TODO: use vue
 exports.getIconPage = async function (req, res, next) {
