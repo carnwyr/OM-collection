@@ -182,17 +182,17 @@ html(lang=t("lang"))
             button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
               span(aria-hidden="true") Got it &#x1F44D
       //-
-      div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
-        div.toast-header
-          strong.mr-auto Cards and Icons
-          button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
-            span(aria-hidden="true") &times;
-        div.toast-body
-          | We recently added some new pages :)
-          ul.mb-0
-            li: a(href="/card_pages") New card pages
-            li: a(href="/icons") New icons
-          //- a(href="/event/Cowboys_on_the_Range" class="btn btn-primary btn-sm btn-block mt-3") Take me there!
+        div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
+          div.toast-header
+            strong.mr-auto Cards and Icons
+            button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
+              span(aria-hidden="true") &times;
+          div.toast-body
+            | We recently added some new pages :)
+            ul.mb-0
+              li: a(href="/card_pages") New card pages
+              li: a(href="/icons") New icons
+            //- a(href="/event/Cowboys_on_the_Range" class="btn btn-primary btn-sm btn-block mt-3") Take me there!
 
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
