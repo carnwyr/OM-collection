@@ -46,7 +46,7 @@ block content
       div.card.card-body.mb-3
         form#filters(@change="fetchData" @submit.prevent="onSubmit")
           div.form-row
-            div.col-md-1.text-right Source
+            div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Source
             div.col
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="source1" name="source" class="custom-control-input" value="" checked>
@@ -66,7 +66,7 @@ block content
               </div>
           hr
           div.form-row
-            div.col-md-1.text-right Rarities
+            div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Rarities
             div.col
               div.custom-control.custom-radio.custom-control-inline
                 input#checkRarityAll.custom-control-input(type="radio" name="rarity" value="" checked)
@@ -78,7 +78,7 @@ block content
                   label.custom-control-label(for="checkRarity"+rarity)= t(rarity)
           hr
           div.form-row
-            div.col-md-1.text-right Attributes
+            div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Attributes
             div.col
               div.custom-control.custom-radio.custom-control-inline
                 input#checkAttributeAll.custom-control-input(type="radio" name="attribute" value="" checked)
@@ -90,7 +90,7 @@ block content
                   label.custom-control-label(for="checkAttribute"+attribute)= t(attribute)
           hr
           div.form-row
-            div.col-md-1.text-right Status
+            div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Status
             div.col(style="opacity:.5;")
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="user1" name="user" class="custom-control-input" disabled>
@@ -126,4 +126,4 @@ block content
           p.text-center.my-5(v-if="!cards.memory.length")= t("cards.no-cards")
     div.card.card-body
       h5.text-center Information
-      p Hi there. This is a work in progress page. Since events info has only been on the website for one year, there are some missing information. We're still trying to figure out how to save permanent nightmares, charge missions, and other special challenges so they can become a filter too. Help with updating information on this website is very much appreciated!
+      p Hi there. This is a work in progress page. Since events info has only been on the website for one year, there are some missing information. We're still trying to figure out how to save permanent nightmares, lessons, charge missions, and other special challenges so they can become a filter too. Help with updating information on this website is very much appreciated!
