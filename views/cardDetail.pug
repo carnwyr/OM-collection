@@ -100,7 +100,7 @@ block content
               span= card.characters.length>1?t("cards.characters"):t("cards.character")
             div.col-12.col-md-4
               each val, index in card.characters
-                a(href="/cards?characters="+(val==="Little D"?"LittleD":val))= t(val)
+                a(href=(val === "Little D" ? "/cards?characters=LittleD" : "/cards/"+val))= t(val)
                 if index < card.characters.length - 1
                   | ,
                   |
@@ -134,13 +134,13 @@ block content
               if card.skills && card.skills.length > 0
                 each s in card.skills
                   div.col-12.col-lg-6
-                      div.row.align-items-center
-                        span.col-12.col-lg-3.text-center.strong= s.skillType
-                        div.col-12.col-lg-9
-                          div.d-flex.justify-content-between.align-items-center.p-1(style="background:var(--light);border-radius:5px;")
-                            span= s.title
-                            small(style="letter-spacing:.1em;") LV.1/10
-                          p.p-1= s.description
+                    - const skillColor = { "Special Skill": "#ff6da2", "Ability": "#ffa46e", "Auto Skill": "#79daae" };
+                    div.mb-1: span(style="border-radius:16px;background:" + skillColor[s.skillType] + ";color:white;padding:.25rem 1.5rem;font-size:small;text-align:center;")= s.skillType
+                    div
+                      div.d-flex.justify-content-between.align-items-center.p-1(style="background:var(--light);border-radius:5px;")
+                        span= s.title
+                        small(style="letter-spacing:.1em;") LV.1/10
+                      p.p-1= s.description
               else
                 p.col-12.text-center Missing skills data.
           br
