@@ -41,6 +41,7 @@
     "profile": "個人空間",
     "rankings": "排行榜",
     "tools": "工具箱",
+    "spg": "Surprise Guest",
     "signup": "註冊",
     "login": "登陸",
     "logout": "退出帳號",
@@ -74,7 +75,7 @@
     "private": "僅自己可見"
   },
   "spg": {
-    "shortActions": "顯示單個COMBO",
+    "shortActions": "顯示最佳COMBO",
     "allActions": "顯示所有COMBO",
     "use_item": "使用禮品"
   },
@@ -126,5 +127,7 @@
   "tap body": "點身體",
   "tap head": "點頭",
   "shake": "搖手機",
-  "ignore": "無視"
+  "ignore": "無視",
+
+  "de": "的"
 }

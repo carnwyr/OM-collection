@@ -34,6 +34,6 @@ exports.getLocalizationMiddleware = function (isDebug) {
 			// saveMissing: true,
 			detection: { order: [detectorName] }
 		});
-	
+
 	return i18nextMiddleware.handle(i18next);
 }
