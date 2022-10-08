@@ -69,13 +69,13 @@ block content
         .col-3.d-none.d-lg-block
           .nav.flex-column.nav-pills.mb-2.big-nav(role='tablist' aria-orientation="vertical")
             each interaction in interactions
-              a.px-1.px-sm-2.px-lg-3(class='nav-item nav-link' id=interaction.chara+'Pill' data-toggle='pill' href=interaction.chara role='tab' aria-controls=interaction.chara)
+              a.px-1.px-sm-2.px-lg-3(class='nav-item nav-link' id=interaction.chara+'Pill' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
                 img.img-fluid.mx-1(src=`/images/faces/${interaction.chara}.png` style='width:30px;' alt=interaction.chara)
                 | #{t(interaction.chara)}
         .col-12.d-lg-none.mb-3
           .nav.nav-pills.justify-content-center.small-nav(role='tablist')
             each interaction in interactions
-              a.p-1.mx-1.small-pill(class='nav-item nav-link' id=interaction.chara+'PillSmall' data-toggle='pill' href=interaction.chara role='tab' aria-controls=interaction.chara)
+              a.p-1.mx-1.small-pill(class='nav-item nav-link' id=interaction.chara+'PillSmall' data-toggle='pill' href='#'+interaction.chara role='tab' aria-controls=interaction.chara)
                 img.img-fluid(src=`/images/faces/${interaction.chara}.png` style='width:40px;' alt=interaction.chara)
 
         //- table
