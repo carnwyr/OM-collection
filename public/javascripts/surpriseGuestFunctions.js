@@ -60,11 +60,13 @@ function enableItemOptions(allowItems) {
 }
 
 function syncButtons(button, urlParams) {
-	let character = button.attr("id").replace("Pill", "");
+	let character = "";
 	if (button.parent().hasClass("big-nav")) {
+		character = button.attr("id").replace("Pill", "");
 		$("#"+button.attr("id")+"Small").tab("show");
 		urlParams.set("character", character);
 	} else {
+		character = button.attr("id").replace("PillSmall", "");
 		$("#"+button.attr("id").replace("Small", "")).tab("show");
 		urlParams.set("character", character);
 	}
