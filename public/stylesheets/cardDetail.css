@@ -78,10 +78,6 @@ svg.bi-star-fill:hover {
 	#info>div:nth-child(even) {
 		text-align: center;
 	}
-
-	.dt-node .d-flex {
-		justify-content: center;
-	}
 }
 
 table#strength thead th, #strength td {
@@ -89,22 +85,32 @@ table#strength thead th, #strength td {
 }
 
 .dt-node {
+	position: relative;
+	z-index: 2;
 	border-radius: 16px;
 	border: 2px solid var(--secondary);
-	height: 100%;
 }
-
-.dt-node.item {
+[data-node-type="item"] {
 	border-color: gold;
 }
-
-@media (min-width: 768px) {
-	.dt-node .header>img {
-		position: absolute;
-	}
-	.dt-node .header>span {
-		padding: 0 36px;
-	}
+[data-node-type="chat"] {
+	border-color: #8CD5E1;
+}
+[data-node-type="icon"] {
+	border-color: #C8B4FF;
+}
+[data-node-type="bgm"],
+[data-node-type="voice"],
+[data-node-type="clothing"],
+[data-node-type="wallpaper"],
+[data-node-type="home_picture"] {
+	border-color: #EE91DC;
+}
+.dt-node p:first-child {
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 
 #cardstats a[data-toggle="collapse"] {
