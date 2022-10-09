@@ -24,7 +24,7 @@ $(document).ready(function () {
 		$("#announcementToast").removeClass("d-none").toast("show");  // if is toast
 		// $("#announcementToast").removeClass("d-none");  // if is alert
 	}
-	$("#announcementToast .close").on("click", () => {
+	$("#announcementToast .close, #announcementToast a.btn-block").on("click", () => {
 		document.cookie = cookieName + "=true; expires=" + cookieExpiryDate() + ";";
 		$("#announcementToast").toast("hide");  // if is toast
 	});
