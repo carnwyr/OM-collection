@@ -402,13 +402,13 @@ exports.getNumberOfUsers = function() {
 };
 
 exports.getNumberOfValidUsers = function() {
-  return Users.find({
+  return Users.countDocuments({
     $or: [
       { "info.email": { $exists: true, $ne: "" } },
       { "cards.owned": { $exists: true, $ne: [] } },
       { "cards.faved": { $exists: true, $ne: [] } },
     ]
-  }).count();
+  });
 };
 
 exports.getOwnedCardCount = card => getCardCountInCollections(card, "owned");
