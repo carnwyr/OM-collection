@@ -6,23 +6,25 @@ block scripts
 mixin userBadges()
   div.d-flex
     each badge in profileInfo.badges
-      if badge.name === "adfree"
-        style.
-          [data-target="#adfreeModal"]>div {
-            width: 100%;
-            color: white;
-            font-size: small;
-            text-align: center;
-            transform: translateY(-115%);
-          }
-        div.mr-2(type="button" data-toggle="modal" data-target="#adfreeModal" style="width:auto;height:32px;")
-          img(src="/images/SupporterBadge.png" alt="supporter badge" style="width:auto;height:32px;")
-          div= badge.level
-      else
-        div.mr-2.my-auto(type="button" data-toggle="modal" data-target=`#${badge.name}Modal`)
-          img(src="/images/"+badge.name+".png" alt=badge.name style="width:auto;height:28px;border-radius:50px;")
+      if badge.name in list
+        if badge.name === "adfree"
+          style.
+            [data-target="#adfreeModal"]>div {
+              width: 100%;
+              color: white;
+              font-size: small;
+              text-align: center;
+              transform: translateY(-115%);
+            }
+          div.mr-2(type="button" data-toggle="modal" data-target="#adfreeModal" style="width:auto;height:32px;")
+            img(src="/images/SupporterBadge.png" alt="supporter badge" style="width:auto;height:32px;")
+            div= badge.level
+        else
+          div.mr-2.my-auto(type="button" data-toggle="modal" data-target=`#${badge.name}Modal`)
+            img(src="/images/"+badge.name+".png" style="width:auto;height:28px;border-radius:50px;")
 
 block content
+  include dict/badgeDescriptions.pug
   div#alert(role="alert")
   div.container
     h1= title
@@ -125,7 +127,6 @@ block content
 
   //- modals
   if profileInfo.badges && profileInfo.badges.length > 0
-    include dict/badgeDescriptions.pug
     each badge in profileInfo.badges
       //- TODO: error log unrecorded badges
       if badge.name in list
