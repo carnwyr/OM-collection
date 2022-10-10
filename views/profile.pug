@@ -3,6 +3,25 @@ extends layout
 block scripts
   link(rel="stylesheet" href="/stylesheets/profile.css")
 
+mixin userBadges()
+  div.d-flex
+    each badge in profileInfo.badges
+      if badge.name === "adfree"
+        style.
+          [data-target="#adfreeModal"]>div {
+            width: 100%;
+            color: white;
+            font-size: small;
+            text-align: center;
+            transform: translateY(-115%);
+          }
+        div.mr-2(type="button" data-toggle="modal" data-target="#adfreeModal" style="width:auto;height:32px;")
+          img(src="/images/SupporterBadge.png" alt="supporter badge" style="width:auto;height:32px;")
+          div= badge.level
+      else
+        div.mr-2.my-auto(type="button" data-toggle="modal" data-target=`#${badge.name}Modal`)
+          img(src="/images/"+badge.name+".png" alt=badge.name style="width:auto;height:28px;border-radius:50px;")
+
 block content
   div#alert(role="alert")
   div.container
@@ -32,23 +51,7 @@ block content
               | <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-clock mr-1" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
               | #{t("profile.join_karasu", { date: profileInfo.joinKarasu })}
           if profileInfo.badges && profileInfo.badges.length > 0
-            div.d-flex
-              each badge in profileInfo.badges
-                if badge.name === "adfree"
-                  style.
-                    [data-target="#adfreeModal"]>div {
-                      width: 100%;
-                      color: white;
-                      font-size: small;
-                      text-align: center;
-                      transform: translateY(-115%);
-                    }
-                  div.mr-2(type="button" data-toggle="modal" data-target="#adfreeModal" style="width:auto;height:32px;")
-                    img(src="/images/SupporterBadge.png" alt="supporter badge" style="width:auto;height:32px;")
-                    div= badge.level
-                else
-                  div.mr-2.my-auto(type="button" data-toggle="modal" data-target=`#${badge.name}Modal`)
-                    img(src="/images/"+badge.name+".png" alt=badge.name style="width:auto;height:28px;border-radius:50px;")
+            +userBadges()
           br
           div#profile.row.mt-3
             div.col-lg-6.mb-4
@@ -120,20 +123,22 @@ block content
                 div.view_all
                   a(type="button" href="favourites" class="btn btn-primary")= t("profile.view_all")
 
-  // modals
+  //- modals
   if profileInfo.badges && profileInfo.badges.length > 0
     include dict/badgeDescriptions.pug
     each badge in profileInfo.badges
-      div(id=badge.name+"Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby=badge.name+"Title" aria-hidden="true")
-        div(class="modal-dialog" role="document")
-          div(class="modal-content")
-            div(class="modal-header")
-              h5(class="modal-title text-primary" id=badge.name+"Title")!= list[badge.name].title
-              button(type="button" class="close" data-dismiss="modal" aria-label="Close")
-                span(aria-hidden="true") &times;
-            div(class="modal-body")!= list[badge.name].description
-            div(class="modal-footer")
-              button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
+      //- TODO: error log unrecorded badges
+      if badge.name in list
+        div(id=badge.name+"Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby=badge.name+"Title" aria-hidden="true")
+          div(class="modal-dialog" role="document")
+            div(class="modal-content")
+              div(class="modal-header")
+                h5(class="modal-title text-primary" id=badge.name+"Title")!= list[badge.name].title
+                button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                  span(aria-hidden="true") &times;
+              div(class="modal-body")!= list[badge.name].description
+              div(class="modal-footer")
+                button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
   if title === t("title.my_profile")
     div(class="modal fade" id="openLink" tabindex="-1" role="dialog" aria-labelledby="openShareLink" aria-hidden="true")
       div(class="modal-dialog" role="document")
