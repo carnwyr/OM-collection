@@ -51,8 +51,8 @@ $(document).ready(function() {
 $(window).on('beforeunload', () => { if (Object.keys(changedCards).length > 0) return confirm("Do you want to leave without saving your collection?"); });
 
 function createCardDocuments(data, pageIndex) {
-	let cardsPerRow = getRowCapacity();
 	let frag = document.createDocumentFragment();
+	let cardsPerRow = getRowCapacity();
   let itemsPerPage = 100 - 100 % cardsPerRow;
   let totalPages = Math.ceil(data.length / itemsPerPage);
   let offset = pageIndex * itemsPerPage;
@@ -130,7 +130,6 @@ function applyFilters(e) {
 
 	$("#demoncards>.ias, #memorycards>.ias").html("<div class='mx-auto'>Loading...</div>");
 	$("#demoncards>p, #memorycards>p").addClass("d-none");
-	unbindInfiniteScroll();
 
 	// request cards
 	getCards(params);
@@ -200,8 +199,6 @@ function updateViewType() {
 function initInfiniteScroll() {
 	unbindInfiniteScroll();
 
-	$("#demoncards>.ias, #memorycards>.ias").html("");
-
 	if (cardList.demon.length !== 0) {
 		nextHandler = function(pageIndex) {
 		  let result = createCardDocuments(cardList.demon, pageIndex);
@@ -212,6 +209,7 @@ function initInfiniteScroll() {
 			item: '.cardPreview',
 			next: nextHandler,
 			logger: false,
+			prefill: false,
 			spinner: $("#demoncards>.spinner")[0]
 		});
 		// ias.on("appended", fadeInImages);
@@ -230,6 +228,7 @@ function initInfiniteScroll() {
 	    item: '.cardPreview',
 	    next: nextHandler2,
 			logger: false,
+			prefill: false,
 			spinner: $("#memorycards>.spinner")[0]
 	  });
 		// ias2.on("appended", fadeInImages);
@@ -237,11 +236,15 @@ function initInfiniteScroll() {
 		$("#memorycards>p").removeClass("d-none");
 		$("#memorycards>.spinner").addClass("d-none");
 	}
+
+	ias.next();
+	ias2.next();
 }
 
 function unbindInfiniteScroll() {
 	if (ias) ias.unbind();
 	if (ias2) ias2.unbind();
+	$("#demoncards>.ias, #memorycards>.ias").html("");
 }
 
 function updateFilterParams() {
@@ -428,16 +431,14 @@ function updateChangedCards(cards, selected) {
 }
 
 function getRowCapacity() {
-	// max number of cards for xs is 4, on smaller screens it's reduced by 1 (possibly outdated)
 	let cardsInRow;
-	if (querystr.get('view') !== "original" || querystr.get('view') !== "bloomed") {
-		cardsInRow = { 576: Math.floor(($(window).width() - 100) / 100), 768: 6, 992: 6, 1200: 7, xl: 9 };
+	if (querystr.get('view') === "original" || querystr.get('view') === "bloomed") {
+		cardsInRow = { 576: 3, 768: 4, 992: 4, 1200: 4, xl: 5 };
 	} else {
-		cardsInRow = { 576: Math.floor(($(window).width() - 100) / 100), 768: 4, 992: 3, 1200: 4, xl: 5 };
+		cardsInRow = { 576: 4, 768: 6, 992: 7, 1200: 7, xl: 9 };
 	}
-
 	for (let [size, cardCount] of Object.entries(cardsInRow)) {
-		if (size === "xl" || $(window).width() <= screen) {
+		if (size === "xl" || $(window).width() <= size) {
 			return cardCount;
 		}
 	}
