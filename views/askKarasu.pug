@@ -40,11 +40,11 @@ block content
           div.card.mb-3(style="max-width: 540px;")
             div.row.no-gutters
               div.col-4
-                a(href="/card/" + i.uniqueName)
+                a(href="/card/" + getURL(i.name))
                   img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg")
               div.col-8
                 div.card-body
-                  p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
+                  p.card-text: a.stretched-link(href="/card/" + getURL(i.name))= t("lang") === "ja" ? i.ja_name : i.name
                   p.card-text
                     small.text-muted= i.skills.skillType
                     br
@@ -56,13 +56,13 @@ block content
           div.col-md-6: div.card.w-100.mb-3
             div.row.no-gutters
               div.col-4.d-none.d-md-block
-                a(href="/card/" + i.uniqueName)
+                a(href="/card/" + getURL(i.name))
                   img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg" style="border-radius:4px 0 0 4px;")
               div.col-12.text-center.d-md-none
                 img.img-fluid.lazy.mt-4(src="/images/reward_placeholder.jpg" data-src="/images/cards/S/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg" style="width:6rem;height:auto;")
               div.col-12.col-md-8
                 div.card-body.node-detail
-                  p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
+                  p.card-text: a.stretched-link(href="/card/" + getURL(i.name))= t("lang") === "ja" ? i.ja_name : i.name
                   p.card-text Reward: #{i.dt.reward}
                     if i.dt.type === "item"
                       |
