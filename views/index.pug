@@ -4,40 +4,76 @@ block scripts
   link(rel="stylesheet" href="/stylesheets/homepage.css")
 
 block content
-  .hovercard
-    .cardheader
-    .avatar.d-flex
-      img.shadow-sm.mx-auto(alt="karasu_profile" src="/images/karasu.png")
+  .banner: img.shadow-sm(alt="karasu icon" src="/images/karasu.png")
   div.container.mt-4
-    div.row
-      div.col-12.col-lg-10.mx-auto.mb-3.text-center
-        a(href="/cards" type="button" class="btn btn-primary m-1")= t("common.cards")
-        a(href="/SurpriseGuest" type="button" class="btn btn-primary m-1")= t("common.spg")
-        a(href="/ask/dt_rewards" type="button" class="btn btn-primary m-1") Devil's Tree Rewards
-        a(href="/tree_tracker" type="button" class="btn btn-primary m-1") Devil's Tree Tracker
-        a(href="/calculator/points" type="button" class="btn btn-primary m-1") Pop Quiz Calculator
-        a(href="/calculator/bonus" type="button" class="btn btn-primary m-1") Cheat Card Calculator
-        a(href="/calculator/ap_recovery" type="button" class="btn btn-primary m-1") AP Calculator
-        br
-        if !user
-          a(href="/signup" type="button" class="btn btn-primary m-1")= t("common.signup")
-          a(href="/login" type="button" class="btn btn-primary m-1")= t("common.login")
-        else
-          a(href="/" + user.name + "/collection" type="button" class="btn btn-primary m-1")= t("title.my_collection")
-          a(href="/" + user.name + "/favourites" type="button" class="btn btn-primary m-1")= t("title.my_favourites")
-          a(href="/" + user.name + "/profile" type="button" class="btn btn-primary m-1")= t("title.my_profile")
-    if (!user || !user.isSupporter)
-      .kool-aid.container.text-center.my-3.px-0(data-fallback="kool-fallback-template-small")
-        .row.justify-content-center
-          #ezoic-pub-ad-placeholder-109
-            <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    //-
+      if (!user || !user.isSupporter)
+        .kool-aid.container.text-center.my-3.px-0(data-fallback="kool-fallback-template-small")
+          .row.justify-content-center
+            #ezoic-pub-ad-placeholder-109
+              <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
+              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    div#features.mb-4
+      div.row
+        div.col-md-6.col-lg-4: .card.card-body
+          h3 Cards
+          p Individual character card pages with filters for source, rarity, attribute, and your owned status.
+          div.dropdown
+              button(class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false") Get links
+              div.dropdown-menu
+                each c in ALL_CHARACTERS.slice(0, -1)
+                  a.dropdown-item(href="/cards/"+c)= t(c)
+        div.col-md-6.col-lg-4: .card.card-body
+          h3 Events
+          p We recently added event data! To edit, go to the specific event page and click on the edit button while logged in.
+          p.mb-0: <a class="btn btn-secondary" href="/events">Go to page &raquo;</a>
+          //-
+            div.dropdown
+              button(class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false") Get links
+              div.dropdown-menu
+                a.dropdown-item(href="/event/popquiz") Pop Quiz
+                a.dropdown-item(href="/event/nightmare") Nightmare
+        div.col-md-6.col-lg-4: .card.card-body
+          h3 Surprise Guest
+          p Everyone's best surprise guest combo is right here! With easy way to switch between characters and guides for gifts :)
+          div.dropdown
+            button(class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false") Get links
+            div.dropdown-menu
+              each c in ALL_CHARACTERS.slice(0, -4)
+                a.dropdown-item(href="/SurpriseGuest/"+c)= t(c)
+        div.col-md-6.col-lg-4: .card.card-body
+          h3 Icons
+          p We added icon pages for when you need a new profile picture! Feel free to suggest new features for these pages.
+          div.dropdown
+            button(class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false") Get links
+            div.dropdown-menu
+              each c in ALL_CHARACTERS.slice(0, -1)
+                a.dropdown-item(href="/icons/"+c)= t(c)
+        div.col-md-6.col-lg-4: .card.card-body
+          h3 Tools
+          p A few tools to help you with your tasks in Obey Me! Help you track your devil's tree progress and a few calculators.
+          div.dropdown
+            button(class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false") Get links
+            div.dropdown-menu
+              a.dropdown-item(href="/ask/dt_rewards") Devil's Tree Rewards
+              a.dropdown-item(href="/tree_tracker") Devil's Tree Tracker
+              a.dropdown-item(href="/calculator/points") Pop Quiz Calculator
+              a.dropdown-item(href="/calculator/bonus") Cheat Card Calculator
+              a.dropdown-item(href="/calculator/ap_recovery") AP Calculator
+        div.col-md-6.col-lg-4: .card.card-body
+          h3 Others
+          p A few other miscellaneous pages for fun. Find out which card is most liked by our users.
+          div.dropdown
+            button(class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false") Get links
+            div.dropdown-menu
+              a.dropdown-item(href="/rankings") Rankings
+
     div.row
       div.col-12.col-md-6.mb-4
         div.card.h-100
           div.card-body
             h5.card-title What's this?
-            p.card-text Karasu OS is a website for you to record and share your cards online. It's built by fans on a completely voluntary basis. We are not associated in any way with our official developers (great job they did making the game &#x1F44F;).
+            p.card-text Karasu-OS.com is named after Karasu Operating System on DDD. It started as a website for you to record and share your cards online. But now it has many more features such as surprise guest guides, pop quiz calculators, and many other new tools! It's built by fans on a completely voluntary basis. We are not associated in any way with our official developers (great job they did making the game &#x1F44F;).
             h5.card-title Contacts
             p.card-text.mb-0 Need help?
               ul
