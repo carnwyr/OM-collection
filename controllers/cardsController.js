@@ -423,7 +423,7 @@ exports.getTreeData = async function (req, res, next) {
 		});
 
 		let rows = [], td;
-		let isRankUp = req.query.path === "/tree_tracker/rank_up";
+		let isRankUp = req.query.path === "/tree-tracker/rank_up";
 		let headers = isRankUp ? ["Lv.10","Lv.20","Lv.30","Lv.40","Lv.50","Devil's Flower"] : [2000,3000,4500,6000,8000,10000,15000,20000];
 
 		cards.forEach((card, i) => {
