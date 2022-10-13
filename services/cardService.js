@@ -8,6 +8,8 @@ const createError = require("http-errors");
 const fileService = require("../services/fileService");
 const userService = require("../services/userService");
 
+const skillCharge = require("../staticData/skills.json");
+
 exports.getCards = async function (query = {}, returnVal = {}) {
 	return await Cards.find(query, returnVal).sort({ number: -1 });
 };
@@ -166,56 +168,70 @@ exports.getTotalTreeStats = async function() {
 	]);
 };
 
-exports.getCardsWithItem = async function (item, user, owned, locked) {
+getOwnedFilter = function (user) {
+	return [
+		{
+			$lookup: {
+				from: "users",
+				let: { cardUniqueName: "$uniqueName" },
+				pipeline: [
+					{
+						$match: {
+							$expr: {
+								$and: [
+									{ $eq: ["$info.name", user.name] },
+									{ $in: ["$$cardUniqueName", "$cards.owned"] }]
+							}
+						}
+					}
+				],
+				as: "owned"
+			}
+		},
+		{
+			$unwind: {
+				path: "$owned",
+				preserveNullAndEmptyArrays: false
+			}
+		},
+		{ $project: { "owned": 0 } }];
+};
+
+getLockedFilter = function (user) {
+	return [
+		{ $lookup: {
+				from: "users",
+				let: { nodeId: "$dt._id" },
+				pipeline: [
+					{ $match: { $expr: { $eq: ["$info.name", user.name] } } },
+					{	$unwind: {
+						path: "$tree",
+						preserveNullAndEmptyArrays: false}},
+					{ $match: { $expr: { $not: { $eq: ["$$nodeId", "$tree"] } } } }
+				],
+				as: "locked"
+		}},
+		{ $project: {"locked": 0} }];
+};
+
+findTreeNodes = async function (matchField, matchValue, user, owned, locked) {
+	let match = {};
+	match[matchField] = matchValue;
+
 	let pipeline = [
 		{	$unwind: {
 				path: "$dt",
 				preserveNullAndEmptyArrays: false
 		}},
-		{ $match: { "dt.reward": item } }];
+		{ $match: match }];
 	
 	if (user && owned) {
-		let ownedFilter = [
-			{ $lookup: {
-					from: "users",
-					let: { cardUniqueName: "$uniqueName" },
-					pipeline: [
-						{
-							$match: {
-								$expr: {
-									$and: [
-										{ $eq: ["$info.name", user.name] },
-										{ $in: ["$$cardUniqueName", "$cards.owned"] }]
-								}
-							}
-						}
-					],
-					as: "owned"
-			}},
-			{	$unwind: {
-					path: "$owned",
-					preserveNullAndEmptyArrays: false}},
-			{ $project: {"owned": 0} }];
-	 
+		let ownedFilter = getOwnedFilter(user);	 
 		pipeline = pipeline.concat(ownedFilter);
 	}
 	
 	if (user && locked) {
-		let lockedFilter = [
-			{ $lookup: {
-					from: "users",
-					let: { nodeId: "$dt._id" },
-					pipeline: [
-						{ $match: { $expr: { $eq: ["$info.name", user.name] } } },
-						{	$unwind: {
-							path: "$tree",
-							preserveNullAndEmptyArrays: false}},
-						{ $match: { $expr: { $not: { $eq: ["$$nodeId", "$tree"] } } } }
-					],
-					as: "locked"
-			}},
-			{ $project: {"locked": 0} }];
-	 
+		let lockedFilter = getLockedFilter(user);	 
 		pipeline = pipeline.concat(lockedFilter);
 	}
 
@@ -233,42 +249,85 @@ exports.getCardsWithItem = async function (item, user, owned, locked) {
 				"dt.grimmCost": 1
 			}
 		});
-
+	
 	return await Cards.aggregate(pipeline);
 };
 
-exports.findSkills = async function (keyword) {
-	try {
-		return await Cards.aggregate([
-			{
-				'$sort': {
-					'number': -1
-				}
-			}, {
-				'$project': {
-					'name': 1,
-					'uniqueName': 1,
-					'ja_name': 1,
-					'skills': 1
-				}
-			}, {
-				'$unwind': {
-					'path': '$skills',
-					'preserveNullAndEmptyArrays': false
-				}
-			}, {
-				'$match': {
-					'skills.description': {
-						'$regex': keyword,
-						'$options': 'i'
-					}
+exports.getTreeNodesWithRewardItem = async function (item, user, owned, locked) {
+	return await findTreeNodes("dt.reward", item, user, owned, locked);
+};
+
+exports.getTreeNodesWithUnlockItem = async function (item, user, owned, locked) {
+	return await findTreeNodes("dt.requirements.name", item, user, owned, locked);
+};
+
+exports.getTreeNodesWithMajolishType = async function (type, user, owned, locked) {
+	return await findTreeNodes("dt.type", type, user, owned, locked);
+};
+
+exports.getCardsWithChargeSpeed = async function (speed, user, owned) {
+	let skillDescriptions = skillCharge[speed];
+	if (!skillDescriptions) return [];
+
+	let pipeline = [
+		{
+			$match: {
+				"skills.description": { "$in": skillDescriptions },
+				"rarity": { "$in": ["SSR", "UR", "UR+"] }  // SR and below have duplicate skills with different charging time..
+			}
+		}];
+	
+	if (user && owned) {
+		let ownedFilter = getOwnedFilter(user);	 
+		pipeline = pipeline.concat(ownedFilter);
+	}
+
+	pipeline.push(
+		{ $sort: { number: -1 } },
+		{
+			$project: {
+				"name": 1,
+				"uniqueName": 1
+			}
+		});
+
+	return await Cards.aggregate(pipeline);
+}
+
+exports.findSkills = async function (keyword, user, owned) {
+	let pipeline = [
+		{
+			'$sort': {
+				'number': -1
+			}
+		}, {
+			'$project': {
+				'name': 1,
+				'uniqueName': 1,
+				'ja_name': 1,
+				'skills': 1
+			}
+		}, {
+			'$unwind': {
+				'path': '$skills',
+				'preserveNullAndEmptyArrays': false
+			}
+		}, {
+			'$match': {
+				'skills.description': {
+					'$regex': keyword,
+					'$options': 'i'
 				}
 			}
-		]);
-	} catch(e) {
-		Sentry.captureException(e);
-		return [];
+		}
+	];
+
+	if (user && owned) {
+		let ownedFilter = getOwnedFilter(user);	 
+		pipeline = pipeline.concat(ownedFilter);
 	}
+
+	return await Cards.aggregate(pipeline);
 };
 
 exports.updateCard = async function(data) {
