@@ -155,11 +155,16 @@ exports.addEvent = async function(data, img, user) {
 	}
 };
 
-exports.updateEvent = async function(originalName, data, img = null) {
+exports.updateEvent = async function(originalName, data, img = null, user) {
 	try {
 
 		data.start = stringToDateTime(data.start);
 		data.end = stringToDateTime(data.end);
+
+		if (data.boostingMultiplier > 1) {
+			data.boostingStart = stringToDateTime(data.boostingStart);
+			data.boostingEnd = stringToDateTime(data.boostingEnd);
+		}
 
 		let event = await Events.findOne({ "name.en": originalName });
 
@@ -168,6 +173,15 @@ exports.updateEvent = async function(originalName, data, img = null) {
 		}
 
 		await Events.replaceOne({ "name.en": originalName }, data);
+
+		// TODO: make function to create revision; refactor?
+		await Revisions.create({
+			title: data.name.en,
+			type: "event",
+			user: user,
+			timestamp: new Date(),
+			data: data
+		});
 
 		if (img) {
 			await fileService.saveImage(img, originalName, data.name.en, "events");
@@ -201,12 +215,14 @@ exports.getDefaultEventData = function() {
 	var start = dayjs.utc().startOf("day").hour(1);
 	var end = dayjs.utc().startOf("day").hour(6);
 	var data = {
-		name: {},
+		name: {
+			ja: "???",
+			zh: "???"
+		},
 		start: start,
 		end: end,
 		stages: 26,
-		type: "Pop Quiz",
-		pageCost: 100000
+		type: "PopQuiz"
 	};
 	return data;
 };

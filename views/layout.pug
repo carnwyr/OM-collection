@@ -13,7 +13,7 @@ html(lang=t("lang"))
     title= title+t("header")
     meta(name='viewport' content='width=device-width, initial-scale=1')
     meta(name="description" content=description?description:title+t("header"))
-    meta(name="keywords" content="Obey Me, おべいみー, cards, tools, 攻略")
+    meta(name="keywords" content="Obey Me, おべいみー, game, wiki, cards, tools, database, 攻略")
     meta(property="og:title" content=title)
     meta(property="og:description" content=description?description:title+t("header"))
     if card
@@ -44,6 +44,8 @@ html(lang=t("lang"))
           img(style="width:7rem;height:auto;margin-bottom:1rem;" src="/images/adblocked.png")
           p Advertisements help us cover the cost to keep karasu-os online.
           p Please consider whitelisting karasu-os.com to keep the website free for everyone!
+          p Or <a href="https://ko-fi.com/karasu_os" target="_blank">support us on Ko-fi</a> to gain ad-free access.
+          p <a href='https://ko-fi.com/I2I6F45R7' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
     template#kool-fallback-template-small
       .card.rounded.shadow-sm
@@ -57,17 +59,16 @@ html(lang=t("lang"))
         span(class="navbar-toggler-icon")
       div(class="collapse navbar-collapse" id="navbarTogglerMenu")
         ul(class="navbar-nav")
-          li(class="nav-item")
+          li.nav-item
             a(class="nav-link" href='/cards')= t("common.gallery")
           li.nav-item
             a.nav-link(href="/events") Events
-          li(class="nav-item")
-            a(class="nav-link" href='/rankings')= t("common.rankings")
-          li(class="nav-item")
+          li.nav-item
             a(class="nav-link" href="/SurpriseGuest")= t("common.spg")
           li(class="nav-item dropdown")
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.tools")
-            div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="toolsDropdown")
+            div(class="dropdown-menu shadow px-2" aria-labelledby="toolsDropdown")
+              a(class="dropdown-item" href="/tree-tracker") Devil's tree tracker
               .mt-2.overline ask karasu
               a(class="dropdown-item" href="/ask/dt_rewards") Devil's tree rewards
               a(class="dropdown-item" href="/ask/card_unlock_items") Card unlock items
@@ -75,9 +76,15 @@ html(lang=t("lang"))
               a(class="dropdown-item" href="/ask/skill_charge_time") Skill charging time
               a(class="dropdown-item" href="/ask/skills") Card skills
               .mt-3.overline calculator
-              a(class="dropdown-item" href="/calculator/points") Points
+              a(class="dropdown-item" href="/calculator/points") Pop Quiz Points
               a(class="dropdown-item" href="/calculator/bonus") Cheat Card Bonus
               a(class="dropdown-item" href="/calculator/ap_recovery") AP Recovery
+          li(class="nav-item dropdown")
+            a(class="dropdown-toggle nav-link" role='button' id='miscDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Misc.
+            div(class="dropdown-menu shadow px-2" aria-labelledby="miscDropdown")
+              a.dropdown-item(href='/rankings')= t("common.rankings")
+              a.dropdown-item(href="/card_pages") Card pages
+              a.dropdown-item(href="/icons") Icon pages
           //- TODO: use userController to check rights
           if user && (user.type === "Admin" || user.type === "Moderator")
             li(class="nav-item dropdown")
@@ -94,9 +101,9 @@ html(lang=t("lang"))
           li(class="nav-item d-none d-md-block")
             div(class="nav-link" style="position:relative;bottom:1px") <svg width=".95em" height=".95em" viewBox="0 0 16 16" class="bi bi-person text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg>
           if !user
-            li(class="nav-item")
+            li.nav-item
               a(class="nav-link" href='/signup')= t("common.signup")
-            li(class="nav-item")
+            li.nav-item
               a(class="nav-link" href='/login')= t("common.login")
           else
             li(class="nav-item dropdown")
@@ -141,6 +148,7 @@ html(lang=t("lang"))
           .kool-aid.container.text-center.my-3(data-fallback="kool-fallback-template-small")
             .row.justify-content-center
               #ezoic-pub-ad-placeholder-109
+                div(style="display:inline-block;width:100%;height:90px")
                 <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
                 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         if t("lang") === "ja"
@@ -164,24 +172,24 @@ html(lang=t("lang"))
             #ezoic-pub-ad-placeholder-122.w-100
               <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4992362293" data-ad-format="auto" data-full-width-responsive="true"></ins>
               <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-      //- toasts
-      div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
-        div(class="toast-body")
-          span This site uses cookies to improve your experience.
-            |
-            |
-            a(href="/policies") More information
-          button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
-            span(aria-hidden="true") Got it &#x1F44D
+      //-
+        div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
+          div(class="toast-body")
+            span This site uses cookies to improve your experience.
+              |
+              |
+              a(href="/policies") More information
+            button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
+              span(aria-hidden="true") Got it &#x1F44D
       //-
         div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
           div.toast-header
-            strong.mr-auto Calculator WIP
+            strong.mr-auto Change of URL?
             button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
               span(aria-hidden="true") &times;
           div.toast-body
-            | 56.8% voted for pop quiz calculator (43.2% for tree tracker). So, we will work on releasing a calculator first.
-            // a(href="https://forms.gle/ABK9sYbp3wtsbJra6" class="btn btn-primary btn-sm btn-block mt-3" target="_blank") Vote
+            | Should we change the url for karasu-os.com? Details in survey.
+            a(href="https://forms.gle/xSUDZbbZCp2cHXy38" target="_blank" class="btn btn-primary btn-sm btn-block mt-3") Vote
 
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
@@ -239,3 +247,11 @@ html(lang=t("lang"))
         div.row.col.justify-content-center.align-items-center Made with
           | <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-heart-fill mx-1" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/> </svg>
           | by Laele and char
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    script.
+      kofiWidgetOverlay.draw('karasu_os', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Donate',
+        'floating-chat.donateButton.background-color': '#5cc0df',
+        'floating-chat.donateButton.text-color': '#fff'
+      });

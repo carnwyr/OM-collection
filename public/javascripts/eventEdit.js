@@ -1,4 +1,4 @@
-let originalData;
+let originalData, cardNames;
 $(document).ready(function () {
 	createMasks();
 
@@ -7,20 +7,29 @@ $(document).ready(function () {
 	$(document).on("click", ".add-item", addItem);
 	$(document).on("click", ".remove-item", removeItem);
 
-	$(".add-ap").click(addAP);
-
 	$("#submit").click(saveChanges);  // function is in pug file
 
-	// $("select[name='tag']").change(checkIfCustom);
-
-	$('.card-select').autocomplete({ source: cardNames });
-
-	$('.preset').click(applyPreset);
+	loadCardRewardSelect();
 });
 
+function loadCardRewardSelect() {
+	$.ajax({
+		type: "get",
+		url: "/getCards",
+		cache: false
+	}).done(function(result) {
+		if (result.err) {
+			showAlert("danger", result.message);
+		} else {
+			cardNames = result.cards.map(x => x.name);
+			$(".card-select").autocomplete({ source: cardNames });
+		}
+	});
+}
+
 function createMasks() {
-	var maskOptions = {
-		mask: 'YYYY.MM.DD, hh:mm:ss',
+	let maskOptions = {
+		mask: "YYYY.MM.DD, hh:mm:ss",
 		lazy: false,
 		blocks: {
 			YYYY: {
@@ -53,23 +62,27 @@ function createMasks() {
 				maxLength: 2
 			},
 			ss: {
-				mask: IMask.MaskedRange,
-				from: 0,
-				to: 60,
-				maxLength: 2
+				mask: IMask.MaskedEnum,
+				enum: ["00"]
 			}
 		}
 	};
-	var start = document.getElementById('start');
-	var end = document.getElementById('end');
-	var maskStart = IMask(start, maskOptions);
-	var maskEnd = IMask(end, maskOptions);
-	maskStart.value = start.getAttribute('value');
-	maskEnd.value = end.getAttribute('value');
+	let start = $("#start")[0];
+	let end = $("#end")[0];
+	let boostingStart = $("#boostingStart")[0];
+	let boostingEnd = $("#boostingEnd")[0];
+	let maskStart = IMask(start, maskOptions);
+	let maskEnd = IMask(end, maskOptions);
+	let mbs = IMask(boostingStart, maskOptions);
+	let mbe = IMask(boostingEnd, maskOptions);
+	maskStart.value = start.value;
+	maskEnd.value = end.value;
+	mbs.value = boostingStart.value;
+	mbe.value = boostingEnd.value;
 }
 
 function removeItem() {
-	$(this).parent().remove();
+	$(this).closest(".item-container").remove();
 }
 
 function addItem() {
@@ -77,38 +90,30 @@ function addItem() {
 	$(this).parent().children("div:first-of-type").append($(template).html());
 
 	if (template === "#rewardTemplate") {
-		$('.card-select').autocomplete({ source: cardNames });
-	}
-}
-
-function checkIfCustom() {
-	if ($(this).val() === "custom") {
-		$("input[name='customTag']").show();
-	} else {
-		$("input[name='customTag']").hide();
+		$(".card-select").autocomplete({ source: cardNames });
 	}
 }
 
 function validateFields() {
-  if (!$('#en-name').val()) {
-    showAlert("danger", 'English name must be filled');
-    return false;
-  }
-  let fileName = $('#uploadImage').val();
+	if (!$("#en-name").val()) {
+		showAlert("danger", "English name must be filled");
+		return false;
+	}
+	let fileName = $("#uploadImage").val();
 	if (fileName) {
-		let parts = fileName.split('.');
+		let parts = fileName.split(".");
 		let extension = parts[parts.length - 1];
-		if (extension !== 'jpg') {
-			showAlert("danger", 'Uploaded image must be jpg');
+		if (extension !== "jpg") {
+			showAlert("danger", "Uploaded image must be jpg");
 			return false;
 		}
 	}
-  return true;
+	return true;
 }
 
 function prepareEventData() {
 	let data = {};
-	let formData = new FormData(document.getElementById('info'));
+	let formData = new FormData(document.getElementById("info"));
 	formData.forEach((value, key) => data[key] = value);
 	data.name = {
 		en: data["en-name"],
@@ -120,26 +125,28 @@ function prepareEventData() {
 	if (data.type === "PopQuiz") {
 		let rewardType = $("input[name='rewardListType']:checked").val();
 		let popQuizData = {
+			rewardListType: rewardType,
+			hasKeys: $("input#has-keys").is(":checked"),
 			isLonelyDevil: $("input#lonelydevil").is(":checked"),
 			isBirthday: $("input#birthday").is(":checked"),
-			hasKeys: $("input#has-keys").is(":checked"),
-			rewardListType: rewardType,
-			stages: $("input#stages").val()
+			boostingMultiplier: parseInt($("#boostingMultiplier").val()),
+			stages: $("input#stages").val(),
+			stageList: getStages()
 		};
 
 		if (popQuizData.hasKeys) {
 			data.lockedStages = getLockedStages();
-			data.keyDroppingStages = $("input[name='keydrops']").val().split(',').map(element => {
-				return element.trim();
-			});
 		}
 
 		if (rewardType === "points") {
 			popQuizData.listRewards = getRewards();
-			popQuizData.ap = getAP();
-			popQuizData.pageCost = $("input[name='pageCost']").val();
 		} else {
 			popQuizData.boxRewards = getBoxRewards();
+		}
+
+		if (popQuizData.boostingMultiplier > 1) {
+			popQuizData.boostingStart = $("#boostingStart").val();
+			popQuizData.boostingEnd = $("#boostingEnd").val();
 		}
 
 		data = Object.assign(popQuizData, data);
@@ -149,38 +156,17 @@ function prepareEventData() {
 }
 
 function getRewards() {
-	var rewards = $("#rewards form").map((index, form) => {
-		var formData = new FormData(form);
-		var reward = {};
+	let rewards = $("#rewards form").map((index, form) => {
+		const formData = new FormData(form);
+		let reward = {};
 		formData.forEach((value, key) => reward[key] = value);
-		if (reward.tag === "custom") {
-			reward.tag = reward.customTag;
-		}
-
-		delete reward.customTag;
 		return reward;
 	}).toArray();
-
-	rewards = rewards.filter(r => r.card && r.points);
-
-	return rewards;
-}
-
-function getAP() {
-	var apRewards = $("#AP form").map((index, form) => {
-		var formData = new FormData(form);
-		var ap = {};
-		formData.forEach((value, key) => { if (value) ap[key] = value });
-		return ap;
-	}).toArray();
-
-	apRewards = apRewards.filter(r => r.amount && r.points);
-
-	return apRewards;
+	return rewards.filter(r => r.card && r.points);
 }
 
 function getBoxRewards() {
-	var sets = []
+	let sets = [];
 
 	$("div.boxset").each(function() {
 		let set = {
@@ -190,72 +176,46 @@ function getBoxRewards() {
 		};
 
 		$(this).find("form").each(function() {
-			var formData = new FormData(this);
-			var boxData = {};
+			let formData = new FormData(this);
+			let boxData = {};
 			formData.forEach((value, key) => boxData[key] = value);
+			let rewards = [];
+			boxData.specialRewards.split("\n").forEach(item => {
+				let t = item.split("/");
+				rewards.push({ name: t[0].trim(), req: parseInt(t[1]) });
+			});
+			boxData.specialRewards = rewards.filter(i => i.name && i.req);
 			set.boxes.push(boxData);
 		});
 
 		sets.push(set);
 	});
 
-	sets = sets.filter(r => r.name && r.cost);
+	return sets.filter(r => r.name && r.cost);
+}
 
-	return sets;
+function getStages() {
+	let stages = [];
+	let str = $("div#stageList textarea").val();
+	str.split("\n").forEach(item => {
+		let d = item.split(",");
+		stages.push({
+			name: d.shift().trim(),
+			rewards: d.map(e => e.trim())
+		});
+	});
+	return stages.filter(e => e.name && e.rewards);
 }
 
 function getLockedStages() {
 	let stages = [];
-
-	$("div#keys form").each(function() {
-		let formData = new FormData(this);
-		let lockedStage = {};
-		for(var pair of formData.entries()) {
-			lockedStage[pair[0]] = pair[1];
-		}
-		stages.push(lockedStage);
+	let str = $("div#keys textarea").val();
+	str.split("\n").forEach(item => {
+		let i = item.split(",");
+		stages.push({
+			name: i[0].trim(),
+			req: parseInt(i[1])
+		});
 	});
-
-	stages = stages.filter(r => r.name && r.requirement);
-
-	return stages;
-}
-
-function formatRewards(f, end) {
-	var temp = {}, lst = [];
-	for (let pair of f.entries()) {
-		temp[pair[0]] = pair[1];
-		if (pair[0] === end) {
-			lst.push(temp);
-			temp = {};
-		}
-	}
-	return lst;
-}
-
-function addAP() {
-	var parentForm = $(this).data("target");
-	var template = $(this).data("clone");
-	var newItem = $($(template).html()).appendTo($(parentForm));
-
-	// newItem.find(".remove-item").click(removeItem);
-	// newItem.find(".tag-select").change(switchCustomTagDisplay);
-	// newItem.find(".card-select").selectpicker(selectPickerOptions);
-
-	return newItem;
-}
-
-function applyPreset() {
-	var presetName = $(this).val();
-	var presetData = apPresets[presetName];
-
-	$("#AP").empty();
-
-	presetData.forEach(ap => {
-		let newItem = addAP.call($("#addAP"));
-		newItem.find('[name="amount"]').val(ap.amount);
-		newItem.find('[name="points"]').val(ap.points);
-		if (ap.page)
-			newItem.find('[name="page"]').val(ap.page);
-	});
+	return stages.filter(e => e.name && e.req);
 }

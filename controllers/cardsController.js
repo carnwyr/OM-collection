@@ -33,6 +33,26 @@ exports.getCardsListPage = function (req, res, next) {
 	}
 };
 
+exports.getCharacterCardPage = async function (req, res, next) {
+	const characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael"];
+	if (!characters.includes(req.params.character)) return next(createError(404));
+	let character = req.params.character;
+	return res.render("cardListCharacter", {
+		title: character + "'s Cards",
+		description: character + "'s card page.",
+		user: req.user,
+		character: character
+	});
+};
+
+exports.getIconDirectory = function (req, res, next) {
+	return res.render("iconDir", {
+		title: "Icons",
+		description: "Icons directory",
+		user: req.user
+	});
+};
+
 exports.getOwnedCardsPage = async function(req, res, next) {
 	try {
 		var user = await userService.getUser(req.params.username);
@@ -55,14 +75,22 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 		if (isPrivate) {
 			pageParams.isPrivate = true;
 		} else {
-			pageParams.ownedStats = await userService.getOwnedCardsStats(user.info.name);
-			pageParams.totalStats = await cardService.getGlobalStats();
+			pageParams.ownedStats = {
+				demon: await userService.getOwnedCardsStats(user.info.name, "Demon"),
+				memory: await userService.getOwnedCardsStats(user.info.name, "Memory"),
+			};
+			pageParams.totalStats = {
+				demon: await cardService.getGlobalStats("Demon"),
+				memory: await cardService.getGlobalStats("Memory"),
+			};
 
-			for ([category, entries] of Object.entries(pageParams.totalStats)) {
-				for (entry in entries) {
-					pageParams.ownedStats[category][entry] = pageParams.ownedStats[category][entry] || 0;
+			["demon", "memory"].forEach((t) => {
+				for ([category, entries] of Object.entries(pageParams.totalStats[t])) {
+					for (entry in entries) {
+						pageParams.ownedStats[t][category][entry] = pageParams.ownedStats[t][category][entry] || 0;
+					}
 				}
-			}
+			});
 		}
 
 		return res.render("cardsList", pageParams);
@@ -141,23 +169,23 @@ async function getSourceInLanguage(sources, lng) {
 	for (const source of sources) {
 		// temporary exceptions
 		switch (source) {
-			case "Chapter M":
-				arr.push("Mの章");
-				break;
-			case "Chapter A":
-				arr.push("Aの章");
-				break;
-			case "Chapter G":
-				arr.push("Gの章");
-				break;
-			default: {
-				let relatedEvent = await eventService.getEvent({ "name.en": source });
-				if (!relatedEvent) {
-					arr.push(source);
-				} else if (relatedEvent.name[lng] !== "???" && relatedEvent.name[lng] !== "") {
-					arr.push(relatedEvent.name.ja);
-				}
+		case "Chapter M":
+			arr.push("Mの章");
+			break;
+		case "Chapter A":
+			arr.push("Aの章");
+			break;
+		case "Chapter G":
+			arr.push("Gの章");
+			break;
+		default: {
+			let relatedEvent = await eventService.getEvent({ "name.en": source });
+			if (!relatedEvent) {
+				arr.push(source);
+			} else if (relatedEvent.name[lng] !== "???" && relatedEvent.name[lng] !== "") {
+				arr.push(relatedEvent.name.ja);
 			}
+		}
 		}
 	}
 	return arr;
@@ -181,8 +209,15 @@ async function getHiddenCardDetailPage(req, res, next) {
 
 exports.getHiddenCardsListPage = async function(req, res, next) {
 	try {
-		var cards = await cardService.getHiddenCards();
-		return res.render("cardsList", { title: "Hidden Cards", cardList: cards, query: req.query, user: req.user, path: "hidden" });
+		let cards = await cardService.getHiddenCards();
+		return res.render("cardsList", {
+			title: "Hidden Cards",
+			user: req.user,
+			cardList: {
+				demon:cards.filter(x => x.type === "Demon"),
+				memory: cards.filter(x => x.type === "Memory")
+			}, path: "hidden", query: req.query
+		});
 	} catch(e) {
 		return next(e);
 	}
@@ -248,7 +283,6 @@ exports.directImage = async function (req, res, next) {
 
 
 // Collection functions
-// TODO: merge with getCardsListPage
 exports.getCards = async function (req, res) {
 	try {
 		let query = formatAggPipeline(req.query, req.i18n.t("lang"));
@@ -256,24 +290,24 @@ exports.getCards = async function (req, res) {
 
 		let user;
 		switch (req.query.path) {
-			case "collection":
-				user = await userService.getUser(req.query.user);
-				cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
-				break;
-			case "fav":
-				user = await userService.getUser(req.query.user);
-				cards = cards.filter(card => user.cards.faved.includes(card.uniqueName));
-				break;
-			default:
-				let type = req.query.cards;
-				if (type && req.user) {
-					user = await userService.getUser(req.user.name);
-					if (type === "owned") {
-						cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
-					} else if (type === "not_owned") {
-						cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
-					}
+		case "collection":
+			user = await userService.getUser(req.query.user);
+			cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+			break;
+		case "fav":
+			user = await userService.getUser(req.query.user);
+			cards = cards.filter(card => user.cards.faved.includes(card.uniqueName));
+			break;
+		default:
+			let type = req.query.cards;
+			if (type && req.user) {
+				user = await userService.getUser(req.user.name);
+				if (type === "owned") {
+					cards = cards.filter(card => user.cards.owned.includes(card.uniqueName));
+				} else if (type === "not_owned") {
+					cards = cards.filter(card => !user.cards.owned.includes(card.uniqueName));
 				}
+			}
 		}
 
 		return res.json({ err: null, cards: cards });
@@ -281,7 +315,140 @@ exports.getCards = async function (req, res) {
 		Sentry.captureException(e);
 		return res.json({ err: true, cards: [], message: e.message });
 	}
+};
+// TODO: give getCards more flexibility
+exports.getCards2 = async function (req, res) {
+	try {
+		let pipeline = formatPipeline2(req.query);
+		let cards = await cardService.aggregateCards(pipeline);
+		return res.json({ err: null, cards: cards });
+	} catch(e) {
+		Sentry.captureException(e);
+		return res.json({ err: true, cards: [], message: e.message });
+	}
+};
+
+function getNodeData(card, cost) {
+	if (card.nodes.length === 0) return "?";
+	let node = card.nodes.find(x => x.grimmCost == cost && x.type != "level_up" && x.type != "flower");
+	// TODO: add exceptions
+	if (card.rarity === "N" && cost > 2000) return "--";
+	if (card.rarity === "R" && cost > 4500) return "--";
+	if (card.rarity === "SR" && cost > 6000) return "--";
+	if (card.rarity === "SSR" && cost > 15000) return "--";
+	if (node) {
+		let str = "<div style='position:relative;'>";
+		if (node.unlocked) {
+			str += "<div class=\"unlocked\"></div>";
+		}
+		if (node.type === "icon") {
+			if (card.type === "Demon") {
+				let unlocked = "";
+				if (node.reward.indexOf("(Unlocked)") !== -1) {
+					unlocked = "_Unlocked";
+				}
+				str += `<img src="https://obey-me.fandom.com/wiki/Special:Redirect/file/${card.name.replace(/:/g, " -")}${unlocked}_icon.png?width=32" onerror="this.src='/images/tree_rewards/${node.type}.png'" alt="${node.reward}" style="width:2em;height:2em;">`;
+			} else {
+				// check wrong names
+				if (!node.reward.startsWith(card.name) || !node.reward.endsWith(")")) {
+					str += `<img src="/images/tree_rewards/${node.type}.png" alt="${node.reward}" style="width:2em;height:2em;">`;
+				} else {
+					let charNum = "_" + (card.characters.indexOf(node.reward.substring(node.reward.lastIndexOf("(") + 1, node.reward.length - 1)) + 1);
+					str += `<img src="https://obey-me.fandom.com/wiki/Special:Redirect/file/${card.name.replace(/:/g, " -")}${charNum}_icon.png?width=64" onerror="this.src='/images/tree_rewards/${node.type}.png'" alt="${node.reward}" style="width:2em;height:2em;">`;
+				}
+			}
+		} else {
+			str += `<img src="/images/tree_rewards/${node.type}.png" alt="${node.reward}" style="width:2em;height:2em;">`;
+		}
+		return str + "</div>";
+	}
+	return "?";
 }
+
+function getRankUpNodeData(card, level) {
+	if (card.nodes.length === 0) return "?";
+	let node = card.nodes.find(x => x.reward.startsWith(level));
+
+	if (level !== "Devil's Flower") {
+		level = parseInt(level.substring(3, 5));
+		if (card.rarity === "N" && level > 10) return "--";
+		if (card.rarity === "R" && level > 20) return "--";
+		if (card.rarity === "SR" && level > 30) return "--";
+		if (card.rarity === "SSR" && level > 40) return "--";
+	}
+
+	if (node) {
+		let str = "<div style='position:relative;'>";
+		if (node.unlocked) {
+			str += "<div class=\"unlocked\"></div>";
+		}
+		str += `<img src="/images/nodes/${node.type}.png" style="width:2em;height:2em;">`;
+		return str + "</div>";
+	}
+
+	return "?";
+}
+
+exports.getTreeData = async function (req, res, next) {
+	try {
+		let sort = {};
+		if (req.query.name) {
+			sort["name"] = parseInt(req.query.name) === 0 ? -1 : 1;
+		} else {
+			sort["number"] = -1;
+		}
+
+		let keywords = "";
+		if (req.query.filter.length > 0) {
+			keywords = req.query.filter[0];
+		}
+
+		let match = { "name": { $regex: keywords, $options: "i" } };
+		if (req.query.rarity && req.query.rarity !== "All") {
+			match["rarity"] = req.query.rarity;
+		}
+		if (req.query.attribute && req.query.attribute !== "All") {
+			match["attribute"] = req.query.attribute;
+		}
+		if (req.query.type && req.query.type !== "All") {
+			match["type"] = req.query.type;
+		}
+
+		let username = req.user ? req.user.name : "KarasuOS";
+		let cards = await userService.getTreeTrackData({
+			username: username,
+			pageNum: req.query.page,
+			sort: sort,
+			match: match
+		});
+
+		let rows = [], td;
+		let isRankUp = req.query.path === "/tree-tracker/rank_up";
+		let headers = isRankUp ? ["Lv.10","Lv.20","Lv.30","Lv.40","Lv.50","Devil's Flower"] : [2000,3000,4500,6000,8000,10000,15000,20000];
+
+		cards.forEach((card, i) => {
+			td = [`<a href="/card/${encodeURIComponent(card.name.replace(/ /g, "_"))}"><img class="mr-2" src="/images/cards/S/${card._id}.jpg" style="float:left;width:2em;height:2em;">${req.lang === "ja" ? card.ja_name : card.name}</a>`];
+			headers.forEach(i => {
+				if (isRankUp) {
+					td.push(getRankUpNodeData(card, i));
+				} else {
+					td.push(getNodeData(card, i));
+				}
+			});
+			rows.push(td);
+		});
+		headers.unshift("Name");
+
+		return res.json({
+			total_rows: cards.length === 0 ? 0 : cards[0].totalCount,
+			rows: rows,
+			headers: headers
+		});
+	} catch(e) {
+		Sentry.captureException(e);
+		return res.json({ err: true, message: e.message });
+	}
+};
 
 // Admin card management
 exports.getEditCardPage = async function(req, res, next) {
@@ -327,7 +494,7 @@ exports.updateCard = async function(req, res) {
 	});
 
 	if (result.err) {
-		return res.json({ err: true, message: e.message });
+		return res.json({ err: true, message: result.message });
 	} else {
 		miscController.notifyAdmin(`Card updated. \`\`${req.user.name}\`\` just updated: \`\`${req.params.card}\`\`.`);
 		return res.json({ err: null, message: "Card updated!" });
@@ -358,9 +525,10 @@ exports.makeCardPublic = async function (req, res, next) {
 
 /* helper */
 function escapeSearchString(str) {
-	return str.replace(/[.*+?^${}()|[\]\\'"]/g, '\\$&');
+	return str.replace(/[.*+?^${}()|[\]\\'"]/g, "\\$&");
 }
 
+// TODO: refactor
 function formatAggPipeline(obj, language = "en") {
 	let query = {};
 	let sum = [];
@@ -376,9 +544,9 @@ function formatAggPipeline(obj, language = "en") {
 			// query["name."+lang] = new RegExp(value, 'i');
 			value = escapeSearchString(value);
 			if (language === "ja") {
-				query["ja_name"] = new RegExp(value, 'i');
+				query["ja_name"] = new RegExp(value, "i");
 			} else {
-				query["name"] = new RegExp(value, 'i');
+				query["name"] = new RegExp(value, "i");
 			}
 		} else if (key === "sortby") {
 			if (!value.match(/^(min|max|fdt)_(-1|1)$/)) {
@@ -396,27 +564,27 @@ function formatAggPipeline(obj, language = "en") {
 	});
 
 
-	match = { '$match': query };
+	match = { "$match": query };
 
 	addFields = {
-		'$addFields': {
-			'total': { '$sum': sum }
+		"$addFields": {
+			"total": { "$sum": sum }
 		}
 	};
 
-	sort = { '$sort': {} };
+	sort = { "$sort": {} };
 	if (sortby) {
-		sort['$sort'][sortby] = order;
+		sort["$sort"][sortby] = order;
 	}
-	sort['$sort']["number"] = -1;
+	sort["$sort"]["number"] = -1;
 
 	project = {
-		'$project': {
-			'name': 1,
-			'ja_name': 1,
-			'uniqueName': 1,
-			'type': 1,
-			'total': 1
+		"$project": {
+			"name": 1,
+			"ja_name": 1,
+			"uniqueName": 1,
+			"type": 1,
+			"total": 1
 		}
 	};
 
@@ -425,6 +593,82 @@ function formatAggPipeline(obj, language = "en") {
 		pipeline.push(addFields);
 	}
 	pipeline.push(sort, project);
+
+	return pipeline;
+}
+
+function formatPipeline2(query) {
+	let pipeline = [
+		{
+			$match: {
+				characters: {
+					$in: [query.characters]
+				},
+			}
+		}
+	];
+
+	if (query.rarity) {
+		pipeline.push({
+			$match: {
+				rarity: query.rarity
+			}
+		});
+	}
+
+	if (query.attribute) {
+		pipeline.push({
+			$match: {
+				attribute: query.attribute
+			}
+		});
+	}
+
+	if (query.source) {
+		let source = query.source;
+		if (source === "LonelyDevil") query.source = "PopQuiz";
+
+		pipeline.push({
+			"$unwind": {
+				"path": "$source",
+				"preserveNullAndEmptyArrays": false
+			}
+		},
+		{
+			"$lookup": {
+				"from": "events",
+				"localField": "source",
+				"foreignField": "name.en",
+				"as": "result"
+			}
+		},
+		{
+			"$match": {
+				"result.type": query.source
+			}
+		});
+
+		if (source === "LonelyDevil") {
+			pipeline.push({
+				"$match": {
+					"result.isLonelyDevil": true
+				}
+			});
+		}
+	}
+
+	pipeline.push({
+		$sort: {
+			number: -1
+		}
+	},
+	{
+		$project: {
+			name: 1,
+			uniqueName: 1,
+			type: 1
+		}
+	});
 
 	return pipeline;
 }
@@ -438,6 +682,10 @@ exports.isVerifiedTreeData = async function (name, data) {
 		}
 
 		for (const node of card.dt) {
+			if (node.reward === "???") {
+				continue;
+			}
+
 			// NOTE: newNode = same node reward in new data
 			let newNode = data.dt.find(element => element.reward === node.reward && element.type === node.type);
 
@@ -445,12 +693,10 @@ exports.isVerifiedTreeData = async function (name, data) {
 				return { err: true, message: node.reward + " is removed."};
 			}
 
-			if (newNode.reward !== "???") {
-				if (!newNode._id) {
-					newNode._id = node._id;
-				} else if (newNode._id && newNode._id != node._id) {
-					return { err: true, message: node.reward + " has mismatched id." };
-				}
+			if (!newNode._id) {
+				newNode._id = node._id;
+			} else if (newNode._id && newNode._id != node._id) {
+				return { err: true, message: node.reward + " has mismatched id." };
 			}
 		}
 
@@ -459,4 +705,37 @@ exports.isVerifiedTreeData = async function (name, data) {
 		Sentry.captureException(e);
 		return { err: true, message: e.message };
 	}
-}
+};
+
+// TODO: use vue
+exports.getIconPage = async function (req, res, next) {
+	try {
+		const characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael"];
+		const character = req.params.character;
+		if (!characters.includes(character)) return next(createError(404, properties = { title: "404 Page not found" }));
+
+		let cards = await cardService.getCards({
+			characters: { $in: [ character ] },
+			$nor: [ { rarity: "N" }, { rarity: "R" } ]
+		}, { name: 1, type: 1, characters: 1, rarity: 1 });
+
+		return res.render("iconList", {
+			title: character + "'s Icons",
+			description: "A complete list of Obey Me " + character + "'s icons on karasu-os.com.",
+			user: req.user,
+			character: character,
+			cards: cards
+		});
+	} catch(e) {
+		Sentry.captureException(e);
+		return next(e);
+	}
+};
+
+exports.getCardDirectory = function (req, res, next) {
+	return res.render("cardDir", {
+		title: "Card Directory",
+		description: "",
+		user: req.user
+	});
+};

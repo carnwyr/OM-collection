@@ -135,4 +135,13 @@ p.section-title {
 
 .big-fb {
   min-height: 270px !important;
+  height: 100% !important;
+}
+
+.bootstrap-select > .dropdown-menu {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+svg.bi {
+  margin-bottom: .25rem;
 }

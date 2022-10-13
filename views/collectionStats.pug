@@ -7,9 +7,13 @@
     }
     return percentage;
   }
+  const mainCharas = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor"];
+  const sideCharas = ["Diavolo", "Barbatos", "Luke", "Simeon", "Solomon", "LittleD"];
+  const rarities = ["N", "R", "SR", "SSR", "UR", "UR+"];
+  const attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"];
 
 mixin percentBar(owned, total, name)
-  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "Little D":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", 'UR+':"#ffe16b", Pride:"rgb(52,123,253)", Greed:"#ffbc11", Envy:"#ff7e00", Wrath:"#21c38c", Lust:"rgb(240,84,177)", Gluttony:"rgb(230,64,56)", Sloth:"rgb(181,65,230)"};
+  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "LittleD":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", 'UR+':"#ffe16b", Pride:"rgb(52,123,253)", Greed:"#ffbc11", Envy:"#ff7e00", Wrath:"#21c38c", Lust:"rgb(240,84,177)", Gluttony:"rgb(230,64,56)", Sloth:"rgb(181,65,230)"};
   - var percentage = roundPercentage(owned / total * 100);
   span= t(name)
   small(style='display:inline-flex;') &nbsp;- #{owned} of #{total} (#{percentage}%)
@@ -24,55 +28,88 @@ mixin percentBar(owned, total, name)
       if name==='UR'
         div(id="barCoverUR" style={width: (100 - percentage) + '%'})
 
-mixin statsTab(entries, category)
+mixin statsTab(cardType, entries, category)
+  //- TODO: clean up
+  if cardType === "memory" && category === "rarity"
+    - entries = ["N", "R", "SR", "SSR", "UR"];
+  else if cardType === "demon" && category === "characters"
+    - let i = entries.indexOf("LittleD")
+    if i !== -1
+      - entries = ["Diavolo", "Barbatos", "Luke", "Simeon", "Solomon"];
   - const sliceInChunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size))
   - var entriesChunks = sliceInChunks(entries, 4)
   div.row
     each chunk in entriesChunks
       div.col-md-6
         each entry in chunk
-          +percentBar(ownedStats[category][entry], totalStats[category][entry], entry)
+          +percentBar(ownedStats[cardType][category][entry], totalStats[cardType][category][entry], entry)
 
 div.card.card-body.shadow.mb-3
-  div.row.align-items-center
-    div.col-lg-4.row.text-center.mb-3.mb-lg-0
-      div.col-6
-        h5.text-primary.mb-0= t("cards.Demon")
-        - var demonPercentage = roundPercentage(ownedStats.cards.Demon / totalStats.cards.Demon * 100);
-        div(style="position:relative;")
-          img.img-fluid.p-2(src="/images/demon_card.png" style="max-width:120px;width:100%;")
-          div#demonblend
-        p.mb-0 #{ownedStats.cards.Demon} of #{totalStats.cards.Demon}
-        small.text-muted #{demonPercentage}%
-      div.col-6
-        h5.text-primary.mb-0= t("cards.Memory")
-        - var memoryPercentage = roundPercentage(ownedStats.cards.Memory / totalStats.cards.Memory * 100);
-        div(style="position:relative;")
-          img.img-fluid.p-2(src="/images/memory_card.png" style="max-width:120px;width:100%;")
-          div#memoryblend
-        p.mb-0 #{ownedStats.cards.Memory} of #{totalStats.cards.Memory}
-        small.text-muted #{memoryPercentage}%
-
-    div.col-lg-8
-      div.nav.nav-pills.mb-2(id='statsNavTab' role='tablist')
-        a.nav-item.nav-link.active(id='charNavTab' data-toggle='tab' href='#charNav' role='tab' aria-controls="charNav" aria-selected="true")= t("profile.main_chara")
-        a.nav-item.nav-link(id='sideCharNavTab' data-toggle='tab' href='#sideCharNav' role='tab' aria-controls="sideCharNav" aria-selected="true")= t("profile.side_chara")
-        a.nav-item.nav-link(id='rarityNavTab' data-toggle='tab' href='#rarityNav' role='tab' aria-controls="rarityNav" aria-selected="true")= t("cards.rarity")
-        a.nav-item.nav-link(id='attrNavTab' data-toggle='tab' href='#attributeNav' role='tab' aria-controls="attributeNav" aria-selected="true")= t("cards.attribute")
-      div#statsNavContent.tab-content
-        div.container.tab-pane.fade.px-0.show.active(id='charNav' role='tabpanel' aria-labelledby='charNavTab')
-          - const mainCharas = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor"];
-          +statsTab(mainCharas, "characters")
-        div.container.tab-pane.fade.px-0(id='sideCharNav' role='tabpanel' aria-labelledby='sideCharNavTab')
-          - const sideCharas = ["Diavolo", "Barbatos", "Luke", "Simeon", "Solomon", "Little D"];
-          +statsTab(sideCharas, "characters")
-        div.container.tab-pane.fade.px-0(id='rarityNav' role='tabpanel' aria-labelledby='rarityNavTab')
-          - const rarities = ["N", "R", "SR", "SSR", "UR", "UR+"];
-          +statsTab(rarities, "rarity")
-        div.container.tab-pane.fade.px-0(id='attributeNav' role='tabpanel' aria-labelledby='attrNavTab')
-          - const attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"];
-          +statsTab(attributes, "attribute")
-      div.small.text-muted.mt-3= t("profile.percentage_calculation")
+  div.row
+    div.col-12.col-lg-2
+      div#v-pills-tab.nav.flex-column.nav-pills(role="tablist" aria-orientation="vertical")
+        a#v-pills-home-tab.nav-link.active.d-flex.align-items-center(data-toggle="pill" data-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true")
+          img.mr-2(src="/images/demon.png" style="width:1.25rem;")
+          | #{t("cards.Demon")}
+        a#v-pills-profile-tab.nav-link.d-flex.align-items-center(data-toggle="pill" data-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false")
+          img.mr-2(src="/images/memory.png" style="width:1.25rem;")
+          | #{t("cards.Memory")}
+    div.col-12.col-lg-10
+      div#v-pills-tabContent.tab-content
+        div#v-pills-home.tab-pane.show.active(role="tabpanel" aria-labelledby="v-pills-home-tab")
+          div.row
+            div.col-12.col-lg-3.d-flex.total-percentage
+              div.w-100.text-center.my-auto
+                - cardType = "demon"
+                - var demonPercentage = roundPercentage(ownedStats.demon.cards.Demon / totalStats.demon.cards.Demon * 100);
+                h5.text-primary.mb-0.d-none.d-lg-block= t("cards.Demon")
+                div(style="position:relative;")
+                  img.img-fluid.p-2(src="/images/demon_card.png" style="max-width:120px;width:100%;")
+                  div#demonblend
+                p.mb-0 #{ownedStats.demon.cards.Demon} of #{totalStats.demon.cards.Demon}
+                small.text-muted #{demonPercentage}%
+            div.col-12.col-lg-9
+              div.nav.nav-pills.mb-2(role='tablist')
+                a.nav-item.nav-link.active(id='charNavTab' data-toggle='tab' href='#charNav' role='tab' aria-controls="charNav" aria-selected="true")= t("profile.main_chara")
+                a.nav-item.nav-link(id='sideCharNavTab' data-toggle='tab' href='#sideCharNav' role='tab' aria-controls="sideCharNav" aria-selected="true")= t("profile.side_chara")
+                a.nav-item.nav-link(id='rarityNavTab' data-toggle='tab' href='#rarityNav' role='tab' aria-controls="rarityNav" aria-selected="true")= t("cards.rarity")
+                a.nav-item.nav-link(id='attrNavTab' data-toggle='tab' href='#attributeNav' role='tab' aria-controls="attributeNav" aria-selected="true")= t("cards.attribute")
+              div.tab-content
+                div.container.tab-pane.fade.px-0.show.active(id='charNav' role='tabpanel' aria-labelledby='charNavTab')
+                  +statsTab(cardType, mainCharas, "characters")
+                div.container.tab-pane.fade.px-0(id='sideCharNav' role='tabpanel' aria-labelledby='sideCharNavTab')
+                  +statsTab(cardType, sideCharas, "characters")
+                div.container.tab-pane.fade.px-0(id='rarityNav' role='tabpanel' aria-labelledby='rarityNavTab')
+                  +statsTab(cardType, rarities, "rarity")
+                div.container.tab-pane.fade.px-0(id='attributeNav' role='tabpanel' aria-labelledby='attrNavTab')
+                  +statsTab(cardType, attributes, "attribute")
+        div#v-pills-profile.tab-pane(role="tabpanel" aria-labelledby="v-pills-profile-tab")
+          div.row
+            div.col-12.col-lg-3.d-flex.total-percentage
+              div.w-100.text-center.my-auto
+                - cardType = "memory"
+                - var memoryPercentage = roundPercentage(ownedStats.memory.cards.Memory / totalStats.memory.cards.Memory * 100);
+                h5.text-primary.mb-0.d-none.d-lg-block= t("cards.Memory")
+                div(style="position:relative;")
+                  img.img-fluid.p-2(src="/images/memory_card.png" style="max-width:120px;width:100%;")
+                  div#memoryblend
+                p.mb-0 #{ownedStats.memory.cards.Memory} of #{totalStats.memory.cards.Memory}
+                small.text-muted #{memoryPercentage}%
+            div.col-12.col-lg-9
+              div.nav.nav-pills.mb-2(role='tablist')
+                a.nav-item.nav-link.active(id='charNavTab' data-toggle='tab' href='#charNav2' role='tab' aria-controls="charNav2" aria-selected="true")= t("profile.main_chara")
+                a.nav-item.nav-link(id='sideCharNavTab' data-toggle='tab' href='#sideCharNav2' role='tab' aria-controls="sideCharNav2" aria-selected="true")= t("profile.side_chara")
+                a.nav-item.nav-link(id='rarityNavTab' data-toggle='tab' href='#rarityNav2' role='tab' aria-controls="rarityNav2" aria-selected="true")= t("cards.rarity")
+                a.nav-item.nav-link(id='attrNavTab' data-toggle='tab' href='#attributeNav2' role='tab' aria-controls="attributeNav2" aria-selected="true")= t("cards.attribute")
+              div.tab-content
+                div.container.tab-pane.fade.px-0.show.active(id='charNav2' role='tabpanel' aria-labelledby='charNavTab')
+                  +statsTab(cardType, mainCharas, "characters")
+                div.container.tab-pane.fade.px-0(id='sideCharNav2' role='tabpanel' aria-labelledby='sideCharNavTab')
+                  +statsTab(cardType, sideCharas, "characters")
+                div.container.tab-pane.fade.px-0(id='rarityNav2' role='tabpanel' aria-labelledby='rarityNavTab')
+                  +statsTab(cardType, rarities, "rarity")
+                div.container.tab-pane.fade.px-0(id='attributeNav2' role='tabpanel' aria-labelledby='attrNavTab')
+                  +statsTab(cardType, attributes, "attribute")
 
 style.
   #demonblend, #memoryblend {
@@ -91,6 +128,14 @@ style.
   }
   #memoryblend {
     height: calc((100% - 1rem - 8px) * #{(100 - memoryPercentage)/100});
+  }
+  #v-pills-tab :not(.active)>img {
+    filter: invert(49%) sepia(52%) saturate(1758%) hue-rotate(222deg) brightness(91%) contrast(94%);
+  }
+  @media (max-width: 576px) {
+    .total-percentage {
+      margin: .75rem 0;
+    }
   }
 
 if title === t("title.my_collection")

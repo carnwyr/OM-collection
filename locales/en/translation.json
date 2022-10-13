@@ -1,6 +1,6 @@
 {
   "lang": "en",
-  "header": " | Obey Me! Resources (fan-made) | Karasu-OS.com",
+  "header": " | Obey Me! Game Resources (fan-made) | Karasu-OS.com",
 	"calculator": {
 		"calculator": "CALCULATOR",
 		"ppt": "Points per battle",
@@ -122,7 +122,7 @@
 		"no_linked_email": "No emails linked",
 		"pls_link_email": "To enable password recovery, link your email address.",
 		"update_email": "Update email",
-		"email_instruction": "A confirmation message will be sent to your email. Please open the link in it to verify the email address.",
+		"email_instruction": "A confirmation message will be sent to your email. Please open the link while logged into karasu-os.com to verify the email address.",
 		"send_email": "Send email",
 		"current_pass": "Current password",
 		"new_pass": "New password",
@@ -142,7 +142,7 @@
 		"use_item": "Use items"
 	},
 	"title": {
-		"cards": "Card Gallery",
+		"cards": "Card List",
 		"my_collection": "My Collection",
 		"user_collection": "{{username}}'s Collection",
 		"my_favourites": "My Favourites",
@@ -211,5 +211,7 @@
   "SR": "SR",
   "SSR": "SSR",
   "UR": "UR",
-  "UR+": "UR+"
+  "UR+": "UR+",
+
+  "de": "'s "
 }

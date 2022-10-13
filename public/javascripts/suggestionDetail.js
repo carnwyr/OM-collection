@@ -17,7 +17,8 @@ $(document).ready(function() {
   $("#save").on("click", () => {
     $.post(`/suggestion/approve`, {
       _id: suggestion_id,
-      data: $("textarea#final").val()
+      data: $("textarea#final").val(),
+      reason: $("input#reason").val()
     }).done(function(result) {
       let status = result.err?"danger":"success";
       showAlert(status, result.message);

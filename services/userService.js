@@ -16,8 +16,8 @@ exports.getUser = async function (username) {
 };
 
 exports.getAccountData = async function (username) {
-  var usernameRegexp = new RegExp('^' + username + '$', "i");
-  var user = await Users.aggregate([
+  let usernameRegexp = new RegExp('^' + username + '$', "i");
+  let user = await Users.aggregate([
     { $match: { "info.name": { $regex: usernameRegexp } } },
     {
       $project: {
@@ -28,6 +28,9 @@ exports.getAccountData = async function (username) {
       }
     }
   ]);
+  if (!user[0].profile.display) {
+    user[0].profile.display = "The_Mammon_Way";
+  }
   return user[0];
 };
 
@@ -105,7 +108,7 @@ exports.modifyCollection = function (username, collectionType, changedCards) {
 
 exports.updateUserData = async (username, data) => await Users.updateOne({ "info.name": username }, { $set: data });
 
-exports.getOwnedCardsStats = async function (username) {
+exports.getOwnedCardsStats = async function (username, cardType) {
   let collectionType = "owned";
   try {
     return (await Users.aggregate([
@@ -119,6 +122,7 @@ exports.getOwnedCardsStats = async function (username) {
       }},
       { $unwind: "$cardData" },
       { $replaceWith: "$cardData" },
+      { $match: { type: cardType } },
       { $facet: {
 				characters: [
 					{ $unwind: "$characters"},
@@ -194,7 +198,7 @@ exports.getUserTreeStats = async function(username) {
     { '$unwind': {
         'path': '$tree',
         'preserveNullAndEmptyArrays': false
-    }}, 
+    }},
     { '$lookup': {
         'from': 'cards',
         'let': { 'tree_id': '$tree' },
@@ -203,7 +207,7 @@ exports.getUserTreeStats = async function(username) {
           { '$unwind': {
               'path': '$dt',
               'preserveNullAndEmptyArrays': false
-          }}, 
+          }},
           { '$replaceRoot': { 'newRoot': { '$mergeObjects': ['$dt'] } } },
           { '$match': { '$expr': { '$eq': [ '$_id', '$$tree_id' ] } } }
         ],
@@ -219,6 +223,164 @@ exports.getUserTreeStats = async function(username) {
     }}
   ]);
 };
+
+exports.getTreeTrackData = async function(data) {
+  try {
+    let pipeline = [
+      {
+        '$facet': {
+          'totalCount': [
+            {
+              '$match': {
+                'info.name': data.username
+              }
+            }, {
+              '$unwind': {
+                'path': '$cards.owned'
+              }
+            }, {
+              '$project': {
+                'card': '$cards.owned',
+                'tree': 1
+              }
+            }, {
+              '$lookup': {
+                'from': 'cards',
+                'localField': 'card',
+                'foreignField': 'uniqueName',
+                'as': 'result'
+              }
+            }, {
+              '$unwind': {
+                'path': '$result',
+                'preserveNullAndEmptyArrays': false
+              }
+            }, {
+              '$replaceRoot': {
+                'newRoot': {
+                  '$mergeObjects': [
+                    {
+                      'tree': '$tree',
+                      'card': '$card'
+                    }, '$result'
+                  ]
+                }
+              }
+            }, {
+              '$match': data.match
+            }, {
+              '$count': 'value'
+            }
+          ],
+          'pipelineResults': [
+            {
+              '$match': {
+                'info.name': data.username
+              }
+            }, {
+              '$unwind': {
+                'path': '$cards.owned'
+              }
+            }, {
+              '$project': {
+                'card': '$cards.owned',
+                'tree': 1
+              }
+            }, {
+              '$lookup': {
+                'from': 'cards',
+                'localField': 'card',
+                'foreignField': 'uniqueName',
+                'as': 'result'
+              }
+            }, {
+              '$unwind': {
+                'path': '$result',
+                'preserveNullAndEmptyArrays': false
+              }
+            }, {
+              '$replaceRoot': {
+                'newRoot': {
+                  '$mergeObjects': [
+                    {
+                      'tree': '$tree',
+                      'card': '$card'
+                    }, '$result'
+                  ]
+                }
+              }
+            }, {
+              '$match': data.match
+            }, {
+              '$sort': data.sort
+            }, {
+              '$skip': data.pageNum * 25
+            }, {
+              '$limit': 25
+            }, {
+              '$unwind': {
+                'path': '$dt',
+                'preserveNullAndEmptyArrays': false
+              }
+            }, {
+              '$addFields': {
+                'dt.unlocked': {
+                  '$in': [
+                    '$dt._id', '$tree'
+                  ]
+                }
+              }
+            }, {
+              '$group': {
+                '_id': '$card',
+                'name': {
+                  '$first': '$name'
+                },
+                'ja_name': {
+                  '$first': '$ja_name'
+                },
+                'type': {
+                  '$first': '$type'
+                },
+                'rarity': {
+                  '$first': '$rarity'
+                },
+                'characters': {
+                  '$first': '$characters'
+                },
+                'nodes': {
+                  '$push': '$dt'
+                }
+              }
+            }, {
+              '$sort': data.sort
+            }
+          ]
+        }
+      }, {
+        '$unwind': '$pipelineResults'
+      }, {
+        '$unwind': '$totalCount'
+      }, {
+        '$replaceRoot': {
+          'newRoot': {
+            '$mergeObjects': [
+              '$pipelineResults', {
+                'totalCount': '$totalCount.value'
+              }
+            ]
+          }
+        }
+      }
+    ];
+    let nodes = await Users.aggregate(pipeline);
+    return nodes;
+  } catch(e) {
+    console.error(e);
+    return [];
+  }
+};
+
 
 function sortObjArrayByKey(array, key) {
   return array.sort(function(a, b) {
@@ -237,6 +399,16 @@ exports.favesCard = function(username, card) {
 
 exports.getNumberOfUsers = function() {
 	return Users.estimatedDocumentCount();
+};
+
+exports.getNumberOfValidUsers = function() {
+  return Users.countDocuments({
+    $or: [
+      { "info.email": { $exists: true, $ne: "" } },
+      { "cards.owned": { $exists: true, $ne: [] } },
+      { "cards.faved": { $exists: true, $ne: [] } },
+    ]
+  });
 };
 
 exports.getOwnedCardCount = card => getCardCountInCollections(card, "owned");

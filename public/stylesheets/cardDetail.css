@@ -17,7 +17,7 @@ svg.bi-star-fill:hover {
 	content: "Remove from ";
 }
 
-.favourites.removeCardButton {
+.faved.removeCardButton {
 	stroke: #FFC300;
 	fill: #FFC300;
 }
@@ -27,16 +27,6 @@ svg.bi-star-fill:hover {
 	justify-content: center;
 	border-radius: 8px;
 	margin-bottom: .5rem;
-}
-
-.animation {
-	width: 100%;
-}
-
-.animation>div {
-	position: relative;
-	width: 100%;
-	height: 315px;
 }
 
 @media (min-width: 768px) {
@@ -63,13 +53,6 @@ svg.bi-star-fill:hover {
 	table#strength tbody th {
 		width: 20%;
 	}
-	.animation {
-		width: 50%;
-	}
-	.animation>div {
-		width: auto;
-		height: 380px;
-	}
 }
 
 #info>div {
@@ -95,10 +78,6 @@ svg.bi-star-fill:hover {
 	#info>div:nth-child(even) {
 		text-align: center;
 	}
-
-	.dt-node .d-flex {
-		justify-content: center;
-	}
 }
 
 table#strength thead th, #strength td {
@@ -106,22 +85,32 @@ table#strength thead th, #strength td {
 }
 
 .dt-node {
+	position: relative;
+	z-index: 2;
 	border-radius: 16px;
 	border: 2px solid var(--secondary);
-	height: 100%;
 }
-
-.dt-node.item {
+[data-node-type="item"] {
 	border-color: gold;
 }
-
-@media (min-width: 768px) {
-	.dt-node img {
-		position: absolute;
-	}
-	.dt-node span {
-		padding: 0 36px;
-	}
+[data-node-type="chat"] {
+	border-color: #8CD5E1;
+}
+[data-node-type="icon"] {
+	border-color: #C8B4FF;
+}
+[data-node-type="bgm"],
+[data-node-type="voice"],
+[data-node-type="clothing"],
+[data-node-type="wallpaper"],
+[data-node-type="home_picture"] {
+	border-color: #EE91DC;
+}
+.dt-node p:first-child {
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 
 #cardstats a[data-toggle="collapse"] {
@@ -136,4 +125,8 @@ table#strength thead th, #strength td {
 
 a[data-toggle="collapse"][aria-expanded="false"] .bi.bi-chevron-up {
 	transform: rotate(180deg);
+}
+
+#collapseTree .custom-control-input:not([disabled]) + .custom-control-label {
+	cursor: pointer;
 }

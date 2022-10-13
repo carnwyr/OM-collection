@@ -20,29 +20,32 @@ mixin treeCostTemplate(item)
 		- item = Array(3).fill({ name: '', amount: '' });
 	each i, index in item
 		div.form-row.align-items-center.mb-2
-			label.col-12.col-md-2.col-lg-1.text-center= index + 1
-			div.col-12.col-md-5.col-lg-3.mb-2.mb-md-0
-				select.item-select.custom-select.form-control(name="name")
-					option(value='' data-subtext='--')
-					each x in ITEMS
-						option(value=x selected=(i.name===x))= x
-			div.col-12.col-md-5.col-lg-3
-				input.form-control(type="number" name="amount" value=i.amount placeholder="how many?")
+			label.col-2.col-md-1.text-center= index + 1
+			div.col-10
+				div.row
+					div.col-md-6.col-lg-4.mb-1.mb-md-0
+						select.item-select.custom-select.form-control(name="name")
+							option(value='' data-subtext='--')
+							each x in ITEMS
+								option(value=x selected=(i.name===x))= x
+					div.col-md-6.col-lg-4.mb-1.mb-md-0
+						input.form-control(type="number" name="amount" value=i.amount placeholder="how many?")
 
 mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
 	div
 		form.form-row
 			div.d-none: input(type="text" name="_id" value=node._id readonly)
-			div.form-inline.col-12.align-items-center.mb-2
-				label.mr-2 No.
-				input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder placeholder="???" style="width:80px;")
-				small.text-muted The order in which this node should appear on this page.
+			div.d-none
+				div.form-inline.col-12.align-items-center.mb-2
+					label.mr-2 No.
+					input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder style="width:80px;")
+					small.text-muted The order in which this node should appear on this page.
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Name
-				input.form-control.autocomplete(type="text" value=node.reward name="reward" placeholder="???" readonly=(node._id && node.reward !== "???"))
+				input.form-control.autocomplete(type="text" value=node.reward name="reward" readonly=(node._id && node.reward !== "???"))
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Amount
-				input.form-control(type="number" value=node.count name="count" placeholder="???")
+				input.form-control(type="number" value=node.count name="count")
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Type
 				select.custom-select.form-control(name="type")
@@ -51,7 +54,7 @@ mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '
 						option(value=t selected=(node.type===t))= t
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Grimm cost
-				input.form-control(type="number" name="grimmCost" value=node.grimmCost placeholder="???")
+				input.form-control(type="number" name="grimmCost" value=node.grimmCost)
 			div.form-group.col-12
 				label Requirements
 				+treeCostTemplate(node.requirements)
@@ -91,9 +94,10 @@ block content
 						|
 						a(href="https://discord.gg/Y3KMW7U") discord server
 						| .
+					p.text-center We just added a <a href="/tree-tracker">tree trackers</a>, you can use it to check which cards have missing nodes.
 				ul#cardTab.nav.nav-tabs(role="tablist")
 					<li class="nav-item" role="presentation">
-						<a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General info</a>
+						<a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General</a>
 					</li>
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="strength-tab" data-toggle="tab" href="#strength" role="tab" aria-controls="strength" aria-selected="false">Strength</a>
@@ -104,21 +108,12 @@ block content
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="tree-tab" data-toggle="tab" href="#tree" role="tab" aria-controls="tree" aria-selected="false">Devil's tree</a>
 					</li>
-					if user.isAdmin
-						<li class="nav-item" role="presentation">
-							<a class="nav-link" id="animation-tab" data-toggle="tab" href="#animation" role="tab" aria-controls="animation" aria-selected="false">UR+ Animation</a>
-						</li>
+					<li class="nav-item" role="presentation">
+						<a class="nav-link" id="animation-tab" data-toggle="tab" href="#animation" role="tab" aria-controls="animation" aria-selected="false">UR+ Animation</a>
+					</li>
 				div#cardTabContent.tab-content.py-3.px-md-3
 					div#general.tab-pane.fade.show.active(role="tabpanel" aria-labelledby="general-tab")
 						form.form-row
-							if !user.isAdmin
-								div.col-12.text-center
-									h5 Please upload images and animations to
-										|
-										|
-										a(href="https://drive.google.com/drive/folders/1v6jYT7NU31alIgcPrrIJerF6O2Iq3jlU?usp=sharing" target="_blank") our google drive folder
-										| .
-									hr
 							div.form-group.col-12.col-md-6
 								label(for="name") Name
 								input(class='form-control' type="text" id="name" name="name" value=card?card.name:'' readonly=(user.isAdmin?false:true))
@@ -250,11 +245,11 @@ block content
 												- str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
 												th(scope="row")= t(str)
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].min:0))
+													input.form-control(type="number" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].min:0))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].max:0))
+													input.form-control(type="number" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].max:0))
 												td
-													input.form-control(type="number" placeholder="???" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:0))
+													input.form-control(type="number" name=attribute value=(card&&card.strength&&card.strength[attribute]?card.strength[attribute].fdt:0))
 					div#skills.tab-pane.fade(role="tabpanel" aria-labelledby="skills-tab")
 						div.alert.alert-info(style="z-index:0!important;")
 							strong Important!!
@@ -285,9 +280,14 @@ block content
 					div#tree.tab-pane.fade(role="tabpanel" aria-labelledby="tree-tab")
 						h5 Devil's tree
 						if card && card.dt
-							- rewardNodes = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower");
-							- levelUpNodes = card.dt.filter(x => x.type === "level_up");
-							- flowerNode = card.dt.filter(x => x.type === "flower");
+							-
+								rewardNodes = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower").sort((a, b) => {
+									if (!a.grimmCost) return 1;
+									if (!b.grimmCost) return -1;
+									return a.grimmCost - b.grimmCost;
+								});
+								levelUpNodes = card.dt.filter(x => x.type === "level_up");
+								flowerNode = card.dt.filter(x => x.type === "flower");
 						else
 							- rewardNodes = [];
 							- levelUpNodes = [];
@@ -296,7 +296,15 @@ block content
 							|
 							| <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/> </svg>
 						div#rewardCollapse.collapse.show
-							div.alert.alert-info(style="z-index:0!important;") Note: icon (Locked) means the original/ devil's flower locked icon, (Unlocked) means the flower unlocked icon.
+							if card
+								- cardName = card.name
+							else
+								- cardName = "The Mammon Way"
+							div.alert.alert-info(style="z-index:0!important;")
+								div: strong Any nodes
+								p Use <u>???</u> as reward name if you don't know the name.
+								div: strong Icons and UR+ animations
+								p.mb-0 <u>#{cardName} (Locked)</u> means the original/ devil's flower locked icon, <u>#{cardName} (Unlocked)</u> means the flower unlocked icon.
 							div
 								div
 									each node in rewardNodes
@@ -331,7 +339,7 @@ block content
 									div.d-none: input(type="text" name="type" value="level_up")
 									div.form-group.col-12.col-md-6.col-lg-3
 										label Grimm cost
-										input.form-control(type="number" name="grimmCost" value=node.grimmCost placeholder="???")
+										input.form-control(type="number" name="grimmCost" value=node.grimmCost)
 									div.form-group.col-12.mb-0
 										label Requirements
 										+treeCostTemplate(node.requirements)
@@ -349,29 +357,20 @@ block content
 									div.d-none: input(type="text" name="type" value="flower")
 									div.form-group.col-12.col-md-6.col-lg-3
 										label Grimm cost
-										input.form-control(type="number" name="grimmCost" value=flowerNode.grimmCost placeholder="???")
+										input.form-control(type="number" name="grimmCost" value=flowerNode.grimmCost)
 									div.form-group.col-12.mb-0
 										label Requirements
 										+treeCostTemplate(flowerNode.requirements)
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
 						div.form-check
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="" checked=(!card||!card.animation.type))
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="" checked=(!card||!card.animation))
 							label.form-check-label(for="inlineRadio1") n/a
 						div.form-check
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animation.type&&card.animation.type==="battle"))
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animation&&card.animation==="battle"))
 							label.form-check-label(for="inlineRadio2") dance battle/skills animation
 						div.form-check
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animation.type&&card.animation.type==="homescreen"))
+							input.form-check-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animation&&card.animation==="homescreen"))
 							label.form-check-label(for="inlineRadio3") homescreen/moving picture
-						br
-						h5 Links
-						small Video code from Vimeo: https://vimeo.com/[this code here]
-						div.form-group
-							label(for="animation1") Skills animation/ Devil's Flower locked
-							input#animation1.form-control(type="text" value=card&&card.animation&&card.animation.link1?card.animation.link1:"")
-						div.form-group
-							label(for="animation2") Devil's Flower unlocked
-							input#animation2.form-control(type="text" value=card&&card.animation&&card.animation.link2?card.animation.link2:"")
 				hr
 				button#submit.btn.btn-primary.mr-2(type="submit") Save
 				span#cd
@@ -510,9 +509,6 @@ block content
 				}
 
 	style.
-		.bootstrap-select.item-select>.dropdown-menu {
-			box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-		}
 		@media screen and (max-width: 720px) {
 			body {
 				background: rgb(255,254,255) !important;

@@ -1,0 +1,18 @@
+extends layout
+
+block scripts
+
+block content
+  div(class="container")
+    h1= title
+    div.card.card-body
+      - let lst = ALL_CHARACTERS;
+      - lst.pop();  // remove little d.
+      div.row
+        div.col-12.text-center
+          h5: a(href="/cards") All cards + collection management
+          hr
+        each c in lst
+          p.col-6.col-md-4.col-lg-3: a(href="/cards/" + c)
+            img.mr-2(src="/images/faces/" + c + ".png" style="width:32px;height:32px;")
+            | #{t(c)}

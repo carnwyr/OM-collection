@@ -99,11 +99,7 @@ function getCardData() {
 		isHidden: $("#isHidden")?$("#isHidden").prop("checked"):false
 	};
 	if (data.rarity === "UR+") {
-		data.animation = {
-			type: $("input[name='animationType']:checked").val(),
-			link1: $("input#animation1").val(),
-			link2: $("input#animation2").val()
-		};
+		data.animation = $("input[name='animationType']:checked").val();
 	}
 	return data;
 }
@@ -121,7 +117,7 @@ function getCardStrength() {
 	};
 
 	for (var pair of formData.entries()) {
-		data[pair[0]].push(pair[1]);
+		data[pair[0]].push(parseInt(pair[1]));
 	}
 
 	for (const key in data) {
@@ -166,7 +162,9 @@ function getTreeRewards() {
 		let node = { requirements: [] };
 		let name;
 		for(let pair of formData.entries()) {
-			// console.log(pair);
+			if (["count", "amount", "grimmCost"].includes(pair[0])) {
+				pair[1] = parseInt(pair[1]) || null;
+			}
 			if (pair[0] === "name") {
 				name = pair[1];
 			} else if (pair[0] === "amount") {

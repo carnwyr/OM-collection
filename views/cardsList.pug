@@ -1,6 +1,7 @@
 extends layout
 
 block scripts
+  link(rel="canonical" href="https://" + (t("lang") === "en" ? "" : t("lang") + '.') + "karasu-os.com/cards")
   link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
   script.
     const PATH = !{JSON.stringify(path)};
@@ -119,7 +120,7 @@ block content
                 - var search = { value: query.search };
               input.form-control.text-primary(type="text" name="search" placeholder=t("cards.search"))&attributes(search)
             input.btn.btn-outline-secondary.btn-sm.px-3(type="submit" value="Search")
-          button.btn.btn-secondary.btn-sm.px-3(type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters")
+          button.btn.btn-primary.btn-sm.px-3(type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters")
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16" style="margin-bottom:.125rem">   <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/> </svg>
             |
             | #{t("cards.filters")}
@@ -168,7 +169,7 @@ block content
                 div.custom-control.custom-radio.custom-control-inline
                   input#checkRarityAll.custom-control-input(type="radio" name="rarity" checked=!query.rarity value="")
                   label.custom-control-label(for="checkRarityAll") All
-                each rarity in ["N", "R", "SR", "SSR", "UR", "UR+"]
+                each rarity in ["UR+", "UR", "SSR", "SR", "R", "N"]
                   - query.rarity = [].concat(query.rarity)
                   div.custom-control.custom-checkbox.custom-control-inline
                     input.custom-control-input(type="checkbox" id="checkRarity"+rarity name="rarity" value=rarity checked=(query.rarity&&query.rarity.includes(rarity)?true:false))

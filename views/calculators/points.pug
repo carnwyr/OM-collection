@@ -1,5 +1,13 @@
 extends ../layout
 
+block scripts
+  script.
+    const POPQUIZ = !{JSON.stringify(data)};
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.5/dayjs.min.js" integrity="sha512-Ot7ArUEhJDU0cwoBNNnWe487kjL5wAOsIYig8llY/l0P2TUFwgsAHVmrZMHsT8NGo+HwkjTJsNErS6QqIkBxDw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.5/plugin/utc.min.js" integrity="sha512-z84O912dDT9nKqvpBnl1tri5IN0j/OEgMzLN1GlkpKLMscs5ZHVu+G2CYtA6dkS0YnOGi3cODt3BOPnYc8Agjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.5/plugin/timezone.min.js" integrity="sha512-fG1tT/Wn/ZOyH6/Djm8HQBuqvztPQdK/vBgNFLx6DQVt3yYYDPN3bXnGZT4z4kAnURzGQwAnM3CspmhLJAD/5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  script(src="/javascripts/calculator.js")
+
 block content
   -
     function started() {
@@ -10,64 +18,207 @@ block content
     }
   div.container
     h1= title
-    div.card.card-body.mb-3
-      a.h5.text-center.m-0(href="#collapseinfo" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseinfo") Information
-        |
-        |
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/> </svg>
-      div#collapseinfo.collapse
-        h5.card-title A few things about how it works
-        span.card-text This calculator:
-        ul
-          li always round up in calculation.
-          li can only be as accurate as your input.
-          li evenly spreads necessary battles throughout remaining days. Even if you can complete the goal today with free battles, it will still divide remaining battles among remaining days.
-          li currently do not support boosting periods. Please be careful when using during those times.
-        h5.card-title Assumptions
-        span.card-text This calculator assumes that:
-        ul
-          li you get three-stars on every battle.
-          li you have not cleared today's free battles.
-        h5.text-center.m-0 Please use your own calculation if you believe Karasu's results are wrong!
-    div.card
+    div.card.mb-3
       div.card-body
         div.row
+          div.col-12.text-center
+            p Please read the information section at the bottom of the page before using the calculator.
+            hr
           div#pqinfo.col-12.col-md-4.text-center
-            //- h5 On-going
-            h5= t("lang") === "ja" ? data.name.ja : data.name.en
-            a(href="/event/" + getURL(data.name.en)): img.img-fluid.rounded.mb-3(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
+            a(href="/event/" + getURL(data.name.en))
+              h5= t("lang") === "ja" ? data.name.ja : data.name.en
+              img.img-fluid.rounded.mb-3(src="/images/events/" + encodeURIComponent(data.name.en) + ".jpg" onerror="this.onerror=null;this.src='/images/event_placeholder.jpg'")
             if started()
-              - timerDate = data.end;
               p Ending in
             else
-              - timerDate = data.start;
               p Starting in
-            h5#cd --
+            h5#cd.mb-3 --
+            if data.boostingMultiplier > 1
+              - let dateNow = new Date();
+              if dateNow < data.boostingStart
+                p Boosting starting in
+                h5#boostingcd --
+              else if dateNow < data.boostingEnd
+                p Boosting ending in
+                h5#boostingcd --
+              else
+                p Boosting has ended.
             hr.d-md-none
           div.col-12.col-md-8
-            //- h5 Calculator
             form#calculator
               div.form-row
-                div.form-group.col-12.col-md-4
+                div.form-group.col-12.col-md-4.mb-lg-1
                   label Goal
-                  input.form-control(type="number" name="goal")
-                div.form-group.col-12.col-md-4
-                  label Current pts
-                  input.form-control(type="number" name="currpts")
-                div.form-group.col-12.col-md-4
-                  label Pts per battle
-                  input.form-control(type="number" name="ppb" readonly=data.isBirthday value=(data.isBirthday?12:''))
-            hr
-            //- h5 Result
-            div.text-center
-              p Today's goal
-              h5#goaltoday --
-              br
-              p Required battles
-              h5#dailybattles --
-              br
-              p Required AP
-              h5#apreq --
+                  input.form-control(type="number" min=0 name="goal")
+                div.form-group.col-12.col-md-4.mb-lg-1
+                  label Current points
+                  input.form-control(type="number" min=0 name="currpts")
+                div.form-group.col-12.col-md-4.mb-lg-1
+                  label Points per battle
+                    a(href="#note") *
+                  input.form-control(type="number" name="ppb" readonly=data.isBirthday min=(data.isBirthday?12:120) value=(data.isBirthday?12:''))
+            p.mb-0.text-right
+              a(data-toggle="modal" href="#advancedSettingsModal")
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear mb-1 mr-1 text-primary" viewBox="0 0 16 16">   <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>   <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/> </svg>
+                | Advanced settings
+            //-
+              if data.rewardListType == "boxes"
+                p You need #{} points at most to clear each box.
+            <ul class="nav nav-tabs" id="resultTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">Total</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Today</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="additional-tab" data-toggle="tab" href="#additional" role="tab" aria-controls="additional" aria-selected="false">Additional</a>
+              </li>
+            </ul>
+            div#resultTabContent.tab-content.pt-3
+              div#total.tab-pane.show.active(role="tabpanel" aria-labelledby="total-tab")
+                p.text-center You can get a total of
+                  |
+                  |
+                  span#freepts.h5 --
+                  |
+                  | points for free
+                  a(href="#note") **
+                  | .
+                p.text-center An additional
+                  |
+                  |
+                  span.additionalpts.h5 --
+                  |
+                  | points is needed to reach your goal.
+                hr
+                div.results.row.justify-content-center
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p AP
+                      div
+                        div
+                          p.mb-0= t("calculator.free")
+                          span#total-freeap --
+                        div
+                          p.mb-0= t("calculator.buy")
+                          span#total-buyap --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#total-ap --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Battles
+                      div
+                        div
+                          p.mb-0= t("calculator.free")
+                          span#total-freebattles --
+                        div
+                          p.mb-0= t("calculator.buy")
+                          span#total-buybattles --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#total-battles --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Devil Points
+                      div
+                        div
+                          p.mb-0= t("calculator.ap")
+                          span#total-ap-cost --
+                        div
+                          p.mb-0= t("calculator.battles")
+                          span#total-battle-cost --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#total-dp --
+              div#daily.tab-pane(role="tabpanel" aria-labelledby="daily-tab")
+                div.text-center
+                  p Today's goal
+                  h5#goal --
+                hr
+                div.results.row.justify-content-center
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p AP
+                      div
+                        div
+                          p.mb-0= t("calculator.free")
+                          span#freeap --
+                        div
+                          p.mb-0= t("calculator.buy")
+                          span#buyap --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#total-daily-ap --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Battles
+                      div
+                        div
+                          p.mb-0= t("calculator.free")
+                          span#freebattles --
+                        div
+                          p.mb-0= t("calculator.buy")
+                          span#buybattles --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#total-daily-battles --
+                  div.col-12.col-md-6.col-lg-4
+                    div.result-container
+                      p Devil Points
+                      div
+                        div
+                          p.mb-0 AP
+                          span#apcost --
+                        div
+                          p.mb-0 Battles
+                          span#battlescost --
+                        hr
+                        div
+                          p.mb-0 Total
+                          span#total-daily-cost --
+                //-
+                  small.text-muted.text-center If you saved some AP and D-Energy, then you can use the
+                    |
+                    |
+                    a(href='') akuzon calculator
+                    |
+                    | to find out how much less DP you need.
+              div#additional.tab-pane(role="tabpanel" aria-labelledby="additional-tab")
+                p Amount of battles you need to clear to get the additional
+                  |
+                  |
+                  big.additionalpts
+                  |
+                  | points.
+                div.table-responsive
+                  table.table
+                    <thead>
+                      <tr>
+                        th(scope="col")
+                        th(scope="col")= t("calculator.ap")
+                        th(scope="col")= t("calculator.battles")
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        th(scope="row") Non-boosting
+                        td#ap-non-boosting --
+                        td#battles-non-boosting --
+                      </tr>
+                      if data.boostingMultiplier > 1
+                        <tr>
+                          th(scope="row") Boosting
+                          td#ap-boosting --
+                          td#battles-boosting --
+                        </tr>
+                    </tbody>
       if !started()
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
@@ -76,8 +227,113 @@ block content
         div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
           div.row.w-100.h-100.justify-content-center.align-items-center
             h5 This event has ended.
+    div.card.card-body.mt-3
+      h5.card-title Information
+      p.card-text We now have advanced settings. Please double-check your settings before using the calculator.
+      p.card-text This calculator always round up its calculation and can only be as accurate as your input.
+      p.card-text This calculator assumes that you get three-stars on every battle.
+      h5.card-title Sections
+      p.card-text Total
+      ul
+        li A basic summary of how much you need to spend to get reach your goal.
+        li (If applicable) boosting is included in the "free" portion but not the "buy" part, which means that you will need spend a lot less resources if you choose to buy battles during boosting periods. See the additional section for how much you need to spend during non-boosting vs boosting.
+      p.card-text Today
+      ul
+        li It is recommended that you check this section before clearing your battles. Because, if you selected "Yes" in advanced settings for "Already cleared today's free battles?" then the calculator assumes that you do not want to clear anymore battles today and will not give you a result for today. You can still check other sections for how many total or additional battles you need to spend.
+        li If there <u>is boosting</u> during this pop quiz, then it is advised that you do not use this section. If you do choose to follow this section, then you might end up spending more resources than necessary.
+        li If there is <u>no boosting</u> and you have not cleared today's battles, then you are on track if you have more points than "today's goal" after clearing your battles.
+      p.card-text Additional
+      ul
+        li You might need to clear additional battles to reach your goal. This section shows you how many battles you need to purchase after clearing all free battles.
+      h5#note.card-title Notes
+      p.card-text * Points per battle during non-boosting period.
+      p.card-text ** The final points you will have at the end of pop quiz if you clear all remaining free battles and do not spend devil points or d-energies on purchasing additional battles. If you do not have any AP saved and do not want to spend devil points on AP, then you can still get
+        |
+        |
+        span#absfree --
+        |
+        | points at the end of pop quiz for absoluately free.
+      h5.card-title Tips
+      ul
+        li If you have remaining battles and AP, use them all up before the next reset.
+        li Always purchase the flash sale that only cost 10 DP! If you purchase the flash sale, then you will need less DP than the calculated result.
+      hr
+      p.card-text.text-center Please use your own calculation if you believe Karasu's results are wrong! The website is not responsible for any loss you make. Please use at your own risk.
+
+    div#advancedSettingsModal.modal.fade(tabindex="-1" aria-labelledby="advancedSettingsModalLabel" aria-hidden="true")
+      div.modal-dialog.modal-lg.modal-dialog-scrollable
+        div.modal-content
+          div.modal-header
+            h5#advancedSettingsModalLabel.modal-title Advanced Settings
+            button.close(type="button" data-dismiss="modal" aria-label="Close")
+              span(aria-hidden="true") &times;
+          div.modal-body
+            div.container-fluid
+              form#settings
+                div.row
+                  div.col-12
+                    h5 Daily free AP
+                    div.custom-control.custom-radio.custom-control-inline
+                      input.custom-control-input(type="radio" id="automaticRefill" name="automaticRefill" checked)
+                      label.custom-control-label(for="automaticRefill") Automatic restore
+                    div.custom-control.custom-checkbox.custom-control-inline
+                      input.custom-control-input(type="checkbox" id="todo" name="todo" checked)
+                      label.custom-control-label(for="todo") To-do
+                    div.custom-control.custom-checkbox.custom-control-inline
+                      input.custom-control-input(type="checkbox" id="spg" name="spg" checked)
+                      label.custom-control-label(for="spg") Surprise guest
+                    div.custom-control.custom-checkbox.custom-control-inline
+                      input.custom-control-input(type="checkbox" id="apAds" name="apAds")
+                      label.custom-control-label(for="apAds") Watch ads
+                    div.form-row
+                      div.form-group.col
+                        label(for="friends") Friends
+                        input#friends.form-control(type="number" min="0" max="50" value="50" name="friends")
+                      div.form-group.col.mb-4
+                        label(for="fridgeMission") Fridge mission
+                        select#fridgeMission.form-control(name="fridgeMission")
+                          option(value="0") --
+                          option(value="60" selected) Non-VIP
+                          option(value="120") VIP
+                  div.col-12.mb-4
+                    h5 Daily free battles
+                    div.custom-control.custom-radio.custom-control-inline
+                      input.custom-control-input(type="radio" id="dailyReset" name="dailyReset" checked)
+                      label.custom-control-label(for="dailyReset") Daily reset
+                    div.custom-control.custom-checkbox.custom-control-inline
+                      input.custom-control-input(type="checkbox" id="battleAds" name="battleAds")
+                      label.custom-control-label(for="battleAds") Watch ads
+                  div.col-12.mb-3
+                    h5 Already cleared today's free battles?
+                    div.custom-control.custom-radio.custom-control-inline
+                      input.custom-control-input(type="radio" id="customRadioInline1" name="battlesCleared" value="true")
+                      label.custom-control-label(for="customRadioInline1") Yes
+                    div.custom-control.custom-radio.custom-control-inline
+                      input.custom-control-input(type="radio" id="customRadioInline2" name="battlesCleared" value="false" checked)
+                      label.custom-control-label(for="customRadioInline2") No
 
   style.
+    .results p {
+      text-align: center;
+    }
+    .results .result-container {
+      border-radius: 1rem;
+      border: 2px solid var(--secondary);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .results .result-container>div>div {
+      display: flex;
+      justify-content: space-between;
+    }
+    .results hr {
+      margin: .5rem 0;
+      border: 1px solid var(--secondary);
+    }
+    #additional table td,
+    #additional table thead th {
+      text-align: center;
+    }
     @media (min-width: 768px) {
       #pqinfo {
         border-right:1px solid #e5e5e5;
@@ -85,56 +341,4 @@ block content
     }
     a[data-toggle="collapse"][aria-expanded="false"] .bi.bi-chevron-up {
       transform: rotate(180deg);
-    }
-  script.
-    let collapseinfo = localStorage.getItem("#collapseinfo");
-    if (collapseinfo === "false") {
-      $("#collapseinfo").collapse("show");
-    }
-    $("a[data-toggle='collapse']").click(function() {
-      localStorage.setItem($(this).attr("href"), $(this).attr("aria-expanded"));
-    });
-    $(function() {
-      countdown();
-      calculate();
-      $("form#calculator").on("change", calculate);
-    });
-    function calculate() {
-      let goal = parseInt($("input[name='goal']").val());
-      let currentPts = parseInt($("input[name='currpts']").val());
-      let ptsPerBattle = parseInt($("input[name='ppb']").val());
-
-      if (isNaN(goal) || isNaN(currentPts) || isNaN(ptsPerBattle) ||
-          goal < 0 || currentPts < 0 || ptsPerBattle < 0 ||
-          goal < currentPts) return;
-
-      let countDownDate = new Date(!{JSON.stringify(data.end)}).getTime();
-      let now = new Date().getTime();
-      let distance = countDownDate - now;
-      let daysLeft = Math.floor(distance / (1000 * 60 * 60 * 24));
-
-      let dailyGoal =  Math.ceil((goal - currentPts) / daysLeft);
-      let dailyBattles = Math.ceil(dailyGoal / ptsPerBattle);
-
-      $("#goaltoday").text(currentPts + dailyBattles * ptsPerBattle);
-      $("#dailybattles").text(`${dailyBattles} (${Math.floor(dailyBattles/3)} stages ${dailyBattles%3} battles)`);
-      $("#apreq").text((dailyBattles * 8).toLocaleString("en"));
-    }
-    function countdown() {
-      let countDownDate = new Date(!{JSON.stringify(timerDate)}).getTime();
-      let timer = setInterval(function () {
-        let now = new Date().getTime();
-        let distance = countDownDate - now;
-        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toLocaleString('en-US', { minimumIntegerDigits: 2 });
-        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toLocaleString('en-US', { minimumIntegerDigits: 2 });
-        let seconds = Math.floor((distance % (1000 * 60)) / 1000).toLocaleString('en-US', { minimumIntegerDigits: 2 });
-
-        document.getElementById("cd").innerHTML = `${days} days ${hours}:${minutes}:${seconds}`;
-
-        if (distance < 0) {
-          clearInterval(timer);
-          document.getElementById("cd").innerHTML = "--";
-        }
-      }, 1000);
     }

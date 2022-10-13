@@ -59,8 +59,8 @@ exports.submitCardStatusChange = async function (req, res) {
 
 async function getUpdatedCount(card, collection) {
   let updatedVal = collection == "owned" ? await userService.getOwnedCardCount(card) : await userService.getFavedCardCount(card);
-  let totalusers = await userService.getNumberOfUsers();
-  return (updatedVal / totalusers * 100).toFixed(2);
+  let totalUsers = await userService.getNumberOfValidUsers();
+  return (updatedVal / totalUsers * 100).toFixed(2);
 };
 
 exports.getUserListPage = async function(req, res) {
@@ -116,7 +116,7 @@ exports.updateUserProfile = async function(req, res) {
   }
 
   await userService.updateUserData(req.user.name, update);
-  
+
   return res.json({ err: false });
 }
 

@@ -1,6 +1,6 @@
 var page, sortby, order;
 $(document).ready(function() {
-  $(".form-control[name='support']").focusout(updateSupportStatus);
+  $(".form-control[name='support']").on("change", updateSupportStatus);
 
   if ('URLSearchParams' in window) {
     const params = new URLSearchParams(document.location.search.substring(1));

@@ -108,3 +108,29 @@
     width: calc(100%/4);
   }
 }
+
+.action th:not(:last-child) {
+  width: 28%;
+}
+
+.action th:last-child {
+  width: 16%;
+}
+
+@media screen and (max-width: 720px) {
+  h5 {
+    font-size: medium;
+  }
+
+  .h6, td {
+    font-size: small;
+  }
+
+  .action th:not(:last-child) {
+    width: 30%;
+  }
+
+  .action th:last-child {
+    width: 10%;
+  }
+}

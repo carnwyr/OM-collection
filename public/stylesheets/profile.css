@@ -42,10 +42,12 @@ li.placeholder {
   margin-bottom: .5rem;
 }
 
-#profile>div>div:first-child {
-  width: 8.5rem;
-  font-size: small;
+#profile div.col-5, #faveChar>div:first-of-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  font-size: small;
   margin-right: .5em;
   color: white;
   padding: .175rem 1rem;
@@ -53,29 +55,9 @@ li.placeholder {
   border-radius: 16px;
 }
 
-#profile>div.col-lg-6>div:last-child {
+#profile div.col {
   border-bottom: 2px dotted;
-  flex-grow: 1;
   text-align: center;
-}
-
-#profile>div.col-lg-6 {
-  display: flex;
-  margin-bottom: 1.25rem;
-}
-
-#profile>div.col-lg-6>div {
-  display: inline-flex;
-}
-
-#profile>div.col-lg-6>div>span {
-  margin: auto;
-}
-
-@media (min-width:992px) {
-  #profile>div.col-12>div:last-child {
-    width: 50%;
-  }
 }
 
 #usernav>.btn-outline-primary {

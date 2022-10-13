@@ -9,6 +9,7 @@ const skillCharge = require("../staticData/skills.json");
 exports.getDTRewardsPage = async function (req, res, next) {
 	let cards = [];
 	let item = "???";
+	let title = "Devil's Tree Rewards";
 	if (req.query.item) {
 		/*if (req.user && (req.query.owned || req.query.locked)) {
 			let user = await userService.getUser(req.user.name);
@@ -28,8 +29,8 @@ exports.getDTRewardsPage = async function (req, res, next) {
 	}
 
 	return res.render("askKarasu", {
-		title: req.i18n.t("title.dt_rewards", { "item": item.replace('_', ' ') }),
-		description: "",
+		title: title,
+		description: "A page with list of cards that gives " + item + " in their devil's trees.",
 		cards: cards,
 		path: "dt_rewards",
 		query: req.query,
@@ -39,12 +40,13 @@ exports.getDTRewardsPage = async function (req, res, next) {
 
 exports.getUnlockItemsPage = async function (req, res, next) {
 	try {
-		let cards = [], item = "???";
+		let cards = [], item = "???", title = "Items to Unlock Devil's Tree";
 		if (req.query.item && req.query.item !== "") {
 			cards = await cardService.getCardsWithItem({
 				"$match": { 'dt.requirements.name': req.query.item }
 			});
 			item = req.query.item;
+			title += ": " + item;
 		}
 
 		if (req.user) {
@@ -60,8 +62,8 @@ exports.getUnlockItemsPage = async function (req, res, next) {
 		}
 
 		return res.render("askKarasu", {
-			title: req.i18n.t("title.card_unlock_items", { "item": item.replace('_', ' ') }),
-			description: "",
+			title: title,
+			description: "A list of cards that needs " + item + " to unlock their devil's tree spaces.",
 			cards: cards,
 			path: "card_unlock_items",
 			query: req.query,
@@ -75,12 +77,13 @@ exports.getUnlockItemsPage = async function (req, res, next) {
 
 exports.getMajolishCardsPage = async function (req, res, next) {
 	try {
-		let cards = [], item = "???";
+		let cards = [], item = "???", title = "Majolish Rewards";
 		if (req.query.item && req.query.item !== "") {
 			cards = await cardService.getCardsWithItem({
 				"$match": { 'dt.type': req.query.item }
 			});
 			item = req.query.item;
+			title += ": " + item;
 		}
 
 		if (req.user) {
@@ -96,8 +99,8 @@ exports.getMajolishCardsPage = async function (req, res, next) {
 		}
 
 		return res.render("askKarasu", {
-			title: req.i18n.t("title.majolish_cards", { "item": item.replace('_', ' ') }),
-			description: "",
+			title: title,
+			description: "A list of cards with " + item + " in as a devil's tree reward.",
 			cards: cards,
 			path: "majolish_cards",
 			query: req.query,
@@ -111,7 +114,7 @@ exports.getMajolishCardsPage = async function (req, res, next) {
 
 exports.getSkillChargeSpeedPage = async function (req, res, next) {
 	try {
-		let cards = [], item = "???";
+		let cards = [], item = "???", title = "Fast/slow Charging Cards";
 
 		if (req.query.speed && (req.query.speed === "fast" || req.query.speed === "slow")) {
 			cards = await cardService.getCards({
@@ -119,6 +122,7 @@ exports.getSkillChargeSpeedPage = async function (req, res, next) {
 				"rarity": { "$in": ["SSR", "UR", "UR+"] }  // SR and below have duplicate skills with different charging time..
 			}, { 'name': 1, 'uniqueName': 1 });
 			item = req.query.speed;
+			title = item.charAt(0).toUpperCase() + item.slice(1) + " Charging Cards";
 		}
 
 		if (req.user && req.query.owned === "on") {
@@ -127,8 +131,8 @@ exports.getSkillChargeSpeedPage = async function (req, res, next) {
 		}
 
 		return res.render("askKarasu", {
-			title: req.i18n.t("title.skill_charge_time", { "item": item.replace('_', ' ') }),
-			description: "",
+			title: title,
+			description: "A list of " + item + " charging cards.",
 			cards: cards,
 			path: "skill_charge_time",
 			query: req.query,

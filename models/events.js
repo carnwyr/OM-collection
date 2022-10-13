@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 const options = { discriminatorKey: "type" };
+const noID = { _id: false };
 
 const eventSchema = new Schema({
 	name: {
@@ -19,14 +20,23 @@ const Event = mongoose.model("Event", eventSchema);
 
 const rewardSchema = new Schema({
 	card: { type: String, required: true },
-	points: { type: String },
-	tag: { type: String }
-});
+	points: { type: Number }
+}, noID);
+
+const generalReqSchema = new Schema({
+	name: String,
+	req: Number
+}, noID);
+
+const stageSchema = new Schema({
+	name: String,
+	rewards: Array
+}, noID);
 
 const boxSchema = new Schema({
 	name: String,
 	itemsCount: Number,
-	ultimateReward: String
+	specialRewards: [generalReqSchema]
 });
 
 const boxSetSchema = new Schema({
@@ -35,29 +45,31 @@ const boxSetSchema = new Schema({
 	boxes: [boxSchema]
 });
 
-var APSchema = new Schema({
-	amount: { type: Number, required: true },
-	points: { type: Number, required: true },
-	page: { type: Number }
-});
-
-const lockedStageSchema = new Schema({
-	name: String,
-	requirement: Number
-}, { _id: false });
+// var APSchema = new Schema({
+// 	amount: { type: Number, required: true },
+// 	points: { type: Number, required: true },
+// 	page: { type: Number }
+// });
 
 const popQuizSchema = new Schema({
+	rewardListType: { type: String, required: true, enum: ["points", "boxes"] },
+	hasKeys:{ type: Boolean, required: true },
 	isLonelyDevil: { type: Boolean, required: true },
 	isBirthday: { type: Boolean, required: true },
-	hasKeys:{ type: Boolean, required: true },
-	rewardListType: { type: String, required: true, enum: ["points", "boxes"] },
-	stages: { type: Number, required: true },
-	lockedStages: { type: [lockedStageSchema] },
-	keyDroppingStages: { type: Array },
-	boxRewards: { type: [boxSetSchema] },
+
 	listRewards: { type: [rewardSchema] },
-	ap: { type: [APSchema] },
-	pageCost: { type: Number }
+	boxRewards: { type: [boxSetSchema] },
+
+	stages: { type: Number, required: true },
+	stageList: { type: [stageSchema] },
+	lockedStages: { type: [generalReqSchema] },
+
+	boostingMultiplier: { type: Number, required: true },
+	boostingStart: { type: Date },
+	boostingEnd: { type: Date },
+
+	// pageCost: { type: Number },
+	// ap: { type: [APSchema] }
 });
 
 const PopQuiz = Event.discriminator("PopQuiz", popQuizSchema);
@@ -68,4 +80,4 @@ const Other = Event.discriminator("Other", new mongoose.Schema({}));
 
 
 module.exports = Event;
-exports.APSchema = APSchema;
+// exports.APSchema = APSchema;

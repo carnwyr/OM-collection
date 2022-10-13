@@ -1,6 +1,7 @@
 const createError = require("http-errors");
 const async = require("async");
 const dayjs = require("dayjs");
+const Sentry = require("@sentry/node");
 
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 const utc = require('dayjs/plugin/utc')
@@ -13,6 +14,7 @@ dayjs.extend(timezone)
 const eventService = require("../services/eventService");
 const eventCalculatorService = require("../services/eventCalculatorService");
 const cardService = require("../services/cardService");
+const miscController = require("../controllers/miscController");
 
 exports.getEventsPage = async function(req, res, next) {
 	// TODO: add method to only retrieve a certain type of event
@@ -53,9 +55,7 @@ exports.getEventDetail = async function (req, res, next) {
 		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		let event = await eventService.getEvent({ "name.en": eventName });
 
-		if (!event) throw createError(404, properties = { title: "Event not found", errorMessage: `We're still adding to our event database. Please help us by contributing to
-		<a href="https://docs.google.com/spreadsheets/d/1BcTf4jVsw6dtvu8U7vmP0LVB_yVDYXyl3KdeHLtPmxo/edit?usp=sharing" target="_blank"> this spreadsheet</a>.
-		Thank you!` });
+		if (!event) throw createError(404, properties = { title: "Event not found", errorMessage: "Work in progress. Trying to figure out how to save this kind of events." });
 
 		let locals = {
 			title: event.name.en,
@@ -69,7 +69,7 @@ exports.getEventDetail = async function (req, res, next) {
 		}
 
 		if (event.type === "PopQuiz" || event.type === "Nightmare") {
-			locals.cards = await cardService.getCards({ source: { $in: [ eventName ] } });
+			locals.cards = await cardService.getCards({ source: { $in: [ eventName ] } }, { name: 1, ja_name: 1, uniqueName: 1, type: 1, dt: 1 });
 		}
 
 		return res.render("eventDetail", locals);
@@ -175,10 +175,8 @@ exports.calculate = async function(req, res) {
 exports.getEventAddPage = async function (req, res, next) {
 	try {
 		var data = eventService.getDefaultEventData();
-		var cards = await cardService.getCards();
-		var cardNames = cards.map(x => x.name);
 		var apPresets = await eventService.getAPPresets();
-		return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
+		return res.render("eventEdit", { title: "Add Event", description: ":)", data: data, user: req.user, apPresets: apPresets });
 	} catch(e) {
 		return next(e);
 	}
@@ -206,7 +204,7 @@ exports.deleteEvent = async function (req, res, next) {
 exports.updateEvent = async function (req, res) {
 	try {
 		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
-		let result = await eventService.updateEvent(eventName, req.body.data, req.body.img);
+		let result = await eventService.updateEvent(eventName, req.body.data, req.body.img, req.user.name);
 		if (result.err) throw new Error(result.message);
 		miscController.notifyAdmin(`Event updated. \`\`${req.user.name}\`\` just updated: \`\`${eventName}\`\`.`);
 		return res.json(result);
@@ -218,16 +216,10 @@ exports.updateEvent = async function (req, res) {
 
 exports.getEventEditPage = async function(req, res, next) {
 	try {
-		var eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
+		let eventName = decodeURIComponent(req.params.event.replace(/_/g, ' '));
 		let data = await eventService.getEvent({ "name.en": eventName });
 		if (!data) throw createError(404, properties = { title: "Event not found" });
-
-		var cards = await cardService.getCards();
-		var cardNames = cards.map(x => x.name);
-
-		var apPresets = await eventService.getAPPresets();
-
-		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user, cardData: cardNames, apPresets: apPresets });
+		return res.render("eventEdit", { title: "Edit Event", description: ":)", data: data, user: req.user });
 	} catch(e) {
 		return next(e);
 	}

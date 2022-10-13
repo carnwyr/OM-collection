@@ -47,11 +47,7 @@ const cardSchema = new mongoose.Schema({
 	},
 	dt: { type: [dtRewardSchema] },
 	skills: { type: [skillSchema] },
-	animation: {
-		type: { type: String, enum: ["", "battle", "homescreen"] },
-		link1: { type: String },
-		link2: { type: String }
-	},
+	animation: { type: String, enum: ["", "battle", "homescreen"] },
 	number: { type: Number, required: true }
 });
 

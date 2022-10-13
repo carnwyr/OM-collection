@@ -12,44 +12,64 @@ block scripts
   else
     script.
       $(function() {
-        $(".owned, .favourites").on("click", () => {
+        $(".owned, .faved").on("click", () => {
           showAlert("warning", "Please log in!");
         });
       });
 
 mixin dtTemplate(node)
-  div.col-12.col-md-4.mb-3
-    div(class="p-3 dt-node " + node.type)
-      div.d-flex.flex-wrap.align-items-center
-        img.mb-2.mb-md-0(src="/images/nodes/" + node.type + ".png" alt=node.type style="width:32px;height:32px;")
-        span.text-center.w-100= node.reward
+  div.col-12.col-md-6.col-lg-4.mb-3
+    div(style="position:relative;overflow:hidden;border-radius:16px;")
+      div(style="position:absolute;right:0;bottom:0;transform:translate(15px,20px) rotate(-10deg);z-index:1;")
+        if node.type === "item"
+          img.img-fluid(src="/images/items/" + (itemImages[node.reward] || node.reward) + ".png" onerror="this.src='/images/nodes/item.png'" alt=node.reward style="width:128px;height:128px;opacity:.25;")
+        else if node.type === "icon"
+          if card.type === "Demon"
+            - iconName = node.reward.replace("(Locked)", "").replace("(Unlocked)", "_Unlocked");
+          else
+            -
+              iconList = card.dt.filter(x => x.type === "icon").sort((a, b) => {
+                if (!a.grimmCost) return 1;
+                if (!b.grimmCost) return -1;
+                return a.grimmCost - b.grimmCost;
+              }).map(x => x.reward);
+              iconNumber = iconList.indexOf(node.reward) + 1;
+              iconName = card.name.replace(':', ' -') + '_' + iconNumber;
+          img.img-fluid(src="https://obey-me.fandom.com/wiki/Special:Redirect/file/" + iconName + "_icon.png?width=128" onerror="this.src='/images/nodes/icon.png'" alt="icon" style="width:128px;height:128px;opacity:.25;")
+        else
+          img.img-fluid(src="/images/nodes/" + node.type + ".png" alt=node.type style="width:128px;height:128px;opacity:.25;")
+      div.p-3.dt-node(data-node-type=node.type)
+        p.text-center= node.reward
           if node.type === "item" && node.count
             small= ' x' + node.count
-      hr
-      if node.requirements.length !== 0
-        ul
-          each i in node.requirements
-            li= i.name && i.amount ? i.name + ' x' + i.amount : "???"
-      else
-        p.text-center ???
-      p.text-center Grimm: #{node.grimmCost ? node.grimmCost.toLocaleString("en") : "???"}
-      hr
-      if !node._id || node.reward === "???"
-        - missingInfo = true;
-      div.custom-control.custom-checkbox.text-center
-        input.custom-control-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" value=node._id checked=(user && user.tree.includes(node._id)) disabled=(missingInfo || !user?true:false))
-        label.custom-control-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
-          if missingInfo
-            | <sup>*</sup>
+        hr
+        if node.requirements.length !== 0
+          div.d-flex.justify-content-center
+            each i in node.requirements
+              figure(style="margin:4px;")
+                img(src="/images/" + (i.name ? "items/tree/" + i.name : "reward_placeholder") + ".png" style="width:64px;height:auto;")
+                figcaption.text-center= i.amount ? 'x' + i.amount : "???"
+        else
+          p.text-center ???
+        div.d-flex.justify-content-center.align-items-center
+          img.mr-1(src="/images/items/grimm.png" style="width:1.25rem;")
+          p.card-text= node.grimmCost ? node.grimmCost.toLocaleString("en") : "???"
+
+        hr
+        - missingInfo = (!node._id || node.reward === "???") ? true : false;
+        div.custom-control.custom-checkbox.text-center
+          input.custom-control-input(id=`${node.reward}_${node.nodeOrder}_completion` type="checkbox" value=node._id checked=(user && user.tree.includes(node._id)) disabled=(missingInfo || !user?true:false))
+          label.custom-control-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
 
 block content
+  - const itemImages = {"Princess's Poison Apple": 'apple', 'Instant Noodles (Hell-Sauce Flavor)': 'noodles', 'Spicy Rainbow Pizza': 'pizza', 'RedxRed Apple Pie': 'pie', 'Wicked Cupcake': 'cupcake', 'Wicked Cupcake ': 'cupcake', 'Human World Cheeseburger': 'burger', 'Family Pack Sushi': 'sushi', 'Comfort Candy': 'candy', 'Black Coffee of Melancholy': 'coffee', 'Backstabbing Sandwich': 'sandwich', 'Bandage': 'bandage', 'First Aid Kit': 'kit', 'Medicine': 'medicine', 'Poison': 'poison', 'Flower': 'flower', 'Book': 'book', 'Manga': 'manga', 'Movie Ticket': 'ticket', 'Game': 'game', 'Perfume': 'perfume', 'Message Card': 'card', 'Pocket Tissue': 'tissue', 'Whip of Love': 'whip', "Barbatos's Tea": 'tea', "Madam Scream's Macarons": 'macarons', "Barbatos's Signature Cake": 'cake', 'Paradise Blue': 'paradise', 'Unidentified Matter': 'yummy'};
   div#alert(role="alert")
   div.container
     h1= title
     if user && !isHidden
       div.d-flex.align-items-center.mb-3.d-md-none
         button.btn.btn-primary.mr-2.owned(type="button") collection
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill favourites" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill faved" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
     div.card-container.my-4.my-md-3
       if card.type === "Demon"
         div.w-50.pr-1.pr-md-0
@@ -64,6 +84,8 @@ block content
         div#memory
           a(href="/images/cards/L/" + card.uniqueName + ".jpg")
             img.img-fluid.shadow(src="/images/cards/L/" + card.uniqueName + ".jpg")
+    if card.rarity == "UR+"
+      p.text-muted.text-center *UR+ animation are unlikely to return to our website due to the high cost of storing HQ videos online :(
 
     div#cardstats.card.mb-3(style="border-left:3px solid var(--secondary);")
       div.card-body
@@ -96,7 +118,7 @@ block content
               span= card.characters.length>1?t("cards.characters"):t("cards.character")
             div.col-12.col-md-4
               each val, index in card.characters
-                a(href="/cards?characters="+(val==="Little D"?"LittleD":val))= t(val)
+                a(href=(val === "Little D" ? "/cards?characters=LittleD" : "/cards/"+val))= t(val)
                 if index < card.characters.length - 1
                   | ,
                   |
@@ -115,7 +137,7 @@ block content
             hr
             div.d-flex.align-items-center
               button.btn.btn-primary.mr-2.owned(type="button")= user?"collection":"Add to collection"
-              <svg id="star" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill favourites" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+              <svg id="star" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" stroke="black" class="bi bi-star-fill faved" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
           if user && user.isAdmin
             if isHidden
               div.mt-2: a.btn.btn-primary(role="button" href=card.uniqueName+"/makePublic") Make public
@@ -125,20 +147,19 @@ block content
           span Skills
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up mb-1" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
         div#collapseSkills.collapse(class=(cookies.collapseSkills=="true"?"":"show"))
-          div.container
-            div.row.justify-content-center
-              if card.skills && card.skills.length > 0
-                each s in card.skills
-                  div.col-12.col-lg-6
-                      div.row.align-items-center
-                        span.col-12.col-lg-3.text-center.strong= s.skillType
-                        div.col-12.col-lg-9
-                          div.d-flex.justify-content-between.align-items-center.p-1(style="background:var(--light);border-radius:5px;")
-                            span= s.title
-                            small(style="letter-spacing:.1em;") LV.1/10
-                          p.p-1= s.description
-              else
-                p.col-12.text-center Missing skills data.
+          div.row.justify-content-center
+            if card.skills && card.skills.length > 0
+              each s in card.skills
+                div.col-12.col-lg-6
+                  - const skillColor = { "Special Skill": "#ff6da2", "Ability": "#ffa46e", "Auto Skill": "#79daae" };
+                  div.mb-1: span(style="border-radius:16px;background:" + skillColor[s.skillType] + ";color:white;padding:.25rem 1.5rem;font-size:small;text-align:center;")= s.skillType
+                  div
+                    div.d-flex.justify-content-between.align-items-center.p-1(style="background:var(--light);border-radius:5px;")
+                      span= s.title
+                      small(style="letter-spacing:.1em;") LV.1/10
+                    p.p-1= s.description
+            else
+              p.col-12.text-center Missing skills data.
           br
         a.h5(data-toggle="collapse" href="#collapseStrength" role="button" aria-expanded=(cookies.collapseStrength=="true"?"false":"true") aria-controls="collapseStrength")
           span Attribute values
@@ -180,7 +201,12 @@ block content
             form#tree
               p.section-title Rewards
               div.row.justify-content-center
-                - let rewards = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower");
+                -
+                  let rewards = card.dt.filter(x => x.type !== "level_up" && x.type !== "flower").sort((a, b) => {
+                    if (!a.grimmCost) return 1;
+                    if (!b.grimmCost) return -1;
+                    return a.grimmCost - b.grimmCost;
+                  });
                 if rewards.length === 0
                   p.text-center.p-5 Looks like we're missing devil's tree data.
                     |
@@ -189,6 +215,16 @@ block content
                 else
                   each i in rewards
                     +dtTemplate(i)
+              p.text-muted.text-center *There are misnamed rewards (especially icons). Please let us know through
+                |
+                |
+                a(href="https://discord.gg/Y3KMW7U") discord
+                |
+                | or
+                |
+                a(href="mailto:karasu.os.mail@gmail.com") email
+                |
+                | so we can fix it. Thank you!
               br
               p.section-title Level up
               div.row.justify-content-center
@@ -201,51 +237,11 @@ block content
                 else
                   each i in levelNodes
                     +dtTemplate(i)
-            if missingInfo
-              hr
-              div.small.text-center <sup>*</sup>This node cannot be tracked with the devil's tree tracker because it is missing required information. Please
-                |
-                |
-                a(href=card.uniqueName+"/edit") complete missing info
-                |
-                | to make it trackable.
           else
             p.text-center.p-5 Looks like we're missing devil's tree data.
               |
               |
               a(href=card.uniqueName+"/edit") Add missing data!
-
-    if card.rarity === "UR+"
-      br
-      div(style="border:2px solid #e8eaf6;border-radius:8px;background:rgba(255,255,255,.8);padding:1.5rem;padding-bottom:2rem;")
-        div.row
-          div.col-12.col-md-10.mx-auto
-            h2.text-center Animations
-            div.row.justify-content-center.pt-md-3
-              if card.animation.type === "homescreen"
-                div.col-12.d-flex.flex-wrap
-                  div.animation: div
-                    if !card.animation || !card.animation.link1
-                      div.text-center.py-5
-                        p Looks like we are missing an animation.
-                        a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
-                    else
-                      iframe(src="https://player.vimeo.com/video/" + card.animation.link1 + "?autoplay=1&loop=1&autopause=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title=card.name+" (Original)")
-                  div.animation: div
-                    if !card.animation || !card.animation.link2
-                      div.text-center.py-5
-                        p Looks like we are missing an animation.
-                        a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
-                    else
-                      iframe(src="https://player.vimeo.com/video/" + card.animation.link2 + "?autoplay=1&loop=1&autopause=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title=card.name+" (Unlocked)")
-              else
-                if !card.animation || !card.animation.link1
-                  div.col-12.text-center.py-5
-                    p Looks like we are missing an animation.
-                    a(href="https://drive.google.com/drive/folders/1dhyuCl3lw8swEwjCuoJ_gkkbeyplFpQn?usp=sharing") Upload animation!
-                else
-                  div.col-12.animation: div
-                    iframe(src="https://player.vimeo.com/video/" + card.animation.link1 + "?autoplay=1&loop=1&autopause=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title=card.name+" Skill Animation")
   script.
     $("a[data-toggle='collapse']").click(function() {
       setCookie($(this).attr("href").replace("#", ''), $(this).attr("aria-expanded"));

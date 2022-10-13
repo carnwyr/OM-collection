@@ -36,9 +36,10 @@ exports.isHidden = async function (cardName) {
 	return Boolean(card);
 };
 
-exports.getGlobalStats = async function () {
+exports.getGlobalStats = async function (cardType) {
 	try {
     return (await Cards.aggregate([
+			{ $match: { type: cardType } },
 			{ $facet: {
 				characters: [
 					{ $unwind: "$characters"},
@@ -91,14 +92,14 @@ async function getLatestCardNum(rarity) {
 }
 
 exports.getCardStats = async function (user, cardName) {
-	var stats = {};
+	let stats = {};
 	if (user) {
 		stats.ownsCard = await userService.ownsCard(user.name, cardName);
 		stats.favesCard = await userService.favesCard(user.name, cardName);
 	}
 
-	var totalusers = await userService.getNumberOfUsers();
-	var counts = await getCardCounts(cardName);
+	let totalusers = await userService.getNumberOfValidUsers();
+	let counts = await getCardCounts(cardName);
 	stats.ownedTotal = (counts.owned/totalusers * 100).toFixed(2);
 	stats.favedTotal = (counts.faved/totalusers * 100).toFixed(2);
 

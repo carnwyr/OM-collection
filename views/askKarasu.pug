@@ -7,9 +7,8 @@ block scripts
 
 block content
   div.container
-    h1.display-1.border-0.text-center.py-2
-      img(src="/images/karasu.png" style="width:99px;border:5px solid white;border-radius:50px;box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
-    div#question.card.card-body.text-center.mb-3(style="border-radius:5rem;box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
+    h1= title
+    div#question.card.card-body.text-center.mb-3(style="box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
       form
         if path === "dt_rewards"
           include mixins/ask/dtRewards
@@ -28,8 +27,7 @@ block content
         if path !== "skill_charge_time" && path !== "skills"
           div.custom-control.custom-checkbox.custom-control-inline
             input#hideUnlocked.custom-control-input(type="checkbox" name="locked" checked=(user && query.locked) disabled=(!user))
-            label.custom-control-label(for="hideUnlocked") Hide nodes I've already unlocked.
-    p.text-center.text-muted If you like this feature, please share it with others! We will add more questions only if people are interested.
+            label.custom-control-label(for="hideUnlocked") Hide unlocked.
 
     if path === "skill_charge_time"
       p.small.text-center.text-muted *Only SSR and above is displayed.
@@ -42,38 +40,44 @@ block content
           div.card.mb-3(style="max-width: 540px;")
             div.row.no-gutters
               div.col-4
-                a(href="/card/" + i.uniqueName)
+                a(href="/card/" + getURL(i.name))
                   img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg")
               div.col-8
                 div.card-body
-                  p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
+                  p.card-text: a.stretched-link(href="/card/" + getURL(i.name))= t("lang") === "ja" ? i.ja_name : i.name
                   p.card-text
                     small.text-muted= i.skills.skillType
                     br
                     | #{i.skills.title}
                   p.card-text= i.skills.description
     else
-      div.d-flex.flex-wrap.justify-content-around
+      div.row.justify-content-around
         each i in cards
-          div.card.mb-3(style="max-width: 540px;")
+          div.col-md-6: div.card.w-100.mb-3
             div.row.no-gutters
-              div.col-4
-                a(href="/card/" + i.uniqueName)
-                  img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg")
-              div.col-8
-                div.card-body
-                  p.card-text: a.stretched-link(href="/card/" + i.uniqueName)= t("lang") === "ja" ? i.ja_name : i.name
-                  p.card-text.mb-0.mb-md-3 #{i.dt.reward}
+              div.col-4.d-none.d-md-block
+                a(href="/card/" + getURL(i.name))
+                  img.img-fluid.lazy(src="/images/card_placeholder.jpg" data-src="/images/cards/L/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg" style="border-radius:4px 0 0 4px;")
+              div.col-12.text-center.d-md-none
+                img.img-fluid.lazy.mt-4(src="/images/reward_placeholder.jpg" data-src="/images/cards/S/" + i.uniqueName + ".jpg" alt=i.uniqueName + ".jpg" style="width:6rem;height:auto;")
+              div.col-12.col-md-8
+                div.card-body.node-detail
+                  p.card-text: a.stretched-link(href="/card/" + getURL(i.name))= t("lang") === "ja" ? i.ja_name : i.name
+                  p.card-text Reward: #{i.dt.reward}
                     if i.dt.type === "item"
                       |
                       | x#{i.dt.count?i.dt.count.toLocaleString("en"):"???"}
                   if i.dt.requirements && i.dt.requirements.length > 0
-                    ul.d-none.d-md-block
-                      each j in i.dt.requirements
-                        li #{j.name ? j.name : "???"} x#{j.amount ? j.amount.toLocaleString("en") : "???" }
+                    div.d-flex
+                      each req in i.dt.requirements
+                        figure(style="margin:0 4px 0 0;")
+                          img(src="/images/" + (req.name ? "items/tree/" + req.name : "reward_placeholder") + ".png" style="width:3.5rem;height:auto;")
+                          figcaption.text-center= req.amount ? 'x' + req.amount : "???"
                   else
-                    p.card-text.d-none.d-md-block Requirements ???
-                  p.card-text.d-none.d-md-block Grimm: #{i.dt.grimmCost ? i.dt.grimmCost.toLocaleString("en") : "???"}
+                    p.card-text Requirements ???
+                  div.d-flex.align-items-center
+                    img.mr-1(src="/images/items/grimm.png" style="width:1.25rem;")
+                    p.card-text= i.dt.grimmCost ? i.dt.grimmCost.toLocaleString("en") : "???"
 
   script.
     $(function() {
@@ -85,11 +89,11 @@ block content
       });
     });
   style.
-    .bootstrap-select > .dropdown-menu {
-        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    }
-    @media (max-width: 540px) {
-      #question {
-        padding: 2rem;
+    @media (max-width: 576px) {
+      .node-detail {
+        text-align: center;
+      }
+      .node-detail>div {
+        justify-content: center;
       }
     }

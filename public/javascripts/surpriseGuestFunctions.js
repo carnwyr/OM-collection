@@ -1,10 +1,16 @@
 $(document).ready(function() {
 	const urlParams = new URLSearchParams(window.location.search);
-	var character = urlParams.get("character");
-	if (character) {
-		character = character.charAt(0).toUpperCase() + character.slice(1).toLowerCase();
-	} else {
-		character = "Lucifer";
+	const c = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon"];
+	let character = location.pathname.split('/').pop();
+
+	// "Thirteen", "Mephistopheles", "Raphael"
+	if (!c.includes(character)) {
+		character = urlParams.get("character");
+		if (character) {
+			character = character.charAt(0).toUpperCase() + character.slice(1).toLowerCase();
+		} else {
+			character = "Lucifer";
+		}
 	}
 
 	updateSettingsOnLoad();
@@ -54,14 +60,17 @@ function enableItemOptions(allowItems) {
 }
 
 function syncButtons(button, urlParams) {
+	let character = "";
 	if (button.parent().hasClass("big-nav")) {
+		character = button.attr("id").replace("Pill", "");
 		$("#"+button.attr("id")+"Small").tab("show");
-		urlParams.set("character", button.attr("id").replace("Pill", ""));
+		urlParams.set("character", character);
 	} else {
+		character = button.attr("id").replace("PillSmall", "");
 		$("#"+button.attr("id").replace("Small", "")).tab("show");
-		urlParams.set("character", button.attr("id").replace("PillSmall", ""));
+		urlParams.set("character", character);
 	}
-	window.history.replaceState(null, null, `${window.location.pathname}${urlParams.toString()===""?"":"?"+urlParams.toString()}`);
+	updateTitle(character);  // in pug
 }
 
 function updateSettingsOnLoad() {

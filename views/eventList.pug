@@ -20,7 +20,8 @@ mixin section(events)
           img.card-img-top.lazy(src="/images/event_placeholder.jpg" data-src="/images/events/" + encodeURIComponent(event.name.en) + ".jpg")
           div.card-body
             a.stretched-link(href="event/" + encodeURIComponent(event.name.en.replace(/ /g, '_')))
-              p.card-title= event.name[t("lang")]
+              - lang = t("lang") === "ja" ? "ja" : "en";
+              p.card-title= event.name[lang]
             small.text-muted= event.start + " - " + event.end
 
 block content
