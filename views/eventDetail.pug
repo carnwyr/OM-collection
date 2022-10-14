@@ -94,7 +94,7 @@ block content
 		function getFormatedDate(d) {
 			if (!d) return "???";
 
-			var day = d.getDate(), year = d.getFullYear();
+			let day = d.getDate(), year = d.getFullYear();
 			if (t("lang") === "en") {
 				let month = d.toLocaleString('en', { month: 'long' });
 				return `${day} ${month} ${year}`;
