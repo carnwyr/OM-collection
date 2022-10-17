@@ -37,6 +37,7 @@ block content
 											div.form-group.col-md-6
 												label(for="inputFriendID")= t("profile.friend_id")
 												input(type="text" class="form-control" id="inputFriendID" name="id" placeholder="???" value=user.profile.id maxlength="20")
+												small.form-text.text-muted= t("settings.friend_id_instruction")
 											div.form-group.col-md-6
 												label(for="inputJoinOM")= t("profile.entered_rad")
 												- let joinDate = user.profile.joined ?? new Date();

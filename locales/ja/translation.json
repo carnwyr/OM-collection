@@ -119,7 +119,8 @@
     "account_recovery_instruction": "メールアドレスを入力してください。アカウントと連携した場合、新しいパスワードはメールで送信されます。",
     "collection_visibility": "アドレス帳・お気に入り",
     "public": "全体公開",
-    "private": "非公開"
+    "private": "非公開",
+    "friend_id_instruction": "Phone > 検索 > あなたのID"
   },
   "spg": {
     "shortActions": "アクションを１つだけ表示",
