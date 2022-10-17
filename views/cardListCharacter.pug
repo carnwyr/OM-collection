@@ -47,7 +47,7 @@ block content
         form#filters(@change="fetchData" @submit.prevent="onSubmit")
           div.form-row
             div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Source
-            div.col
+            div.col.text-center.text-lg-left
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="source1" name="source" class="custom-control-input" value="" checked>
                 <label class="custom-control-label" for="source1">All</label>
@@ -67,19 +67,19 @@ block content
           hr
           div.form-row
             div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Rarities
-            div.col
+            div.col.text-center.text-lg-left
               div.custom-control.custom-radio.custom-control-inline
                 input#checkRarityAll.custom-control-input(type="radio" name="rarity" value="" checked)
                 label.custom-control-label(for="checkRarityAll") All
               each rarity in ["UR+", "UR", "SSR", "SR", "R", "N"]
                 div.custom-control.custom-radio.custom-control-inline
                   //- TODO: change to checkbox
-                  input.custom-control-input(type="radio" id="checkRarity"+rarity name="rarity" value=rarity)
-                  label.custom-control-label(for="checkRarity"+rarity)= t(rarity)
+                  input.custom-control-input(type="radio" id="checkRarity"+encodeURIComponent(rarity) name="rarity" value=encodeURIComponent(rarity))
+                  label.custom-control-label(for="checkRarity"+encodeURIComponent(rarity))= t(rarity)
           hr
           div.form-row
             div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Attributes
-            div.col
+            div.col.text-center.text-lg-left
               div.custom-control.custom-radio.custom-control-inline
                 input#checkAttributeAll.custom-control-input(type="radio" name="attribute" value="" checked)
                 label.custom-control-label(for="checkAttributeAll") All
@@ -91,7 +91,7 @@ block content
           hr
           div.form-row
             div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Status
-            div.col(style="opacity:.5;")
+            div.col.text-center.text-lg-left(style="opacity:.5;")
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="user1" name="user" class="custom-control-input" disabled>
                 <label class="custom-control-label" for="user1">All</label>
