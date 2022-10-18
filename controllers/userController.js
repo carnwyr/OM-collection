@@ -7,11 +7,11 @@ const revisionService = require("../services/revisionService");
 
 
 exports.getAccountPage = async function (req, res, next) {
-  var user = await userService.getAccountData(req.user.name);
+  let user = await userService.getAccountData(req.user.name);
   if (!user) {
     return next(createError(404, properties = { title: "User not found" }));
   }
-  return res.render("account", { title: req.i18n.t("title.settings"), user: user });
+  return res.render("account", { title: req.i18n.t("title.settings"), user: { ...req.user, ...user } });
 };
 
 exports.updateSupport = async function(req, res) {

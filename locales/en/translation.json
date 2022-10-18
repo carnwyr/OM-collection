@@ -132,7 +132,7 @@
 		"email_confirmation": "Email Confirmation",
 		"account_recovery": "Account Recovery",
 		"account_recovery_instruction": "Enter the verified email address associated with your account. We will send you a new password.",
-		"collection_visibility": "Collection visibility",
+		"collection_visibility": "Collection Visibility",
 		"public": "Public",
 		"private": "Private",
 		"friend_id_instruction": "Phone > Add Friends > Your ID"

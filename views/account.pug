@@ -25,6 +25,7 @@ block content
 									span(class="badge badge-pill badge-warning ml-2") !
 							a(class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false")= t("user.password")
 							a(class="nav-link" id="v-pills-privacy-tab" data-toggle="pill" href="#v-pills-privacy" role="tab" aria-controls="v-pills-privacy" aria-selected="false")= t("settings.privacy")
+							a(class="nav-link" id="v-pills-vip-tab" data-toggle="pill" href="#v-pills-vip" role="tab" aria-controls="v-pills-vip" aria-selected="false") VIP
 					div.col-12.col-md-9
 						div(class="tab-content" id="v-pills-tabContent")
 							div(class="tab-pane show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab")
@@ -89,7 +90,6 @@ block content
 										img(src=`/images/cards/L/${user.profile.display}.jpg` style="width:100%;")
 								br
 								input#updateProfile.btn.btn-primary(type="submit" value=t("settings.update"))
-
 							div(class="tab-pane" id="v-pills-email" role="tabpanel" aria-labelledby="v-pills-email-tab")
 								div.row
 									div.col-12.col-md-7
@@ -119,7 +119,6 @@ block content
 												input(class="form-control" type="password" id="password" name="password")
 								button(type="button" class="btn btn-primary" id="sendVerification")= t("settings.send_email")
 								small#cooldown.text-muted.ml-1
-
 							div(class="tab-pane" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab")
 								div.row
 									form.col-12.col-md-5
@@ -134,7 +133,7 @@ block content
 											input(class="form-control" type="password" id="newPasswordConfirm" name="newPasswordConfirm")
 								button(type="button" class="btn btn-primary" id="changePassword")= t("settings.update")
 							div(class="tab-pane" id="v-pills-privacy" role="tabpanel" aria-labelledby="v-pills-privacy-tab")
-								p= t("settings.collection_visibility")
+								h5.card-title= t("settings.collection_visibility")
 								form
 									div(class="form-check")
 										- let isPrivate = user.profile.isPrivate ?? false;
@@ -145,16 +144,17 @@ block content
 										label(class="form-check-label" for="privateProfileRadio")= t("settings.private")
 								br
 								input#updatePrivacy.btn.btn-primary(type="submit" value=t("settings.update"))
-				//-
-					hr
-					div.row
-						p.col-12.text-center 100% of donation goes to paying fees to keep karasu-os.com online!
-						div.col-12.col-md-5.text-center.mx-auto
-							h5.card-title Supporter Perks
-							div#perks.col-12
-								div(class="custom-control custom-switch")
-									input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.isSupporter?true:false) disabled)
-									label(class="custom-control-label" for="adFreeStatus")= t("donation.ad-free")
-								div(class="custom-control custom-switch")
-									input(type="checkbox" class="custom-control-input" id="specialBadge" checked=(user.isSupporter?true:false) disabled)
-									label(class="custom-control-label" for="specialBadge")= t("donation.badge")
+							div(class="tab-pane" id="v-pills-vip" role="tabpanel" aria-labelledby="v-pills-vip-tab")
+								div.row
+									p.col-12.text-center 100% of donation goes to paying fees to keep karasu-os.com online!
+									div.col-12.col-md-5.text-center.mx-auto
+										h5.card-title= t("donation.supporter_perks")
+										div#perks.col-12.mb-3
+											div(class="custom-control custom-switch")
+												input(type="checkbox" class="custom-control-input" id="adFreeStatus" checked=(user.isSupporter?true:false) disabled)
+												label(class="custom-control-label" for="adFreeStatus")= t("donation.ad-free")
+											div(class="custom-control custom-switch")
+												input(type="checkbox" class="custom-control-input" id="specialBadge" checked=(user.isSupporter?true:false) disabled)
+												label(class="custom-control-label" for="specialBadge")= t("donation.badge")
+										h5.card-title= user.isSupporter ? "Update subscription" : "Make a donation"
+										div.col-12.text-center: <a href='https://ko-fi.com/I2I6F45R7' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
