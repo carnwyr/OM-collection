@@ -7,7 +7,7 @@ block scripts
 block content
   div.container
     h1= title
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     script(type="module").
       const { createApp } = Vue;
       createApp({
@@ -29,8 +29,6 @@ block content
             if (source) url += "&source=" + source;
             if (rarity) url += "&rarity=" + rarity;
             if (attribute) url += "&attribute=" + attribute;
-
-            console.log(url)
 
             let cards = (await (await fetch(url)).json()).cards;
             this.cards.demon = cards.filter(x => x.type === "Demon");
