@@ -8,13 +8,13 @@ const eventsController = require("../controllers/eventsController");
 const loginController = require("../controllers/loginController");
 
 // Static pages
-router.get("/", cardController.index);
+router.get("/", miscController.index);
 router.get("/policies", miscController.privacyPolicy);
 router.get("/surpriseGuest/:character", miscController.surpriseGuest);
 router.get("/surpriseGuest", miscController.surpriseGuest);
 router.get("/rankings", userController.getRankingsPage);
 router.get("/icons/:character", cardController.getIconPage);
-router.get("/icons", cardController.getIconDirectory);
+router.get("/icons", cardController.getIconsPage);
 
 // Cards lists
 router.get("/cards/:character", cardController.getCharacterCardPage);

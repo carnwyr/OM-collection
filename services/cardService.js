@@ -36,37 +36,35 @@ exports.isHidden = async function (cardName) {
 	return Boolean(card);
 };
 
-exports.getGlobalStats = async function (cardType) {
-	try {
-    return (await Cards.aggregate([
-			{ $match: { type: cardType } },
-			{ $facet: {
-				characters: [
-					{ $unwind: "$characters"},
-					{ $group: { _id: "$characters", count: { $sum: 1 } } },
-					{ $project: { k: "$_id", v: "$count", _id: false } }
-				],
-				rarity: [
-					{ $group: { _id: "$rarity", count: { $sum: 1 } } },
-					{ $project: { k: "$_id", v: "$count", _id: false } }],
-				attribute: [
-					{ $group: { _id: "$attribute", count: { $sum: 1 } } },
-					{ $project: { k: "$_id", v: "$count", _id: false } }],
-				cards: [
-					{ $group: { _id: "$type", count: { $sum: 1 } } },
-					{ $project: { k: "$_id", v: "$count", _id: false } }]
-			}},
-			{ $project: {
-				characters: { $arrayToObject: "$characters" },
-				rarity: { $arrayToObject: "$rarity" },
-				attribute: { $arrayToObject: "$attribute" },
-				cards: { $arrayToObject: "$cards" },
-			}}
-		]))[0];
-  } catch (e) {
-    console.error(e.message);
-    Sentry.captureException(e);
-  }
+// caching?
+exports.getGlobalStats = async function () {
+	return (await Cards.aggregate([
+		{ $facet: {
+			characters: [
+				{ $unwind: "$characters"},
+        { $group: { _id: { character: "$characters", type: "$type" }, count: { $sum: 1 } } },
+        { $group: { _id: "$_id.type", count: { $push: { k: "$_id.character", v: "$count" } } } },
+        { $project: { k: "$_id", v: { $arrayToObject: "$count" }, _id: false } }
+			],
+			rarity: [
+        { $group: { _id: { rarity: "$rarity", type: "$type" }, count: { $sum: 1 } } },
+        { $group: { _id: "$_id.type", count: { $push: { k: "$_id.rarity", v: "$count" } } } },
+        { $project: { k: "$_id", v: { $arrayToObject: "$count" }, _id: false } }],
+      attribute: [
+        { $group: { _id: { attribute: "$attribute", type: "$type" }, count: { $sum: 1 } } },
+        { $group: { _id: "$_id.type", count: { $push: { k: "$_id.attribute", v: "$count" } } } },
+        { $project: { k: "$_id", v: { $arrayToObject: "$count" }, _id: false } }],
+      cards: [
+        { $group: { _id: "$type", count: { $sum: 1 } } },
+        { $project: { k: "$_id", v: "$count", _id: false } }]
+		}},
+		{ $project: {
+			characters: { $arrayToObject: "$characters" },
+			rarity: { $arrayToObject: "$rarity" },
+			attribute: { $arrayToObject: "$attribute" },
+			cards: { $arrayToObject: "$cards" },
+		}}
+	]))[0];
 };
 
 exports.encodeCardName = function (cardName) {

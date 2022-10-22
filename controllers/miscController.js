@@ -3,6 +3,14 @@ const createError = require("http-errors");
 const cacheService = require("../services/cacheService");
 const cardService = require("../services/cardService");
 
+exports.index = function (req, res, next) {
+	return res.render("index", {
+		title: "Karasu OS",
+		description: req.i18n.t("description.cards"),
+		user: req.user
+	});
+};
+
 exports.privacyPolicy = function(req, res, next) {
 	return res.render("policies", { title: "Privacy Policy", user: req.user });
 };

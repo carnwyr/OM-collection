@@ -11,31 +11,22 @@ const userService = require("../services/userService");
 const fileService = require("../services/fileService");
 const suggestionService = require("../services/suggestionService");
 
-exports.index = function (req, res, next) {
-	return res.render("index", {
-		title: "Karasu OS",
-		description: req.i18n.t("description.cards"),
+const gameData = require("../data/game");
+
+exports.getCardsListPage = function (req, res, next) {
+	return res.render("cardsList", {
+		title: req.i18n.t("title.cards"),
+		description: "The place to view all of Obey Me!'s cards. The largest and most complete card databse with all sorts of filters for you to find the card you want! This is also the place to manage your card collection. Create an account to access more features! ... Pride, Greed, Envy, Wrath, Lust, Gluttony, Sloth, UR+, UR, SSR, SR, N, Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon, Little D., Owned, Not owned.",
+		path: "list",
+		query: req.query,
 		user: req.user
 	});
 };
 
-exports.getCardsListPage = function (req, res, next) {
-	try {
-		return res.render("cardsList", {
-			title: req.i18n.t("title.cards"),
-			description: "The place to view all of Obey Me!'s cards. The largest and most complete card databse with all sorts of filters for you to find the card you want! This is also the place to manage your card collection. Create an account to access more features! ... Pride, Greed, Envy, Wrath, Lust, Gluttony, Sloth, UR+, UR, SSR, SR, N, Lucifer, Mammon, Leviathan, Satan, Asmodeus, Beelzebub, Belphegor, Luke, Simeon, Barbatos, Diavolo, Solomon, Little D., Owned, Not owned.",
-			path: "list",
-			query: req.query,
-			user: req.user
-		});
-	} catch(e) {
-		return next(e);
-	}
-};
-
 exports.getCharacterCardPage = async function (req, res, next) {
-	const characters = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon", "Thirteen", "Mephistopheles", "Raphael"];
-	if (!characters.includes(req.params.character)) return next(createError(404));
+	if (!gameData.characters.includes(req.params.character)) {
+		throw createError(404, properties={ title: "Page not found", errorMessage: `No page for character ${req.params.character}!`});
+	}
 	let character = req.params.character;
 	return res.render("cardListCharacter", {
 		title: character + "'s Cards",
@@ -45,7 +36,7 @@ exports.getCharacterCardPage = async function (req, res, next) {
 	});
 };
 
-exports.getIconDirectory = function (req, res, next) {
+exports.getIconsPage = function (req, res, next) {
 	return res.render("iconDir", {
 		title: "Icons",
 		description: "Icons directory",
@@ -54,49 +45,38 @@ exports.getIconDirectory = function (req, res, next) {
 };
 
 exports.getOwnedCardsPage = async function(req, res, next) {
-	try {
-		var user = await userService.getUser(req.params.username);
-		if (!user) {
-			throw createError(404, properties={ title: "User not found" });
-		}
-
-		let query = formatAggPipeline(req.query, req.i18n.t("lang"));
-		var pageParams = {
-			description: `${req.params.username}'s Collection on Karasu-OS.com`,
-			path: "collection",
-			query: req.query,
-			user: req.user
-		};
-
-		var isCollectionOwner = req.user && req.user.name === user.info.name;
-		pageParams.title = isCollectionOwner ? req.i18n.t("title.my_collection") : req.i18n.t("title.user_collection", { username: user.info.name });
-
-		var isPrivate = user.profile.isPrivate && !isCollectionOwner;
-		if (isPrivate) {
-			pageParams.isPrivate = true;
-		} else {
-			pageParams.ownedStats = {
-				demon: await userService.getOwnedCardsStats(user.info.name, "Demon"),
-				memory: await userService.getOwnedCardsStats(user.info.name, "Memory"),
-			};
-			pageParams.totalStats = {
-				demon: await cardService.getGlobalStats("Demon"),
-				memory: await cardService.getGlobalStats("Memory"),
-			};
-
-			["demon", "memory"].forEach((t) => {
-				for ([category, entries] of Object.entries(pageParams.totalStats[t])) {
-					for (entry in entries) {
-						pageParams.ownedStats[t][category][entry] = pageParams.ownedStats[t][category][entry] || 0;
-					}
-				}
-			});
-		}
-
-		return res.render("cardsList", pageParams);
-	} catch (e) {
-		return next(e);
+	var user = await userService.getUser(req.params.username);
+	if (!user) {
+		throw createError(404, properties={ title: "User not found" });
 	}
+
+	var pageParams = {
+		description: `${req.params.username}'s Collection on Karasu-OS.com`,
+		path: "collection",
+		query: req.query,
+		user: req.user
+	};
+
+	var isCollectionOwner = req.user && req.user.name === user.info.name;
+	pageParams.title = isCollectionOwner ? req.i18n.t("title.my_collection") : req.i18n.t("title.user_collection", { username: user.info.name });
+
+	var isPrivate = user.profile.isPrivate && !isCollectionOwner;
+	if (isPrivate) {
+		pageParams.isPrivate = true;
+	} else {
+		pageParams.ownedStats = await userService.getOwnedCardsStats(user.info.name);
+		pageParams.totalStats = await cardService.getGlobalStats();
+
+		/*["Demon", "Memory"].forEach((t) => {
+			for ([category, entries] of Object.entries(pageParams.totalStats[t])) {
+				for (entry in entries) {
+					pageParams.ownedStats[category][t][entry] = pageParams.ownedStats[category][t][entry] || 0;
+				}
+			}
+		});*/
+	}
+
+	return res.render("cardsList", pageParams);
 };
 
 exports.getFavouriteCardsPage = async function(req, res, next) {
@@ -106,7 +86,6 @@ exports.getFavouriteCardsPage = async function(req, res, next) {
 			throw createError(404, properties={ title: "User not found" });
 		}
 
-		let query = formatAggPipeline(req.query, req.i18n.t("lang"));
 		var pageParams = {
 			description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
 			path: "fav",
