@@ -43,7 +43,8 @@ mixin statsTab(cardType, entries, category)
     each chunk in entriesChunks
       div.col-md-6
         each entry in chunk
-          +percentBar(ownedStats[category][cardType][entry], totalStats[category][cardType][entry], entry)
+          - let ownedStatVal = ownedStats[category]?.[cardType]?.[entry]
+          +percentBar(ownedStatVal, totalStats[category][cardType][entry], entry)
 
 div.card.card-body.shadow.mb-3
   div.row
@@ -62,12 +63,12 @@ div.card.card-body.shadow.mb-3
             div.col-12.col-lg-3.d-flex.total-percentage
               div.w-100.text-center.my-auto
                 - cardType = "Demon"
-                - var demonPercentage = roundPercentage(ownedStats.cards.Demon / totalStats.cards.Demon * 100);
+                - var demonPercentage = roundPercentage((ownedStats.cards.Demon || 0) / totalStats.cards.Demon * 100);
                 h5.text-primary.mb-0.d-none.d-lg-block= t("cards.Demon")
                 div(style="position:relative;")
                   img.img-fluid.p-2(src="/images/demon_card.png" style="max-width:120px;width:100%;")
                   div#demonblend
-                p.mb-0 #{ownedStats.cards.Demon} of #{totalStats.cards.Demon}
+                p.mb-0 #{(ownedStats.cards.Demon || 0)} of #{totalStats.cards.Demon}
                 small.text-muted #{demonPercentage}%
             div.col-12.col-lg-9
               div.nav.nav-pills.mb-2(role='tablist')
@@ -89,12 +90,12 @@ div.card.card-body.shadow.mb-3
             div.col-12.col-lg-3.d-flex.total-percentage
               div.w-100.text-center.my-auto
                 - cardType = "Memory"
-                - var memoryPercentage = roundPercentage(ownedStats.cards.Memory / totalStats.cards.Memory * 100);
+                - var memoryPercentage = roundPercentage((ownedStats.cards.Memory || 0) / totalStats.cards.Memory * 100);
                 h5.text-primary.mb-0.d-none.d-lg-block= t("cards.Memory")
                 div(style="position:relative;")
                   img.img-fluid.p-2(src="/images/memory_card.png" style="max-width:120px;width:100%;")
                   div#memoryblend
-                p.mb-0 #{ownedStats.cards.Memory} of #{totalStats.cards.Memory}
+                p.mb-0 #{(ownedStats.cards.Memory || 0)} of #{totalStats.cards.Memory}
                 small.text-muted #{memoryPercentage}%
             div.col-12.col-lg-9
               div.nav.nav-pills.mb-2(role='tablist')

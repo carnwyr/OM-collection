@@ -36,7 +36,7 @@ exports.isHidden = async function (cardName) {
 	return Boolean(card);
 };
 
-// caching?
+// TODO caching?
 exports.getGlobalStats = async function () {
 	return (await Cards.aggregate([
 		{ $facet: {

@@ -66,14 +66,6 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 	} else {
 		pageParams.ownedStats = await userService.getOwnedCardsStats(user.info.name);
 		pageParams.totalStats = await cardService.getGlobalStats();
-
-		/*["Demon", "Memory"].forEach((t) => {
-			for ([category, entries] of Object.entries(pageParams.totalStats[t])) {
-				for (entry in entries) {
-					pageParams.ownedStats[category][t][entry] = pageParams.ownedStats[category][t][entry] || 0;
-				}
-			}
-		});*/
 	}
 
 	return res.render("cardsList", pageParams);
