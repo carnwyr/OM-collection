@@ -6,7 +6,3 @@
     z-index: 1;
   }
 }
-
-.card-body img {
-  pointer-events: none;
-}
