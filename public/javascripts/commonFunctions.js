@@ -96,8 +96,9 @@ var cookieExpiryDate = () => {
 };
 
 function showAlert(type, message) {
-	let $newAlert = $(`<div class="alert alert-${type}" role="alert">${message}</div>`);
+	let $newAlert = $(`<div class="alert alert-${type}" role="alert" style="right:-100px;">${message}</div>`);
 	$("#alerts").append($newAlert);
+	$newAlert.animate({ right: 0 });
 	setTimeout(function() {
 		$newAlert.fadeOut(1000, () => { $newAlert.alert("close"); });
 	}, 5000);
