@@ -1,4 +1,5 @@
 const createError = require("http-errors");
+const Sentry = require("@sentry/node");
 
 const userService = require("../services/userService");
 const cardService = require("../services/cardService");
@@ -120,4 +121,12 @@ exports.updateUserProfile = async function(req, res) {
   return res.json({ err: false });
 }
 
-exports.updateUserTree = async (req, res) => await userService.updateUserTree(req.user.name, req.body.node, req.body.isUnlocked);
+exports.updateUserTree = async function(req, res) {
+  try {
+    await userService.updateUserTree(req.user.name, req.body.node, req.body.isUnlocked);
+    return res.json({ err: null });
+  } catch(e) {
+    Sentry.captureException(e);
+    return res.json({ err: true, message: e.message });
+  }
+};
