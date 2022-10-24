@@ -133,6 +133,7 @@ html(lang=t("lang"))
               a(class="nav-link" href='/logout')= t("common.logout")
 
     main.mb-5(style="position:relative;")
+      div#alerts(style="position:fixed;right:20px;z-index:1080;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
       if title !== "Karasu OS"
         //- div.container

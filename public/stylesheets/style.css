@@ -88,13 +88,6 @@ footer ul {
   }
 }
 
-#alert {
-  position: fixed;
-  right: 20px;
-  display: none;
-  top: -100px;
-}
-
 #b2t {
   display: flex;
   align-items: center;
