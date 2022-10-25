@@ -45,22 +45,22 @@ exports.getIconsPage = function (req, res, next) {
 };
 
 exports.getOwnedCardsPage = async function(req, res, next) {
-	var user = await userService.getUser(req.params.username);
+	let user = await userService.getUser(req.params.username);
 	if (!user) {
 		throw createError(404, properties={ title: "User not found" });
 	}
 
-	var pageParams = {
+	let pageParams = {
 		description: `${req.params.username}'s Collection on Karasu-OS.com`,
 		path: "collection",
 		query: req.query,
 		user: req.user
 	};
 
-	var isCollectionOwner = req.user && req.user.name === user.info.name;
+	let isCollectionOwner = req.user && req.user.name === user.info.name;
 	pageParams.title = isCollectionOwner ? req.i18n.t("title.my_collection") : req.i18n.t("title.user_collection", { username: user.info.name });
 
-	var isPrivate = user.profile.isPrivate && !isCollectionOwner;
+	let isPrivate = user.profile.isPrivate && !isCollectionOwner;
 	if (isPrivate) {
 		pageParams.isPrivate = true;
 	} else {
@@ -72,94 +72,82 @@ exports.getOwnedCardsPage = async function(req, res, next) {
 };
 
 exports.getFavouriteCardsPage = async function(req, res, next) {
-	try {
-		var user = await userService.getUser(req.params.username);
-		if (!user) {
-			throw createError(404, properties={ title: "User not found" });
-		}
-
-		var pageParams = {
-			description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
-			path: "fav",
-			query: req.query,
-			user: req.user
-		};
-
-		var isCollectionOwner = req.user && req.user.name === user.info.name;
-		pageParams.title = isCollectionOwner ? req.i18n.t("title.my_favourites") : req.i18n.t("title.user_favourites", { username: user.info.name });
-		pageParams.isPrivate = user.profile.isPrivate && !isCollectionOwner;
-
-		return res.render("cardsList", pageParams);
-	} catch (e) {
-		return next(e);
+	let user = await userService.getUser(req.params.username);
+	if (!user) {
+		throw createError(404, properties={ title: "User not found" });
 	}
+
+	let pageParams = {
+		description: `${req.params.username}'s favourite Obey Me cards on Karasu-OS.com`,
+		path: "fav",
+		query: req.query,
+		user: req.user
+	};
+
+	let isCollectionOwner = req.user && req.user.name === user.info.name;
+	pageParams.title = isCollectionOwner ? req.i18n.t("title.my_favourites") : req.i18n.t("title.user_favourites", { username: user.info.name });
+	pageParams.isPrivate = user.profile.isPrivate && !isCollectionOwner;
+
+	return res.render("cardsList", pageParams);
 };
 
-exports.getCardDetailPage = async function(req, res, next) {
-	try {
-		var cardData = await cardService.getCard({ "name": req.params.card.replace(/_/g, " ") });
-		if (!cardData) {
-			return await getHiddenCardDetailPage(req, res, next);
-		}
-
-		var stats = await cardService.getCardStats(req.user, cardData.uniqueName);
-
-		cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g, "_")));
-
-		var title = cardData.name;
-		var lang = req.i18n.t("lang");
-
-		if (lang === "ja") {
-			if (cardData.ja_name !== "???") {
-				title = cardData.ja_name;
-			}
-
-			cardData.source = await getSourceInLanguage(cardData.source, "ja");
-		}
-
-		// TODO: remove irrelevant nodes?
-		if (req.user) {
-			req.user.tree = (await userService.getUser(req.user.name)).tree;
-		}
-
-		return res.render("cardDetail", {
-			title: title,
-			description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
-			card: cardData,
-			isHidden: false,
-			user: req.user,
-			stats: stats
-		});
-	} catch (e) {
-		return next(e);
+exports.getCardDetailPage = async function (req, res, next) {
+	let cardName = req.params.card.replace(/_/g, " ");
+	let cardData = await cardService.getCard(cardName);
+	if (!cardData) {
+		return await getHiddenCardDetailPage(req, res, next);
 	}
+
+	let stats = await cardService.getCardStats(req.user, cardData.uniqueName);
+
+	cardData.source = cardData.source.map(x => { return { text: x, link: encodeURIComponent(x.replace(/ /g, "_")) } });
+
+	let title = cardData.name;
+
+	if (req.i18n.t("lang") === "ja") {
+		if (cardData.ja_name !== "???") {
+			title = cardData.ja_name;
+		}
+
+		await translateSource(cardData.source, req.i18n.t("lang"));
+	}
+
+	// TODO: remove irrelevant nodes?
+	if (req.user) {
+		req.user.tree = (await userService.getUser(req.user.name)).tree;
+	}
+
+	return res.render("cardDetail", {
+		title: title,
+		description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
+		card: cardData,
+		isHidden: false,
+		user: req.user,
+		stats: stats
+	});
 };
 
-async function getSourceInLanguage(sources, lng) {
-	var arr = [];
-	for (const source of sources) {
+async function translateSource(sources, lng) {
+	for (let source of sources) {
 		// temporary exceptions
-		switch (source) {
-		case "Chapter M":
-			arr.push("Mの章");
-			break;
-		case "Chapter A":
-			arr.push("Aの章");
-			break;
-		case "Chapter G":
-			arr.push("Gの章");
-			break;
-		default: {
-			let relatedEvent = await eventService.getEvent({ "name.en": source });
-			if (!relatedEvent) {
-				arr.push(source);
-			} else if (relatedEvent.name[lng] !== "???" && relatedEvent.name[lng] !== "") {
-				arr.push(relatedEvent.name.ja);
+		switch (source.text) {
+			case "Chapter M":
+				source.text = "Mの章";
+				break;
+			case "Chapter A":
+				source.text = "Aの章";
+				break;
+			case "Chapter G":
+				source.text = "Gの章";
+				break;
+			default: {
+				let relatedEvent = await eventService.getEvent({ "name.en": source.text });
+				if (relatedEvent && relatedEvent.name[lng] !== "???" && relatedEvent.name[lng] !== "") {
+					source.text = relatedEvent.name[lng];
+				}
 			}
 		}
-		}
 	}
-	return arr;
 }
 
 async function getHiddenCardDetailPage(req, res, next) {
@@ -168,7 +156,7 @@ async function getHiddenCardDetailPage(req, res, next) {
 	if (!cardData) {
 		throw createError(404, properties = { title: "Card not found" });
 	}
-	cardData.source_link = cardData.source.map(x => encodeURIComponent(x.replace(/ /g, "_")));
+	
 	return res.render("cardDetail", {
 		title: cardData.name,
 		description: `View "${cardData.name}" and other Obey Me cards on Karasu-OS.com`,
@@ -428,7 +416,7 @@ exports.getEditCardPage = async function(req, res, next) {
 	}
 
 	try {
-		let cardData = await cardService.getCard({ uniqueName: req.params.card });
+		let cardData = await cardService.getCardByUniqueName(req.params.card);
 
 		if (!cardData) {
 			throw createError(404, properties = { title: "Card not found" });
@@ -646,7 +634,7 @@ function formatPipeline2(query) {
 
 exports.isVerifiedTreeData = async function (name, data) {
 	try {
-		let card = await cardService.getCard({ uniqueName: name });
+		let card = await cardService.getCardByUniqueName(name);
 
 		if (!card.dt || card.dt.length === 0) {
 			return { err: null };

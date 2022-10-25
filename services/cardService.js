@@ -20,8 +20,13 @@ exports.getHiddenCards = async function () {
 	return await HiddenCards.find().sort({ number: -1 });
 };
 
-exports.getCard = async function(query = {}) {
-	return await Cards.findOne(query);
+exports.getCard = async function(name) {
+	return await Cards.findOne({name: name});
+};
+
+// TODO remove
+exports.getCardByUniqueName = async function(name) {
+	return await Cards.findOne({uniqueName: name});
 };
 
 exports.getHiddenCard = async function (cardName, user) {

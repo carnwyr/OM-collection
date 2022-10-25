@@ -125,8 +125,8 @@ block content
             div.col-12.col-md-2
               span= t("cards.source")
             div.col-12.col-md-auto
-              each val, index in card.source
-                a(href="/event/"+card.source_link[index])= val
+              each source in card.source
+                a(href="/event/" + source.link)= source.text
                 if index < card.source.length - 1
                   | ,
                   |
