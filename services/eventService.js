@@ -18,7 +18,7 @@ const Revisions = require("../models/revisions");
 const cacheService = require("../services/cacheService");
 const fileService = require("../services/fileService");
 
-exports.getEvents = async function(condition = {}, sort = { start: 1 }) {
+exports.getEvents = async function(condition = {}, sort = { start: -1 }) {
 	try {
 		return await Events.find(condition).sort(sort);
 	} catch (e) {

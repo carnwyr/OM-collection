@@ -1,4 +1,5 @@
 const createError = require("http-errors");
+const Sentry = require("@sentry/node");
 
 const userService = require("../services/userService");
 const cardService = require("../services/cardService");
@@ -7,11 +8,11 @@ const revisionService = require("../services/revisionService");
 
 
 exports.getAccountPage = async function (req, res, next) {
-  var user = await userService.getAccountData(req.user.name);
+  let user = await userService.getAccountData(req.user.name);
   if (!user) {
     return next(createError(404, properties = { title: "User not found" }));
   }
-  return res.render("account", { title: req.i18n.t("title.settings"), user: user });
+  return res.render("account", { title: req.i18n.t("title.settings"), user: { ...req.user, ...user } });
 };
 
 exports.updateSupport = async function(req, res) {
@@ -120,4 +121,12 @@ exports.updateUserProfile = async function(req, res) {
   return res.json({ err: false });
 }
 
-exports.updateUserTree = async (req, res) => await userService.updateUserTree(req.user.name, req.body.node, req.body.isUnlocked);
+exports.updateUserTree = async function(req, res) {
+  try {
+    await userService.updateUserTree(req.user.name, req.body.node, req.body.isUnlocked);
+    return res.json({ err: null });
+  } catch(e) {
+    Sentry.captureException(e);
+    return res.json({ err: true, message: e.message });
+  }
+};

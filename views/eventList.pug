@@ -1,7 +1,6 @@
 extends layout
 
 block scripts
-  //- link(rel="stylesheet" href="/stylesheets/eventList.css")
   script(src="/javascripts/lazyload.js")
   script.
     $(function() {
@@ -16,12 +15,14 @@ mixin section(events)
   div.row
     each event in events
       .col-12.col-sm-6.col-lg-4.mb-3
-        div.card.shadow
+        div.card.h-100.shadow
           img.card-img-top.lazy(src="/images/event_placeholder.jpg" data-src="/images/events/" + encodeURIComponent(event.name.en) + ".jpg")
           div.card-body
             a.stretched-link(href="event/" + encodeURIComponent(event.name.en.replace(/ /g, '_')))
               - lang = t("lang") === "ja" ? "ja" : "en";
               p.card-title= event.name[lang]
+                if event.isLonelyDevil
+                  img.ml-2(src="/images/LD_icon.png" style="width:24px;height:24px;float:inline-end;")
             small.text-muted= event.start + " - " + event.end
 
 block content

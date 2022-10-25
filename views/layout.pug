@@ -133,6 +133,7 @@ html(lang=t("lang"))
               a(class="nav-link" href='/logout')= t("common.logout")
 
     main.mb-5(style="position:relative;")
+      div#alerts(style="position:fixed;right:20px;z-index:1080;")
       - function getURL(u) { return encodeURIComponent(u.replace(/ /g, '_')); }
       if title !== "Karasu OS"
         //- div.container
@@ -247,11 +248,12 @@ html(lang=t("lang"))
         div.row.col.justify-content-center.align-items-center Made with
           | <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-heart-fill mx-1" viewBox="0 0 16 16">   <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/> </svg>
           | by Laele and char
-    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-    script.
-      kofiWidgetOverlay.draw('karasu_os', {
-        'type': 'floating-chat',
-        'floating-chat.donateButton.text': 'Donate',
-        'floating-chat.donateButton.background-color': '#5cc0df',
-        'floating-chat.donateButton.text-color': '#fff'
-      });
+    if (!user || !user.isSupporter)
+      <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+      script.
+        kofiWidgetOverlay.draw('karasu_os', {
+          'type': 'floating-chat',
+          'floating-chat.donateButton.text': 'Donate',
+          'floating-chat.donateButton.background-color': '#5cc0df',
+          'floating-chat.donateButton.text-color': '#fff'
+        });
