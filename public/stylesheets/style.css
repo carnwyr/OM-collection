@@ -5,6 +5,21 @@
   src: url("/fonts/Nunito-Regular.ttf");
 }
 
+:root {
+  --lucifer: #64b5f6;
+  --mammon: #fbc02d;
+  --leviathan: #ff8a65;
+  --satan: #aed581;
+  --asmodeus: #f06292;
+  --beelzebub: #ef5350;
+  --belphegor: #9575cd;
+  --diavolo: #e53935;
+  --barbatos: #26a69a;
+  --luke: #fbc02d;
+  --simeon: #26c6da;
+  --solomon: #bdbdbd;
+}
+
 body {
   padding-top: 70px;
   background: url("/images/background_sheep.webp") fixed;
