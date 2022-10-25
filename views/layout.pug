@@ -21,13 +21,12 @@ html(lang=t("lang"))
     else
       meta(property="og:image" content="/images/karasu.png")
     link(rel="icon" type="image/x-icon" href="/images/favicon.ico")
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-    link(rel='stylesheet' href='/stylesheets/theme.css')
-    link(rel='stylesheet' href='/stylesheets/style.css')
+    link(rel="stylesheet" href="/stylesheets/bootstrap.min.css")
+    link(rel="stylesheet" href="/stylesheets/style.css")
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
-    script(src='/javascripts/commonFunctions.js')
+    script(src="/javascripts/commonFunctions.js")
     block scripts
 
   body(class="d-flex flex-column min-vh-100")
@@ -51,7 +50,7 @@ html(lang=t("lang"))
       .card.rounded.shadow-sm
         img.img-fluid.h-100.mx-auto.py-2(src="/images/adblocked.png")
 
-    nav(class="navbar navbar-expand-md bg-primary navbar-dark fixed-top shadow-sm bg-white" style="z-index:1032;")
+    nav.navbar.navbar-dark.navbar-expand-md.fixed-top.shadow-sm(style="z-index:1032;")
       a.navbar-brand.logo-bg.d-flex.align-items-center(href='/')
         img(src="/images/logo.png" style="height:25px;width:25px;")
         span.logo.pl-1 karasu-os
@@ -69,13 +68,13 @@ html(lang=t("lang"))
             a(class="dropdown-toggle nav-link" role='button' id='toolsDropdown' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false")= t("common.tools")
             div(class="dropdown-menu shadow px-2" aria-labelledby="toolsDropdown")
               a(class="dropdown-item" href="/tree-tracker") Devil's tree tracker
-              .mt-2.overline ask karasu
+              .overline ask karasu
               a(class="dropdown-item" href="/ask/dt_rewards") Devil's tree rewards
               a(class="dropdown-item" href="/ask/card_unlock_items") Card unlock items
               a(class="dropdown-item" href="/ask/majolish_cards") Majolish cards
               a(class="dropdown-item" href="/ask/skill_charge_time") Skill charging time
               a(class="dropdown-item" href="/ask/skills") Card skills
-              .mt-3.overline calculator
+              .overline calculator
               a(class="dropdown-item" href="/calculator/points") Pop Quiz Points
               a(class="dropdown-item" href="/calculator/bonus") Cheat Card Bonus
               a(class="dropdown-item" href="/calculator/ap_recovery") AP Recovery
@@ -110,10 +109,10 @@ html(lang=t("lang"))
               a(class="nav-link dropdown-toggle" role="button" id="collectionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") My Karasu
               div(class="dropdown-menu dropdown-menu-right shadow px-2" aria-labelledby="collectionDropdown")
                 a(class="dropdown-item" href='/' + user.name + '/profile')= t("common.profile")
-                .mt-3.overline collections
+                .overline collections
                 a(class="dropdown-item" href='/' + user.name + '/collection')= t("collection.cards")
                 a(class="dropdown-item" href='/' + user.name + '/favourites')= t("collection.favourites")
-                .mt-3.overline trackers
+                .overline trackers
                 a(class="dropdown-item" href="/user/tree_progress") Tree progress
                 a(class="dropdown-item" href="/user/edits") Edits
             li(class="nav-item dropdown d-none d-md-block")
@@ -195,7 +194,7 @@ html(lang=t("lang"))
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>
 
-    footer.bg-primary.text-light.mt-auto
+    footer.text-light.mt-auto
       div.container.mt-5.mb-3
         div.row
           div.col-lg-5.mb-3.mb-lg-0
