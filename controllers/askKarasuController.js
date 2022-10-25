@@ -6,13 +6,15 @@ const userService = require("../services/userService");
 exports.getDTRewardsPage = async function (req, res, next) {
 	let cards = [];
 	let description = "Find out which cards give various rewards in their devil's trees";
+	let title = "Devil's Tree Rewards";
 	if (req.query.item) {
 		cards = await cardService.getTreeNodesWithRewardItem(req.query.item, req.user, req.query.owned, req.query.locked);
 		description = "A page with list of cards that gives " + req.query.item + " in their devil's trees";
+		title += ": " + req.query.item;
 	}
 
 	return res.render("askKarasu", {
-		title: "Devil's Tree Rewards",
+		title: title,
 		description: description,
 		cards: cards,
 		path: "dt_rewards",
