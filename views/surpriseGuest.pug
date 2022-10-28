@@ -2,28 +2,22 @@ extends layout
 
 mixin getActions(step)
   if step[0].item
-    - const itemImages = {"Princess's Poison Apple": 'apple', 'Instant Noodles (Hell-Sauce Flavor)': 'noodles', 'Spicy Rainbow Pizza': 'pizza', 'RedxRed Apple Pie': 'pie', 'Wicked Cupcake': 'cupcake', 'Wicked Cupcake ': 'cupcake', 'Human World Cheeseburger': 'burger', 'Family Pack Sushi': 'sushi', 'Comfort Candy': 'candy', 'Black Coffee of Melancholy': 'coffee', 'Backstabbing Sandwich': 'sandwich', 'Bandage': 'bandage', 'First Aid Kit': 'kit', 'Medicine': 'medicine', 'Poison': 'poison', 'Flower': 'flower', 'Book': 'book', 'Manga': 'manga', 'Movie Ticket': 'ticket', 'Game': 'game', 'Perfume': 'perfume', 'Message Card': 'card', 'Pocket Tissue': 'tissue', 'Whip of Love': 'whip', "Barbatos's Tea": 'tea', "Madam Scream's Macarons": 'macarons', "Barbatos's Signature Cake": 'cake', 'Paradise Blue': 'paradise', 'Unidentified Matter': 'yummy'}
     td
       .row.justify-content-center
         if step[0].item instanceof Array
           - var items = step[0].item;
         else
           - var items = [step[0].item];
-        - var i = 0;
-        while i < items.length
-          - imgName = itemImages[items[i]];
-          img.gift(src='/images/items/'+imgName+'.png' alt=imgName)
-          - i++;
+        each item in items
+          img.gift(src='/images/items/'+item+'.png' alt=item)
   else
-    - var i = 0;
-    - var options = '';
-    while i < step.length
+    - let options = '';
+    each action, i in step
       if i > 0
         - options += "<br>";
-      - option = step[i].action + (step[i].part ? ' ' + step[i].part : '');
+      - option = action.action + (action.part ? ' ' + action.part : '');
       - options += t(option);
-      - i++;
-    td.py-1.p-sm-3.px-0 !{options}
+    td.py-1.p-sm-3.px-0!= options
 
 mixin getConditionImage(condition)
   if condition == 'Homescreen'

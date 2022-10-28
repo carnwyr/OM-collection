@@ -20,7 +20,7 @@ router.post('/:name/updateUserProfile', loginController.isSameUser(), userContro
 router.post("/issueBan", loginController.hasAccess("Admin"), userController.banUser);
 
 //
-router.get("/tree_progress", loginController.isSameUser(), userController.getTreeProgressPage);
+router.get("/tree-progress", loginController.isSameUser(), userController.getTreeProgressPage);
 router.get("/edits", loginController.isSameUser(), userController.getUserSuggestionPage);
 
 // Account settings page

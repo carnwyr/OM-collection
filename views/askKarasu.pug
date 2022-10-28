@@ -10,13 +10,13 @@ block content
     h1= title
     div#question.card.card-body.text-center.mb-3(style="box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;")
       form
-        if path === "dt_rewards"
+        if path === "dt-rewards"
           include mixins/ask/dtRewards
-        else if path === "card_unlock_items"
+        else if path === "card-unlock-items"
           include mixins/ask/cardUnlockItems
-        else if path === "majolish_cards"
+        else if path === "majolish-cards"
           include mixins/ask/majolishCards
-        else if path === "skill_charge_time"
+        else if path === "skill-charge-time"
           include mixins/ask/skillChargeSpeed
         else if path === "skills"
           include mixins/ask/skills
@@ -24,12 +24,12 @@ block content
         div.custom-control.custom-checkbox.custom-control-inline
           input#showOwned.custom-control-input(type="checkbox" name="owned" checked=(user && query.owned) disabled=(!user))
           label.custom-control-label(for="showOwned") Only show cards I own.
-        if path !== "skill_charge_time" && path !== "skills"
+        if path !== "skill-charge-time" && path !== "skills"
           div.custom-control.custom-checkbox.custom-control-inline
             input#hideUnlocked.custom-control-input(type="checkbox" name="locked" checked=(user && query.locked) disabled=(!user))
             label.custom-control-label(for="hideUnlocked") Hide unlocked.
 
-    if path === "skill_charge_time"
+    if path === "skill-charge-time"
       p.small.text-center.text-muted *Only SSR and above is displayed.
       div.d-flex.flex-wrap.justify-content-center
         each i in cards
@@ -76,7 +76,7 @@ block content
                   else
                     p.card-text Requirements ???
                   div.d-flex.align-items-center
-                    img.mr-1(src="/images/items/grimm.png" style="width:1.25rem;")
+                    img.mr-1(src="/images/grimm.png" style="width:1.25rem;")
                     p.card-text= i.dt.grimmCost ? i.dt.grimmCost.toLocaleString("en") : "???"
 
   script.

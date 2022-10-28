@@ -17,7 +17,7 @@ exports.getDTRewardsPage = async function (req, res, next) {
 		title: title,
 		description: description,
 		cards: cards,
-		path: "dt_rewards",
+		path: "dt-rewards",
 		query: req.query,
 		user: req.user
 	});
@@ -37,7 +37,7 @@ exports.getUnlockItemsPage = async function (req, res, next) {
 		title: title,
 		description: description,
 		cards: cards,
-		path: "card_unlock_items",
+		path: "card-unlock-items",
 		query: req.query,
 		user: req.user
 	});
@@ -57,7 +57,7 @@ exports.getMajolishCardsPage = async function (req, res, next) {
 		title: title,
 		description: description,
 		cards: cards,
-		path: "majolish_cards",
+		path: "majolish-cards",
 		query: req.query,
 		user: req.user
 	});
@@ -78,7 +78,7 @@ exports.getSkillChargeSpeedPage = async function (req, res, next) {
 		title: title,
 		description: description,
 		cards: cards,
-		path: "skill_charge_time",
+		path: "skill-charge-time",
 		query: req.query,
 		user: req.user
 	});
