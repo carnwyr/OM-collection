@@ -34,10 +34,6 @@
     "demon_cards": "アクマカード",
     "Memory": "メモリー",
     "memory_cards": "メモリーカード",
-    "demon_jump_L": "アクマ",
-    "memory_jump_L": "メモリー",
-    "demon_jump": "アクマ",
-    "memory_jump": "メモリー",
     "manage_collection": "アドレス帳を編集",
     "select_all": "一括選択",
     "deselect_all": "選択クリア",
@@ -73,7 +69,7 @@
     "logout": "ログアウト",
     "settings": "設定",
     "account": "アカウント",
-    "events": "Events",
+    "events": "イベント",
     "days": "日"
   },
   "error": {
