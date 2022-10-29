@@ -85,11 +85,17 @@ exports.getCalculatorPage = function (req, res, next) {
 		case "bonus":
 			return exports.getCheatCardBonusCalculator(req, res, next);
 			break;
-		case "bonus_(general)":
+		case "bonus-(general)":
 			return exports.getGeneralBonusCalculator(req, res, next);
 			break;
-		case "ap_recovery":
+		case "ap-recovery":
 			return exports.getAPCalculator(req, res, next);
+			break;
+		case "bonus_(general)":
+			return res.redirect(301, "/calculator/general-bonus");
+			break;
+		case "ap_recovery":
+			return res.redirect(301, "/calculator/ap-recovery");
 			break;
 		default:
 			return next(createError(404));
