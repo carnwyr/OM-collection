@@ -79,6 +79,9 @@ exports.getCalculatorPage = function (req, res, next) {
 		case "points":
 			return exports.getPointsCalculator(req, res, next);
 			break;
+		case "lonely-devil":
+			return exports.getCustomCalculator(req, res, next);
+			break;
 		case "bonus":
 			return exports.getCheatCardBonusCalculator(req, res, next);
 			break;
@@ -104,6 +107,14 @@ exports.getPointsCalculator = async function(req, res, next) {
 	} catch(e) {
 		return next(e);
 	}
+};
+
+exports.getCustomCalculator = async function(req, res, next) {
+	return res.render("calculators/customPoints", {
+		title: "Lonely Devil Calculator",
+		description: "",
+		user: req.user
+	});
 };
 
 exports.getCheatCardBonusCalculator = async function(req, res, next) {

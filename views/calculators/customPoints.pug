@@ -1,0 +1,232 @@
+extends ../layout
+
+block content
+  div.container
+    h1= title
+    div.alert.alert-warning.text-center(style="z-index:0!important;") Please read the information section at the end of page before using this calculator!
+    div.card.card-body.mb-3
+      script(src="https://unpkg.com/vue@3/dist/vue.global.prod.js")
+      script(type="module").
+        const { createApp } = Vue;
+        createApp({
+          data() {
+            return {
+              currentPts: '',
+              goal: '',
+              daysLeft: '',
+              stages: '',
+              pointsPerBattle: 120
+            }
+          },
+          methods: {
+            fnum(x) {
+              return Math.round(x).toLocaleString("en");
+            },
+            getDailyFreeAP() {
+              return 288;
+            },
+            getDailyFreeBattles() {
+              return this.stages * 3;
+            },
+            getFreePoints() {
+              return this.daysLeft * this.stages * 3 * this.pointsPerBattle;
+            },
+            getPointsNeeded() {
+              return Math.max(this.goal - this.currentPts, 0);
+            },
+            getBattlesNeeded() {
+              return Math.ceil(this.getPointsNeeded() / this.pointsPerBattle);
+            },
+            getAPNeeded() {
+              return this.getBattlesNeeded() * 8;
+            },
+            getTotalFreeBattles() {
+              return Math.min(this.daysLeft * this.getDailyFreeBattles(), this.getBattlesNeeded());
+            },
+            getTotalFreeAP() {
+              return Math.min(this.daysLeft * this.getDailyFreeAP(), this.getAPNeeded());
+            },
+            getTotalPaidBattles() {
+              return this.getBattlesNeeded() - this.getTotalFreeBattles();
+            },
+            getTotalPaidAP() {
+              return this.getAPNeeded() - this.getTotalFreeAP();
+            },
+            getDailyPaidBattles() {
+              if (this.daysLeft > 0) {
+                return this.getTotalPaidBattles() / this.daysLeft;
+              }
+              return this.getTotalPaidBattles();
+            },
+            getDailyAPNeeded() {
+              return (this.getDailyFreeBattles() + this.getDailyPaidBattles()) * 8;
+            },
+            getDailyPaidAP() {
+              return Math.max(this.getDailyAPNeeded() - this.getDailyFreeAP(), 0);
+            },
+            getBattleCost(battles) {
+              return Math.ceil(battles / 3) * 5;
+            },
+            getAPCost(ap) {
+              return Math.ceil(ap / 10);
+            }
+          }
+        }).mount("#app");
+      div#app
+        form
+          div.form-row
+            div.form-group.col
+              label Current points
+              input.form-control(type="number" v-model.number="currentPts")
+            div.form-group.col
+              label Goal
+              input.form-control(type="number" v-model.number="goal")
+            div.form-group.col
+              label Days left
+              input.form-control(type="number" v-model.number="daysLeft")
+            div.form-group.col
+              label Total stages
+              input.form-control(type="number" v-model.number="stages")
+            div.form-group.col
+              label Points per battle
+              input.form-control(type="number" v-model.number="pointsPerBattle")
+        <ul class="nav nav-tabs" id="resultTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">Total</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Daily</a>
+          </li>
+        </ul>
+        div#resultTabContent.tab-content.pt-3
+          div#total.tab-pane.show.active(role="tabpanel" aria-labelledby="total-tab")
+            p.text-center You can get a total of
+              |
+              |
+              span.h5 {{ fnum(currentPts + getFreePoints()) }}
+              |
+              | points for free.
+            p.text-center An additional
+              |
+              |
+              span.h5 {{ fnum(Math.max(getPointsNeeded() - getFreePoints(), 0)) }}
+              |
+              | points is needed to reach your goal.
+            hr
+            div.results.row.justify-content-center
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p AP
+                  div
+                    div
+                      span= t("calculator.free")
+                      span {{ fnum(getTotalFreeAP()) }}
+                    div
+                      span= t("calculator.buy")
+                      span {{ fnum(getTotalPaidAP()) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getAPNeeded()) }}
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p Battles
+                  div
+                    div
+                      span= t("calculator.free")
+                      span {{ fnum(getTotalFreeBattles()) }}
+                    div
+                      span= t("calculator.buy")
+                      span {{ fnum(getTotalPaidBattles()) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getBattlesNeeded()) }}
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p Devil Points
+                  div
+                    div
+                      span= t("calculator.ap")
+                      span {{ fnum(getAPCost(getTotalPaidAP())) }}
+                    div
+                      span= t("calculator.battles")
+                      span {{ fnum(getBattleCost(getTotalPaidBattles())) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getAPCost(getTotalPaidAP()) + getBattleCost(getTotalPaidBattles())) }}
+          div#daily.tab-pane(role="tabpanel" aria-labelledby="daily-tab")
+            div.text-center
+              p Today's goal
+              h5 {{ daysLeft ? fnum(currentPts + getPointsNeeded() / daysLeft) : fnum(goal) }}
+            hr
+            div.results.row.justify-content-center
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p AP
+                  div
+                    div
+                      span= t("calculator.free")
+                      span {{ fnum(Math.min(getDailyAPNeeded(), getDailyFreeAP())) }}
+                    div
+                      span= t("calculator.buy")
+                      span {{ fnum(getDailyPaidAP()) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getDailyAPNeeded()) }}
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p Battles
+                  div
+                    div
+                      span= t("calculator.free")
+                      span {{ fnum(getDailyFreeBattles()) }}
+                    div
+                      span= t("calculator.buy")
+                      span {{ fnum(getDailyPaidBattles()) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getDailyFreeBattles() + getDailyPaidBattles()) }}
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p Devil Points
+                  div
+                    div
+                      span AP
+                      span {{ fnum(getAPCost(getDailyPaidAP())) }}
+                    div
+                      span Battles
+                      span {{ fnum(getBattleCost(getDailyPaidBattles())) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getAPCost(getDailyPaidAP()) + getBattleCost(getDailyPaidBattles())) }}
+    div.card.card-body
+      h5 Information
+      p This calculator is intended for lonely devil and birthday revival. For current pop quiz, please use
+        |
+        |
+        a(href="/calculator/points") this calculator
+        |
+        | for best result.
+  style.
+    .results p {
+      text-align: center;
+    }
+    .results .result-container {
+      border-radius: 1rem;
+      border: 2px solid var(--secondary);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .results .result-container>div>div {
+      display: flex;
+      justify-content: space-between;
+    }
+    .results hr {
+      margin: .5rem 0;
+      border: 1px solid var(--secondary);
+    }
