@@ -22,7 +22,7 @@ mixin dtTemplate(node)
     div(style="position:relative;overflow:hidden;border-radius:16px;")
       div(style="position:absolute;right:0;bottom:0;transform:translate(15px,20px) rotate(-10deg);z-index:1;")
         if node.type === "item"
-          img.img-fluid(src="/images/items/" + (itemImages[node.reward] || node.reward) + ".png" onerror="this.src='/images/nodes/item.png'" alt=node.reward style="width:128px;height:128px;opacity:.25;")
+          img.img-fluid(src="/images/items/" + node.reward + ".png" onerror="this.src='/images/nodes/item.png'" alt=node.reward style="width:128px;height:128px;opacity:.25;")
         else if node.type === "icon"
           if card.type === "Demon"
             - iconName = node.reward.replace("(Locked)", "").replace("(Unlocked)", "_Unlocked");
@@ -62,7 +62,6 @@ mixin dtTemplate(node)
           label.custom-control-label(for=`${node.reward}_${node.nodeOrder}_completion`) Unlocked
 
 block content
-  - const itemImages = {"Princess's Poison Apple": 'apple', 'Instant Noodles (Hell-Sauce Flavor)': 'noodles', 'Spicy Rainbow Pizza': 'pizza', 'RedxRed Apple Pie': 'pie', 'Wicked Cupcake': 'cupcake', 'Wicked Cupcake ': 'cupcake', 'Human World Cheeseburger': 'burger', 'Family Pack Sushi': 'sushi', 'Comfort Candy': 'candy', 'Black Coffee of Melancholy': 'coffee', 'Backstabbing Sandwich': 'sandwich', 'Bandage': 'bandage', 'First Aid Kit': 'kit', 'Medicine': 'medicine', 'Poison': 'poison', 'Flower': 'flower', 'Book': 'book', 'Manga': 'manga', 'Movie Ticket': 'ticket', 'Game': 'game', 'Perfume': 'perfume', 'Message Card': 'card', 'Pocket Tissue': 'tissue', 'Whip of Love': 'whip', "Barbatos's Tea": 'tea', "Madam Scream's Macarons": 'macarons', "Barbatos's Signature Cake": 'cake', 'Paradise Blue': 'paradise', 'Unidentified Matter': 'yummy'};
   div.container
     h1= title
     if user && !isHidden
