@@ -50,8 +50,14 @@ router.get("/getCards", cardController.getCards);   // TODO: refactor
 router.get("/getCards2", cardController.getCards2); // TODO: refactor
 // router.get("/animations", cardController.getAnimationList);
 router.get("/getTreeData", cardController.getTreeData);
-router.get("/tree-tracker/rank_up", miscController.getTreeTracker);
+router.get("/tree-tracker/rank-up", miscController.getTreeTracker);
 router.get("/tree-tracker", miscController.getTreeTracker);
+router.get("/tree_tracker/rank_up", (req, res) => {
+  res.redirect(301, "/tree-tracker/rank-up");
+});
+router.get("/tree_tracker", (req, res) => {
+  res.redirect(301, "/tree-tracker");
+});
 
 router.post("/update_tree", loginController.isLoggedIn(), userController.updateUserTree);
 
