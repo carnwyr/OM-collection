@@ -168,6 +168,7 @@ exports.getTotalTreeStats = async function() {
 	]);
 };
 
+// TODO: reduce aggregation size.
 getOwnedFilter = function (user) {
 	return [
 		{
@@ -197,22 +198,23 @@ getOwnedFilter = function (user) {
 		{ $project: { "owned": 0 } }];
 };
 
-getLockedFilter = function (user) {
-	return [
-		{ $lookup: {
-				from: "users",
-				let: { nodeId: "$dt._id" },
-				pipeline: [
-					{ $match: { $expr: { $eq: ["$info.name", user.name] } } },
-					{	$unwind: {
-						path: "$tree",
-						preserveNullAndEmptyArrays: false}},
-					{ $match: { $expr: { $not: { $eq: ["$$nodeId", "$tree"] } } } }
-				],
-				as: "locked"
-		}},
-		{ $project: {"locked": 0} }];
-};
+// TODO: fix $lookup exceeds 16MB BSON limit.
+// getLockedFilter = function (user) {
+// 	return [
+// 		{ $lookup: {
+// 				from: "users",
+// 				let: { nodeId: "$dt._id" },
+// 				pipeline: [
+// 					{ $match: { $expr: { $eq: ["$info.name", user.name] } } },
+// 					{	$unwind: {
+// 						path: "$tree",
+// 						preserveNullAndEmptyArrays: false}},
+// 					{ $match: { $expr: { $not: { $eq: ["$$nodeId", "$tree"] } } } }
+// 				],
+// 				as: "locked"
+// 		}},
+// 		{ $project: {"locked": 0} }];
+// };
 
 findTreeNodes = async function (matchField, matchValue, user, owned, locked) {
 	let match = {};
@@ -224,33 +226,41 @@ findTreeNodes = async function (matchField, matchValue, user, owned, locked) {
 				preserveNullAndEmptyArrays: false
 		}},
 		{ $match: match }];
-	
+
+	let doc = await Cards.aggregate(pipeline);
+
 	if (user && owned) {
-		let ownedFilter = getOwnedFilter(user);	 
-		pipeline = pipeline.concat(ownedFilter);
-	}
-	
-	if (user && locked) {
-		let lockedFilter = getLockedFilter(user);	 
-		pipeline = pipeline.concat(lockedFilter);
+		// let ownedFilter = getOwnedFilter(user);
+		// pipeline = pipeline.concat(ownedFilter);
+
+		let cards = (await userService.getUser(user.name)).cards.owned;
+		doc = doc.filter(x => cards.includes(x.uniqueName));
 	}
 
-	pipeline.push(
-		{ $sort: { number: -1 } },
-		{
-			$project: {
-				"name": 1,
-				"ja_name": 1,
-				"uniqueName": 1,
-				"dt.reward": 1,
-				"dt.type": 1,
-				"dt.count": 1,
-				"dt.requirements": 1,
-				"dt.grimmCost": 1
-			}
-		});
-	
-	return await Cards.aggregate(pipeline);
+	if (user && locked) {
+		// let lockedFilter = getLockedFilter(user);
+		// pipeline = pipeline.concat(lockedFilter);
+
+		let nodes = (await userService.getUser(user.name)).tree;
+		doc = doc.filter(x => !nodes.includes(x.dt._id));
+	}
+
+	// pipeline.push(
+	// 	{ $sort: { number: -1 } },
+	// 	{
+	// 		$project: {
+	// 			"name": 1,
+	// 			"ja_name": 1,
+	// 			"uniqueName": 1,
+	// 			"dt.reward": 1,
+	// 			"dt.type": 1,
+	// 			"dt.count": 1,
+	// 			"dt.requirements": 1,
+	// 			"dt.grimmCost": 1
+	// 		}
+	// 	});
+
+	return doc;
 };
 
 exports.getTreeNodesWithRewardItem = async function (item, user, owned, locked) {
@@ -276,9 +286,9 @@ exports.getCardsWithChargeSpeed = async function (speed, user, owned) {
 				"rarity": { "$in": ["SSR", "UR", "UR+"] }  // SR and below have duplicate skills with different charging time..
 			}
 		}];
-	
+
 	if (user && owned) {
-		let ownedFilter = getOwnedFilter(user);	 
+		let ownedFilter = getOwnedFilter(user);
 		pipeline = pipeline.concat(ownedFilter);
 	}
 
@@ -323,7 +333,7 @@ exports.findSkills = async function (keyword, user, owned) {
 	];
 
 	if (user && owned) {
-		let ownedFilter = getOwnedFilter(user);	 
+		let ownedFilter = getOwnedFilter(user);
 		pipeline = pipeline.concat(ownedFilter);
 	}
 
