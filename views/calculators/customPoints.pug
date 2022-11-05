@@ -24,7 +24,7 @@ block content
               apAds: false,
               friends: 50,
               fridgeMission: 60,
-              dailyFreeBattles: 60,
+              dailyFreeBattles: 0,
               battleAds: false,
               battlesCleared: 0
             }
@@ -97,19 +97,19 @@ block content
         hr
         form
           div.form-row
-            div.form-group.col-4.col-md
+            div.form-group.col-6.col-sm-4.col-md
               label Current points
               input.form-control(type="number" min='0' v-model.number="currentPts")
-            div.form-group.col-4.col-md
+            div.form-group.col-6.col-sm-4.col-md
               label Goal
               input.form-control(type="number" min='0' v-model.number="goal")
-            div.form-group.col-4.col-md
+            div.form-group.col-6.col-sm-4.col-md
               label Days left
               input.form-control(type="number" min='0' v-model.number="daysLeft" @change="setDailyFreeBattles();setRemainingResets()")
-            div.form-group.col-4.col-md
+            div.form-group.col-6.col-sm-4.col-md
               label Total stages
               input.form-control(type="number" min='0' v-model.number="stages" @change="setDailyFreeBattles")
-            div.form-group.col-4.col-md
+            div.form-group.col-6.col-sm-4.col-md
               label Points per battle
               input.form-control(type="number" min='0' v-model.number="pointsPerBattle")
           div.row
