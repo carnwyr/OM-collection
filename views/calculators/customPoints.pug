@@ -16,21 +16,40 @@ block content
               goal: '',
               daysLeft: '',
               stages: '',
-              pointsPerBattle: 120
+              pointsPerBattle: 120,
+              resetsLeft: 0,
+              dailyFreeAP: 288,
+              todo: true,
+              spg: true,
+              apAds: false,
+              friends: 50,
+              fridgeMission: 60,
+              dailyFreeBattles: 60,
+              battleAds: false,
+              battlesCleared: 0
             }
           },
           methods: {
             fnum(x) {
               return Math.round(x).toLocaleString("en");
             },
-            getDailyFreeAP() {
-              return 288;
+            setDailyFreeBattles() {
+              this.dailyFreeBattles = this.stages * 3;
+              if (this.battleAds) this.dailyFreeBattles += 5;
             },
-            getDailyFreeBattles() {
-              return this.stages * 3;
+            setDailyFreeAP() {
+              this.dailyFreeAP = 288;
+              if (this.todo == "true") this.dailyFreeAP += 30;
+              if (this.spg == "true") this.dailyFreeAP += 40;
+              if (this.apAds == "true") this.dailyFreeAP += 50;
+              this.dailyFreeAP += this.friends;
+              this.dailyFreeAP += this.fridgeMission;
+            },
+            setRemainingResets() {
+              this.resetsLeft = Math.max(this.daysLeft - this.battlesCleared, 0);
             },
             getFreePoints() {
-              return this.daysLeft * this.stages * 3 * this.pointsPerBattle;
+              return this.resetsLeft * this.dailyFreeBattles * this.pointsPerBattle;
             },
             getPointsNeeded() {
               return Math.max(this.goal - this.currentPts, 0);
@@ -42,10 +61,10 @@ block content
               return this.getBattlesNeeded() * 8;
             },
             getTotalFreeBattles() {
-              return Math.min(this.daysLeft * this.getDailyFreeBattles(), this.getBattlesNeeded());
+              return Math.min(this.resetsLeft * this.dailyFreeBattles, this.getBattlesNeeded());
             },
             getTotalFreeAP() {
-              return Math.min(this.daysLeft * this.getDailyFreeAP(), this.getAPNeeded());
+              return Math.min(this.resetsLeft * this.dailyFreeAP, this.getAPNeeded());
             },
             getTotalPaidBattles() {
               return this.getBattlesNeeded() - this.getTotalFreeBattles();
@@ -54,16 +73,16 @@ block content
               return this.getAPNeeded() - this.getTotalFreeAP();
             },
             getDailyPaidBattles() {
-              if (this.daysLeft > 0) {
-                return this.getTotalPaidBattles() / this.daysLeft;
+              if (this.resetsLeft > 0) {
+                return this.getTotalPaidBattles() / this.resetsLeft;
               }
               return this.getTotalPaidBattles();
             },
             getDailyAPNeeded() {
-              return (this.getDailyFreeBattles() + this.getDailyPaidBattles()) * 8;
+              return (this.dailyFreeBattles + this.getDailyPaidBattles()) * 8;
             },
             getDailyPaidAP() {
-              return Math.max(this.getDailyAPNeeded() - this.getDailyFreeAP(), 0);
+              return Math.max(this.getDailyAPNeeded() - this.dailyFreeAP, 0);
             },
             getBattleCost(battles) {
               return Math.ceil(battles / 3) * 5;
@@ -80,19 +99,19 @@ block content
           div.form-row
             div.form-group.col-4.col-md
               label Current points
-              input.form-control(type="number" v-model.number="currentPts")
+              input.form-control(type="number" min='0' v-model.number="currentPts")
             div.form-group.col-4.col-md
               label Goal
-              input.form-control(type="number" v-model.number="goal")
+              input.form-control(type="number" min='0' v-model.number="goal")
             div.form-group.col-4.col-md
               label Days left
-              input.form-control(type="number" v-model.number="daysLeft")
+              input.form-control(type="number" min='0' v-model.number="daysLeft" @change="setDailyFreeBattles();setRemainingResets()")
             div.form-group.col-4.col-md
               label Total stages
-              input.form-control(type="number" v-model.number="stages")
+              input.form-control(type="number" min='0' v-model.number="stages" @change="setDailyFreeBattles")
             div.form-group.col-4.col-md
               label Points per battle
-              input.form-control(type="number" v-model.number="pointsPerBattle")
+              input.form-control(type="number" min='0' v-model.number="pointsPerBattle")
           div.row
             div.col-12.col-lg-6
               h5 Daily free AP
@@ -100,21 +119,21 @@ block content
                 input.custom-control-input(type="radio" id="automaticRefill" name="automaticRefill" checked)
                 label.custom-control-label(for="automaticRefill") Automatic restore
               div.custom-control.custom-checkbox.custom-control-inline
-                input.custom-control-input(type="checkbox" id="todo" v-model="todo")
+                input.custom-control-input(type="checkbox" id="todo" v-model="todo" @change="setDailyFreeAP")
                 label.custom-control-label(for="todo") To-do
               div.custom-control.custom-checkbox.custom-control-inline
-                input.custom-control-input(type="checkbox" id="spg" name="spg" checked)
+                input.custom-control-input(type="checkbox" id="spg" v-model="spg"  @change="setDailyFreeAP")
                 label.custom-control-label(for="spg") Surprise guest
               div.custom-control.custom-checkbox.custom-control-inline
-                input.custom-control-input(type="checkbox" id="apAds" name="apAds")
+                input.custom-control-input(type="checkbox" id="apAds" v-model="apAds" @change="setDailyFreeAP")
                 label.custom-control-label(for="apAds") Watch ads
               div.form-row.mt-2
                 div.form-group.col
                   label(for="friends") Friends
-                  input#friends.form-control(type="number" min="0" max="50" value="50" name="friends")
+                  input#friends.form-control(type="number" min="0" max="50" v-model.number="friends" @change="setDailyFreeAP")
                 div.form-group.col
                   label(for="fridgeMission") Fridge mission
-                  select#fridgeMission.form-control(name="fridgeMission")
+                  select#fridgeMission.form-control(v-model.number="fridgeMission" @change="setDailyFreeAP")
                     option(value="0") --
                     option(value="60" selected) Non-VIP
                     option(value="120") VIP
@@ -125,14 +144,14 @@ block content
                   input.custom-control-input(type="radio" id="dailyReset" name="dailyReset" checked)
                   label.custom-control-label(for="dailyReset") Daily reset
                 div.custom-control.custom-checkbox.custom-control-inline
-                  input.custom-control-input(type="checkbox" id="battleAds" v-model="battleAds")
+                  input.custom-control-input(type="checkbox" id="battleAds" v-model="battleAds" @change="setDailyFreeBattles")
                   label.custom-control-label(for="battleAds") Watch ads
               h5 Already cleared today's free battles?
               div.custom-control.custom-radio.custom-control-inline
-                input.custom-control-input(type="radio" id="customRadioInline1" v-model="battlesCleared" value="true")
+                input.custom-control-input(type="radio" id="customRadioInline1" v-model.number="battlesCleared" value="1" @change="setRemainingResets")
                 label.custom-control-label(for="customRadioInline1") Yes
               div.custom-control.custom-radio.custom-control-inline
-                input.custom-control-input(type="radio" id="customRadioInline2" v-model="battlesCleared" value="false")
+                input.custom-control-input(type="radio" id="customRadioInline2" v-model.number="battlesCleared" value="0" @change="setRemainingResets")
                 label.custom-control-label(for="customRadioInline2") No
         <ul class="nav nav-tabs" id="resultTab" role="tablist">
           <li class="nav-item" role="presentation">
@@ -203,7 +222,7 @@ block content
           div#daily.tab-pane(role="tabpanel" aria-labelledby="daily-tab")
             div.text-center
               p Today's goal
-              h5 {{ daysLeft ? fnum(currentPts + getPointsNeeded() / daysLeft) : fnum(goal) }}
+              h5 {{ fnum(currentPts + getPointsNeeded() / Math.max(resetsLeft, 1)) }}
             hr
             div.results.row.justify-content-center
               div.col-12.col-md-6.col-lg-3
@@ -212,7 +231,7 @@ block content
                   div
                     div
                       span= t("calculator.free")
-                      span {{ fnum(Math.min(getDailyAPNeeded(), getDailyFreeAP())) }}
+                      span {{ fnum(Math.min(getDailyAPNeeded(), dailyFreeAP)) }}
                     div
                       span= t("calculator.buy")
                       span {{ fnum(getDailyPaidAP()) }}
@@ -226,14 +245,14 @@ block content
                   div
                     div
                       span= t("calculator.free")
-                      span {{ fnum(getDailyFreeBattles()) }}
+                      span {{ fnum(dailyFreeBattles) }}
                     div
                       span= t("calculator.buy")
                       span {{ fnum(getDailyPaidBattles()) }}
                     hr
                     div
                       span Total
-                      span {{ fnum(getDailyFreeBattles() + getDailyPaidBattles()) }}
+                      span {{ fnum(dailyFreeBattles + getDailyPaidBattles()) }}
               div.col-12.col-md-6.col-lg-3
                 div.result-container
                   p Devil Points
