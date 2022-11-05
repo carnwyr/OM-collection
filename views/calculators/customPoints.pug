@@ -1,11 +1,12 @@
 extends ../layout
 
+block scripts
+  script(src="https://unpkg.com/vue@3/dist/vue.global.js")  //prod.
+
 block content
   div.container
     h1= title
-    div.alert.alert-warning.text-center(style="z-index:0!important;") Please read the information section at the end of page before using this calculator!
     div.card.card-body.mb-3
-      script(src="https://unpkg.com/vue@3/dist/vue.global.prod.js")
       script(type="module").
         const { createApp } = Vue;
         createApp({
@@ -73,23 +74,66 @@ block content
           }
         }).mount("#app");
       div#app
+        p.text-center Please read the information section at the end of page before using this calculator!
+        hr
         form
           div.form-row
-            div.form-group.col
+            div.form-group.col-4.col-md
               label Current points
               input.form-control(type="number" v-model.number="currentPts")
-            div.form-group.col
+            div.form-group.col-4.col-md
               label Goal
               input.form-control(type="number" v-model.number="goal")
-            div.form-group.col
+            div.form-group.col-4.col-md
               label Days left
               input.form-control(type="number" v-model.number="daysLeft")
-            div.form-group.col
+            div.form-group.col-4.col-md
               label Total stages
               input.form-control(type="number" v-model.number="stages")
-            div.form-group.col
+            div.form-group.col-4.col-md
               label Points per battle
               input.form-control(type="number" v-model.number="pointsPerBattle")
+          div.row
+            div.col-12.col-lg-6
+              h5 Daily free AP
+              div.custom-control.custom-radio.custom-control-inline
+                input.custom-control-input(type="radio" id="automaticRefill" name="automaticRefill" checked)
+                label.custom-control-label(for="automaticRefill") Automatic restore
+              div.custom-control.custom-checkbox.custom-control-inline
+                input.custom-control-input(type="checkbox" id="todo" v-model="todo")
+                label.custom-control-label(for="todo") To-do
+              div.custom-control.custom-checkbox.custom-control-inline
+                input.custom-control-input(type="checkbox" id="spg" name="spg" checked)
+                label.custom-control-label(for="spg") Surprise guest
+              div.custom-control.custom-checkbox.custom-control-inline
+                input.custom-control-input(type="checkbox" id="apAds" name="apAds")
+                label.custom-control-label(for="apAds") Watch ads
+              div.form-row.mt-2
+                div.form-group.col
+                  label(for="friends") Friends
+                  input#friends.form-control(type="number" min="0" max="50" value="50" name="friends")
+                div.form-group.col
+                  label(for="fridgeMission") Fridge mission
+                  select#fridgeMission.form-control(name="fridgeMission")
+                    option(value="0") --
+                    option(value="60" selected) Non-VIP
+                    option(value="120") VIP
+            div.col-12.col-lg-6.mb-4
+              h5 Daily free battles
+              div.mb-3
+                div.custom-control.custom-radio.custom-control-inline
+                  input.custom-control-input(type="radio" id="dailyReset" name="dailyReset" checked)
+                  label.custom-control-label(for="dailyReset") Daily reset
+                div.custom-control.custom-checkbox.custom-control-inline
+                  input.custom-control-input(type="checkbox" id="battleAds" v-model="battleAds")
+                  label.custom-control-label(for="battleAds") Watch ads
+              h5 Already cleared today's free battles?
+              div.custom-control.custom-radio.custom-control-inline
+                input.custom-control-input(type="radio" id="customRadioInline1" v-model="battlesCleared" value="true")
+                label.custom-control-label(for="customRadioInline1") Yes
+              div.custom-control.custom-radio.custom-control-inline
+                input.custom-control-input(type="radio" id="customRadioInline2" v-model="battlesCleared" value="false")
+                label.custom-control-label(for="customRadioInline2") No
         <ul class="nav nav-tabs" id="resultTab" role="tablist">
           <li class="nav-item" role="presentation">
             <a class="nav-link active" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">Total</a>
