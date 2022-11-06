@@ -1,0 +1,24 @@
+extends layout
+
+block scripts
+
+block content
+  div.container
+    h1= title
+    div.card.card-body
+      div.row
+        div.col-7
+          div(style="border-radius:32px;border:2px solid var(--secondary);padding:2rem;")
+            p hello
+        div.col-5
+          div.row
+            div.col-6
+              label First
+              select.custom-select
+                each i in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+                  option(value=i)= t(i)
+            div.col-6
+              label Second
+              select.custom-select
+                each i in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+                  option(value=i)= t(i)

@@ -62,3 +62,11 @@ exports.getTreeTracker = async function(req, res, next) {
 		return next(e);
 	}
 };
+
+exports.getTeamBuilder = async function(req, res, next) {
+	return res.render("teamBuilder", {
+		title: "Team Builder",
+		description: "",
+		user: req.user
+	});
+};

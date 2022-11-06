@@ -61,5 +61,6 @@ router.get("/tree_tracker", (req, res) => {
 
 router.post("/update_tree", loginController.isLoggedIn(), userController.updateUserTree);
 
+router.get("/team-builder", miscController.getTeamBuilder);
 
 module.exports = router;
