@@ -1,7 +1,7 @@
 extends ../layout
 
 block scripts
-  script(src="https://unpkg.com/vue@3/dist/vue.global.js")  //prod.
+  script(src="https://unpkg.com/vue@3/dist/vue.global.prod.js")
 
 block content
   div.container
@@ -26,7 +26,7 @@ block content
               fridgeMission: 60,
               dailyFreeBattles: 0,
               battleAds: false,
-              battlesCleared: 0
+              battlesCleared: 1
             }
           },
           methods: {
@@ -279,7 +279,7 @@ block content
       h5 Days left
       p How it works:
         ul
-          li Each lonely devil tour will last 4 days, 5 resets. 
+          li Each lonely devil tour will last 4 days, 5 resets.
           li However, if you started the lonely devil tour right on JST 00:00, then you will only get 4 resets.
       p How to determine days left:
         ul
