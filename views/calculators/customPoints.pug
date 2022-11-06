@@ -46,7 +46,8 @@ block content
               this.dailyFreeAP += this.fridgeMission;
             },
             setRemainingResets() {
-              this.resetsLeft = Math.max(this.daysLeft - this.battlesCleared, 0);
+              // v-model.number doesn't work (?)
+              this.resetsLeft = Math.max(this.daysLeft + parseInt(this.battlesCleared), 0);
             },
             getFreePoints() {
               return this.resetsLeft * this.dailyFreeBattles * this.pointsPerBattle;
@@ -148,10 +149,10 @@ block content
                   label.custom-control-label(for="battleAds") Watch ads
               h5 Already cleared today's free battles?
               div.custom-control.custom-radio.custom-control-inline
-                input.custom-control-input(type="radio" id="customRadioInline1" v-model.number="battlesCleared" value="1" @change="setRemainingResets")
+                input.custom-control-input(type="radio" id="customRadioInline1" v-model.number="battlesCleared" value="0" @change="setRemainingResets")
                 label.custom-control-label(for="customRadioInline1") Yes
               div.custom-control.custom-radio.custom-control-inline
-                input.custom-control-input(type="radio" id="customRadioInline2" v-model.number="battlesCleared" value="0" @change="setRemainingResets")
+                input.custom-control-input(type="radio" id="customRadioInline2" v-model.number="battlesCleared" value="1" @change="setRemainingResets")
                 label.custom-control-label(for="customRadioInline2") No
         <ul class="nav nav-tabs" id="resultTab" role="tablist">
           <li class="nav-item" role="presentation">
@@ -275,6 +276,15 @@ block content
         a(href="/calculator/points") this calculator
         |
         | for best result.
+      h5 Days left
+      p How it works:
+        ul
+          li Each lonely devil tour will last 4 days, 5 resets. 
+          li However, if you started the lonely devil tour right on JST 00:00, then you will only get 4 resets.
+      p How to determine days left:
+        ul
+          li The game will tell you how many days left you have until the lonely devil pop quiz ends. On the last day it only says how many hours left, put 0 as days left.
+          li Due to timezone difference, this calculator may be off by one day.
   style.
     .results p {
       text-align: center;
