@@ -79,14 +79,23 @@ exports.getCalculatorPage = function (req, res, next) {
 		case "points":
 			return exports.getPointsCalculator(req, res, next);
 			break;
+		case "lonely-devil":
+			return exports.getCustomCalculator(req, res, next);
+			break;
 		case "bonus":
 			return exports.getCheatCardBonusCalculator(req, res, next);
 			break;
-		case "bonus_(general)":
+		case "bonus-(general)":
 			return exports.getGeneralBonusCalculator(req, res, next);
 			break;
-		case "ap_recovery":
+		case "ap-recovery":
 			return exports.getAPCalculator(req, res, next);
+			break;
+		case "bonus_(general)":
+			return res.redirect(301, "/calculator/general-bonus");
+			break;
+		case "ap_recovery":
+			return res.redirect(301, "/calculator/ap-recovery");
 			break;
 		default:
 			return next(createError(404));
@@ -104,6 +113,14 @@ exports.getPointsCalculator = async function(req, res, next) {
 	} catch(e) {
 		return next(e);
 	}
+};
+
+exports.getCustomCalculator = async function(req, res, next) {
+	return res.render("calculators/customPoints", {
+		title: "Lonely Devil Calculator",
+		description: "",
+		user: req.user
+	});
 };
 
 exports.getCheatCardBonusCalculator = async function(req, res, next) {
