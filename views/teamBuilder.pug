@@ -1,24 +1,121 @@
 extends layout
 
 block scripts
+  script(src="https://unpkg.com/vue@3/dist/vue.global.prod.js")
 
 block content
   div.container
     h1= title
     div.card.card-body
-      div.row
-        div.col-7
+      script(type="module").
+        const { createApp } = Vue;
+        createApp({
+          data() {
+            return {
+              attributes: ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"],
+              a1: "--",
+              a2: "--",
+              strength: "min",
+              total: '',
+              owned: false,
+              cards: {
+                demon: ['','',''],
+                memory: ['','','']
+              }
+            };
+          },
+          methods: {
+            async onSubmit() {
+              if (!this.attributes.includes(this.a1) || !this.attributes.includes(this.a2) || this.a1 == this.a2) return;
+              let url = `/getTeam?type=${this.strength}&a1=${this.a1}&a2=${this.a2}&owned=${this.owned}&user=${!{user?JSON.stringify(user.name):""}}`;
+              fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                  this.cards = data;
+                  while (this.cards.demon.length < 3) {
+                    this.cards.demon.push('');
+                  }
+                  while (this.cards.memory.length < 3) {
+                    this.cards.memory.push('');
+                  }
+                  let total = 0;
+                  this.cards.demon.forEach(i => {
+                    total += i.total;
+                  });
+                  this.cards.memory.forEach(i => {
+                    total += i.total;
+                  });
+                  this.total = total;
+                });
+            }
+          }
+        }).mount("#app");
+      div#app.row
+        div.col-lg-7.mb-3
           div(style="border-radius:32px;border:2px solid var(--secondary);padding:2rem;")
-            p hello
-        div.col-5
-          div.row
-            div.col-6
-              label First
-              select.custom-select
-                each i in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
-                  option(value=i)= t(i)
-            div.col-6
-              label Second
-              select.custom-select
-                each i in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
-                  option(value=i)= t(i)
+            p Total strength: {{total.toLocaleString("en", { maximumFractionDigits: 0 })}}
+            div.row.text-center
+              div.col-12
+                p= t("Demon")
+              div.col-4(v-for="item of cards.demon")
+                a(:href="item ? '/card/' + item.uniqueName : '#'")
+                  div.mx-auto(style="width:5rem;height:5rem;" )
+                    img.img-fluid(v-if="item && item.total" :src="'/images/cards/S/' + item.uniqueName + '.jpg'")
+                    img.img-fluid(v-else src="/images/icon_placeholder.jpg")
+                  figcaption(v-if="item && item.total")
+                    | {{item.name}}
+                    br
+                    | {{item.total.toLocaleString("en", { maximumFractionDigits: 0 })}}
+              div.col-12
+                p= t("Memory")
+              div.col-4(v-for="item of cards.memory")
+                a(:href="item ? '/card/' + item.uniqueName : '#'")
+                  div.mx-auto(style="width:5rem;height:5rem;" )
+                    img.img-fluid(v-if="item && item.total" :src="'/images/cards/S/' + item.uniqueName + '.jpg'")
+                    img.img-fluid(v-else src="/images/icon_placeholder.jpg")
+                  figcaption(v-if="item && item.total")
+                    | {{item.name}}
+                    br
+                    | {{item.total.toLocaleString("en", { maximumFractionDigits: 0 })}}
+        div.col-lg-5
+          form(@submit.prevent="onSubmit")
+            div.form-row.mb-3
+              div.col-6
+                label First
+                select.custom-select(v-model="a1")
+                  option(disabled) --
+                  each i in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+                    option(value=i)= t(i)
+              div.col-6
+                label Second
+                select.custom-select(v-model="a2")
+                  option(disabled) --
+                  each i in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
+                    option(value=i)= t(i)
+            div.mb-3
+              <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="customRadioInline1" name="customRadioInline" class="custom-control-input" v-model="strength" value="min">
+              <label class="custom-control-label" for="customRadioInline1">Min</label>
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="customRadioInline2" name="customRadioInline" class="custom-control-input" v-model="strength" value="max">
+              <label class="custom-control-label" for="customRadioInline2">Max (Lv.1 Skill)</label>
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="customRadioInline3" name="customRadioInline" class="custom-control-input" v-model="strength" value="fdt">
+              <label class="custom-control-label" for="customRadioInline3">Max (Lv.10 Skill)</label>
+              </div>
+            div.mb-3
+              div.custom-control.custom-checkbox
+                input#customCheck1.custom-control-input(type="checkbox" v-model="owned" disabled=(user?false:true))
+                label.custom-control-label(for="customCheck1") Owned cards
+            button.btn.btn-primary(type="submit") Build
+        div.col-12
+          hr
+          h5 Information
+          p: ul
+              li All values are contributed by fans.
+              li We are missing a lot of data on Maximum values. Please add if you can, thank you.
+              li If a spot showing grey icon, then it's either because of 1) we do not have enough data, or 2) you do not have enough cards.
+              li Tips for missing cards: switch the first and second attributes and use cards that the new result.
+              li Result might be different from your in-game values because of rounding.
