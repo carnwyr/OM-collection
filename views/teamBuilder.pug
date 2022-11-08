@@ -7,6 +7,7 @@ block content
   div.container
     h1= title
     div.card.card-body
+      - let username = user?.name || '';
       script(type="module").
         const { createApp } = Vue;
         createApp({
@@ -28,7 +29,7 @@ block content
           methods: {
             async onSubmit() {
               if (!this.attributes.includes(this.a1) || !this.attributes.includes(this.a2) || this.a1 == this.a2) return;
-              let url = `/getTeam?type=${this.strength}&a1=${this.a1}&a2=${this.a2}&owned=${this.owned}&user=${!{user?JSON.stringify(user.name):""}}`;
+              let url = `/getTeam?type=${this.strength}&a1=${this.a1}&a2=${this.a2}&owned=${this.owned}&user=${!{JSON.stringify(username)}}`;
               fetch(url)
                 .then((response) => response.json())
                 .then((data) => {
