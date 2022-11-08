@@ -81,13 +81,13 @@ block content
           form(@submit.prevent="onSubmit")
             div.form-row.mb-3
               div.col-6
-                label First
+                label First stage attribute
                 select.custom-select(v-model="a1")
                   option(disabled) --
                   each i in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
                     option(value=i)= t(i)
               div.col-6
-                label Second
+                label Second stage attribute
                 select.custom-select(v-model="a2")
                   option(disabled) --
                   each i in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
@@ -117,5 +117,5 @@ block content
               li All values are contributed by fans.
               li We are missing a lot of data on Maximum values. Please add if you can, thank you.
               li If a spot showing grey icon, then it's either because of 1) we do not have enough data, or 2) you do not have enough cards.
-              li Tips for missing cards: switch the first and second attributes and use cards that the new result.
+              li Tips for missing cards: switch the first and second attributes and use cards from the new result.
               li Result might be different from your in-game values because of rounding.
