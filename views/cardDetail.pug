@@ -180,7 +180,7 @@ block content
                   tr
                     - let str = attribute.charAt(0).toUpperCase() + attribute.slice(1);
                     th.text-center.text-md-left(scope="row")
-                      img.mr-0.mr-md-2(src="/images/attributes/" + t(attribute) + ".png" alt=str style="width:24px;height:24px;")
+                      img.mr-0.mr-md-2(src="/images/attributes/" + attribute + ".png" alt=t(str) style="width:24px;height:24px;")
                       span.d-none.d-md-block= t(str)
                     td= card.strength&&card.strength[attribute]&&card.strength[attribute].min?card.strength[attribute].min.toLocaleString("en"):"???"
                     td= card.strength&&card.strength[attribute]&&card.strength[attribute].max?card.strength[attribute].max.toLocaleString("en"):"???"
