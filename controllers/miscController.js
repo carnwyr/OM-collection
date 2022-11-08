@@ -69,7 +69,7 @@ exports.getTreeTracker = async function(req, res, next) {
 exports.getTeamBuilder = function(req, res, next) {
 	return res.render("teamBuilder", {
 		title: "Team Builder",
-		description: "",
+		description: "Help you build the best teams to pass Obey Me! battles.",
 		user: req.user
 	});
 };
