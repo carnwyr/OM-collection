@@ -1,0 +1,305 @@
+extends ../layout
+
+block scripts
+  script(src="https://unpkg.com/vue@3/dist/vue.global.prod.js")
+
+block content
+  div.container
+    h1= title
+    div.card.card-body.mb-3
+      script(type="module").
+        const { createApp } = Vue;
+        createApp({
+          data() {
+            return {
+              currentPts: '',
+              goal: '',
+              daysLeft: '',
+              stages: '',
+              pointsPerBattle: 120,
+              resetsLeft: 0,
+              dailyFreeAP: 288,
+              todo: true,
+              spg: true,
+              apAds: false,
+              friends: 50,
+              fridgeMission: 60,
+              dailyFreeBattles: 0,
+              battleAds: false,
+              battlesCleared: 1
+            }
+          },
+          methods: {
+            fnum(x) {
+              return Math.round(x).toLocaleString("en");
+            },
+            setDailyFreeBattles() {
+              this.dailyFreeBattles = this.stages * 3;
+              if (this.battleAds) this.dailyFreeBattles += 5;
+            },
+            setDailyFreeAP() {
+              this.dailyFreeAP = 288;
+              if (this.todo == "true") this.dailyFreeAP += 30;
+              if (this.spg == "true") this.dailyFreeAP += 40;
+              if (this.apAds == "true") this.dailyFreeAP += 50;
+              this.dailyFreeAP += this.friends;
+              this.dailyFreeAP += this.fridgeMission;
+            },
+            setRemainingResets() {
+              // v-model.number doesn't work (?)
+              this.resetsLeft = Math.max(this.daysLeft + parseInt(this.battlesCleared), 0);
+            },
+            getFreePoints() {
+              return this.resetsLeft * this.dailyFreeBattles * this.pointsPerBattle;
+            },
+            getPointsNeeded() {
+              return Math.max(this.goal - this.currentPts, 0);
+            },
+            getBattlesNeeded() {
+              return Math.ceil(this.getPointsNeeded() / this.pointsPerBattle);
+            },
+            getAPNeeded() {
+              return this.getBattlesNeeded() * 8;
+            },
+            getTotalFreeBattles() {
+              return Math.min(this.resetsLeft * this.dailyFreeBattles, this.getBattlesNeeded());
+            },
+            getTotalFreeAP() {
+              return Math.min(this.resetsLeft * this.dailyFreeAP, this.getAPNeeded());
+            },
+            getTotalPaidBattles() {
+              return this.getBattlesNeeded() - this.getTotalFreeBattles();
+            },
+            getTotalPaidAP() {
+              return this.getAPNeeded() - this.getTotalFreeAP();
+            },
+            getDailyPaidBattles() {
+              if (this.resetsLeft > 0) {
+                return this.getTotalPaidBattles() / this.resetsLeft;
+              }
+              return this.getTotalPaidBattles();
+            },
+            getDailyAPNeeded() {
+              return (this.dailyFreeBattles + this.getDailyPaidBattles()) * 8;
+            },
+            getDailyPaidAP() {
+              return Math.max(this.getDailyAPNeeded() - this.dailyFreeAP, 0);
+            },
+            getBattleCost(battles) {
+              return Math.ceil(battles / 3) * 5;
+            },
+            getAPCost(ap) {
+              return Math.ceil(ap / 10);
+            }
+          }
+        }).mount("#app");
+      div#app
+        p.text-center Please read the information section at the end of page before using this calculator!
+        hr
+        form
+          div.form-row
+            div.form-group.col-6.col-sm-4.col-md
+              label Current points
+              input.form-control(type="number" min='0' v-model.number="currentPts")
+            div.form-group.col-6.col-sm-4.col-md
+              label Goal
+              input.form-control(type="number" min='0' v-model.number="goal")
+            div.form-group.col-6.col-sm-4.col-md
+              label Days left
+              input.form-control(type="number" min='0' v-model.number="daysLeft" @change="setDailyFreeBattles();setRemainingResets()")
+            div.form-group.col-6.col-sm-4.col-md
+              label Total stages
+              input.form-control(type="number" min='0' v-model.number="stages" @change="setDailyFreeBattles")
+            div.form-group.col-6.col-sm-4.col-md
+              label Points per battle
+              input.form-control(type="number" min='0' v-model.number="pointsPerBattle")
+          div.row
+            div.col-12.col-lg-6
+              h5 Daily free AP
+              div.custom-control.custom-radio.custom-control-inline
+                input.custom-control-input(type="radio" id="automaticRefill" name="automaticRefill" checked)
+                label.custom-control-label(for="automaticRefill") Automatic restore
+              div.custom-control.custom-checkbox.custom-control-inline
+                input.custom-control-input(type="checkbox" id="todo" v-model="todo" @change="setDailyFreeAP")
+                label.custom-control-label(for="todo") To-do
+              div.custom-control.custom-checkbox.custom-control-inline
+                input.custom-control-input(type="checkbox" id="spg" v-model="spg"  @change="setDailyFreeAP")
+                label.custom-control-label(for="spg") Surprise guest
+              div.custom-control.custom-checkbox.custom-control-inline
+                input.custom-control-input(type="checkbox" id="apAds" v-model="apAds" @change="setDailyFreeAP")
+                label.custom-control-label(for="apAds") Watch ads
+              div.form-row.mt-2
+                div.form-group.col
+                  label(for="friends") Friends
+                  input#friends.form-control(type="number" min="0" max="50" v-model.number="friends" @change="setDailyFreeAP")
+                div.form-group.col
+                  label(for="fridgeMission") Fridge mission
+                  select#fridgeMission.form-control(v-model.number="fridgeMission" @change="setDailyFreeAP")
+                    option(value="0") --
+                    option(value="60" selected) Non-VIP
+                    option(value="120") VIP
+            div.col-12.col-lg-6.mb-4
+              h5 Daily free battles
+              div.mb-3
+                div.custom-control.custom-radio.custom-control-inline
+                  input.custom-control-input(type="radio" id="dailyReset" name="dailyReset" checked)
+                  label.custom-control-label(for="dailyReset") Daily reset
+                div.custom-control.custom-checkbox.custom-control-inline
+                  input.custom-control-input(type="checkbox" id="battleAds" v-model="battleAds" @change="setDailyFreeBattles")
+                  label.custom-control-label(for="battleAds") Watch ads
+              h5 Already cleared today's free battles?
+              div.custom-control.custom-radio.custom-control-inline
+                input.custom-control-input(type="radio" id="customRadioInline1" v-model.number="battlesCleared" value="0" @change="setRemainingResets")
+                label.custom-control-label(for="customRadioInline1") Yes
+              div.custom-control.custom-radio.custom-control-inline
+                input.custom-control-input(type="radio" id="customRadioInline2" v-model.number="battlesCleared" value="1" @change="setRemainingResets")
+                label.custom-control-label(for="customRadioInline2") No
+        <ul class="nav nav-tabs" id="resultTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">Total</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Daily</a>
+          </li>
+        </ul>
+        div#resultTabContent.tab-content.pt-3
+          div#total.tab-pane.show.active(role="tabpanel" aria-labelledby="total-tab")
+            p.text-center You can get a total of
+              |
+              |
+              span.h5 {{ fnum(currentPts + getFreePoints()) }}
+              |
+              | points for free.
+            p.text-center An additional
+              |
+              |
+              span.h5 {{ fnum(Math.max(getPointsNeeded() - getFreePoints(), 0)) }}
+              |
+              | points is needed to reach your goal.
+            hr
+            div.results.row.justify-content-center
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p AP
+                  div
+                    div
+                      span= t("calculator.free")
+                      span {{ fnum(getTotalFreeAP()) }}
+                    div
+                      span= t("calculator.buy")
+                      span {{ fnum(getTotalPaidAP()) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getAPNeeded()) }}
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p Battles
+                  div
+                    div
+                      span= t("calculator.free")
+                      span {{ fnum(getTotalFreeBattles()) }}
+                    div
+                      span= t("calculator.buy")
+                      span {{ fnum(getTotalPaidBattles()) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getBattlesNeeded()) }}
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p Devil Points
+                  div
+                    div
+                      span= t("calculator.ap")
+                      span {{ fnum(getAPCost(getTotalPaidAP())) }}
+                    div
+                      span= t("calculator.battles")
+                      span {{ fnum(getBattleCost(getTotalPaidBattles())) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getAPCost(getTotalPaidAP()) + getBattleCost(getTotalPaidBattles())) }}
+          div#daily.tab-pane(role="tabpanel" aria-labelledby="daily-tab")
+            div.text-center
+              p Today's goal
+              h5 {{ fnum(currentPts + getPointsNeeded() / Math.max(resetsLeft, 1)) }}
+            hr
+            div.results.row.justify-content-center
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p AP
+                  div
+                    div
+                      span= t("calculator.free")
+                      span {{ fnum(Math.min(getDailyAPNeeded(), dailyFreeAP)) }}
+                    div
+                      span= t("calculator.buy")
+                      span {{ fnum(getDailyPaidAP()) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getDailyAPNeeded()) }}
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p Battles
+                  div
+                    div
+                      span= t("calculator.free")
+                      span {{ fnum(dailyFreeBattles) }}
+                    div
+                      span= t("calculator.buy")
+                      span {{ fnum(getDailyPaidBattles()) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(dailyFreeBattles + getDailyPaidBattles()) }}
+              div.col-12.col-md-6.col-lg-3
+                div.result-container
+                  p Devil Points
+                  div
+                    div
+                      span AP
+                      span {{ fnum(getAPCost(getDailyPaidAP())) }}
+                    div
+                      span Battles
+                      span {{ fnum(getBattleCost(getDailyPaidBattles())) }}
+                    hr
+                    div
+                      span Total
+                      span {{ fnum(getAPCost(getDailyPaidAP()) + getBattleCost(getDailyPaidBattles())) }}
+    div.card.card-body
+      h5 Information
+      p This calculator is intended for lonely devil and birthday revival. For current pop quiz, please use
+        |
+        |
+        a(href="/calculator/points") this calculator
+        |
+        | for best result.
+      h5 Days left
+      p How it works:
+        ul
+          li Each lonely devil tour will last 4 days, 5 resets.
+          li However, if you started the lonely devil tour right on JST 00:00, then you will only get 4 resets.
+      p How to determine days left:
+        ul
+          li The game will tell you how many days left you have until the lonely devil pop quiz ends. On the last day it only says how many hours left, put 0 as days left.
+          li Due to timezone difference, this calculator may be off by one day.
+  style.
+    .results p {
+      text-align: center;
+    }
+    .results .result-container {
+      border-radius: 1rem;
+      border: 2px solid var(--secondary);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .results .result-container>div>div {
+      display: flex;
+      justify-content: space-between;
+    }
+    .results hr {
+      margin: .5rem 0;
+      border: 1px solid var(--secondary);
+    }
