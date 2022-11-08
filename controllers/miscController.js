@@ -1,5 +1,7 @@
 const https = require("https");
 const createError = require("http-errors");
+const Sentry = require("@sentry/node");
+
 const cacheService = require("../services/cacheService");
 const cardService = require("../services/cardService");
 const userService = require("../services/userService");
@@ -80,141 +82,142 @@ exports.getTeam = async function (req, res) {
 		const type = req.query.type;
 
 		let match = {
-			'attribute': a1.charAt(0).toUpperCase() + a1.slice(1),
-			'rarity': {
-				'$in': [
-					'SSR', 'UR', 'UR+'
+			"attribute": a1.charAt(0).toUpperCase() + a1.slice(1),
+			"rarity": {
+				"$in": [
+					"SSR", "UR", "UR+"
 				]
 			},
 		};
 
 		if (req.query.owned == "true") {
 			let user = await userService.getUser(req.query.user);
-			match['uniqueName'] = {
-				'$in': user.cards.owned
+			match["uniqueName"] = {
+				"$in": user.cards.owned
 			};
 		}
 
 		let boostA1 = {};
 		boostA1[`strength.${a1}.${type}`] = {
-			'$multiply': [
+			"$multiply": [
 				`$strength.${a1}.${type}`, 2.6
 			]
 		};
 
 		let boostA2 = {};
 		boostA2[`strength.${a2}.${type}`] = {
-			'$cond': {
-				'if': {
-					'$gte': [
+			"$cond": {
+				"if": {
+					"$gte": [
 						`$strength.${a2}.${type}`, {
-							'$multiply': [
+							"$multiply": [
 								`$strength.${a1}.${type}`, 0.7
 							]
 						}
 					]
 				},
-				'then': {
-					'$multiply': [
+				"then": {
+					"$multiply": [
 						`$strength.${a2}.${type}`, 1.3
 					]
 				},
-				'else': `$strength.${a2}.${type}`
+				"else": `$strength.${a2}.${type}`
 			}
-		}
+		};
 
 		const demon = await cardService.aggregateCards([
 			{
-				'$match': match
+				"$match": match
 			}, {
-				'$project': {
-					'name': 1,
-					'uniqueName': 1,
-					'characters': 1,
-					'strength': 1
+				"$project": {
+					"name": 1,
+					"uniqueName": 1,
+					"characters": 1,
+					"strength": 1
 				}
 			}, {
-				'$set': boostA2
+				"$set": boostA2
 			}, {
-				'$set': boostA1
+				"$set": boostA1
 			}, {
-				'$project': {
-					'name': 1,
-					'uniqueName': 1,
-					'characters': 1,
-					'total': {
-						'$add': [
+				"$project": {
+					"name": 1,
+					"uniqueName": 1,
+					"characters": 1,
+					"total": {
+						"$add": [
 							`$strength.pride.${type}`, `$strength.greed.${type}`, `$strength.envy.${type}`, `$strength.wrath.${type}`, `$strength.lust.${type}`, `$strength.gluttony.${type}`, `$strength.sloth.${type}`
 						]
 					}
 				}
 			}, {
-		    '$unwind': {
-		      'path': '$characters',
-		      'preserveNullAndEmptyArrays': false
-		    }
-		  }, {
-		    '$sort': {
-		      'total': -1
-		    }
-		  }, {
-		    '$group': {
-		      '_id': '$characters',
-		      'card': {
-		        '$first': '$$ROOT'
-		      }
-		    }
-		  }, {
-		    '$replaceRoot': {
-		      'newRoot': '$card'
-		    }
-		  }, {
-		    '$sort': {
-		      'total': -1
-		    }
-		  }, {
-		    '$limit': 3
-		  }
+				"$unwind": {
+					"path": "$characters",
+					"preserveNullAndEmptyArrays": false
+				}
+			}, {
+				"$sort": {
+					"total": -1
+				}
+			}, {
+				"$group": {
+					"_id": "$characters",
+					"card": {
+						"$first": "$$ROOT"
+					}
+				}
+			}, {
+				"$replaceRoot": {
+					"newRoot": "$card"
+				}
+			}, {
+				"$sort": {
+					"total": -1
+				}
+			}, {
+				"$limit": 3
+			}
 		]);
 
 		const memory = await cardService.aggregateCards([
 			{
-				'$match': match
+				"$match": match
 			}, {
-				'$match': {
-					'type': 'Memory'
+				"$match": {
+					"type": "Memory"
 				}
 			}, {
-				'$project': {
-					'name': 1,
-					'uniqueName': 1,
-					'strength': 1
+				"$project": {
+					"name": 1,
+					"uniqueName": 1,
+					"strength": 1
 				}
 			}, {
-				'$set': boostA2
+				"$set": boostA2
 			}, {
-				'$set': boostA1
+				"$set": boostA1
 			}, {
-				'$project': {
-					'name': 1,
-					'uniqueName': 1,
-					'total': {
-						'$add': [
+				"$project": {
+					"name": 1,
+					"uniqueName": 1,
+					"total": {
+						"$add": [
 							`$strength.pride.${type}`, `$strength.greed.${type}`, `$strength.envy.${type}`, `$strength.wrath.${type}`, `$strength.lust.${type}`, `$strength.gluttony.${type}`, `$strength.sloth.${type}`
 						]
 					}
 				}
 			}, {
-		    '$sort': {
-		      'total': -1
-		    }
-		  }, {
-		    '$limit': 3
-		  }
+				"$sort": {
+					"total": -1
+				}
+			}, {
+				"$limit": 3
+			}
 		]);
 
 		return res.json({ demon: demon, memory: memory });
 	} catch (e) {
+		Sentry.captureException(e);
 		return res.json({ err: true, message: e.message });
 	}
 };
