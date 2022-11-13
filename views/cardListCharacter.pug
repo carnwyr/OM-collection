@@ -42,7 +42,6 @@ block content
                 label.custom-control-label(for="checkRarityAll") All
               each rarity in ["UR+", "UR", "SSR", "SR", "R", "N"]
                 div.custom-control.custom-radio.custom-control-inline
-                  //- TODO: change to checkbox
                   input.custom-control-input(type="radio" id="checkRarity"+encodeURIComponent(rarity) v-model="rarity" value=encodeURIComponent(rarity))
                   label.custom-control-label(for="checkRarity"+encodeURIComponent(rarity))= t(rarity)
           hr
@@ -54,7 +53,6 @@ block content
                 label.custom-control-label(for="checkAttributeAll") All
               each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
                 div.custom-control.custom-radio.custom-control-inline
-                  //- TODO: change to checkbox
                   input.custom-control-input(type="radio" id="checkAttribute"+attribute v-model="attribute" value=attribute)
                   label.custom-control-label(for="checkAttribute"+attribute)= t(attribute)
           hr
@@ -103,12 +101,16 @@ block content
             div.cardPreview(v-for="n in 9" :class="containerClass")
           p.text-center.my-5(v-if="!cards.demon.length")= t("cards.no-cards")
         div#memorycards.tab-pane(role="tabpanel" aria-labelledby="memory-tab")
-          div.d-flex.flex-wrap
+          div.d-flex.flex-wrap.justify-content-between
             a.cardPreview(v-for="{ name, uniqueName } in cards.memory" :href="'/card/' + encodeURIComponent(name)" :class="containerClass")
-              <img loading="lazy" :src="'/images/cards/S/' + uniqueName + '.jpg'">
+              <img loading="lazy" :src="getSource(uniqueName, 'memory')">
               <figcaption>{{name}}</figcaption>
             div.cardPreview(v-for="n in 9" :class="containerClass")
           p.text-center.my-5(v-if="!cards.memory.length")= t("cards.no-cards")
     div.card.card-body
       h5.text-center Information
       p Hi there. This is a work in progress page. Since events info has only been on the website for one year, there are some missing information. We're still trying to figure out how to save permanent nightmares, lessons, charge missions, and other special challenges so they can become a filter too. Help with updating information on this website is very much appreciated!
+  //-
+    TODO:
+    - fix transition between display switch
+    - change to checkbox

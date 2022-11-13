@@ -24,9 +24,9 @@ createApp({
 			this.cards.demon = cards.filter(x => x.type === "Demon");
 			this.cards.memory = cards.filter(x => x.type === "Memory");
 		},
-		getSource(name) {
+		getSource(name, type = "demon") {
 			let size = this.display === "icon" ? "S" : "L";
-			let unlocked = this.display === "unlocked" ? "_b" : "";
+			let unlocked = this.display === "unlocked" && type === "demon" ? "_b" : "";
 			return `/images/cards/${size}/${name}${unlocked}.jpg`;
 		}
 	},
