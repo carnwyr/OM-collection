@@ -3,63 +3,34 @@ extends layout
 block scripts
   link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
   script(src="/javascripts/lazyload.js")
+  script(src="https://unpkg.com/vue@3/dist/vue.global.prod.js")
+  script.
+    const character = !{JSON.stringify(character)};
+  script(type="module" src="/javascripts/cardListCharacter.js")
 
 block content
   div.container
     h1= title
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    script(type="module").
-      const { createApp } = Vue;
-      createApp({
-        data: () => ({
-          cards: {
-            demon: [],
-            memory: []
-          }
-        }),
-        created() {
-          this.fetchData()
-        },
-        methods: {
-          async fetchData() {
-            let url = "/getCards2?characters=!{character}";
-            let source = $("input[name='source']:checked").val();
-            let rarity = $("input[name='rarity']:checked").val();
-            let attribute = $("input[name='attribute']:checked").val();
-            if (source) url += "&source=" + source;
-            if (rarity) url += "&rarity=" + rarity;
-            if (attribute) url += "&attribute=" + attribute;
-
-            let cards = (await (await fetch(url)).json()).cards;
-            this.cards.demon = cards.filter(x => x.type === "Demon");
-            this.cards.memory = cards.filter(x => x.type === "Memory");
-
-            this.onSubmit();
-          },
-          onSubmit() {}
-        }
-      }).mount('#app')
-
     div#app
       div.card.card-body.mb-3
-        form#filters(@change="fetchData" @submit.prevent="onSubmit")
+        form#filters(@change="fetchData")
           div.form-row
             div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Source
             div.col.text-center.text-lg-left
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="source1" name="source" class="custom-control-input" value="" checked>
+                <input type="radio" id="source1" v-model="source" class="custom-control-input" value="" checked>
                 <label class="custom-control-label" for="source1">All</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="source2" name="source" class="custom-control-input" value="PopQuiz">
+                <input type="radio" id="source2" v-model="source" class="custom-control-input" value="PopQuiz">
                 <label class="custom-control-label" for="source2">Pop Quiz</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="source3" name="source" class="custom-control-input" value="Nightmare">
+                <input type="radio" id="source3" v-model="source" class="custom-control-input" value="Nightmare">
                 <label class="custom-control-label" for="source3">Nightmare</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="source4" name="source" class="custom-control-input" value="LonelyDevil">
+                <input type="radio" id="source4" v-model="source" class="custom-control-input" value="LonelyDevil">
                 <label class="custom-control-label" for="source4">Lonely Devil</label>
               </div>
           hr
@@ -67,24 +38,24 @@ block content
             div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Rarities
             div.col.text-center.text-lg-left
               div.custom-control.custom-radio.custom-control-inline
-                input#checkRarityAll.custom-control-input(type="radio" name="rarity" value="" checked)
+                input#checkRarityAll.custom-control-input(type="radio" v-model="rarity" value="" checked)
                 label.custom-control-label(for="checkRarityAll") All
               each rarity in ["UR+", "UR", "SSR", "SR", "R", "N"]
                 div.custom-control.custom-radio.custom-control-inline
                   //- TODO: change to checkbox
-                  input.custom-control-input(type="radio" id="checkRarity"+encodeURIComponent(rarity) name="rarity" value=encodeURIComponent(rarity))
+                  input.custom-control-input(type="radio" id="checkRarity"+encodeURIComponent(rarity) v-model="rarity" value=encodeURIComponent(rarity))
                   label.custom-control-label(for="checkRarity"+encodeURIComponent(rarity))= t(rarity)
           hr
           div.form-row
             div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Attributes
             div.col.text-center.text-lg-left
               div.custom-control.custom-radio.custom-control-inline
-                input#checkAttributeAll.custom-control-input(type="radio" name="attribute" value="" checked)
+                input#checkAttributeAll.custom-control-input(type="radio" v-model="attribute" value="" checked)
                 label.custom-control-label(for="checkAttributeAll") All
               each attribute in ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"]
                 div.custom-control.custom-radio.custom-control-inline
                   //- TODO: change to checkbox
-                  input.custom-control-input(type="radio" id="checkAttribute"+attribute name="attribute" value=attribute)
+                  input.custom-control-input(type="radio" id="checkAttribute"+attribute v-model="attribute" value=attribute)
                   label.custom-control-label(for="checkAttribute"+attribute)= t(attribute)
           hr
           div.form-row
@@ -102,6 +73,22 @@ block content
                 <input type="radio" id="user3" name="user" class="custom-control-input" disabled>
                 <label class="custom-control-label" for="user3">Not Owned (work in progress)</label>
               </div>
+        hr
+        div.form-row
+          div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Display
+          div.col.text-center.text-lg-left
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="display1" v-model="display" value="icon" class="custom-control-input">
+              <label class="custom-control-label" for="display1">Icon</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="display2" v-model="display" value="locked" class="custom-control-input">
+              <label class="custom-control-label" for="display2">Locked</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="display3" v-model="display" value="unlocked" class="custom-control-input">
+              <label class="custom-control-label" for="display3">Unlocked</label>
+            </div>
       ul.nav.nav-pills.nav-fill.shadow.mb-3(style="background:white;border-radius:.25rem;")
         li.nav-item
           a#demon-tab.nav-link.active(data-toggle="tab" href="#demoncards" role="tab" aria-controls="demoncards" aria-selected="true") Demon
@@ -110,17 +97,17 @@ block content
       div.tab-content
         div#demoncards.tab-pane.show.active(role="tabpanel" aria-labelledby="demon-tab")
           div.d-flex.flex-wrap.justify-content-between
-            a.cardPreview.icon-container(v-for="{ name, uniqueName } in cards.demon" :href="'/card/' + encodeURIComponent(name)")
-              <img loading="lazy" :src="'/images/cards/S/' + uniqueName + '.jpg'">
+            a.cardPreview(v-for="{ name, uniqueName } in cards.demon" :href="'/card/' + encodeURIComponent(name)" :class="containerClass")
+              <img loading="lazy" :src="getSource(uniqueName)">
               <figcaption>{{name}}</figcaption>
-            div.cardPreview.icon-container(v-for="n in 9")
+            div.cardPreview(v-for="n in 9" :class="containerClass")
           p.text-center.my-5(v-if="!cards.demon.length")= t("cards.no-cards")
         div#memorycards.tab-pane(role="tabpanel" aria-labelledby="memory-tab")
-          div.d-flex.flex-wrap.justify-content-between
-            a.cardPreview.icon-container(v-for="{ name, uniqueName } in cards.memory" :href="'/card/' + encodeURIComponent(name)")
+          div.d-flex.flex-wrap
+            a.cardPreview(v-for="{ name, uniqueName } in cards.memory" :href="'/card/' + encodeURIComponent(name)" :class="containerClass")
               <img loading="lazy" :src="'/images/cards/S/' + uniqueName + '.jpg'">
               <figcaption>{{name}}</figcaption>
-            div.cardPreview.icon-container(v-for="n in 9")
+            div.cardPreview(v-for="n in 9" :class="containerClass")
           p.text-center.my-5(v-if="!cards.memory.length")= t("cards.no-cards")
     div.card.card-body
       h5.text-center Information
