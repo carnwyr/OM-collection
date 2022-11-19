@@ -104,6 +104,7 @@ dist
 .tern-port
 
 # project specific files
+public/images/bg/
 public/images/cards/
 public/images/events/
 

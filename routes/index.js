@@ -6,6 +6,7 @@ const userController = require("../controllers/userController");
 const miscController = require("../controllers/miscController");
 const eventsController = require("../controllers/eventsController");
 const loginController = require("../controllers/loginController");
+const storyController = require("../controllers/storyController");
 
 // Static pages
 router.get("/", cardController.index);
@@ -63,6 +64,9 @@ router.post("/update_tree", loginController.isLoggedIn(), userController.updateU
 
 router.get("/getTeam", miscController.getTeam);
 router.get("/team-builder", miscController.getTeamBuilder);
+
+router.get("/stories", storyController.getStories);
+router.get("/story/main/:name", storyController.getStory);
 
 
 module.exports = router;

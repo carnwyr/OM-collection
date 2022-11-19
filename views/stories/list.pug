@@ -1,0 +1,10 @@
+extends ../layout
+
+block scripts
+
+block content
+  div.container
+    h1= title
+    div.card.card-body
+      each i in stories
+        p: a(href="/story/main/" + i.name)= i.name

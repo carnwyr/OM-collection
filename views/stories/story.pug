@@ -1,0 +1,29 @@
+extends ../layout
+
+block scripts
+
+block content
+  div.container
+    h1= title
+    div.card.card-body
+      div.row
+        each i in story.content
+          div.col-12
+            if i.action == 'show_title'
+              h2!= i.data[t("lang")]
+            if i.action == 'dialogue' || i.action == 'message'
+              div.my-2(style="border-radius:5rem;border:2px solid var(--light);padding:2rem 2rem 2rem 0;")
+                div.d-flex.align-items-center
+                  img.mx-5(src="/images/faces/" + i.data.displayName.en + ".png" style="width:2rem;height:auto;float:left;" alt=(i.action == 'dialogue' ? i.data.displayName[t("lang")] : ''))
+                  p.m-0!= i.data.text[t("lang")].replace("MC_NAME", user ? user.displayName : "???")
+            else if i.action == 'sel_label'
+              hr
+              h5!= story.content.find(x => x.data.choice == i.data.choice).data.text[t("lang")]
+            else if i.action == 'end_sel'
+              hr
+            else if i.action == 'bg'
+              div.text-center: img(src="/images/bg/" + i.data[0] + ".png" style="width:50%;height:auto;")
+  style.
+    .card img {
+      pointer-events: none;
+    }
