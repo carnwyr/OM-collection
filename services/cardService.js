@@ -225,7 +225,9 @@ findTreeNodes = async function (matchField, matchValue, user, owned, locked) {
 				path: "$dt",
 				preserveNullAndEmptyArrays: false
 		}},
-		{ $match: match }];
+		{ $match: match },
+		{ $sort: { number: -1 }}
+	];
 
 	let doc = await Cards.aggregate(pipeline);
 
