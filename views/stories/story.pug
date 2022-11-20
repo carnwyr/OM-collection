@@ -14,7 +14,7 @@ block content
               if i.action == 'show_title'
                 h2!= i.data[t("lang")]
               else if i.action == 'bg'
-                div.text-center: img.col-12.col-md-5(src="/images/bg/" + i.data[0] + ".png")
+                div.text-center: img.col-12.col-md-5(src="/images/bg/" + i.data + ".png")
               else if i.action == 'dialogue' || i.action == 'message'
                 div(style="border-radius:5rem;border:2px solid var(--light);padding:2rem 2rem 2rem 0;")
                   div.d-flex.align-items-center
