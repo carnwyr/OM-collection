@@ -24,6 +24,9 @@ block content
         return a.grimmCost - b.grimmCost;
       });
     }
+    originalFile.dt = sortByGrimm(originalFile.dt);
+    newFile = JSON.parse(suggestion.stringifiedJSON);
+    newFile.dt = sortByGrimm(newFile.dt);
   div.container
     h1 Suggestion: #{title}
     div.card.mb-3
@@ -48,14 +51,11 @@ block content
             div
               p.text-center.mb-0 Original
               div.text-center: button#old.btn.btn-link Copy
-              - originalFile.dt = sortByGrimm(originalFile.dt)
               pre#left= JSON.stringify(originalFile, undefined, 2)
           div.col-6
             div
               p.text-center.mb-0 Suggestion
               div.text-center: button#new.btn.btn-link Copy
-              - newFile = JSON.parse(suggestion.stringifiedJSON);
-              - newFile.dt = sortByGrimm(newFile.dt)
               pre#right= JSON.stringify(newFile, undefined, 2)
 
         textarea#final.form-control.mb-3(style="min-height:260px;")= JSON.stringify(JSON.parse(suggestion.stringifiedJSON), undefined, 2)
@@ -73,5 +73,5 @@ block content
     rightBlockId = $('#right').attr('id');
     $(document).jdd(leftBlockId, rightBlockId);
     var originalFile = !{JSON.stringify(originalFile)};
-    var suggestionFile = !{suggestion.stringifiedJSON};
+    var suggestionFile = !{JSON.stringify(newFile)};
     console.log("Original", originalFile, "Suggestion", suggestionFile);
