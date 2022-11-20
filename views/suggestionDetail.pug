@@ -16,6 +16,14 @@ block scripts
     const PATH = !{JSON.stringify(suggestion.page.split('/'))};
 
 block content
+  -
+    function sortByGrimm(dt) {
+      return dt.sort((a, b) => {
+        if (!a.grimmCost) return 1;
+        if (!b.grimmCost) return -1;
+        return a.grimmCost - b.grimmCost;
+      });
+    }
   div.container
     h1 Suggestion: #{title}
     div.card.mb-3
@@ -40,12 +48,15 @@ block content
             div
               p.text-center.mb-0 Original
               div.text-center: button#old.btn.btn-link Copy
+              - originalFile.dt = sortByGrimm(originalFile.dt)
               pre#left= JSON.stringify(originalFile, undefined, 2)
           div.col-6
             div
               p.text-center.mb-0 Suggestion
               div.text-center: button#new.btn.btn-link Copy
-              pre#right= JSON.stringify(JSON.parse(suggestion.stringifiedJSON), undefined, 2)
+              - newFile = JSON.parse(suggestion.stringifiedJSON);
+              - newFile.dt = sortByGrimm(newFile.dt)
+              pre#right= JSON.stringify(newFile, undefined, 2)
 
         textarea#final.form-control.mb-3(style="min-height:260px;")= JSON.stringify(JSON.parse(suggestion.stringifiedJSON), undefined, 2)
 
