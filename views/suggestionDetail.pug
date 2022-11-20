@@ -16,17 +16,18 @@ block scripts
     const PATH = !{JSON.stringify(suggestion.page.split('/'))};
 
 block content
-  -
-    function sortByGrimm(dt) {
-      return dt.sort((a, b) => {
-        if (!a.grimmCost) return 1;
-        if (!b.grimmCost) return -1;
-        return a.grimmCost - b.grimmCost;
-      });
-    }
-    originalFile.dt = sortByGrimm(originalFile.dt);
-    newFile = JSON.parse(suggestion.stringifiedJSON);
-    newFile.dt = sortByGrimm(newFile.dt);
+  - newFile = JSON.parse(suggestion.stringifiedJSON);
+  if suggestion.page.split('/')[1] == "card"
+    -
+      function sortByGrimm(dt) {
+        return dt.sort((a, b) => {
+          if (!a.grimmCost) return 1;
+          if (!b.grimmCost) return -1;
+          return a.grimmCost - b.grimmCost;
+        });
+      }
+      originalFile.dt = sortByGrimm(originalFile.dt);
+      newFile.dt = sortByGrimm(newFile.dt);
   div.container
     h1 Suggestion: #{title}
     div.card.mb-3
