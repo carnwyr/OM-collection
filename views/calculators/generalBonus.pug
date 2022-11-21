@@ -75,7 +75,7 @@ block content
     };
     function getVal(r, c, lv) {
       if (c >= 1) {
-        return c * b[r][0] + Math.floor((lv - c) * b[r][1]);
+        return c * b[r][0] + Math.round((lv - c) * b[r][1]);
       } else {
         return 0;
       }

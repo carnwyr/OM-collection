@@ -16,19 +16,17 @@ block content
           div.col-12.col-md-4
             div.p-3(style="border:2px solid var(--secondary);border-radius:5px;")
               h5.card-title How to use
-              p.card-text Input your cards' skill level after each individual box.
-              p.card-text Just the level.
-              p.card-text For example, if the level is LV 9/10, then just input 9 into the box.
+              p.card-text Input your cards' skill level after each box.
+              p.card-text For example, if the level is LV 9/10, then put 9 into the box.
               br
               h5.card-title Disclaimer
               p.card-text The calculator is only as accurate as your input.
-              p.card-text Because we are only fans, we do not have access to dev's data. This means that it is possible that the result might be wrong.
+              p.card-text We are players just like you! We do not have access to dev's data. This means that it is possible that results are slightly off.
               p.card-text In case of mistakes, please screenshot your in-game card level and karasu-os.com webpage. Then, report to our discord server
                 |
                 |
                 a(href="https://discord.gg/Y3KMW7U") here
                 | . Thank you!
-          // TODO: use div instead
           div.col-12.col-md-8.table-responsive
             form#input
               table.table.table-borderless.text-center
@@ -93,7 +91,7 @@ block content
     function clearInput() {
       $("form#input input").removeClass("is-invalid");
     }
-    let b = {
+    const b = {
       'UR': [36,6],
       'UR+': [36,6],
       'SSR': [18,3.6],
@@ -101,7 +99,7 @@ block content
     };
     function getVal(rarity, count) {
       if (count >= 1) {
-        return b[rarity][0] + Math.floor((count - 1) * b[rarity][1]);
+        return b[rarity][0] + Math.round((count - 1) * b[rarity][1]);
       } else {
         return 0;
       }
