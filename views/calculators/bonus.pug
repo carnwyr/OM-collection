@@ -99,7 +99,7 @@ block content
     };
     function getVal(rarity, count) {
       if (count >= 1) {
-        return b[rarity][0] + Math.round((count - 1) * b[rarity][1]);
+        return b[rarity][0] + Math.floor((count - 1) * b[rarity][1]);
       } else {
         return 0;
       }
