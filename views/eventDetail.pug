@@ -89,6 +89,41 @@ block content
 								div.col-6.col-md-3.mb-3
 									a(href="../" + "card/" + getURL(card.name))
 										img.img-fluid(src="/images/cards/L/" + card.uniqueName + ".jpg")
+					hr
+					p.section-title Stages
+					if !event.stageList || event.stageList.length == 0
+						p.text-center.text-muted Missing data
+					else
+						div.row
+							-
+								function getBattleChapters() {
+									let lst = [];
+									event.stageList.forEach(i => {
+										let x = i.name.split('-')[0];
+										if (!lst.includes(x)) {
+											lst.push(x);
+										}
+									});
+									return lst;
+								}
+							each i in getBattleChapters()
+								div.col-12.col-md-6.col-lg-4
+									div.table-responsive
+										table.table.text-center
+											thead
+												tr
+													th(colspan=2) Chapter #{i}
+												tr
+													<th scope="col">Stage</th>
+													<th scope="col">Rewards</th>
+											tbody
+												each stage in event.stageList
+													if (stage.name.startsWith(i))
+														tr
+															td(style="vertical-align:middle;")= stage.name
+															td
+																each reward in stage.rewards
+																	img.mr-2(src='/images/items/tree/' + reward + '.png' onerror="this.onerror=null;this.src='/images/icon_placeholder.jpg'" style="width:4rem;" alt=reward)
 
 	-
 		function getFormatedDate(d) {
