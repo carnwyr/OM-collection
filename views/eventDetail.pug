@@ -126,9 +126,9 @@ block content
 																each reward in stage.rewards
 																	if reward.includes("Story Key")
 																		if !reward.startsWith("Secret")
-																			- src = "Secret " + reward;
+																			- src = "keys/Secret " + reward;
 																		else
-																			- src = reward;
+																			- src = "keys/" + reward;
 																	else
 																		- src = "tree/" + reward
 																	img.mr-2(src='/images/items/' + src + '.png' onerror="this.onerror=null;this.src='/images/icon_placeholder.jpg'" style="width:4rem;" alt=reward)
