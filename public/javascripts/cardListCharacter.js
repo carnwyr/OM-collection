@@ -4,7 +4,6 @@ createApp({
 		source: "",
 		rarity: "",
 		attribute: "",
-		display: "icon",
 		cards: {
 			demon: [],
 			memory: []
@@ -23,16 +22,6 @@ createApp({
 			let cards = (await (await fetch(url)).json()).cards;
 			this.cards.demon = cards.filter(x => x.type === "Demon");
 			this.cards.memory = cards.filter(x => x.type === "Memory");
-		},
-		getSource(name, type = "demon") {
-			let size = this.display === "icon" ? "S" : "L";
-			let unlocked = this.display === "unlocked" && type === "demon" ? "_b" : "";
-			return `/images/cards/${size}/${name}${unlocked}.jpg`;
-		}
-	},
-	computed: {
-		containerClass() {
-			return this.display === "icon" ? "icon-container" : "full-container";
 		}
 	}
 }).mount("#app");

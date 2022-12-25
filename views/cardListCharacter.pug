@@ -1,7 +1,6 @@
 extends layout
 
 block scripts
-  link(rel="stylesheet" href="/stylesheets/cardsListStyle.css")
   script(src="/javascripts/lazyload.js")
   script(src="https://unpkg.com/vue@3/dist/vue.global.prod.js")
   script.
@@ -15,7 +14,7 @@ block content
       div.card.card-body.mb-3
         form#filters(@change="fetchData")
           div.form-row
-            div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Source
+            div.col-lg-2.text-center.text-lg-right.mb-2.mb-lg-0 Source
             div.col.text-center.text-lg-left
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="source1" v-model="source" class="custom-control-input" value="" checked>
@@ -35,7 +34,7 @@ block content
               </div>
           hr
           div.form-row
-            div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Rarities
+            div.col-lg-2.text-center.text-lg-right.mb-2.mb-lg-0 Rarities
             div.col.text-center.text-lg-left
               div.custom-control.custom-radio.custom-control-inline
                 input#checkRarityAll.custom-control-input(type="radio" v-model="rarity" value="" checked)
@@ -46,7 +45,7 @@ block content
                   label.custom-control-label(for="checkRarity"+encodeURIComponent(rarity))= t(rarity)
           hr
           div.form-row
-            div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Attributes
+            div.col-lg-2.text-center.text-lg-right.mb-2.mb-lg-0 Attributes
             div.col.text-center.text-lg-left
               div.custom-control.custom-radio.custom-control-inline
                 input#checkAttributeAll.custom-control-input(type="radio" v-model="attribute" value="" checked)
@@ -57,7 +56,7 @@ block content
                   label.custom-control-label(for="checkAttribute"+attribute)= t(attribute)
           hr
           div.form-row
-            div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Status
+            div.col-lg-2.text-center.text-lg-right.mb-2.mb-lg-0 Status
             div.col.text-center.text-lg-left(style="opacity:.5;")
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="user1" name="user" class="custom-control-input" disabled>
@@ -71,22 +70,6 @@ block content
                 <input type="radio" id="user3" name="user" class="custom-control-input" disabled>
                 <label class="custom-control-label" for="user3">Not Owned (work in progress)</label>
               </div>
-        hr
-        div.form-row
-          div.col-lg-1.text-center.text-lg-right.mb-2.mb-lg-0 Display
-          div.col.text-center.text-lg-left
-            <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" id="display1" v-model="display" value="icon" class="custom-control-input">
-              <label class="custom-control-label" for="display1">Icon</label>
-            </div>
-            <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" id="display2" v-model="display" value="locked" class="custom-control-input">
-              <label class="custom-control-label" for="display2">Locked</label>
-            </div>
-            <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" id="display3" v-model="display" value="unlocked" class="custom-control-input">
-              <label class="custom-control-label" for="display3">Unlocked</label>
-            </div>
       ul.nav.nav-pills.nav-fill.shadow.mb-3(style="background:white;border-radius:.25rem;")
         li.nav-item
           a#demon-tab.nav-link.active(data-toggle="tab" href="#demoncards" role="tab" aria-controls="demoncards" aria-selected="true") Demon
@@ -94,23 +77,36 @@ block content
           a#memory-tab.nav-link(data-toggle="tab" href="#memorycards" role="tab" aria-controls="memorycards" aria-selected="false") Memory
       div.tab-content
         div#demoncards.tab-pane.show.active(role="tabpanel" aria-labelledby="demon-tab")
-          div.d-flex.flex-wrap.justify-content-between
-            a.cardPreview(v-for="{ name, uniqueName } in cards.demon" :href="'/card/' + encodeURIComponent(name)" :class="containerClass")
-              <img loading="lazy" :src="getSource(uniqueName)">
-              <figcaption>{{name}}</figcaption>
-            div.cardPreview(v-for="n in 9" :class="containerClass")
+          div.row
+            div.col-12.col-md-6.col-lg-4.mb-4(v-for="{ name, uniqueName } in cards.demon" :href="'/card/' + encodeURIComponent(name)")
+              a.card(:href="'/card/' + encodeURIComponent(name.replace(/ /g, '_'))")
+                div.card-body
+                  div.d-flex
+                    div.w-50.pr-1: img.img-fluid(loading="lazy" :src="'/images/cards/L/' + uniqueName + '.jpg'")
+                    div.w-50.pl-1: img.img-fluid(loading="lazy" :src="'/images/cards/L/' + uniqueName + '_b.jpg'")
+                  hr
+                  p.card-text.text-center {{name}}
           p.text-center.my-5(v-if="!cards.demon.length")= t("cards.no-cards")
         div#memorycards.tab-pane(role="tabpanel" aria-labelledby="memory-tab")
-          div.d-flex.flex-wrap.justify-content-between
-            a.cardPreview(v-for="{ name, uniqueName } in cards.memory" :href="'/card/' + encodeURIComponent(name)" :class="containerClass")
-              <img loading="lazy" :src="getSource(uniqueName, 'memory')">
-              <figcaption>{{name}}</figcaption>
-            div.cardPreview(v-for="n in 9" :class="containerClass")
+          div.row
+            div.col-6.col-md-4.col-lg-3.mb-4(v-for="{ name, uniqueName } in cards.memory" :href="'/card/' + encodeURIComponent(name)")
+              a.card(:href="'/card/' + encodeURIComponent(name.replace(/ /g, '_'))")
+                div.card-body
+                  div: img.img-fluid(loading="lazy" :src="'/images/cards/L/' + uniqueName + '.jpg'")
+                  hr
+                  p.card-text.text-center {{name}}
           p.text-center.my-5(v-if="!cards.memory.length")= t("cards.no-cards")
     div.card.card-body
       h5.text-center Information
       p Hi there. This is a work in progress page. Since events info has only been on the website for one year, there are some missing information. We're still trying to figure out how to save permanent nightmares, lessons, charge missions, and other special challenges so they can become a filter too. Help with updating information on this website is very much appreciated!
-  //-
-    TODO:
-    - fix transition between display switch
-    - change to checkbox
+
+  style.
+    .tab-content p {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-body {
+      padding: 1rem;
+    }
