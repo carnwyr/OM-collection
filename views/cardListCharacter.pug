@@ -54,22 +54,22 @@ block content
                 div.custom-control.custom-radio.custom-control-inline
                   input.custom-control-input(type="radio" id="checkAttribute"+attribute v-model="attribute" value=attribute)
                   label.custom-control-label(for="checkAttribute"+attribute)= t(attribute)
-          hr
-          div.form-row
-            div.col-lg-2.text-center.text-lg-right.mb-2.mb-lg-0 Status
-            div.col.text-center.text-lg-left(style="opacity:.5;")
-              <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="user1" name="user" class="custom-control-input" disabled>
-                <label class="custom-control-label" for="user1">All</label>
-              </div>
-              <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="user2" name="user" class="custom-control-input" disabled>
-                <label class="custom-control-label" for="user2">Owned</label>
-              </div>
-              <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="user3" name="user" class="custom-control-input" disabled>
-                <label class="custom-control-label" for="user3">Not Owned (work in progress)</label>
-              </div>
+          //- hr
+          //- div.form-row
+          //-   div.col-lg-2.text-center.text-lg-right.mb-2.mb-lg-0 Status
+          //-   div.col.text-center.text-lg-left(style="opacity:.5;")
+          //-     <div class="custom-control custom-radio custom-control-inline">
+          //-       <input type="radio" id="user1" name="user" class="custom-control-input" disabled>
+          //-       <label class="custom-control-label" for="user1">All</label>
+          //-     </div>
+          //-     <div class="custom-control custom-radio custom-control-inline">
+          //-       <input type="radio" id="user2" name="user" class="custom-control-input" disabled>
+          //-       <label class="custom-control-label" for="user2">Owned</label>
+          //-     </div>
+          //-     <div class="custom-control custom-radio custom-control-inline">
+          //-       <input type="radio" id="user3" name="user" class="custom-control-input" disabled>
+          //-       <label class="custom-control-label" for="user3">Not Owned (work in progress)</label>
+          //-     </div>
       ul.nav.nav-pills.nav-fill.shadow.mb-3(style="background:white;border-radius:.25rem;")
         li.nav-item
           a#demon-tab.nav-link.active(data-toggle="tab" href="#demoncards" role="tab" aria-controls="demoncards" aria-selected="true") Demon
@@ -81,10 +81,9 @@ block content
             div.col-12.col-md-6.col-lg-4.mb-4(v-for="{ name, uniqueName } in cards.demon" :href="'/card/' + encodeURIComponent(name)")
               a.card(:href="'/card/' + encodeURIComponent(name.replace(/ /g, '_'))")
                 div.card-body
-                  div.d-flex
+                  div.d-flex.mb-3
                     div.w-50.pr-1: img.img-fluid(loading="lazy" :src="'/images/cards/L/' + uniqueName + '.jpg'")
                     div.w-50.pl-1: img.img-fluid(loading="lazy" :src="'/images/cards/L/' + uniqueName + '_b.jpg'")
-                  hr
                   p.card-text.text-center {{name}}
           p.text-center.my-5(v-if="!cards.demon.length")= t("cards.no-cards")
         div#memorycards.tab-pane(role="tabpanel" aria-labelledby="memory-tab")
@@ -92,8 +91,7 @@ block content
             div.col-6.col-md-4.col-lg-3.mb-4(v-for="{ name, uniqueName } in cards.memory" :href="'/card/' + encodeURIComponent(name)")
               a.card(:href="'/card/' + encodeURIComponent(name.replace(/ /g, '_'))")
                 div.card-body
-                  div: img.img-fluid(loading="lazy" :src="'/images/cards/L/' + uniqueName + '.jpg'")
-                  hr
+                  div.mb-3: img.img-fluid(loading="lazy" :src="'/images/cards/L/' + uniqueName + '.jpg'")
                   p.card-text.text-center {{name}}
           p.text-center.my-5(v-if="!cards.memory.length")= t("cards.no-cards")
     div.card.card-body
