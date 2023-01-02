@@ -66,7 +66,7 @@ app.use(localizationService.getLocalizationMiddleware(false));
 app.use(flash());
 
 // app.use("/images/cards/:size", cardsController.directImage, express.static(__dirname + "/public"));
-app.use("/images/cards/L/:name", miscController.getCardImage);
+// app.use("/images/cards/L/:name", miscController.getCardImage);
 app.use(express.static(__dirname + "/public"));
 
 app.use((req, res, next) => {
