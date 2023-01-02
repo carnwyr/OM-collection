@@ -1,6 +1,7 @@
 const https = require("https");
 const createError = require("http-errors");
 const Sentry = require("@sentry/node");
+const sharp = require("sharp");
 
 const cacheService = require("../services/cacheService");
 const cardService = require("../services/cardService");
@@ -219,5 +220,22 @@ exports.getTeam = async function (req, res) {
 	} catch (e) {
 		Sentry.captureException(e);
 		return res.json({ err: true, message: e.message });
+	}
+};
+
+exports.getCardImage = async function (req, res, next) {
+	try {
+		const img = await sharp("./public/images/cards/L/" + req.params.name)
+			.composite([
+				{
+					input: "./public/images/watermark.png",
+					top: 0,
+					left: 0,
+				},
+			])
+			.toBuffer();
+		res.send(img);
+	} catch(e) {
+		res.sendFile("/public/images/card_placeholder.jpg", { root: '.' });
 	}
 };

@@ -25,7 +25,8 @@ const askKarasuRouter = require("./routes/askKarasu");
 
 const localizationService = require("./services/localizationService");
 const cacheService = require("./services/cacheService");
-const cardsController = require("./controllers/cardsController");
+// const cardsController = require("./controllers/cardsController");
+const miscController = require("./controllers/miscController");
 
 Sentry.init({ environment: process.env.NODE_ENV, dsn: process.env.SENTRY });
 
@@ -64,7 +65,8 @@ app.use(passport.session());
 app.use(localizationService.getLocalizationMiddleware(false));
 app.use(flash());
 
-app.use("/images/cards/:size", cardsController.directImage, express.static(__dirname + "/public"));
+// app.use("/images/cards/:size", cardsController.directImage, express.static(__dirname + "/public"));
+app.use("/images/cards/L/:name", miscController.getCardImage);
 app.use(express.static(__dirname + "/public"));
 
 app.use((req, res, next) => {
@@ -93,7 +95,7 @@ app.use(function (err, req, res, next) {
 
 	let errorTitle = err.title || "Something went wrong";
 	let errorMessage = err.errorMessage || "Oops, looks like you found our error page. Double check the link, maybe?";
-	
+
 	if (req.is('application/*') || (req.headers['content-type'] && req.headers['content-type'].includes('application/json'))) {
 		res.json({ err: true, message: errorTitle });
 	} else {
