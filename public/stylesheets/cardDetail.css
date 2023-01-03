@@ -130,3 +130,15 @@ a[data-toggle="collapse"][aria-expanded="false"] .bi.bi-chevron-up {
 #collapseTree .custom-control-input:not([disabled]) + .custom-control-label {
 	cursor: pointer;
 }
+
+.skills {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: .25rem;
+	background: var(--light);
+	border-radius: 5px;
+}
+.dark-theme .skills {
+	background: var(--secondary-bg);
+}

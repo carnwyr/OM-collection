@@ -192,7 +192,9 @@ svg.bi {
   color: var(--light-text);
 }
 
-.dark-theme .navbar, .dark-theme footer {
+.dark-theme .navbar,
+.dark-theme footer,
+.dark-theme .banner {
   background: #8943e0;
 }
 
