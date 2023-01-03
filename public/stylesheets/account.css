@@ -15,7 +15,7 @@
 #sortable li {
   margin: 0 3px 3px 3px;
   padding: .5rem 1rem;
-  background-color: rgb(233, 236, 239);
+  background-color: var(--secondary-bg);
   border-radius: 8px;
 }
 
