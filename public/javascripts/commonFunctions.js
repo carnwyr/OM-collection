@@ -1,12 +1,6 @@
 $(document).on("koolAid", showFallback);
 
 $(document).ready(function () {
-	const theme = new Themur({
-		toggleElement: document.getElementById('theme-switcher'),
-		themeClass: 'dark-theme',
-		useLocalStorage: true
-	});
-
 	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
 	$("head").append(`<link rel="alternate" hreflang="${$("select#language").val()}" href="${window.location.href}">`);
 	$("select#language").on("change", function() {
@@ -45,6 +39,10 @@ $(document).ready(function () {
 	});
 
 	$("#b2t").on("click", () => { $("html, body").animate({scrollTop:0}, 500); });
+	$("#theme-switcher").on("click", () => {
+		$("body").toggleClass("dark-theme");
+		setCookie("darktheme", $("body").hasClass("dark-theme"));
+	});
 });
 
 async function detectAdBlock(callback) {
