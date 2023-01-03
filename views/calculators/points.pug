@@ -220,11 +220,11 @@ block content
                         </tr>
                     </tbody>
       if !started()
-        div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
+        div.w-100.h-100.rounded(style="position:absolute;background:var(--body-bg);opacity:.8;")
           div.row.w-100.h-100.justify-content-center.align-items-center
             h5 Coming soon.
       if ended()
-        div.w-100.h-100.rounded(style="position:absolute;background:rgba(255,255,255,.8);")
+        div.w-100.h-100.rounded(style="position:absolute;background:var(--body-bg);opacity:.8;")
           div.row.w-100.h-100.justify-content-center.align-items-center
             h5 This event has ended.
     div.card.card-body.mt-3

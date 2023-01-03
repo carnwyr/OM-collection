@@ -1,6 +1,12 @@
 $(document).on("koolAid", showFallback);
 
 $(document).ready(function () {
+	const theme = new Themur({
+		toggleElement: document.getElementById('theme-switcher'),
+		themeClass: 'dark-theme',
+		useLocalStorage: true
+	});
+
 	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
 	$("head").append(`<link rel="alternate" hreflang="${$("select#language").val()}" href="${window.location.href}">`);
 	$("select#language").on("change", function() {

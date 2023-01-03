@@ -28,7 +28,7 @@ mixin section(events)
 block content
   div.container
     h1= t("common.events")
-    ul#category.nav.nav-pills.nav-fill.mb-3.shadow(style="background:white;border-radius:4px;" role="tablist")
+    ul#category.nav.nav-pills.nav-fill.mb-3.shadow(style="background:var(--body-bg);border-radius:4px;" role="tablist")
       li.nav-item
         a#popquiz-tab.nav-link(data-toggle="tab" href="#popquiz" role="tab" aria-controls="popquiz" aria-selected="false") Pop Quiz
       li.nav-item

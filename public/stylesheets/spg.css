@@ -39,7 +39,7 @@
 }
 
 .big-nav .nav-item:not(:first-child) {
-  border-top: 1px solid #dee2e6;
+  border-top: 1px solid var(--border-color);
 }
 
 .big-nav .nav-item:not(.active):not(:first-child) {
@@ -47,7 +47,7 @@
 }
 
 .big-nav .nav-item.active+.nav-item {
-  border-top-color: white;
+  border-top-color: var(--border-color);
 }
 
 #LuciferPill.active, #LuciferPillSmall.active {

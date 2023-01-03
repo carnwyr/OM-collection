@@ -64,6 +64,7 @@ footer ul {
 
 .card {
   box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+  background-color: var(--body-bg);
 }
 
 .modal {
@@ -182,4 +183,38 @@ svg.bi {
 
 .bootstrap-select > .dropdown-menu {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+/* Dark theme */
+
+.dark-theme {
+  background: var(--body-bg);
+  color: var(--light-text);
+}
+
+.dark-theme .navbar, .dark-theme footer {
+  background: #8943e0;
+}
+
+.dark-theme .card {
+  border: 1px solid var(--border-color);
+}
+
+.dark-theme .card table {
+  color: var(--light-text);
+}
+
+.dark-theme hr {
+  opacity: .5;
+  border-color: var(--light-text);
+}
+
+#dark,
+.dark-theme #light {
+  display: none;
+}
+
+#light,
+.dark-theme #dark {
+  display: block;
 }

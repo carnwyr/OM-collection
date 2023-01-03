@@ -94,21 +94,21 @@ block content
                         each i in [1, 2, 3]
                           th.h6.px-0.px-sm-3= t("Action "+i)
                         th.h6.px-0.px-sm-3= t("Points")
-                      tr.text-dark.moves
+                      tr.moves
                         each step in ['first', 'second', 'third']
                           +getActions(meet.allInteractions[step])
                         td +#{meet.allInteractions.points}
-                      tr.text-dark.movesShort
+                      tr.movesShort
                         each step in ['first', 'second', 'third']
                           +getActions([meet.allInteractionsShort[step]])
                         td +#{meet.allInteractionsShort.points}
                       if meet.itemInteractions
-                        tr.text-dark.items
+                        tr.items
                           each step in ['first', 'second', 'third']
                             +getActions(meet.itemInteractions[step])
                           td +#{meet.itemInteractions.points}
                       if meet.itemInteractionsShort
-                        tr.text-dark.itemsShort
+                        tr.itemsShort
                           each step in ['first', 'second', 'third']
                             +getActions([meet.itemInteractionsShort[step]])
                           td +#{meet.itemInteractionsShort.points}
