@@ -25,8 +25,6 @@ const askKarasuRouter = require("./routes/askKarasu");
 
 const localizationService = require("./services/localizationService");
 const cacheService = require("./services/cacheService");
-// const cardsController = require("./controllers/cardsController");
-const miscController = require("./controllers/miscController");
 
 Sentry.init({ environment: process.env.NODE_ENV, dsn: process.env.SENTRY });
 
@@ -65,10 +63,6 @@ app.use(passport.session());
 app.use(localizationService.getLocalizationMiddleware(false));
 app.use(flash());
 
-// app.use("/images/cards/:size", cardsController.directImage, express.static(__dirname + "/public"));
-// app.use("/images/cards/L/:name", miscController.getCardImage);
-app.use(express.static(__dirname + "/public"));
-
 app.use((req, res, next) => {
 	res.locals.cookies = req.cookies;
 	next();
@@ -80,6 +74,7 @@ app.use("/user", userRouter);
 app.use("/event", eventsRouter);
 app.use("/suggestion", suggestionRouter);
 app.use("/ask", askKarasuRouter);
+app.use(express.static(__dirname + "/public"));
 app.use((req, res, next) => next(createError(404, { title: "Page not found" })));
 
 app.use(Sentry.Handlers.errorHandler());
