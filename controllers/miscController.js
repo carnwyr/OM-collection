@@ -226,16 +226,11 @@ exports.getTeam = async function (req, res) {
 exports.getCardImage = async function (req, res, next) {
 	try {
 		const img = await sharp("./public/images/cards/L/" + req.params.name)
-			.composite([
-				{
-					input: "./public/images/watermark.png",
-					top: 0,
-					left: 0,
-				},
-			])
+			.resize(820, 1106)
+			.composite([{ input: "./public/images/watermark.png" }])
 			.toBuffer();
 		res.send(img);
 	} catch(e) {
-		next(createError(404, e.message));
+		next(createError(404, properties = { title: "404 Not Found", errorMessage: e.message }));
 	}
 };
