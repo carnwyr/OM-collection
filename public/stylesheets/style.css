@@ -216,8 +216,11 @@ svg.bi {
   background: rgb(89, 49, 159);
 }
 
+.dark-theme .card {
+  border: 1px solid var(--border-color);
+}
+
 @media (min-width: 960px) {
-  .dark-theme .card,
   .dark-theme .dropdown-menu {
     border: 1px solid var(--border-color);
   }
