@@ -68,5 +68,7 @@ router.get("/team-builder", miscController.getTeamBuilder);
 router.get("/stories", storyController.getStories);
 router.get("/story/main/:name", storyController.getStory);
 
+router.get("/images/cards/L/:name", miscController.getCardImage);
+
 
 module.exports = router;
