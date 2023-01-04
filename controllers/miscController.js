@@ -236,6 +236,6 @@ exports.getCardImage = async function (req, res, next) {
 			.toBuffer();
 		res.send(img);
 	} catch(e) {
-		next(e);
+		next(createError(404, e.message));
 	}
 };
