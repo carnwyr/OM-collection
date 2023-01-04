@@ -72,6 +72,13 @@ footer ul {
   padding-top: 4rem;
 }
 
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: var(--light-text);
+  background: var(--body-bg);
+  border-bottom-color: var(--body-bg);
+}
+
 /* Navbar and nav dropdowns */
 
 .navbar, footer {
