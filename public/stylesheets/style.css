@@ -35,6 +35,7 @@ h1 {
 figcaption, .figure-caption {
   font-size: 90%;
   margin-bottom: 1rem;
+  color: var(--secondary-color);
 }
 
 footer a {
@@ -195,7 +196,7 @@ svg.bi {
 .dark-theme .navbar,
 .dark-theme footer,
 .dark-theme .banner {
-  background: #8943e0;
+  background: rgb(89, 49, 159);
 }
 
 .dark-theme .card {

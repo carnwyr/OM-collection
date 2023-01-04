@@ -18,6 +18,12 @@
 	padding: 1.75rem;
 }
 
+.form-signin input,
+.form-signin input:focus {
+	background: var(--body-bg);
+	color: var(--light-text);
+}
+
 .form-signin .btn {
 	font-size: 80%;
 	border-radius: 5rem;
@@ -62,7 +68,7 @@ input:not([value=""]) ~ .floating-label{
 	left: 8px;
 	font-size: 11px;
 	opacity: 1;
-	color: #777;
+	color: var(--secondary-color);
 }
 
 .floating-label {
@@ -71,5 +77,5 @@ input:not([value=""]) ~ .floating-label{
 	left: 8px;
 	top: 18px;
 	transition: 0.2s ease all;
-	color: #777;
+	color: var(--secondary-color);
 }
