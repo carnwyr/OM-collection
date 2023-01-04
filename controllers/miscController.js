@@ -236,6 +236,6 @@ exports.getCardImage = async function (req, res, next) {
 			.toBuffer();
 		res.send(img);
 	} catch(e) {
-		res.sendFile("/public/images/card_placeholder.jpg", { root: '.' });
+		next(e);
 	}
 };
