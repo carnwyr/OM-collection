@@ -188,6 +188,16 @@ svg.bi {
 
 /* Dark theme */
 
+#dark,
+.dark-theme #light {
+  display: none;
+}
+
+#light,
+.dark-theme #dark {
+  display: block;
+}
+
 .dark-theme {
   background: var(--body-bg);
   color: var(--light-text);
@@ -199,7 +209,8 @@ svg.bi {
   background: rgb(89, 49, 159);
 }
 
-.dark-theme .card {
+.dark-theme .card,
+.dark-theme .dropdown-menu {
   border: 1px solid var(--border-color);
 }
 
@@ -212,12 +223,14 @@ svg.bi {
   border-color: var(--light-text);
 }
 
-#dark,
-.dark-theme #light {
-  display: none;
+.dark-theme .dropdown-menu {
+  background: var(--body-bg);
 }
-
-#light,
-.dark-theme #dark {
-  display: block;
+.dark-theme .dropdown-item {
+  color: var(--light-text);
+}
+.dark-theme .dropdown-item:hover,
+.dark-theme .dropdown-item:focus {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.15);
 }
