@@ -13,7 +13,7 @@
   const attributes = ["Pride", "Greed", "Envy", "Wrath", "Lust", "Gluttony", "Sloth"];
 
 mixin percentBar(owned, total, name)
-  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "LittleD":"#1c1c1c", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", 'UR+':"#ffe16b", Pride:"rgb(52,123,253)", Greed:"#ffbc11", Envy:"#ff7e00", Wrath:"#21c38c", Lust:"rgb(240,84,177)", Gluttony:"rgb(230,64,56)", Sloth:"rgb(181,65,230)"};
+  - const colours = {Lucifer:"#64B5F6", Mammon:"#FFF176", Leviathan:"#FF8A65", Satan:"#AED581", Asmodeus:"#F06292", Beelzebub:"#EF5350", Belphegor:"#9575CD", Diavolo:"#D32F2F", Barbatos:"#00BFA5", Luke:"#FDD835", Simeon:"#26C6DA", Solomon:"#BDBDBD", "LittleD":"#121212", N:"#d1d1d1", R:"#ed86ac", SR:"#aea4e8", SSR:"#ffe16b", UR:"#ffe16b", 'UR+':"#ffe16b", Pride:"rgb(52,123,253)", Greed:"#ffbc11", Envy:"#ff7e00", Wrath:"#21c38c", Lust:"rgb(240,84,177)", Gluttony:"rgb(230,64,56)", Sloth:"rgb(181,65,230)"};
   - var percentage = roundPercentage(owned / total * 100);
   span= t(name)
   small(style='display:inline-flex;') &nbsp;- #{owned} of #{total} (#{percentage}%)
@@ -136,6 +136,9 @@ style.
     .total-percentage {
       margin: .75rem 0;
     }
+  }
+  .progress, #barCoverUR, #barCoverURp {
+    background: var(--secondary-bg);
   }
 
 if title === t("title.my_collection")
