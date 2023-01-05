@@ -231,6 +231,6 @@ exports.getCardImage = async function (req, res, next) {
 			.toBuffer();
 		res.send(img);
 	} catch(e) {
-		next(createError(404, properties = { title: "404 Not Found", errorMessage: e.message }));
+		next(createError(404));
 	}
 };

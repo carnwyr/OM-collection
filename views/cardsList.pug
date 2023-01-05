@@ -203,28 +203,6 @@ block content
                 | #{t("cards.reset")}
               input.btn.btn-primary(type="submit" style="min-width:100px;" value="Apply")
 
-      -
-        function getName(d) {
-          var lang = t("lang");
-          if (lang === "en") {
-            return d.name;
-          } else if (lang === "ja") {
-            return d.ja_name;
-          } else if (lang === "zh") {
-            // return d.zh_name;
-            return d.name;
-          }
-        }
-        function getImageLink(name) {
-          if (!query.view) return "/images/cards/S/" + name + ".jpg";
-          if (query.view === "original")
-            return "/images/cards/L/" + name + ".jpg";
-          else if (query.view === "bloomed")
-            return "/images/cards/L/" + name + "_b.jpg";
-          else
-            return "/images/cards/S/" + name + ".jpg";
-        }
-
       ul.nav.nav-pills.nav-fill.shadow.mb-3(style="background:var(--body-bg);border-radius:.25rem;")
         li.nav-item
           a#demon-tab.nav-link(data-toggle="tab" href="#demoncards" role="tab" aria-controls="demoncards" aria-selected="false") Demon
