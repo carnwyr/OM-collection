@@ -47,3 +47,6 @@ block content
                 a(href="card/" + getURL(ranking[i].name))= getName(ranking[i])
               td.text-center #{ranking[i].total}&nbsp;
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffc300" class="bi bi-star-fill mb-1" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+    div.row.mt-3
+      div.col-12
+        iframe.card.w-100(style="height:100vh;" src="https://charts.mongodb.com/charts-karasu-os-eazke/embed/dashboards?id=61ecae32-a0e5-457e-81fc-03d22fec72fa&theme=" + (cookies.darktheme == "false" ? "light" : "dark") + "&autoRefresh=false&maxDataAge=-1&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed")

@@ -155,7 +155,7 @@ form#search input::placeholder {
 
 #usernav>.btn-outline-primary {
   color: var(--primary);
-  background-color: white;
+  background-color: var(--body-bg);
 }
 
 

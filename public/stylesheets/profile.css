@@ -62,7 +62,7 @@ li.placeholder {
 
 #usernav>.btn-outline-primary {
   color: var(--primary);
-  background-color: white;
+  background-color: var(--body-bg);
 }
 
 #usernav span {

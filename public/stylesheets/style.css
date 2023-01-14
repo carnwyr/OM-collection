@@ -68,8 +68,19 @@ footer ul {
   background-color: var(--body-bg);
 }
 
+.close {
+  color: var(--body-color);
+  text-shadow: 0 1px 0 var(--body-bg);
+}
+.close:hover {
+  color: var(--dark-text);
+}
+
 .modal {
   padding-top: 4rem;
+}
+.modal-content {
+  background: var(--body-bg);
 }
 
 .nav-tabs .nav-link.active,
