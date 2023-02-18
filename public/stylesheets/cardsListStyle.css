@@ -7,6 +7,11 @@ img[loading="lazy"] {
   flex-wrap: wrap;
   justify-content: space-between;
 }
+div.spinner {
+  padding: 2rem;
+  font-size: large;
+  text-align: center;
+}
 /* img.lazy {
   opacity: 0;
 } */

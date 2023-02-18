@@ -242,8 +242,8 @@ function initInfiniteScroll() {
 }
 
 function unbindInfiniteScroll() {
-	if (ias) ias.unbind();
-	if (ias2) ias2.unbind();
+	if (ias) ias = null;
+	if (ias2) ias2 = null;
 	$("#demoncards>.ias, #memorycards>.ias").html("");
 }
 
