@@ -212,6 +212,7 @@ function initInfiniteScroll() {
 			prefill: false,
 			spinner: $("#demoncards>.spinner")[0]
 		});
+		ias.next();
 		// ias.on("appended", fadeInImages);
 	} else {
 		$("#demoncards>p").removeClass("d-none");
@@ -231,14 +232,12 @@ function initInfiniteScroll() {
 			prefill: false,
 			spinner: $("#memorycards>.spinner")[0]
 		});
+		ias2.next();
 		// ias2.on("appended", fadeInImages);
 	} else {
 		$("#memorycards>p").removeClass("d-none");
 		$("#memorycards>.spinner").addClass("d-none");
 	}
-
-	ias.next();
-	ias2.next();
 }
 
 function unbindInfiniteScroll() {
