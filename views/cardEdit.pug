@@ -31,15 +31,10 @@ mixin treeCostTemplate(item)
 					div.col-md-6.col-lg-4.mb-1.mb-md-0
 						input.form-control(type="number" name="amount" value=i.amount placeholder="how many?")
 
-mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '', nodeOrder: '' })
+mixin treeTemplate(node = { reward: '', type: '', requirements: [], grimmCost: '' })
 	div
 		form.form-row
 			div.d-none: input(type="text" name="_id" value=node._id readonly)
-			div.d-none
-				div.form-inline.col-12.align-items-center.mb-2
-					label.mr-2 No.
-					input.form-control.m-0.mr-2(type="number" name="nodeOrder" value=node.nodeOrder style="width:80px;")
-					small.text-muted The order in which this node should appear on this page.
 			div.form-group.col-12.col-md-6.col-lg-3
 				label Name
 				input.form-control.autocomplete(type="text" value=node.reward name="reward" readonly=(node._id && node.reward !== "???"))
@@ -330,7 +325,6 @@ block content
 							each node in levelUpNodes
 								form.form-row
 									div.d-none: input(type="text" name="_id" value=node._id readonly)
-									div.d-none: input(type="number" name="nodeOrder" value=0)
 									div.form-group.col-12.col-md-6.col-lg-3
 										label Level
 										input.form-control(type="number" value=(node.reward.replace("Lv.", "").replace("Rank Up", "").trim()) name="reward" readonly)
@@ -350,7 +344,6 @@ block content
 							if card && card.type === "Demon"
 								h5 Devil's Flower
 								form.form-row
-									div.d-none: input(type="number" name="nodeOrder" value=0)
 									div.d-none: input(type="text" value="Devil's Flower" name="reward")
 									div.d-none: input(type="number" value=1 name="count")
 									div.d-none: input(type="text" name="type" value="flower")

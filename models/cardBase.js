@@ -17,8 +17,7 @@ const dtRewardSchema = new Schema({
 	count: { type: Number },
 	type: { type: String, required: true, enum: ["item", "icon", "bgm", "wallpaper", "clothing", "voice", "chat", "skill_animation", "moving_picture", "home_picture", "level_up", "flower"] },
 	requirements: { type: [dtReqSchema] },
-	grimmCost: { type: Number },
-	nodeOrder: { type: Number }
+	grimmCost: { type: Number }
 });
 
 const skillSchema = new Schema({
