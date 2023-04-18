@@ -128,11 +128,11 @@ exports.getTeam = async function (req, res) {
 
 		const demon = await cardService.aggregateCards([
 			{
-				"$match": match
-			}, {
 				"$match": {
 					"type": "Demon"
 				}
+			}, {
+				"$match": match
 			}, {
 				"$project": {
 					"name": 1,
@@ -186,11 +186,11 @@ exports.getTeam = async function (req, res) {
 
 		const memory = await cardService.aggregateCards([
 			{
-				"$match": match
-			}, {
 				"$match": {
 					"type": "Memory"
 				}
+			}, {
+				"$match": match
 			}, {
 				"$project": {
 					"name": 1,
