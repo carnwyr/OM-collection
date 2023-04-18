@@ -130,6 +130,10 @@ exports.getTeam = async function (req, res) {
 			{
 				"$match": match
 			}, {
+				"$match": {
+					"type": "Demon"
+				}
+			}, {
 				"$project": {
 					"name": 1,
 					"uniqueName": 1,
