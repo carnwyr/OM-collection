@@ -1,4 +1,4 @@
-$(document).on("koolAid", showFallback);
+// $(document).on("koolAid", showFallback);
 
 $(document).ready(function () {
 	$("head").append(`<meta property="og:url" content="${window.location.href}">`);
@@ -59,30 +59,30 @@ async function detectAdBlock(callback) {
   }
 }
 
-$(window).on("load", function() {
-	detectAdBlock(adBlockEnabled => {
-		if (adBlockEnabled) {
-			showFallback();
-		}
-		// else {
-		// 	let script = document.createElement('script');
-		// 	script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352";
-		// 	script.crossorigin = "anonymous";
-		// 	script.onerror = () => document.dispatchEvent(new CustomEvent('koolAid'));
-		// 	document.head.append(script);
-		// }
-	});
-});
+// $(window).on("load", function() {
+// 	detectAdBlock(adBlockEnabled => {
+// 		if (adBlockEnabled) {
+// 			showFallback();
+// 		}
+// 		else {
+// 			let script = document.createElement('script');
+// 			script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1710157662563352";
+// 			script.crossorigin = "anonymous";
+// 			script.onerror = () => document.dispatchEvent(new CustomEvent('koolAid'));
+// 			document.head.append(script);
+// 		}
+// 	});
+// });
 
-function showFallback() {
-	$(".kool-aid").each(function() {
-		let templateId = "#" + $(this).attr("data-fallback");
-		let fallback = $.parseHTML($(templateId).html());
-		$(fallback[0]).height($(this).height());
-		$(this).find(".row").hide();
-		$(this).append(fallback);
-	});
-}
+// function showFallback() {
+// 	$(".kool-aid").each(function() {
+// 		let templateId = "#" + $(this).attr("data-fallback");
+// 		let fallback = $.parseHTML($(templateId).html());
+// 		$(fallback[0]).height($(this).height());
+// 		$(this).find(".row").hide();
+// 		$(this).append(fallback);
+// 	});
+// }
 
 $(window).on("scroll", () => {
 	switchBackToTopButton();
