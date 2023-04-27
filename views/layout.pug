@@ -155,21 +155,23 @@ html(lang=t("lang"))
         //-       <span aria-hidden="true">&times;</span>
         //-     </button>
         //-   </div>
-        if (!user || !user.isSupporter)
-          .kool-aid.container.text-center.my-3(data-fallback="kool-fallback-template-small")
-            .row.justify-content-center
-              #ezoic-pub-ad-placeholder-109
-                div(style="display:inline-block;width:100%;height:90px")
-                <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
-                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        //-
+          if (!user || !user.isSupporter)
+            .kool-aid.container.text-center.my-3(data-fallback="kool-fallback-template-small")
+              .row.justify-content-center
+                #ezoic-pub-ad-placeholder-109
+                  div(style="display:inline-block;width:100%;height:90px")
+                  <ins class="adsbygoogle" style="display:inline-block;width:100%;height:90px" data-ad-client="ca-pub-1710157662563352" data-ad-slot="7330203562"></ins>
+                  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
       block content
-      if (!user || !user.isSupporter)
-        .kool-aid.container.text-center.mt-4(data-fallback="kool-fallback-template-big")
-          .row.justify-content-center
-            #ezoic-pub-ad-placeholder-122.w-100
-              <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4992362293" data-ad-format="auto" data-full-width-responsive="true"></ins>
-              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      //-
+        if (!user || !user.isSupporter)
+          .kool-aid.container.text-center.mt-4(data-fallback="kool-fallback-template-big")
+            .row.justify-content-center
+              #ezoic-pub-ad-placeholder-122.w-100
+                <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-1710157662563352" data-ad-slot="4992362293" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
       //-
         div(class="toast d-none" id="cookieToast" role="alert" data-delay="700" data-autohide="false")
           div(class="toast-body")
