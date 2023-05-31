@@ -45,19 +45,19 @@ $(document).ready(function () {
 	});
 });
 
-async function detectAdBlock(callback) {
-  let adBlockEnabled = false;
-  const googleAdUrl = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=";
-  try {
-    await fetch(new Request(googleAdUrl)).catch((_) => (adBlockEnabled = true));
-  } catch(e) {
-    adBlockEnabled = true;
-	} finally {
-		if (callback) {
-			callback(adBlockEnabled);
-		}
-  }
-}
+// async function detectAdBlock(callback) {
+//   let adBlockEnabled = false;
+//   const googleAdUrl = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=";
+//   try {
+//     await fetch(new Request(googleAdUrl)).catch((_) => (adBlockEnabled = true));
+//   } catch(e) {
+//     adBlockEnabled = true;
+// 	} finally {
+// 		if (callback) {
+// 			callback(adBlockEnabled);
+// 		}
+//   }
+// }
 
 // $(window).on("load", function() {
 // 	detectAdBlock(adBlockEnabled => {
