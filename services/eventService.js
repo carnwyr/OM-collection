@@ -135,7 +135,7 @@ exports.addEvent = async function(data, img, user) {
 	try {
 		let event = await Events.findOne({ "name.en": data.name.en });
 		if (event) {
-			throw createError(400, properties = { errorMessage: `Event with name "${data.name.en}" already exists` });
+			throw createError(500, "Event already exists.");
 		}
 
 		await Events.create(data);
