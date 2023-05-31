@@ -87,18 +87,15 @@ html(lang=t("lang"))
               a.dropdown-item(href='/rankings')= t("common.rankings")
               a.dropdown-item(href="/card_pages") Card pages
               a.dropdown-item(href="/icons") Icon pages
-          //- TODO: use userController to check rights
           if user && (user.type === "Admin" || user.type === "Moderator")
             li(class="nav-item dropdown")
               a(class="nav-link dropdown-toggle" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
               div(class="dropdown-menu shadow px-2" aria-labelledby="adminDropdownButton")
-                if user.type === "Admin"
-                  a(class="dropdown-item" href='/card/new') Add new card
-                if user.type === "Admin"
-                  a(class="dropdown-item" href='/hiddenCards') Hidden cards
-                if user.type === "Admin"
-                  a(class="dropdown-item" href='/userList') User List
+                a(class="dropdown-item" href='/card/new') Add new card
                 a(class="dropdown-item" href="/event/new") Add new event
+                if user.isAdmin
+                  a(class="dropdown-item" href='/hiddenCards') Hidden cards
+                  a(class="dropdown-item" href='/userList') User List
         ul(class="navbar-nav ml-auto")
           li.nav-item
             a#theme-switcher.nav-link(role="button")

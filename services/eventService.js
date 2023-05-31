@@ -221,6 +221,8 @@ exports.getDefaultEventData = function() {
 		},
 		start: start,
 		end: end,
+		boostingStart: dayjs.utc().startOf("day").hour(15),
+		boostingEnd: dayjs.utc().startOf("day").hour(15),
 		stages: 26,
 		type: "PopQuiz"
 	};

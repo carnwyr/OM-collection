@@ -45,6 +45,7 @@ mixin lockedStageEntry(stage = { name: '', requirement: '' })
 block content
 	include mixins/imageUpload
 	-
+		var isMod = !card && !user.isAdmin;
 		function formatStages(stages, delimiter = ", ") {
 			let str = '';
 			stages.forEach(i => {
@@ -85,7 +86,7 @@ block content
 						div.col-12.col-md-4
 							div.form-group
 								label(for="en-name") Name
-								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en readonly=(user.isAdmin?false:true))
+								input.form-control(id="en-name" type="text" name="en-name" value=data.name.en readonly=(isMod?false:true))
 						div.col-12.col-md-4
 							div.form-group
 								label(for="ja-name") Japanese name
@@ -213,7 +214,7 @@ block content
 						</div>
 					</div>
 				</div>
-				if user.type === "Admin"
+				if isMod
 					hr
 					style.
 						#imageResult {
@@ -235,7 +236,7 @@ block content
 
 			template#locked-stages
 				+lockedStageEntry()
-	if user.type === "Admin"
+	if isMod
 		script.
 			function prepareImageData() {
 				let image = readImage($('#uploadImage')[0]);

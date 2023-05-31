@@ -72,6 +72,7 @@ mixin skillTemplate(skill = { skillType: '', title: '', description: '' })
 			textarea.form-control(name="description")= skill.description
 
 block content
+	- var isMod = !card && !user.isAdmin;
 	div.container
 		h1= title
 		if pendingSuggestion
@@ -110,7 +111,7 @@ block content
 						form.form-row
 							div.form-group.col-12.col-md-6
 								label(for="name") Name
-								input(class='form-control' type="text" id="name" name="name" value=card?card.name:'' readonly=(user.isAdmin?false:true))
+								input(class='form-control' type="text" id="name" name="name" value=card?card.name:'' readonly=(isMod?false:true))
 							div.form-group.col-12.col-md-6
 								label(for="ja_name") Japanese Name
 								input(class='form-control' type="text" id="ja_name" name="ja_name" value=card?card.ja_name:'???')
@@ -168,7 +169,7 @@ block content
 									div(class='custom-control custom-checkbox'+(user.isAdmin?'':" d-none"))
 										input(class='custom-control-input' type="checkbox" id="isHidden" name="isHidden")
 										label(class='custom-control-label' for="isHidden") Hidden card
-						if user.type === "Admin"
+						if isMod
 							hr
 							div.row
 								div.col-12.col-md-4
@@ -376,7 +377,7 @@ block content
 				showAlert("danger", "Action not allowed!");
 			}
 	else
-		if user.type === "Admin"
+		if isMod
 			script.
 				function readImage(upload) {
 					return new Promise((resolve, reject) => {
@@ -418,8 +419,9 @@ block content
 					prepareCardImages();
 				}
 				function sendRequest(images) {
+					let cardData = getCardData();
 					$.post(location.pathname, {
-						cardData: getCardData(),
+						cardData: cardData,
 						images: images
 					}, function(result) {
 						if (result.err) {
@@ -427,6 +429,7 @@ block content
 							return;
 						}
 						showAlert("success", result.message);
+						window.location.replace(window.location.origin + "/card/" + cardData.name);
 					});
 				}
 		else if user.supportStatus.some(badge => badge.name === "trustedContributor")
