@@ -375,6 +375,59 @@ exports.updateCard = async function(data) {
 		.catch(reason => { return { err: true, message: reason.message }; });
 };
 
+function getDefaultTree(name, data) {
+	let tree = [];
+	const rar = {
+		"N": 1,
+		"R": 2,
+		"SR": 3,
+		"SSR": 4,
+		"UR": 5,
+		"UR+": 5
+	};
+
+	for (let i = 0; i < rar[data.rarity]; i++) {
+		tree.push({
+			reward: `Lv.${i + 1}0 Rank Up`,
+			type: "level_up",
+			requirements: [],
+			grimmCost: ""
+		});
+	}
+
+	if (data.type == "Demon") {
+		tree.push({
+			reward: "Devil's Flower",
+			type: "flower",
+			requirements: [],
+			grimmCost: ""
+		},
+		{
+			reward: data.name + " (Locked)",
+			type: "icon",
+			requirements: [],
+			grimmCost: ""
+		},
+		{
+			reward: data.name + " (Unlocked)",
+			type: "icon",
+			requirements: [],
+			grimmCost: ""
+		});
+	} else {
+		data.characters.forEach(i => {
+			tree.push({
+				reward: `${data.name} (${i})`,
+				type: "icon",
+				requirements: [],
+				grimmCost: ""
+			});
+		});
+	}
+
+	return tree;
+}
+
 exports.addNewCard = async function(cardData, images = "", creator) {
 	try {
 		if (cardData.isHidden == "true") {
@@ -386,6 +439,7 @@ exports.addNewCard = async function(cardData, images = "", creator) {
 			if (cardData.number === "") {
 				cardData.number = await getLatestCardNum(cardData.rarity);
 			}
+			cardData.dt = getDefaultTree(cardData.name, cardData);
 			await Cards.create(cardData);
 			await Revisions.create({
 				title: cardData.name,
