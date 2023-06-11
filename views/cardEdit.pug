@@ -133,7 +133,7 @@ block content
 								p.small.text-muted Example lesson source: Hard (3-13, 3-14, 3-15)
 							div.form-group.col-12
 								label(for="type") Type
-								select(class='custom-select' id="type" name="type")
+								select(class='custom-select' id="type" name="type" disabled=card)
 									option(value='Demon' selected=(card?card.type==='Demon':true)) Demon
 									option(value='Memory' selected=(card?card.type==='Memory':false)) Memory
 							div.form-group.col-12
