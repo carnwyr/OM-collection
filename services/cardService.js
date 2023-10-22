@@ -385,13 +385,23 @@ function getDefaultTree(name, data) {
 		"UR": 5,
 		"UR+": 5
 	};
+	const levelCost = [3000,5000,8000,12000,20000];
+	const levelCostSR = [3000,4500,6000];
+	const flowerCost = {
+		"N": 10000,
+		"R": 20000,
+		"SR": 30000,
+		"SSR": 50000,
+		"UR": 80000,
+		"UR+": 80000
+	};
 
 	for (let i = 0; i < rar[data.rarity]; i++) {
 		tree.push({
 			reward: `Lv.${i + 1}0 Rank Up`,
 			type: "level_up",
 			requirements: [],
-			grimmCost: ""
+			grimmCost: (rar[data.rarity] > 3) ? levelCost[i] : levelCostSR[i]
 		});
 	}
 
@@ -400,7 +410,7 @@ function getDefaultTree(name, data) {
 			reward: "Devil's Flower",
 			type: "flower",
 			requirements: [],
-			grimmCost: ""
+			grimmCost: flowerCost[data.rarity]
 		},
 		{
 			reward: data.name + " (Locked)",
