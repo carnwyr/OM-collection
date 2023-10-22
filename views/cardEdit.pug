@@ -100,9 +100,10 @@ block content
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="skills-tab" data-toggle="tab" href="#skills" role="tab" aria-controls="skills" aria-selected="false">Skills</a>
 					</li>
-					<li class="nav-item" role="presentation">
-						<a class="nav-link" id="tree-tab" data-toggle="tab" href="#tree" role="tab" aria-controls="tree" aria-selected="false">Devil's tree</a>
-					</li>
+					if card
+						<li class="nav-item" role="presentation">
+							<a class="nav-link" id="tree-tab" data-toggle="tab" href="#tree" role="tab" aria-controls="tree" aria-selected="false">Devil's tree</a>
+						</li>
 					<li class="nav-item" role="presentation">
 						<a class="nav-link" id="animation-tab" data-toggle="tab" href="#animation" role="tab" aria-controls="animation" aria-selected="false">UR+ Animation</a>
 					</li>
@@ -345,15 +346,15 @@ block content
 										label Requirements
 										+treeCostTemplate(flowerNode.requirements)
 					div#animation.tab-pane.fade(role="tabpanel" aria-labelledby="animation-tab")
-						div.form-check
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio1" value="" checked=(!card||!card.animation))
-							label.form-check-label(for="inlineRadio1") n/a
-						div.form-check
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animation&&card.animation==="battle"))
-							label.form-check-label(for="inlineRadio2") dance battle/skills animation
-						div.form-check
-							input.form-check-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animation&&card.animation==="homescreen"))
-							label.form-check-label(for="inlineRadio3") homescreen/moving picture
+						div.custom-control.custom-radio.mb-2
+							input.custom-control-input(type="radio" name="animationType" id="inlineRadio1" value="" checked=(!card||!card.animation))
+							label.custom-control-label(for="inlineRadio1") n/a
+						div.custom-control.custom-radio.mb-2
+							input.custom-control-input(type="radio" name="animationType" id="inlineRadio2" value="battle" checked=(card&&card.animation&&card.animation==="battle"))
+							label.custom-control-label(for="inlineRadio2") dance battle/skills animation
+						div.custom-control.custom-radio
+							input.custom-control-input(type="radio" name="animationType" id="inlineRadio3" value="homescreen" checked=(card&&card.animation&&card.animation==="homescreen"))
+							label.custom-control-label(for="inlineRadio3") homescreen/moving picture
 				hr
 				button#submit.btn.btn-primary.mr-2(type="submit") Save
 				span#cd
