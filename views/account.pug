@@ -8,11 +8,9 @@ block scripts
 	script(src="/javascripts/accountFunctions.js")
 	script.
 		const username = !{JSON.stringify(user.name)};
-		- var pfp = user.profile.display || "The_Mammon_Way";
-		const profileCard = !{JSON.stringify(pfp)};
+		const profileCard = !{JSON.stringify(user.profile.display)};
 
 block content
-	- var pfp = user.profile?.display || "The_Mammon_Way";
 	div.container
 		div.row
 			div.card.card-body
@@ -60,8 +58,7 @@ block content
 										p.text-muted= t("settings.fav_char_instruction")
 										- var ch = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Luke", "Simeon", "Solomon"];
 										ul#sortable.mb-2
-											- const CHARA1 = user.profile.characters || [];
-											each i in CHARA1
+											each i in user.profile.characters
 												- ch.splice(ch.indexOf(i), 1);
 												li.row
 													div.form-check.col-10
@@ -84,10 +81,10 @@ block content
 										div.mb-2= t("settings.card_display")
 										select#select-picker
 										div.form-check.form-check-inline
-											input.form-check-input(type="radio" name="card" id="inlineRadio1" value="" checked=(!pfp.endsWith("_b")))
+											input.form-check-input(type="radio" name="card" id="inlineRadio1" value="" checked=(!user.profile.display.endsWith("_b")))
 											<label class="form-check-label" for="inlineRadio1">Locked</label>
 										div.form-check.form-check-inline.mb-3
-											input.form-check-input(type="radio" name="card" id="inlineRadio2" value="_b" checked=(pfp.endsWith("_b")))
+											input.form-check-input(type="radio" name="card" id="inlineRadio2" value="_b" checked=(user.profile.display.endsWith("_b")))
 											<label class="form-check-label" for="inlineRadio2">Unlocked</label>
 										img(src=`/images/cards/L/${user.profile.display}.jpg` style="width:100%;")
 								br
