@@ -28,7 +28,8 @@ exports.getAccountData = async function (username) {
       }
     }
   ]);
-  if (!user[0].profile?.display) {
+  if (!user[0].profile) user[0].profile = {};
+  if (!user[0].profile.display) {
     user[0].profile.display = "The_Mammon_Way";
   }
   return user[0];
