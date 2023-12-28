@@ -237,24 +237,25 @@ block content
               |
               |
               a(href=card.uniqueName+"/edit") Add missing data!
-        if card.rarity == "UR+"
-          a.h5(data-toggle="collapse" href="#collapseAnimations" role="button" aria-expanded=(cookies.collapseAnimations=="true"?"false":"true") aria-controls="collapseAnimations")
-            if card.animation == "homescreen"
-              span Moving Pictures
-            if card.animation == "battle"
-              span Skill Animation
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up mb-1" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
-          div#collapseAnimations.collapse(class=(cookies.collapseAnimations=="true"?"":"show"))
-            if card.animation == "homescreen"
-              div.row
-                div.col-12.col-md-6.mb-3
-                  img.img-fluid(src="/images/animations/" + card.name + ".png")
-                div.col-12.col-md-6
-                  img.img-fluid(src="/images/animations/" + card.name + "_b.png")
-            if card.animation == "battle"
-              video(width="320" height="200" controls)
-                source(src="/images/animations/" + card.name + ".mp4" type="video/mp4")
-                | Your browser does not support mp4.
+        //-
+          if card.rarity == "UR+"
+            a.h5(data-toggle="collapse" href="#collapseAnimations" role="button" aria-expanded=(cookies.collapseAnimations=="true"?"false":"true") aria-controls="collapseAnimations")
+              if card.animation == "homescreen"
+                span Moving Pictures
+              if card.animation == "battle"
+                span Skill Animation
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up mb-1" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+            div#collapseAnimations.collapse(class=(cookies.collapseAnimations=="true"?"":"show"))
+              if card.animation == "homescreen"
+                div.row
+                  div.col-12.col-md-6.mb-3
+                    img.img-fluid(src="/images/animations/" + card.name + ".png")
+                  div.col-12.col-md-6
+                    img.img-fluid(src="/images/animations/" + card.name + "_b.png")
+              if card.animation == "battle"
+                video(width="320" height="200" controls)
+                  source(src="/images/animations/" + card.name + ".mp4" type="video/mp4")
+                  | Your browser does not support mp4.
 
   script.
     $("a[data-toggle='collapse']").click(function() {
