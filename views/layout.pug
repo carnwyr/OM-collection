@@ -77,8 +77,8 @@ html(lang=t("lang"))
             li(class="nav-item dropdown")
               a(class="nav-link dropdown-toggle" role='button' id='adminDropdownButton' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false") Admin tab
               div(class="dropdown-menu shadow px-2" aria-labelledby="adminDropdownButton")
-                a(class="dropdown-item" href='/card/new') Add new card
-                a(class="dropdown-item" href="/event/new") Add new event
+                //- a(class="dropdown-item" href='/card/new') Add new card
+                //- a(class="dropdown-item" href="/event/new") Add new event
                 if user.isAdmin
                   a(class="dropdown-item" href='/hiddenCards') Hidden cards
                   a(class="dropdown-item" href='/userList') User List
@@ -165,14 +165,14 @@ html(lang=t("lang"))
             button(class="btn btn-info btn-sm float-right mb-2" type="button" id="acceptCookies" data-dismiss="toast" aria-label="Close")
               span(aria-hidden="true") Got it &#x1F44D
       //-
-        div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
-          div.toast-header
-            strong.mr-auto Light vs. Dark
-            button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
-              span(aria-hidden="true") &times;
-          div.toast-body
-            span.text-dark Should we use light or dark as the default theme?
-            a(href="https://forms.gle/6x5K3m63Fcu2fYA67" target="_blank" class="btn btn-primary btn-sm btn-block mt-3") Vote
+      div#announcementToast.toast.d-none(role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" style="position:fixed;top:64px;right:8px;z-index:1021;")
+        div.toast-header
+          strong.mr-auto Website Closing Notice
+          button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
+            span(aria-hidden="true") &times;
+        div.toast-body
+          span.text-dark Karasu-OS.com will be permanently closed on February 08, 2025.
+          a(href="/closing_notice" class="btn btn-primary btn-sm btn-block mt-3") Learn more
 
       div(class="shadow text-primary" id="b2t" type="button" title="Go to Top" style="display:none;")
         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>

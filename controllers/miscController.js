@@ -11,6 +11,10 @@ exports.privacyPolicy = function(req, res, next) {
 	return res.render("policies", { title: "Privacy Policy", user: req.user });
 };
 
+exports.closingNotice = function (req, res, next) {
+  return res.render("closingNotice", { title: "Closing Notice", user: req.user });
+};
+
 exports.surpriseGuest = async function(req, res, next) {
 	try {
 		let c = ["Lucifer", "Mammon", "Leviathan", "Satan", "Asmodeus", "Beelzebub", "Belphegor", "Diavolo", "Barbatos", "Simeon", "Luke", "Solomon"];

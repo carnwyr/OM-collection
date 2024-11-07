@@ -16,6 +16,7 @@ router.get("/surpriseGuest", miscController.surpriseGuest);
 router.get("/rankings", userController.getRankingsPage);
 router.get("/icons/:character", cardController.getIconPage);
 router.get("/icons", cardController.getIconDirectory);
+router.get("/closing_notice", miscController.closingNotice);
 
 // Cards lists
 router.get("/cards/:character", cardController.getCharacterCardPage);

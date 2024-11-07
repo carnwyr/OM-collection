@@ -19,12 +19,12 @@ $(document).ready(function () {
 	});
 
 	/***/
-	let cookieName = "110722";
+	let cookieName = "110724";
 	if (!document.cookie.split('; ').find(row => row.startsWith(cookieName))) {
 		$("#announcementToast").removeClass("d-none").toast("show");  // if is toast
 		// $("#announcementToast").removeClass("d-none");  // if is alert
 	}
-	$("#announcementToast .close, #announcementToast a.btn-block").on("click", () => {
+	$("#announcementToast .close").on("click", () => {
 		document.cookie = cookieName + "=true; expires=" + cookieExpiryDate() + ";";
 		$("#announcementToast").toast("hide");  // if is toast
 	});

@@ -9,15 +9,15 @@ const loginController = require("../controllers/loginController");
 /* Admin */
 
 // Get card edit page
-router.get('/new', loginController.hasAccess("Moderator"), cardsController.getEditCardPage);
+// router.get('/new', loginController.hasAccess("Moderator"), cardsController.getEditCardPage);
 router.get('/:card/edit', loginController.canEdit("regular"), cardsController.getEditCardPage);
 
 // Edit or add card
-router.post('/new', loginController.hasAccess("Moderator"), cardsController.addNewCard);
+// router.post('/new', loginController.hasAccess("Moderator"), cardsController.addNewCard);
 router.post('/:card/edit', loginController.canEdit("trusted"), cardsController.updateCard);
 
 // Make hidden card available to everyone
-router.get('/:card/makePublic', loginController.hasAccess("Admin"), cardsController.makeCardPublic);
+// router.get('/:card/makePublic', loginController.hasAccess("Admin"), cardsController.makeCardPublic);
 
 // Delete card
 router.post('/delete', loginController.hasAccess("Admin"), cardsController.deleteCard);
