@@ -341,6 +341,8 @@ passport.serializeUser(function(user, next) {
 
 passport.deserializeUser(function(id, next) {
 	Users.findById(id, function(err, user) {
+		if (err) return next(err);
+		if (!user) return next(null, false);
 		let userInfo = user.info;
 		userInfo.id = user._id;
 		if (user.info.type === "Admin") {
